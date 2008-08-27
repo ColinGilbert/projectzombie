@@ -62,7 +62,7 @@
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.648678351" name="EngineController.h" rcbsApplicability="disable" resourcePath="src/EngineController.h" toolsToInvoke=""/>
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1301233051" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="src/ZDelegates.h" toolsToInvoke=""/>
 <sourceEntries>
-<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -444,6 +444,9 @@
 </tool>
 </toolChain>
 </folderInfo>
+<sourceEntries>
+<entry excluding="Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+</sourceEntries>
 </configuration>
 </storageModule>
 

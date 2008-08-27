@@ -1,6 +1,6 @@
 #include <boost/thread.hpp>
-#include <cmath>
-#include <iostream>
+#include "InputController.h"
+#include "EngineController.h"
 using namespace std;
 
 /*
@@ -10,31 +10,29 @@ using namespace std;
  *      Author: bey0nd
  */
 
-#define PI 3.14159265
+ZGame::InputController inControl;
+ZGame::EngineController engineControl;
 
-#include <auto_ptr>
-
-
-struct MyThreadFunc
+struct MyInputThread
 {
   void operator()()
   {
-    int loopNum = 1000;
-    double dx = 0.1*PI;
-    double j = 0.0;
-    for(int i=0; i<loopNum; i++)
-      {
-        cout << "loop #" << i << ": " << cos(j)+sin(j) << endl;
-        j+=dx;
-      }
+    inControl.run();
   }
-}threadFun;
+}inputThread;
 
 int main(int argc, char** argv)
 {
+  using namespace ZGame;
+  if(!engineControl.onInit())
+    return 1;
+  if(!inControl.onInit(engineControl.getRenderWindow()))
+    return 1;
+  engineControl.injectInputSubject(&inControl);
+  boost::thread myThread(inputThread);
 
-  boost::thread myThread(threadFun);
-  boost::thread::yield();
+  engineControl.run();
+
   myThread.join();
   return 0;
 }

@@ -16,20 +16,20 @@ namespace ZGame
 {
   namespace EVENT
   {
-    typedef fd::delegate<bool(const OIS::MouseEvent)> ZMouseMoveEvt;
-    typedef fd::delegate<bool(const OIS::MouseEvent,const OIS::MouseButtonID)> ZMouseUpEvt;
-    typedef fd::delegate<bool(const OIS::MouseEvent,const OIS::MouseButtonID)> ZMouseDownEvt;
-    typedef fd::delegate<bool(const OIS::KeyEvent)> ZKeyUpEvt;
-    typedef fd::delegate<bool(const OIS::KeyEvent)> ZKeyDownEvt;
+    typedef fd::delegate<bool(const OIS::MouseEvent&)> ZMouseMoveEvt;
+    typedef fd::delegate<bool(const OIS::MouseEvent&,const OIS::MouseButtonID)> ZMouseUpEvt;
+    typedef fd::delegate<bool(const OIS::MouseEvent&,const OIS::MouseButtonID)> ZMouseDownEvt;
+    typedef fd::delegate<bool(const OIS::KeyEvent&)> ZKeyUpEvt;
+    typedef fd::delegate<bool(const OIS::KeyEvent&)> ZKeyDownEvt;
 
-    struct MouseEvent
+    struct MouseEvtObserver
     {
       ZMouseMoveEvt mme;
       ZMouseUpEvt mue;
       ZMouseDownEvt mde;
     };
 
-    struct KeyboardEvent
+    struct KeyboardEvtObserver
     {
       ZKeyUpEvt kue;
       ZKeyDownEvt kde;
