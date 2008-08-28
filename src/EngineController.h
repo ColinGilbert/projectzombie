@@ -18,24 +18,22 @@ using namespace std;
 
 #include "ZDelegates.h"
 #include "InputController.h"
+#include "GameStateInfo.h"
+
 namespace ZGame
 {
   class EngineView;
   class EngineController
   {
   public:
-
-
-
     EngineController();
     virtual
     ~EngineController();
 
-    void transitionState();
+    void transitionState(const string key);
     bool onInit();
     void run();
     void onDestroy();
-    void loadStates();
     void addKeyboardListener(ZGame::EVENT::KeyboardEvtObserver keo);
     void addMouseListener(ZGame::EVENT::MouseEvtObserver meo);
 
@@ -56,7 +54,20 @@ namespace ZGame
     Ogre::RenderWindow* _window;
     ZGame::EngineView* _engineView;
 
+    GameStateInfoMap _gameSInfoMap;
+
+    //Current state
+    GameStateInfo* _curStateInfo;
+    //GameStat _curState;
+
     void loadAssets();
+    void loadStates();
+
+    //state handling
+    void loadCurrentState(const string curKey);
+    void unloadCurrentState();
+    void realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
+
     Ogre::Camera* createDefaultCamera();
 
   private:
