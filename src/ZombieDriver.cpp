@@ -18,6 +18,7 @@ struct MyInputThread
   void operator()()
   {
     inControl.run();
+    inControl.onDestroy();
   }
 }inputThread;
 
@@ -32,6 +33,7 @@ int main(int argc, char** argv)
   boost::thread myThread(inputThread);
 
   engineControl.run();
+  engineControl.onDestroy();
 
   myThread.join();
   return 0;
