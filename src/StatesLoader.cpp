@@ -29,7 +29,7 @@ void StatesLoader::loadStates(GameStateInfoMap &stateInfoMap, GameStateInfo &sta
 
   startState = info;
 
-  fillSInfo(info,"GameMainMenuStateKey","GameMainMenuState",GameStateInfo::STATELESS);
+  fillSInfo(info,"GameMainMenuStateKey","GameEditState",GameStateInfo::STATELESS);
   addSInfo(stateInfoMap,info);
 }
 

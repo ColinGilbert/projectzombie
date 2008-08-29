@@ -23,8 +23,6 @@ namespace ZGame
     virtual
     ~GameStateInfo();
 
-    std::string prevState;
-    std::string nextState;
     std::string key;
     std::string gameStateClass;
 

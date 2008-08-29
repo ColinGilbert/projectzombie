@@ -13,13 +13,13 @@ using namespace std;
 
 #include "EngineController.h"
 #include "EngineView.h"
-
+#include "GameStateFactory.h"
 #include "StatesLoader.h"
 
 namespace ZGame
 {
 
-  EngineController::EngineController() : _root(0),_scnMgr(0),_stillRunning(true),_engineView(0),_curStateInfo(0)
+  EngineController::EngineController() : _root(0),_scnMgr(0),_stillRunning(true),_engineView(0),_curStateInfo(0),_curGameState(0)
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -78,10 +78,56 @@ namespace ZGame
     return true;
   }
 
+  void EngineController::addLifeCycleObserver(ZGame::LifeCycle::LifeCycleObserver obs)
+  {
+    _onInitObs.push_back(obs.onInit);
+    _onUpdateObs.push_back(obs.onUpdate);
+    _onDestroyObs.push_back(obs.onDestroy);
+  }
+
+  /**
+   * Update onInit() observers
+   */
+  void EngineController::updateOnItObs()
+  {
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In updateOnItObs");
+   for(LifeCycleObsItr it=_onInitObs.begin();it!=_onInitObs.end();++it)
+     {
+       if((*it)()) //make the delegate call
+         {
+           Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"onItObs true");
+         }
+     }
+  }
+  /**
+   * Update onUpdate observers
+   */
+  void EngineController::updateOnUpdateObs()
+  {
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In updateOnUpdateObs");
+    for(LifeCycleObsItr it=_onUpdateObs.begin();it!=_onUpdateObs.end();++it)
+      {
+        (*it)(); //make delegate call
+      }
+  }
+  /**
+   * Update onDestroy observers.
+   */
+  void EngineController::updateOnDestroyObs()
+  {
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In updateOnDestroyObs");
+    for(LifeCycleObsItr it=_onDestroyObs.begin();it!=_onDestroyObs.end();++it)
+      {
+        (*it)(); //make delegate call
+      }
+  }
+
+
 
 
   void EngineController::injectInputSubject(ZGame::InputController* inControl)
   {
+    _inController = inControl;
     ZGame::EVENT::KeyboardEvtObserver keyObs;
     keyObs.kde.bind(&ZGame::EngineController::onKeyDown,this);
     keyObs.kue.bind(&ZGame::EngineController::onKeyUp,this);
@@ -121,6 +167,7 @@ namespace ZGame
     while(_stillRunning)
       {
         _root->renderOneFrame();
+        updateOnUpdateObs(); //update lifecyle update observers
         //boost::thread::sleep(0);
       }
   }
@@ -136,7 +183,7 @@ namespace ZGame
     StatesLoader stLoader;
     GameStateInfo startState;
     stLoader.loadStates(_gameSInfoMap,startState);
-    loadCurrentState(startState.key);
+    loadStartStateToCurrentState(startState.key);
 
   }
 
@@ -175,13 +222,57 @@ namespace ZGame
     return true;
   }
 
+  void EngineController::removeAllLifeCycleObs()
+  {
+    _onInitObs.clear();
+    _onUpdateObs.clear();
+    _onDestroyObs.clear();
+  }
+
+  void EngineController::loadStartStateToCurrentState(const string curKey)
+  {
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
+        "In loadStartStateToCurrentstate");
+    ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
+    if (it != _gameSInfoMap.end())
+      {
+        _curStateInfo = &it->second;
+        if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
+          {
+            removeAllLifeCycleObs(); //make sure we clear any observers.
+            _curGameState = 0;
+          }
+        else
+          {
+            //do stateful crap here.
+          }
+      }
+    else
+      throw(std::invalid_argument("Current State does not exist!"));
+
+  }
+
   void EngineController::loadCurrentState(const string curKey)
   {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In load current state");
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
     if(it != _gameSInfoMap.end())
       {
-        _curStateInfo = &it->second;
+          if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
+          {
+            if (_curGameState == 0)
+              throw(invalid_argument(
+                  "Current game state is null when trying to load a new STATELESS current state"));
+            updateOnDestroyObs();
+            delete _curGameState;
+            removeAllLifeCycleObs(); //make sure we clear any observers.
+            _curGameState = 0;
+            _curStateInfo = &it->second;
+          }
+        else
+          {
+            //do stateful crap here.
+          }
       }
     else
       throw(std::invalid_argument("Current State does not exist!"));
@@ -196,12 +287,30 @@ namespace ZGame
    */
   void EngineController::realizeCurrentState()
   {
+    using namespace ZGame;
     //attach the observers
     Ogre::LogManager* logM = Ogre::LogManager::getSingletonPtr();
     logM->logMessage(Ogre::LML_NORMAL,"In realizeCurrentState");
     logM->logMessage(Ogre::LML_NORMAL,"StateInfo: ");
     logM->logMessage(Ogre::LML_NORMAL,"Key: "+_curStateInfo->key);
     logM->logMessage(Ogre::LML_NORMAL,"Class: "+_curStateInfo->gameStateClass);
+    if(_curStateInfo->stateType == GameStateInfo::STATEFUL)
+      {
+        //add to stateful
+      }
+    else
+      {
+        ZGame::EVENT::KeyboardEvtObserver keyObs;
+        if(_curGameState != 0)
+          throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
+        _curGameState = ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass);
+        _curGameState->initialize();
+        LifeCycle::LifeCycleSubject lcs;
+        lcs.bind(&EngineController::addLifeCycleObserver,this);
+        _curGameState->injectLifeCycleSubject(lcs);
+        updateOnItObs();
+      }
+
   }
 
 

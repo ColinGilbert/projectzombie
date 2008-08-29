@@ -16,9 +16,11 @@ using namespace std;
 #include <boost/thread/thread.hpp>
 #include <boost/thread/xtime.hpp>
 
-#include "ZDelegates.h"
+#include "EventDelegates.h"
+#include "LifeCycleDelegates.h"
 #include "InputController.h"
 #include "GameStateInfo.h"
+#include "GameState.h"
 
 namespace ZGame
 {
@@ -46,6 +48,9 @@ namespace ZGame
     bool onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
     bool onMouseDown(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
 
+    //left cycles
+    void addLifeCycleObserver(ZGame::LifeCycle::LifeCycleObserver obs);
+
     //setters getters
     Ogre::RenderWindow* getRenderWindow(){return _window;}
   protected:
@@ -54,11 +59,20 @@ namespace ZGame
     Ogre::RenderWindow* _window;
     ZGame::EngineView* _engineView;
 
+    ZGame::InputController* _inController;
+
     GameStateInfoMap _gameSInfoMap;
 
     //Current state
     GameStateInfo* _curStateInfo;
+    GameState* _curGameState;
     //GameStat _curState;
+
+    //life cycle
+    typedef vector<ZGame::LifeCycle::LifeCycleEvent>::iterator LifeCycleObsItr;
+    vector<ZGame::LifeCycle::LifeCycleEvent> _onInitObs; //on init observers
+    vector<ZGame::LifeCycle::LifeCycleEvent> _onUpdateObs; //on update observers
+    vector<ZGame::LifeCycle::LifeCycleEvent> _onDestroyObs; //on destroy observers
 
     void loadAssets();
     void loadStates();
@@ -68,11 +82,19 @@ namespace ZGame
     void unloadCurrentState();
     void realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
 
+    //life cycle updates
+    void updateOnItObs();
+    void updateOnUpdateObs();
+    void updateOnDestroyObs();
+    void removeAllLifeCycleObs();
+
     Ogre::Camera* createDefaultCamera();
 
   private:
     string _listenerID;
     bool _stillRunning;
+
+    void loadStartStateToCurrentState(const string curKey);
 
   };
 

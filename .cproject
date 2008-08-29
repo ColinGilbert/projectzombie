@@ -60,7 +60,7 @@
 </toolChain>
 </folderInfo>
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.648678351" name="EngineController.h" rcbsApplicability="disable" resourcePath="src/EngineController.h" toolsToInvoke=""/>
-<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1301233051" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="src/ZDelegates.h" toolsToInvoke=""/>
+<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1301233051" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="include/EventDelegates.h" toolsToInvoke=""/>
 <sourceEntries>
 <entry excluding="Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>

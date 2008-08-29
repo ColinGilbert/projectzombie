@@ -21,7 +21,7 @@ using namespace std;
 #include <boost/thread/xtime.hpp>
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include "ZDelegates.h"
+#include "EventDelegates.h"
 
 namespace ZGame
 {
