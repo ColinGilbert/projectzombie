@@ -41,7 +41,7 @@ namespace ZGame
     {
       std::ostringstream sstream;
       sstream << "Exception: " << e.what() << endl;
-      sstream << "Transition state do not exist: "<< key << endl;
+      sstream << "Transition state does not exist: "<< key << endl;
       sstream << "Transitioning from state: " << _curStateInfo->key << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,sstream.str());
     }
@@ -78,49 +78,28 @@ namespace ZGame
     return true;
   }
 
-  void EngineController::addLifeCycleObserver(ZGame::LifeCycle::LifeCycleObserver obs)
+
+
+
+
+  void EngineController::addMouseObserver(ZGame::EVENT::MouseEvtObserver obs)
   {
-    _onInitObs.push_back(obs.onInit);
-    _onUpdateObs.push_back(obs.onUpdate);
-    _onDestroyObs.push_back(obs.onDestroy);
+    _onMouseUpObs.push_back(obs.mue);
+    _onMouseDownObs.push_back(obs.mde);
+    _onMouseMoveObs.push_back(obs.mme);
   }
 
-  /**
-   * Update onInit() observers
-   */
-  void EngineController::updateOnItObs()
+
+  /*
+  void EngineController::updateMouseDownObs()
   {
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In updateOnItObs");
-   for(LifeCycleObsItr it=_onInitObs.begin();it!=_onInitObs.end();++it)
-     {
-       if((*it)()) //make the delegate call
-         {
-           Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"onItObs true");
-         }
-     }
-  }
-  /**
-   * Update onUpdate observers
-   */
-  void EngineController::updateOnUpdateObs()
-  {
-    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In updateOnUpdateObs");
-    for(LifeCycleObsItr it=_onUpdateObs.begin();it!=_onUpdateObs.end();++it)
+    for(MouseDownObsItr it=_onMouseDownObs.begin();it!=_onMouseDownObs.end();++it)
       {
-        (*it)(); //make delegate call
+        (*it)();
       }
-  }
-  /**
-   * Update onDestroy observers.
-   */
-  void EngineController::updateOnDestroyObs()
-  {
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In updateOnDestroyObs");
-    for(LifeCycleObsItr it=_onDestroyObs.begin();it!=_onDestroyObs.end();++it)
-      {
-        (*it)(); //make delegate call
-      }
-  }
+  }*/
+
+
 
 
 
@@ -167,7 +146,8 @@ namespace ZGame
     while(_stillRunning)
       {
         _root->renderOneFrame();
-        updateOnUpdateObs(); //update lifecyle update observers
+        _lfcPump.updateOnUpdateObs();
+        //updateOnUpdateObs(); //update lifecyle update observers
         //boost::thread::sleep(0);
       }
   }
@@ -188,20 +168,12 @@ namespace ZGame
 
   }
 
-  void EngineController::addKeyboardListener(ZGame::EVENT::KeyboardEvtObserver keo)
-  {
-
-  }
-  void EngineController::addMouseListener(ZGame::EVENT::MouseEvtObserver meo)
-  {
-
-  }
-
   bool EngineController::onKeyUp(const OIS::KeyEvent &event)
   {
     cout << "In EngineController::onKeyUp" << endl;
     if(event.key == OIS::KC_ESCAPE)
       _stillRunning = false;
+    _keyPump.updateKeyUpObs(event);
     return true;
   }
 
@@ -220,15 +192,11 @@ namespace ZGame
       {
         transitionState("ErrorState");
       }
+    _keyPump.updateKeyDownObs(event);
     return true;
   }
 
-  void EngineController::removeAllLifeCycleObs()
-  {
-    _onInitObs.clear();
-    _onUpdateObs.clear();
-    _onDestroyObs.clear();
-  }
+
 
   void EngineController::loadStartStateToCurrentState(const string curKey)
   {
@@ -240,7 +208,9 @@ namespace ZGame
         _curStateInfo = &it->second;
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
-            removeAllLifeCycleObs(); //make sure we clear any observers.
+            _lfcPump.removeAllObs(); //make sure we clear all LFC observers.
+            _keyPump.removeAllObs();
+            //removeAllLifeCycleObs(); //make sure we clear any observers.
             _curGameState = 0;
           }
         else
@@ -264,9 +234,12 @@ namespace ZGame
             if (_curGameState == 0)
               throw(invalid_argument(
                   "Current game state is null when trying to load a new STATELESS current state"));
-            updateOnDestroyObs();
+            _lfcPump.updateOnDestroyObs();
+            //updateOnDestroyObs();
             delete _curGameState;
-            removeAllLifeCycleObs(); //make sure we clear any observers.
+            _lfcPump.removeAllObs(); //remove all LFC observers
+            _keyPump.removeAllObs();
+            //removeAllLifeCycleObs(); //make sure we clear any observers.
             _curGameState = 0;
             _curStateInfo = &it->second;
           }
@@ -306,10 +279,19 @@ namespace ZGame
           throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState = ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass);
         _curGameState->initialize();
-        LifeCycle::LifeCycleSubject lcs;
-        lcs.bind(&EngineController::addLifeCycleObserver,this);
+
+        //Inject LifeCycleSubject
+        LifeCycle::LifeCycleSubject lcs; //life cycle subject
+        lcs.bind(&LifeCyclePump::addLifeCycleObserver,&_lfcPump);
+        //lcs.bind(&EngineController::addLifeCycleObserver,this);
         _curGameState->injectLifeCycleSubject(lcs);
-        updateOnItObs();
+
+        //Inject Keyboard subject
+        EVENT::KeyEvtSubject ks; //keyboard subject
+        ks.bind(&KeyboardPump::addKeyboardObserver,&_keyPump);
+        _curGameState->injectKeyEvtSubject(ks);
+
+        _lfcPump.updateOnItObs();
       }
 
   }

@@ -18,6 +18,8 @@ using namespace std;
 
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
+#include "LifeCyclePump.h"
+#include "KeyboardPump.h"
 #include "InputController.h"
 #include "GameStateInfo.h"
 #include "GameState.h"
@@ -36,8 +38,6 @@ namespace ZGame
     bool onInit();
     void run();
     void onDestroy();
-    void addKeyboardListener(ZGame::EVENT::KeyboardEvtObserver keo);
-    void addMouseListener(ZGame::EVENT::MouseEvtObserver meo);
 
     void injectInputSubject(InputController* inControl);
 
@@ -48,9 +48,8 @@ namespace ZGame
     bool onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
     bool onMouseDown(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
 
-    //left cycles
-    void addLifeCycleObserver(ZGame::LifeCycle::LifeCycleObserver obs);
-
+    //input observers
+    void addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
     //setters getters
     Ogre::RenderWindow* getRenderWindow(){return _window;}
   protected:
@@ -66,13 +65,19 @@ namespace ZGame
     //Current state
     GameStateInfo* _curStateInfo;
     GameState* _curGameState;
-    //GameStat _curState;
 
-    //life cycle
-    typedef vector<ZGame::LifeCycle::LifeCycleEvent>::iterator LifeCycleObsItr;
-    vector<ZGame::LifeCycle::LifeCycleEvent> _onInitObs; //on init observers
-    vector<ZGame::LifeCycle::LifeCycleEvent> _onUpdateObs; //on update observers
-    vector<ZGame::LifeCycle::LifeCycleEvent> _onDestroyObs; //on destroy observers
+    //LifeCycle pump
+    LifeCyclePump _lfcPump;
+    KeyboardPump _keyPump;
+
+    //input
+    typedef vector<ZGame::EVENT::ZMouseDownEvt>::iterator MouseDownObsItr;
+    typedef vector<ZGame::EVENT::ZMouseUpEvt>::iterator MouseUpObsItr;
+    typedef vector<ZGame::EVENT::ZMouseMoveEvt>::iterator MouseMoveObsItr;
+    vector<ZGame::EVENT::ZMouseDownEvt> _onMouseDownObs;
+    vector<ZGame::EVENT::ZMouseUpEvt> _onMouseUpObs;
+    vector<ZGame::EVENT::ZMouseMoveEvt> _onMouseMoveObs;
+
 
     void loadAssets();
     void loadStates();
@@ -82,11 +87,12 @@ namespace ZGame
     void unloadCurrentState();
     void realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
 
-    //life cycle updates
-    void updateOnItObs();
-    void updateOnUpdateObs();
-    void updateOnDestroyObs();
-    void removeAllLifeCycleObs();
+    //input updates
+
+    void updateMouseUpObs();
+    void updateMouseDownObs();
+    void updateMouseMoveObs();
+
 
     Ogre::Camera* createDefaultCamera();
 

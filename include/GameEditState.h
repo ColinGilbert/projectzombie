@@ -8,8 +8,10 @@
 #ifndef GAMEEDITSTATE_H_
 #define GAMEEDITSTATE_H_
 
-#include "GameState.h"
+#include <Ogre.h>
 
+#include "GameState.h"
+#include "GameEditView.h"
 namespace ZGame
 {
 
@@ -22,12 +24,19 @@ public:
 
   virtual void initialize();
   void injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject);
+  void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
 
   //life cycle methods
   bool onUpdate();
   bool onInit();
   bool onDestroy();
 
+  //control methods
+  bool onKeyUp(const OIS::KeyEvent &evt);
+  bool onKeyDown(const OIS::KeyEvent &evt);
+
+protected:
+  GameEditView _editView;
 
 };
 }

@@ -14,7 +14,7 @@
 namespace ZGame
 {
 class EngineController;
-class EngineView
+class EngineView : public Ogre::Singleton<EngineView>
 {
 public:
   Ogre::RenderWindow* renderWindow;
@@ -26,8 +26,14 @@ public:
 
   void setCurrentCamera(Ogre::Camera* cam);
 
+  Ogre::SceneManager* getSceneManager(){return _scnMgr;}
+
+  static ZGame::EngineView& getSingleton();
+  static ZGame::EngineView* getSingletonPtr();
+
 protected:
   Ogre::Camera* _curCam;
+  Ogre::SceneManager* _scnMgr;
 
   friend class ZGame::EngineController;
   //life-cycle methods

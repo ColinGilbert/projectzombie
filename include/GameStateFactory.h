@@ -10,7 +10,7 @@
 
 #include <string>
 #include "GameEditState.h"
-
+#include "GameMainMenuState.h"
 namespace ZGame
 {
 class GameStateFactory
