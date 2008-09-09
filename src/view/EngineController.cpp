@@ -29,6 +29,7 @@ namespace ZGame
   {
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
+    //delete _root;
   }
 
   void EngineController::transitionState(const string key)
@@ -50,9 +51,10 @@ namespace ZGame
   Ogre::Camera* EngineController::createDefaultCamera()
   {
     using namespace Ogre;
-    Camera* cam =_scnMgr->createCamera(_window->getName());
-    cam->setPosition(2000,2000,2000);
-    cam->lookAt(0,0,0);
+    //Camera* cam =_scnMgr->createCamera(_window->getName());
+    Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
+    cam->setPosition(0,10,500);
+    cam->lookAt(0,0,-300);
     return cam;
   }
 
@@ -65,12 +67,15 @@ namespace ZGame
       }
     else
       return false;
-    _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC);
+    _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC,"ExampleSMInstance");
 
     loadAssets();
     Ogre::Camera* cam = createDefaultCamera();
+    Ogre::Viewport* vp = _window->addViewport(cam);
+    vp->setBackgroundColour(Ogre::ColourValue::Green);
+    cam->setAspectRatio((Ogre::Real)(vp->getActualWidth())/(Ogre::Real)(vp->getActualHeight()));
 
-    _engineView = new ZGame::EngineView(_window,cam);
+    _engineView = new ZGame::EngineView(_window,cam,_scnMgr);
 
     //load states
     loadStates();
@@ -146,6 +151,7 @@ namespace ZGame
     while(_stillRunning)
       {
         _root->renderOneFrame();
+
         _lfcPump.updateOnUpdateObs();
         //updateOnUpdateObs(); //update lifecyle update observers
         //boost::thread::sleep(0);
@@ -154,7 +160,8 @@ namespace ZGame
 
   void EngineController::onDestroy()
   {
-    _root->shutdown();
+    delete _window;
+    //_root->shutdown();
     if(_root)
       delete _root;
   }

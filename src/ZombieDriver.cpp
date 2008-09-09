@@ -33,9 +33,11 @@ int main(int argc, char** argv)
   boost::thread myThread(inputThread);
 
   engineControl.run();
-  engineControl.onDestroy();
+
 
   myThread.join();
+  engineControl.onDestroy();
+
   return 0;
 }
 

@@ -38,6 +38,7 @@ namespace ZGame
 
     Ogre::uint16 _texId;
     string _meshName;
+    Ogre::SceneNode* _imposterNode;
 
     Ogre::Camera* _cam;
     Ogre::SceneManager* _scnMgr;
@@ -50,6 +51,8 @@ namespace ZGame
 
   private:
     string _CAMERA_NAME;
+    string _IMPOSTER_NODE;
+    string _IMPOSTER_ENTITY;
     static const Ogre::Real _NEAR_CLIP = 0.2f;
     static const Ogre::Real _FAR_CLIP = 10.0f;
     static const Ogre::Real _TEXDIM = 256.0f;

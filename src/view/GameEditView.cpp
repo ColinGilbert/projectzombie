@@ -10,7 +10,7 @@
 
 using namespace ZGame;
 
-GameEditView::GameEditView()
+GameEditView::GameEditView() : _imposterGen(0)
 {
 
 }
@@ -56,11 +56,18 @@ bool GameEditView::onUpdate()
 
 bool GameEditView::onInit()
 {
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"in GameEditView::onInit()");
+  if(!_imposterGen)
+    _imposterGen = new ImposterGen();
+  _imposterGen->setInput("robot.mesh");
   return true;
 }
 
 bool GameEditView::onDestroy()
 {
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditView::onDestroy");
+  if(_imposterGen)
+    delete _imposterGen;
   return true;
 }
 

@@ -20,12 +20,12 @@ public:
   Ogre::RenderWindow* renderWindow;
   Ogre::Camera* camera;
 
-  EngineView(Ogre::RenderWindow *window,Ogre::Camera* cam);
+  EngineView(Ogre::RenderWindow *window,Ogre::Camera* cam,Ogre::SceneManager* scnMgr);
   virtual
   ~EngineView();
 
   void setCurrentCamera(Ogre::Camera* cam);
-
+  Ogre::Camera* getCurrentCamera(){return _curCam;}
   Ogre::SceneManager* getSceneManager(){return _scnMgr;}
 
   static ZGame::EngineView& getSingleton();

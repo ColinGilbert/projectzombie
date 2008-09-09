@@ -11,10 +11,11 @@ using namespace ZGame;
 
 template<> EngineView* Ogre::Singleton<EngineView>::ms_Singleton = 0;
 
-EngineView::EngineView(Ogre::RenderWindow* window,Ogre::Camera* cam) : renderWindow(window),_curCam(cam)
+EngineView::EngineView(Ogre::RenderWindow* window,Ogre::Camera* cam,Ogre::SceneManager* scnMgr) : renderWindow(window),_curCam(cam),
+_scnMgr(scnMgr)
 {
   // TODO Auto-generated constructor stub
-  _scnMgr = _curCam->getSceneManager();
+  //_scnMgr = _curCam->getSceneManager();
 }
 
 EngineView::~EngineView()

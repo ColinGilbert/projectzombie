@@ -4,7 +4,9 @@
  *  Created on: Aug 25, 2008
  *      Author: bey0nd
  */
+#include <iostream>
 
+using namespace std;
 #include "InputController.h"
 
 using namespace ZGame;
@@ -17,24 +19,7 @@ InputController::InputController() : _inputSystem(0),_mouse(0),_keyb(0),_keyStat
 
 InputController::~InputController()
 {
-  // TODO Auto-generated destructor stub
-  if(_inputSystem)
-    {
-      if(_mouse)
-        {
-          _inputSystem->destroyInputObject(_mouse);
-          _mouse = 0;
-        }
-      if(_keyb)
-        {
-          _inputSystem->destroyInputObject(_keyb);
-          _keyb = 0;
-        }
-      _inputSystem->destroyInputSystem(_inputSystem);
-      _inputSystem = 0;
-      _keyObservers.clear();
-      _mouseObservers.clear();
-    }
+
 }
 
 bool InputController::onInit(Ogre::RenderWindow* window)
@@ -96,7 +81,25 @@ void InputController::setWindowExtents(int width,int height)
 
 void InputController::onDestroy()
 {
-
+  cout << "InputController::onDestroy" << endl;
+    // TODO Auto-generated destructor stub
+    if(_inputSystem)
+      {
+        if(_mouse)
+          {
+            _inputSystem->destroyInputObject(_mouse);
+            _mouse = 0;
+          }
+        if(_keyb)
+          {
+            _inputSystem->destroyInputObject(_keyb);
+            _keyb = 0;
+          }
+        _inputSystem->destroyInputSystem(_inputSystem);
+        _inputSystem = 0;
+        _keyObservers.clear();
+        _mouseObservers.clear();
+      }
 }
 
 void InputController::run()

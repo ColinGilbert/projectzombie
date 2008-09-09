@@ -10,6 +10,8 @@
 
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
+#include "ImposterGen.h"
+
 
 namespace ZGame
 {
@@ -34,11 +36,8 @@ namespace ZGame
     bool onKeyUp(const OIS::KeyEvent &evt);
     bool onKeyDown(const OIS::KeyEvent &evt);
 
-
-
-
   protected:
-
+    ImposterGen* _imposterGen;
 
 
   };
