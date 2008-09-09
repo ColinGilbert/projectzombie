@@ -10,9 +10,9 @@ using namespace std;
  *      Author: bey0nd
  */
 
-ZGame::InputController inControl;
-ZGame::EngineController engineControl;
+//ZGame::InputController inControl;
 
+/*
 struct MyInputThread
 {
   void operator()()
@@ -21,21 +21,22 @@ struct MyInputThread
     inControl.onDestroy();
   }
 }inputThread;
-
+*/
 int main(int argc, char** argv)
 {
+  ZGame::EngineController engineControl;
   using namespace ZGame;
   if(!engineControl.onInit())
     return 1;
-  if(!inControl.onInit(engineControl.getRenderWindow()))
-    return 1;
-  engineControl.injectInputSubject(&inControl);
-  boost::thread myThread(inputThread);
+  //if(!inControl.onInit(engineControl.getRenderWindow()))
+    //return 1;
+  //engineControl.injectInputSubject(&inControl);
+  //boost::thread myThread(inputThread);
 
   engineControl.run();
 
 
-  myThread.join();
+ // myThread.join();
   engineControl.onDestroy();
 
   return 0;

@@ -24,15 +24,19 @@ using namespace std;
 #include "GameStateInfo.h"
 #include "GameState.h"
 
+#include "InputController.h"
+
 namespace ZGame
 {
   class EngineView;
-  class EngineController
+  class EngineController : Ogre::FrameListener
   {
   public:
     EngineController();
     virtual
     ~EngineController();
+
+    bool frameStarted(const Ogre::FrameEvent &evt);
 
     void transitionState(const string key);
     bool onInit();

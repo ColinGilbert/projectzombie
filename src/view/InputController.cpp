@@ -104,11 +104,14 @@ void InputController::onDestroy()
 
 void InputController::run()
 {
+  capture();
+  /*
   while(_stillRunning)
     {
       capture();
       //boost::thread
     }
+    */
 }
 
 void InputController::capture()

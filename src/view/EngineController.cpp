@@ -55,11 +55,13 @@ namespace ZGame
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setPosition(0,10,500);
     cam->lookAt(0,0,-300);
+    cam->setNearClipDistance(1.0);
     return cam;
   }
 
   bool EngineController::onInit()
   {
+    using namespace Ogre;
     _root = new Ogre::Root("plugins.cfg");
     if(_root->showConfigDialog())
       {
@@ -67,24 +69,43 @@ namespace ZGame
       }
     else
       return false;
+
     _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC,"ExampleSMInstance");
 
     loadAssets();
     Ogre::Camera* cam = createDefaultCamera();
     Ogre::Viewport* vp = _window->addViewport(cam);
-    vp->setBackgroundColour(Ogre::ColourValue::Green);
-    cam->setAspectRatio((Ogre::Real)(vp->getActualWidth())/(Ogre::Real)(vp->getActualHeight()));
+    vp->setBackgroundColour(Ogre::ColourValue(1.0,0.0,0.0));
+
+    cam->setAspectRatio(Real(vp->getActualWidth())/Real(vp->getActualHeight()));
+    ///vp->setBackgroundColour(Ogre::ColourValue::Green);
+    //vp->setClearEveryFrame(true);
+    //cam->setAspectRatio((Ogre::Real)(vp->getActualWidth())/(Ogre::Real)(vp->getActualHeight()));
 
     _engineView = new ZGame::EngineView(_window,cam,_scnMgr);
 
+
+    Plane plane(Vector3::UNIT_Y,0);
+      MeshManager::getSingleton().createPlane("ground",
+          ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+          plane,1500,1500,20,20,true,1,5,5,Vector3::UNIT_Z);
+      Ogre::Entity* ent = _scnMgr->createEntity("GroundPlaneEnt","ground");
+
+      SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode("planenode");
+      node->attachObject(ent);
+      _scnMgr->getRootSceneNode()->setVisible(true,true);
     //load states
     loadStates();
 
+    //input
+    _inController = new InputController();
+    _inController->onInit(_window);
+    injectInputSubject(_inController);
+
+    _root->addFrameListener(this);
+
     return true;
   }
-
-
-
 
 
   void EngineController::addMouseObserver(ZGame::EVENT::MouseEvtObserver obs)
@@ -145,21 +166,35 @@ namespace ZGame
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 
+  bool EngineController::frameStarted(const Ogre::FrameEvent &evt)
+  {
+    if(!_stillRunning)
+      return false;
+    _inController->run();
+    _lfcPump.updateOnUpdateObs();
+
+    return true;
+
+  }
   void EngineController::run()
   {
     realizeCurrentState();
+    _root->startRendering();
+    /*
     while(_stillRunning)
       {
         _root->renderOneFrame();
 
-        _lfcPump.updateOnUpdateObs();
         //updateOnUpdateObs(); //update lifecyle update observers
         //boost::thread::sleep(0);
       }
+      */
   }
 
   void EngineController::onDestroy()
   {
+    _inController->onDestroy();
+    delete _inController;
     delete _window;
     //_root->shutdown();
     if(_root)
@@ -189,15 +224,15 @@ namespace ZGame
     cout << "In EngineController::onKeyDown" << endl;
     if(event.key == OIS::KC_LEFT)
       {
-        transitionState("GameMainMenuStateKey");
+        //transitionState("GameMainMenuStateKey");
       }
     else if(event.key == OIS::KC_RIGHT)
       {
-        transitionState("GameEditStateKey");
+        //transitionState("GameEditStateKey");
       }
     else if(event.key == OIS::KC_DOWN)
       {
-        transitionState("ErrorState");
+        //transitionState("ErrorState");
       }
     _keyPump.updateKeyDownObs(event);
     return true;

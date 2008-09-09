@@ -57,6 +57,9 @@ namespace ZGame
     static const Ogre::Real _FAR_CLIP = 10.0f;
     static const Ogre::Real _TEXDIM = 256.0f;
     static const Ogre::Real _ASPECT_RATIO = 1.0f; //tex width / tex_height, in our case is 1 since our texture is square.
+
+    void fitImposterExtent(Ogre::Entity* ent,Ogre::SceneNode* node,Ogre::Real defaultZ); //method to fit the imposter's bounding extend to screen.
+
   };
 
 }
