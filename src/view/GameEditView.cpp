@@ -80,5 +80,21 @@ bool GameEditView::onKeyUp(const OIS::KeyEvent &evt)
 bool GameEditView::onKeyDown(const OIS::KeyEvent &evt)
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"GameEditView::keyDownEvt");
+  if(evt.key == OIS::KC_W)
+    {
+      _imposterGen->rotateUp();
+    }
+  else if(evt.key == OIS::KC_S)
+    {
+      _imposterGen->rotateDown();
+    }
+  else if(evt.key == OIS::KC_A)
+    {
+      _imposterGen->rotateLeft();
+    }
+  else if(evt.key == OIS::KC_D)
+    {
+      _imposterGen->rotateRight();
+    }
   return true;
 }

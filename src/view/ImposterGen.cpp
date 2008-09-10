@@ -14,7 +14,7 @@ using namespace std;
 using namespace ZGame;
 
 ImposterGen::ImposterGen() : _texId(0),_CAMERA_NAME("IMPOSTER_CAMERA"),_IMPOSTER_NODE("IMPOSTER_SCN_NODE"),
-_IMPOSTER_ENTITY("IMPOSTER_ENTITY")
+_IMPOSTER_ENTITY("IMPOSTER_ENTITY"),_rotVal(2*Ogre::Math::PI/_segPhi)
 {
   _scnMgr = ZGame::EngineView::getSingleton().getSceneManager();
 }
@@ -42,6 +42,60 @@ void ImposterGen::build()
 
 }
 
+void ImposterGen::rotateUp()
+{
+  using namespace Ogre;
+  Vector3 pos = _imposterNode->getPosition();
+  Radian rot(-_rotVal);
+  //move the camera using a stupid method. Should attach it to some sort of scene graph node and move it that way.
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z;
+  _cam->setPosition(pos);
+  _cam->pitch(rot);
+  _cam->moveRelative(Vector3(0.0,0.0,-(_camOffset+_cen.z)));
+
+  //_imposterNode->roll(rot,Ogre::Node::TS_LOCAL);
+  //_imposterNode->translate(-_cen.x,-_cen.y,0.0);
+}
+
+void ImposterGen::rotateDown()
+{
+  using namespace Ogre;
+  Vector3 pos = _imposterNode->getPosition();
+  Radian rot(_rotVal);
+  //move the camera using a stupid method. Should attach it to some sort of scene graph node and move it that way.
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z;
+  _cam->setPosition(pos);
+  _cam->pitch(rot);
+  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
+}
+
+void ImposterGen::rotateLeft()
+{
+  using namespace Ogre;
+  Radian rot(_rotVal);
+  Vector3 pos = _imposterNode->getPosition();
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z; //move to center
+  _cam->setPosition(pos);
+  _cam->yaw(rot);
+  _cam->moveRelative(Vector3(0.0,0.0,-(_camOffset+_cen.z)));
+
+}
+
+void ImposterGen::rotateRight()
+{
+  using namespace Ogre;
+  Radian rot(-_rotVal);
+  Vector3 pos = _imposterNode->getPosition();
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z; //move to center
+  _cam->setPosition(pos);
+  _cam->yaw(rot);
+  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
+}
+
 void ImposterGen::loadMesh()
 {
   using namespace Ogre;
@@ -50,7 +104,7 @@ void ImposterGen::loadMesh()
     {
       m=Ogre::MeshManager::getSingleton().load(_meshName.c_str(),Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
     }
-  Real defaultZ = -200.0;
+  Real defaultZ = -100.0;
   Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
   Ogre::Entity* ent = _scnMgr->createEntity(_IMPOSTER_ENTITY.c_str(),_meshName.c_str());
   _imposterNode = root->createChildSceneNode(Ogre::Vector3(0.0,0.0,defaultZ),Quaternion::IDENTITY);
@@ -59,6 +113,9 @@ void ImposterGen::loadMesh()
   orient.FromAxes(Ogre::Vector3::UNIT_Z,Ogre::Vector3::UNIT_Y,Ogre::Vector3::NEGATIVE_UNIT_X);
   _imposterNode->setOrientation(orient);
   fitImposterExtent(ent,_imposterNode,defaultZ);
+  //_camNode = _imposterNode->createChildSceneNode("IMPOSTER_CAM_NODE",Vector3::ZERO,Quaternion::IDENTITY);
+  //_camNode->attachObject(_cam);
+  //_camNode->translate(_cen.x,_cen.y,-_cen.z,Node::TS_PARENT);
   /*
   Plane plane(Vector3::UNIT_Y,0);
   MeshManager::getSingleton().createPlane("ground",
@@ -77,6 +134,8 @@ void ImposterGen::setupCam()
   _cam->setPosition(0.0,0.0,0.0);
   _cam->setNearClipDistance(1.0);
   _cam->setFarClipDistance(5000.0);
+
+
 
   //_cam->setOrientation(orient);
   _cam->lookAt(0.0,0.0,-1.0);
@@ -123,9 +182,10 @@ void ImposterGen::fitImposterExtent(Ogre::Entity* ent,Ogre::SceneNode* node,Ogre
   min = aabox.getMinimum();
   //equation is given by: We're looking for the point at which distance between two rays is minimum. For our CASE it is assumed
   //this t is the intersection point due to the nature of our problem.
-  Vector2 s1(max.z,max.y);
-  Vector2 p1(0.0,max.y);
-  Vector2 p0(0.0,0.0);
+  Real offset = 2.5;
+  Vector2 s1(max.z,max.y+offset);
+  Vector2 p1(0,max.y+offset);
+  Vector2 p0(0,0.0);
   Vector2 s0(cos(fovy),sin(fovy));
   s1 = (s1-p1).normalisedCopy();
   Real det = s0.dotProduct(s1);
@@ -135,5 +195,9 @@ void ImposterGen::fitImposterExtent(Ogre::Entity* ent,Ogre::SceneNode* node,Ogre
   Real i = (p1-p0).dotProduct(s0); //manually expand matrix
   Real j = (p1-p0).dotProduct(s1);
   det = det*(-s0.dotProduct(s1)*i+j);
+
   _imposterNode->setPosition(-cen.x,-cen.y,det);
+  aabox = ent->getBoundingBox();
+  _cen = aabox.getCenter();
+  _camOffset = det;
 }

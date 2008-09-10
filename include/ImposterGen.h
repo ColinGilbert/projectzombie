@@ -31,16 +31,23 @@ namespace ZGame
     void build();
     void setInput(const string meshName);
 
+    void rotateLeft();
+    void rotateUp();
+    void rotateRight();
+    void rotateDown();
+
+
   protected:
 
-    static const int _segTheta = 10; //number of segements along theta.
-    static const int _segPhi = 10; //number of segements aglong phi.
+    static const int _segTheta = 12; //number of segements along theta.
+    static const int _segPhi = 12; //number of segements aglong phi.
 
     Ogre::uint16 _texId;
     string _meshName;
     Ogre::SceneNode* _imposterNode;
 
     Ogre::Camera* _cam;
+    Ogre::SceneNode* _camNode;
     Ogre::SceneManager* _scnMgr;
 
     vector<Ogre::TexturePtr> _impTex[_segPhi];
@@ -57,6 +64,10 @@ namespace ZGame
     static const Ogre::Real _FAR_CLIP = 10.0f;
     static const Ogre::Real _TEXDIM = 256.0f;
     static const Ogre::Real _ASPECT_RATIO = 1.0f; //tex width / tex_height, in our case is 1 since our texture is square.
+
+    Ogre::Real _rotVal;
+    Ogre::Vector3 _cen;
+    Ogre::Real _camOffset;
 
     void fitImposterExtent(Ogre::Entity* ent,Ogre::SceneNode* node,Ogre::Real defaultZ); //method to fit the imposter's bounding extend to screen.
 

@@ -84,7 +84,7 @@ namespace ZGame
 
     _engineView = new ZGame::EngineView(_window,cam,_scnMgr);
 
-
+    /*
     Plane plane(Vector3::UNIT_Y,0);
       MeshManager::getSingleton().createPlane("ground",
           ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -94,6 +94,7 @@ namespace ZGame
       SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode("planenode");
       node->attachObject(ent);
       _scnMgr->getRootSceneNode()->setVisible(true,true);
+      */
     //load states
     loadStates();
 
