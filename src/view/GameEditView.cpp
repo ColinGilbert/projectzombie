@@ -10,7 +10,7 @@
 
 using namespace ZGame;
 
-GameEditView::GameEditView() : _imposterGen(0)
+GameEditView::GameEditView() : _imposterGen(0),_imposter(0)
 {
 
 }
@@ -57,9 +57,15 @@ bool GameEditView::onUpdate()
 bool GameEditView::onInit()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"in GameEditView::onInit()");
-  if(!_imposterGen)
-    _imposterGen = new ImposterGen();
-  _imposterGen->setInput("robot.mesh");
+
+  _imposter = new Imposter("robot.mesh");
+  _imposterGen = new ImposterGen();
+  _imposterGen->setInput(_imposter);
+  _imposterGen->build();
+  delete _imposterGen; //we done with generator
+  _imposterGen = 0;
+  _imposterView = new ImposterView();
+  _imposterView->setInput(_imposter);
   return true;
 }
 
@@ -68,6 +74,10 @@ bool GameEditView::onDestroy()
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditView::onDestroy");
   if(_imposterGen)
     delete _imposterGen;
+  if(_imposterView)
+    delete _imposterView;
+  if(_imposter)
+    delete _imposter;
   return true;
 }
 
@@ -82,19 +92,7 @@ bool GameEditView::onKeyDown(const OIS::KeyEvent &evt)
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"GameEditView::keyDownEvt");
   if(evt.key == OIS::KC_W)
     {
-      _imposterGen->rotateUp();
-    }
-  else if(evt.key == OIS::KC_S)
-    {
-      _imposterGen->rotateDown();
-    }
-  else if(evt.key == OIS::KC_A)
-    {
-      _imposterGen->rotateLeft();
-    }
-  else if(evt.key == OIS::KC_D)
-    {
-      _imposterGen->rotateRight();
+      _imposterView->flip(); //happy happy flip!
     }
   return true;
 }

@@ -11,9 +11,11 @@
 
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 #include <Ogre.h>
+#include "Imposter.h"
 
 /**
  * This class defines a generator for Imposters. This class will generate a set of Imposters in a spherical coordinate framework,
@@ -29,7 +31,7 @@ namespace ZGame
     ~ImposterGen();
 
     void build();
-    void setInput(const string meshName);
+    void setInput(Imposter* input);
 
     void rotateLeft();
     void rotateUp();
@@ -39,30 +41,32 @@ namespace ZGame
 
   protected:
 
-    static const int _segTheta = 12; //number of segements along theta.
-    static const int _segPhi = 12; //number of segements aglong phi.
-
-    Ogre::uint16 _texId;
-    string _meshName;
     Ogre::SceneNode* _imposterNode;
 
     Ogre::Camera* _cam;
     Ogre::SceneNode* _camNode;
     Ogre::SceneManager* _scnMgr;
 
-    vector<Ogre::TexturePtr> _impTex[_segPhi];
 
     void loadMesh();
     void setupRTT();
     void setupCam();
+    void renderToTextures(); //render to the imposter to textures
+
+    void camRotateTheta(Ogre::Radian& rot); //position the camera on theta
+    void camRotatePhi(Ogre::Radian& rot); //position the camera on phi
 
   private:
-    string _CAMERA_NAME;
-    string _IMPOSTER_NODE;
-    string _IMPOSTER_ENTITY;
-    static const Ogre::Real _NEAR_CLIP = 0.2f;
-    static const Ogre::Real _FAR_CLIP = 10.0f;
-    static const Ogre::Real _TEXDIM = 256.0f;
+
+    static int _id;
+    int _curId;
+
+    map<string,string> _imposterKeys;
+
+    Imposter* _imposter;
+
+    static const Ogre::Real _NEAR_CLIP = 1.0f;
+    static const Ogre::Real _FAR_CLIP = 2000.0f;
     static const Ogre::Real _ASPECT_RATIO = 1.0f; //tex width / tex_height, in our case is 1 since our texture is square.
 
     Ogre::Real _rotVal;

@@ -11,8 +11,8 @@
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
 #include "ImposterGen.h"
-
-
+#include "Imposter.h"
+#include "ImposterView.h"
 namespace ZGame
 {
   class GameEditView
@@ -38,7 +38,8 @@ namespace ZGame
 
   protected:
     ImposterGen* _imposterGen;
-
+    Imposter* _imposter;
+    ImposterView* _imposterView;
 
   };
 }

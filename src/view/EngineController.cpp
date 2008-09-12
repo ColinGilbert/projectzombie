@@ -53,8 +53,8 @@ namespace ZGame
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
-    cam->setPosition(0,10,500);
-    cam->lookAt(0,0,-300);
+    cam->setPosition(0,0,1500);
+    cam->lookAt(0,0,-1);
     cam->setNearClipDistance(1.0);
     return cam;
   }
@@ -194,6 +194,7 @@ namespace ZGame
 
   void EngineController::onDestroy()
   {
+    unloadCurrentState();
     _inController->onDestroy();
     delete _inController;
     delete _window;
@@ -277,13 +278,7 @@ namespace ZGame
             if (_curGameState == 0)
               throw(invalid_argument(
                   "Current game state is null when trying to load a new STATELESS current state"));
-            _lfcPump.updateOnDestroyObs();
-            //updateOnDestroyObs();
-            delete _curGameState;
-            _lfcPump.removeAllObs(); //remove all LFC observers
-            _keyPump.removeAllObs();
-            //removeAllLifeCycleObs(); //make sure we clear any observers.
-            _curGameState = 0;
+            unloadCurrentState();
             _curStateInfo = &it->second;
           }
         else
@@ -297,7 +292,12 @@ namespace ZGame
   }
   void EngineController::unloadCurrentState()
   {
-
+    _lfcPump.updateOnDestroyObs();
+    if(_curGameState)
+      delete _curGameState;
+    _lfcPump.removeAllObs();
+    _keyPump.removeAllObs();
+    _curGameState = 0;
   }
   /**
    * This class realizes the current state. What it does is load the data pointed to by current state meta data.

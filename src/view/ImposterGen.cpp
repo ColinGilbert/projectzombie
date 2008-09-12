@@ -6,17 +6,39 @@
  */
 
 #include <cmath>
-
+#include <stringstream>
+#include <ostream>
 using namespace std;
 
 #include "ImposterGen.h"
 #include "EngineView.h"
 using namespace ZGame;
 
-ImposterGen::ImposterGen() : _texId(0),_CAMERA_NAME("IMPOSTER_CAMERA"),_IMPOSTER_NODE("IMPOSTER_SCN_NODE"),
-_IMPOSTER_ENTITY("IMPOSTER_ENTITY"),_rotVal(2*Ogre::Math::PI/_segPhi)
+int ImposterGen::_id = 0;
+
+ImposterGen::ImposterGen() :_rotVal(0),_imposter(0)
 {
+  std::ostringstream ss;
+  _curId = _id;
+  _id++;
   _scnMgr = ZGame::EngineView::getSingleton().getSceneManager();
+  ss << "IMPOSTER_CAMERA" << _curId;
+  _imposterKeys["camera"] = ss.str(); ss.str("");
+
+  ss << "IMPOSTER_SCN_NODE" << _curId;
+  _imposterKeys["scnnode"] = ss.str(); ss.str("");
+  ss << "IMPOSTER_ENTITY" << _curId;
+  _imposterKeys["entity"] =ss.str(); ss.str("");
+  ss << "IMPOSTER_LIGHT" << _curId;
+  _imposterKeys["light"] = ss.str(); ss.str("");
+  map<string,string>::iterator it;
+  ss << "In ImposterGen::ImposterGen()" << endl;
+  ss << "ImposterKeys: " << endl;
+  for(it = _imposterKeys.begin();it !=_imposterKeys.end();++it)
+    {
+      ss << "<key,value>: " << it->first << "," << it->second << endl;
+    }
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,ss.str());
 }
 
 ImposterGen::~ImposterGen()
@@ -24,22 +46,89 @@ ImposterGen::~ImposterGen()
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"in ~ImposterGen");
   Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
   root->removeAndDestroyChild(_imposterNode->getName());
-  //root->removeAndDestroyChild(_imposterNode.getName());
-  _scnMgr->destroyEntity(_IMPOSTER_ENTITY.c_str());
+  _scnMgr->destroyEntity(_imposterKeys["entity"]);
+  _scnMgr->destroyCamera(_imposterKeys["camera"]);
+  _scnMgr->destroyLight(_imposterKeys["light"]);
 }
 
-void ImposterGen::setInput(const string meshName)
+void ImposterGen::setInput(Imposter* input)
 {
-  _texId = 0;
-  _meshName = meshName;
+  _imposter = input;
+  _rotVal = 2*Ogre::Math::PI/_imposter->SEGTHETA;
   setupCam();
   loadMesh();
+  setupRTT();
 
 }
 
 void ImposterGen::build()
 {
+  if(_imposter)
+    {
+      renderToTextures();
+    }
+  else
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"ImposterGen::build(), null imposter.");
+}
 
+void ImposterGen::renderToTextures()
+{
+  using namespace Ogre;
+  Radian rotPhi(-Math::HALF_PI/_imposter->SEGPHI);
+  Radian rotTheta(-Math::TWO_PI/_imposter->SEGTHETA);
+  RenderTarget* rtt;
+  //for each phi value,
+  vector<ZGame::ImposterTexVec>* texs = _imposter->getTextures();
+  //render theta # of shots to texture
+  _imposterNode->setVisible(true,true); //set the damn imposter visible.
+  for(size_t i=0; i < texs->size(); i++)
+    {
+      for(size_t j = 0; j < texs->at(i).size(); j++)
+        {
+          rtt = texs->at(i)[j]->getBuffer()->getRenderTarget(); //get the render target
+          rtt->update(); //take the shot
+          camRotateTheta(rotTheta); //reposition the camera according to theta
+        }
+      camRotatePhi(rotPhi); //reposition the camera according to phi
+    }
+  _imposterNode->setVisible(false,true); //hide imposter
+}
+
+void ImposterGen::camRotatePhi(Ogre::Radian& rot)
+{
+  //Note: we're using a crude way to do rotation. What we are doing is moving the camera to the center
+  //of the imposter node. From there we rotate the camera on it's local axes, and translate
+  //by camera offset, which we computed earlier based on the model's extent. This is equivelent to
+  //rotation about an abitrary center of mass. I.E moving to origin, then rotate, then move back.
+  using namespace Ogre;
+  Vector3 pos = _imposterNode->getPosition();
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z;
+  _cam->setPosition(pos);
+  _cam->pitch(rot);
+  _cam->moveRelative(Vector3(0.0f,0.0f,-(_camOffset+_cen.z)));
+}
+void ImposterGen::camRotateTheta(Ogre::Radian& rot)
+{
+  using namespace Ogre;
+  Vector3 pos = _imposterNode->getPosition();
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z;
+  _cam->setPosition(pos);
+  _cam->yaw(rot);
+  _cam->moveRelative(Vector3(0.0f,0.0f,-(_camOffset+_cen.z)));
+}
+
+void ImposterGen::rotateRight()
+{
+  using namespace Ogre;
+  Radian rot(-_rotVal);
+  Vector3 pos = _imposterNode->getPosition();
+  pos.y = pos.y + _cen.y;
+  pos.z = pos.z - _cen.z; //move to center
+  _cam->setPosition(pos);
+  _cam->yaw(rot);
+  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
 }
 
 void ImposterGen::rotateUp()
@@ -84,83 +173,69 @@ void ImposterGen::rotateLeft()
 
 }
 
-void ImposterGen::rotateRight()
-{
-  using namespace Ogre;
-  Radian rot(-_rotVal);
-  Vector3 pos = _imposterNode->getPosition();
-  pos.y = pos.y + _cen.y;
-  pos.z = pos.z - _cen.z; //move to center
-  _cam->setPosition(pos);
-  _cam->yaw(rot);
-  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
-}
+
 
 void ImposterGen::loadMesh()
 {
   using namespace Ogre;
-  Ogre::MeshPtr m = Ogre::MeshManager::getSingleton().getByName(_meshName.c_str());
+  Ogre::MeshPtr m = Ogre::MeshManager::getSingleton().getByName(_imposter->getMeshName().c_str());
   if(m.isNull())
     {
-      m=Ogre::MeshManager::getSingleton().load(_meshName.c_str(),Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+      m=Ogre::MeshManager::getSingleton().load(_imposter->getMeshName().c_str(),Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
     }
   Real defaultZ = -100.0;
   Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
-  Ogre::Entity* ent = _scnMgr->createEntity(_IMPOSTER_ENTITY.c_str(),_meshName.c_str());
-  _imposterNode = root->createChildSceneNode(Ogre::Vector3(0.0,0.0,defaultZ),Quaternion::IDENTITY);
+  Ogre::Entity* ent = _scnMgr->createEntity(_imposterKeys["entity"].c_str(),_imposter->getMeshName().c_str());
+  _imposterNode = root->createChildSceneNode(_imposterKeys["scnnode"].c_str(),Ogre::Vector3(0.0,0.0,defaultZ),Quaternion::IDENTITY);
   _imposterNode->attachObject(ent);
+  _imposterNode->setVisible(false,true); //hide imposter
   Ogre::Quaternion orient;
   orient.FromAxes(Ogre::Vector3::UNIT_Z,Ogre::Vector3::UNIT_Y,Ogre::Vector3::NEGATIVE_UNIT_X);
   _imposterNode->setOrientation(orient);
   fitImposterExtent(ent,_imposterNode,defaultZ);
-  //_camNode = _imposterNode->createChildSceneNode("IMPOSTER_CAM_NODE",Vector3::ZERO,Quaternion::IDENTITY);
-  //_camNode->attachObject(_cam);
-  //_camNode->translate(_cen.x,_cen.y,-_cen.z,Node::TS_PARENT);
-  /*
-  Plane plane(Vector3::UNIT_Y,0);
-  MeshManager::getSingleton().createPlane("ground",
-      ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-      plane,1500,1500,20,20,true,1,5,5,Vector3::UNIT_Z);
-  ent = _scnMgr->createEntity("GroundPlaneEnt","ground");
-  root->attachObject(ent);
-  */
+}
 
+void ImposterGen::setupRTT()
+{
+  using namespace Ogre;
+  ostringstream ss;
+  ss << "In ImposterGen::stupCam()" << endl;
+  vector<ZGame::ImposterTexVec>* impTexs = _imposter->getTextures();
+  RenderTarget* rttTex;
+  Viewport* vp;
+  for(size_t i=0; i<impTexs->size();i++)
+    {
+      for(size_t j=0; j<impTexs->at(i).size(); j++)
+        {
+          ss << "i,j: " << i << " " << j << endl;
+          rttTex = impTexs->at(i)[j]->getBuffer()->getRenderTarget();
+          vp = rttTex->addViewport(_cam);
+          vp->setBackgroundColour(ColourValue::White);
+          rttTex->setAutoUpdated(false);
+        }
+    }
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,ss.str());
 }
 
 void ImposterGen::setupCam()
 {
   using namespace Ogre;
-  _cam = ZGame::EngineView::getSingleton().getCurrentCamera();
-  _cam->setPosition(0.0,0.0,0.0);
-  _cam->setNearClipDistance(1.0);
-  _cam->setFarClipDistance(5000.0);
 
-
-
-  //_cam->setOrientation(orient);
+  _cam = _scnMgr->createCamera(_imposterKeys["camera"].c_str());
+  _cam->setNearClipDistance(_NEAR_CLIP);
+  _cam->setFarClipDistance(_FAR_CLIP);
+  _cam->setAspectRatio(_ASPECT_RATIO);
   _cam->lookAt(0.0,0.0,-1.0);
 
   _scnMgr->setAmbientLight(ColourValue(0.25,0.25,0.25));
 
-  Ogre::Light* l = _scnMgr->createLight("ImposterLight");
+  Ogre::Light* l = _scnMgr->createLight(_imposterKeys["light"].c_str());
   l->setType(Ogre::Light::LT_DIRECTIONAL);
   Vector3 dir(0.5,0.5,-1.0);
   dir.normalise();
   l->setDirection(dir);
   l->setDiffuseColour(1.0f, 1.0f, 0.8f);
   l->setSpecularColour(1.0f, 1.0f, 1.0f);
-
-  /*
-  _cam = _scnMgr->getCamera(_CAMERA_NAME.c_str());
-  if(!_cam)
-    {
-      _cam = _scnMgr->createCamera(_CAMERA_NAME.c_str());
-      _cam->setNearClipDistance(_NEAR_CLIP);
-      _cam->setFarClipDistance(_FAR_CLIP);
-      _cam->setAspectRatio(_ASPECT_RATIO);
-      _cam->setPosition(0.0f,0.0f,0.0f);
-    }
-    */
 }
 
 /**
@@ -182,7 +257,7 @@ void ImposterGen::fitImposterExtent(Ogre::Entity* ent,Ogre::SceneNode* node,Ogre
   min = aabox.getMinimum();
   //equation is given by: We're looking for the point at which distance between two rays is minimum. For our CASE it is assumed
   //this t is the intersection point due to the nature of our problem.
-  Real offset = 2.5;
+  Real offset = 3.5;
   Vector2 s1(max.z,max.y+offset);
   Vector2 p1(0,max.y+offset);
   Vector2 p0(0,0.0);
