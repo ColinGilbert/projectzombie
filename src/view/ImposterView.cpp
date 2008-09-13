@@ -88,7 +88,7 @@ void ImposterView::attachMaterial()
 {
   using namespace Ogre;
   MaterialPtr mat = getMaterial();
-  mat->getTechnique(0)->getPass(0)->createTextureUnitState();
+  TextureUnitState *texState = mat->getTechnique(0)->getPass(0)->getTextureUnitState(0);
   _texEnt->setMaterialName(_MATERIALNAME.c_str());
 }
 

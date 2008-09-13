@@ -210,7 +210,7 @@ void ImposterGen::setupRTT()
           ss << "i,j: " << i << " " << j << endl;
           rttTex = impTexs->at(i)[j]->getBuffer()->getRenderTarget();
           vp = rttTex->addViewport(_cam);
-          vp->setBackgroundColour(ColourValue::White);
+          vp->setBackgroundColour(ColourValue::ZERO);
           rttTex->setAutoUpdated(false);
         }
     }

@@ -1,0 +1,14 @@
+material ZGame/Imposter
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			texture_unit ImposterTexture
+			{
+				colour_op alpha_blend
+			}
+		}
+	}
+}
