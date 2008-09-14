@@ -6,11 +6,11 @@
  */
 #include <Ogre.h>
 #include "GameEditView.h"
-
+#include "EngineView.h"
 
 using namespace ZGame;
 
-GameEditView::GameEditView() : _imposterGen(0),_imposter(0)
+GameEditView::GameEditView() : _imposterGen(0),_imposter(0),_dz(1.0)
 {
 
 }
@@ -89,10 +89,25 @@ bool GameEditView::onKeyUp(const OIS::KeyEvent &evt)
 
 bool GameEditView::onKeyDown(const OIS::KeyEvent &evt)
 {
+  using namespace Ogre;
+  Camera* cam = EngineView::getSingleton().getCurrentCamera();
+
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"GameEditView::keyDownEvt");
   if(evt.key == OIS::KC_W)
     {
-      _imposterView->flip(); //happy happy flip!
+      cam->moveRelative(Vector3(0.0f,0.0f,-_dz));
+    }
+  else if(evt.key == OIS::KC_S)
+    {
+      cam->moveRelative(Vector3(0.0f,0.0f,_dz));
+    }
+  else if(evt.key == OIS::KC_A)
+    {
+      _dz += 1.0;
+    }
+  else if(evt.key == OIS::KC_D)
+    {
+      _dz -= 1.0;
     }
   return true;
 }

@@ -76,16 +76,21 @@ void ImposterGen::renderToTextures()
   using namespace Ogre;
   Radian rotPhi(-Math::HALF_PI/_imposter->SEGPHI);
   Radian rotTheta(-Math::TWO_PI/_imposter->SEGTHETA);
-  RenderTarget* rtt;
   //for each phi value,
-  vector<ZGame::ImposterTexVec>* texs = _imposter->getTextures();
+  TexturePtr tex = _imposter->getTextures();
+  RenderTarget* rtt = tex->getBuffer()->getRenderTarget();
+  Viewport* vp = _cam->getViewport();
   //render theta # of shots to texture
   _imposterNode->setVisible(true,true); //set the damn imposter visible.
-  for(size_t i=0; i < texs->size(); i++)
+  int width = _imposter->getWidth();
+  int height = _imposter->getHeight();
+  Real unitWidth = (Real)_imposter->getDim()/width;
+  Real unitHeight = (Real)_imposter->getDim()/height;
+  for(size_t i=0; i <= _imposter->SEGPHI; i++)
     {
-      for(size_t j = 0; j < texs->at(i).size(); j++)
+      for(size_t j = 0; j < _imposter->SEGTHETA; j++)
         {
-          rtt = texs->at(i)[j]->getBuffer()->getRenderTarget(); //get the render target
+          vp->setDimensions(j*unitWidth,i*unitHeight,unitWidth,unitHeight);
           rtt->update(); //take the shot
           camRotateTheta(rotTheta); //reposition the camera according to theta
         }
@@ -200,20 +205,12 @@ void ImposterGen::setupRTT()
   using namespace Ogre;
   ostringstream ss;
   ss << "In ImposterGen::stupCam()" << endl;
-  vector<ZGame::ImposterTexVec>* impTexs = _imposter->getTextures();
-  RenderTarget* rttTex;
+  Ogre::TexturePtr tex = _imposter->getTextures();
   Viewport* vp;
-  for(size_t i=0; i<impTexs->size();i++)
-    {
-      for(size_t j=0; j<impTexs->at(i).size(); j++)
-        {
-          ss << "i,j: " << i << " " << j << endl;
-          rttTex = impTexs->at(i)[j]->getBuffer()->getRenderTarget();
-          vp = rttTex->addViewport(_cam);
-          vp->setBackgroundColour(ColourValue::ZERO);
-          rttTex->setAutoUpdated(false);
-        }
-    }
+  RenderTarget* rttTex = tex->getBuffer()->getRenderTarget();
+  vp = rttTex->addViewport(_cam);
+  vp->setBackgroundColour(ColourValue::ZERO);
+  rttTex->setAutoUpdated(false);
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,ss.str());
 }
 

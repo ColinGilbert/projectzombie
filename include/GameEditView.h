@@ -40,7 +40,7 @@ namespace ZGame
     ImposterGen* _imposterGen;
     Imposter* _imposter;
     ImposterView* _imposterView;
-
+    Ogre::Real _dz;
   };
 }
 

@@ -17,7 +17,6 @@ using namespace std;
 
 namespace ZGame
 {
-  typedef vector<Ogre::TexturePtr> ImposterTexVec;
 
   class Imposter
   {
@@ -30,11 +29,16 @@ namespace ZGame
     ~Imposter();
 
     const string getMeshName(){return _meshName;}
-    vector<ImposterTexVec>* getTextures(){return &_texs;}
+    Ogre::TexturePtr getTextures(){return _texture;}
+
+    int getWidth(){return SEGTHETA*TEXDIM;}
+    int getHeight(){return (SEGPHI+1)*TEXDIM;}
+    int getDim(){return TEXDIM;}
+
 
   protected:
     string _meshName;
-    vector<ImposterTexVec> _texs;
+    Ogre::TexturePtr _texture;
 
     void setupTextures();
 
@@ -43,6 +47,7 @@ namespace ZGame
     int _curId; //current id for this imposter
 
     const string TYPE_NAME;
+
 
   };
 }

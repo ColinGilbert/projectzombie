@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 #include "Imposter.h"
-
+#include "EngineView.h"
 using namespace ZGame;
 
 int Imposter::_id = 0;
@@ -17,19 +17,15 @@ Imposter::Imposter(const string meshName) : _meshName(meshName),TYPE_NAME("IMPOS
 {
   _curId = _id;
   _id++;
-  _texs.reserve(SEGPHI);
-  for(int i = 0; i <= SEGPHI; i++)
-    {
-      ImposterTexVec vec;
-      vec.reserve(SEGTHETA);
-      _texs.push_back(vec);
-    }
   setupTextures();
 }
 
 Imposter::~Imposter()
 {
-
+  ostringstream oss;
+  oss << "Destroying imposter: " << _curId;
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,oss.str());
+  Ogre::TextureManager::getSingleton().remove(_texture->getName());
 }
 
 void Imposter::setupTextures()
@@ -38,19 +34,14 @@ void Imposter::setupTextures()
   TexturePtr temp;
   ostringstream ss;
   size_t texId = 0;
-  for(size_t i=0; i <= SEGPHI; i++)
-    {
 
-      for(size_t j=0; j< SEGTHETA; j++)
-        {
-          ss << TYPE_NAME << _curId << texId++;
-          temp = TextureManager::getSingleton().createManual(ss.str(),ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-              TEX_TYPE_2D,TEXDIM,TEXDIM,0,Ogre::PF_BYTE_BGRA,TU_RENDERTARGET);
-          _texs[i].push_back(temp);
-          ss.str("");
-        }
+  ss << TYPE_NAME << _meshName << _curId;
+  int height = getHeight(); //PHI varies along vertical of texture.
+  int width = getWidth(); //Theta varies along the horizontal of texture.
 
-    }
+  _texture = TextureManager::getSingleton().createManual(ss.str(),
+      ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,TEX_TYPE_2D,width,height,0,Ogre::PF_BYTE_BGRA,TU_RENDERTARGET);
+
 }
 
 

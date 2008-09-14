@@ -27,7 +27,7 @@ ImposterView::~ImposterView()
 }
 void ImposterView::flip()
 {
-  switchTexture();
+  //switchTexture();
 }
 void ImposterView::setInput(Imposter* input)
 {
@@ -43,7 +43,7 @@ void ImposterView::setupView()
   Plane plane(Vector3::UNIT_Z,0);
   string name = _TYPENAME+"PLANE";
   MeshManager::getSingleton().createPlane(name.c_str(),
-      ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,plane,1500,1500,1,1,true,1,5,5,Vector3::UNIT_Y);
+      ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,plane,1500,1500,1,1,true,1,1,1,Vector3::UNIT_Y);
   SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
   string planeName = name+"ENTITY";
   _texEnt = scnMgr->createEntity(planeName,name);
@@ -55,9 +55,14 @@ void ImposterView::setupView()
 void ImposterView::switchTexture()
 {
   using namespace Ogre;
+  MaterialPtr mat = getMaterial();
+  TextureUnitState *texState = mat->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+  texState->setTextureName(_imposter->getTextures()->getName());
+  /*
+  using namespace Ogre;
   ostringstream ss;
   ss << "In ImposterView::setupTexture()" << endl;
-  vector<ZGame::ImposterTexVec>* texs = _imposter->getTextures();
+   = _imposter->getTextures();
   //NOTE: FOr testing right now we are going to attach multiple textures to an object.
   //Later, after making sure everything works, we need to switch over to using a
   //animated texture. I.E. a single texture that contains multiple sub-textures. For optimal performance.
@@ -77,6 +82,7 @@ void ImposterView::switchTexture()
   if(_curFlipPhi >= texs->size())
     _curFlipPhi = 0; //start over on phi
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,ss.str());
+  */
 }
 
 Ogre::MaterialPtr ImposterView::getMaterial()

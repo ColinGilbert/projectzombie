@@ -42,6 +42,7 @@ namespace ZGame
     const string _TYPENAME;
     const string _MATERIALNAME;
 
+
   };
 }
 
