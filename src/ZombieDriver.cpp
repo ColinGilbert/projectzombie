@@ -37,8 +37,9 @@ int main(int argc, char** argv)
 
   boost::mt19937 rng;
   boost::uniform_int<> six(1,6);
+  boost::uniform_int<> seven(1,7);
 
-  GPUEntsDistributor<boost::mt19937,boost::uniform_int<> > dist(rng,six);
+  GPUEntsDistributor<boost::mt19937,boost::uniform_int<> > dist(rng,six,seven);
 
   Ogre::Vector3 pos;
   dist.nextPosition(pos);

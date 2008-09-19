@@ -19,22 +19,24 @@ namespace ZGame
   class GPUEntsDistributor
   {
   public:
-    GPUEntsDistributor(Engine eng, Distribution dist);
+    typedef Engine EngType;
+    typedef Distribution DistType;
+    GPUEntsDistributor(EngType eng, DistType distX, DistType distZ);
     virtual ~GPUEntsDistributor();
 
     void nextPosition(Ogre::Vector3 &pos);
 
   protected:
-    typedef Engine Eng_Type;
-    typedef Distribution Dist_Type;
 
-    boost::variate_generator<Eng_Type,Dist_Type> _rand;
+
+    boost::variate_generator<EngType,DistType> _randX;
+    boost::variate_generator<EngType,DistType> _randZ;
 
   };
 
   template<class Engine,class Distribution>
-  GPUEntsDistributor<Engine,Distribution>::GPUEntsDistributor(Engine eng,Distribution dist) :
-    _rand(eng,dist)
+  GPUEntsDistributor<Engine,Distribution>::GPUEntsDistributor(EngType eng,DistType distX, DistType distZ) :
+    _randX(eng,distX),_randZ(eng,distZ)
   {
     //_rand = new boost::variate_generator<Eng_Type,Dist_Type>(eng,dist);
   }
@@ -47,7 +49,10 @@ namespace ZGame
   template<class Engine,class Distribution>
   void GPUEntsDistributor<Engine,Distribution>::nextPosition(Ogre::Vector3 &pos)
   {
-    //generate position
+    using namespace Ogre;
+    pos.x = (Real)_randX();
+    pos.y = 0.0;
+    pos.z = (Real)_randZ();
   }
 }
 
