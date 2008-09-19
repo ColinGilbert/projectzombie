@@ -27,8 +27,6 @@ namespace ZGame
     void nextPosition(Ogre::Vector3 &pos);
 
   protected:
-
-
     boost::variate_generator<EngType,DistType> _randX;
     boost::variate_generator<EngType,DistType> _randZ;
 
