@@ -11,10 +11,10 @@
 #include <Ogre.h>
 
 #include "GameState.h"
-#include "GameEditView.h"
+
 namespace ZGame
 {
-
+class GameEditView;
 class GameEditState : public ZGame::GameState
 {
 public:
@@ -27,7 +27,7 @@ public:
   void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
 
   //life cycle methods
-  bool onUpdate();
+  bool onUpdate(const Ogre::FrameEvent& evt);
   bool onInit();
   bool onDestroy();
 
@@ -36,7 +36,7 @@ public:
   bool onKeyDown(const OIS::KeyEvent &evt);
 
 protected:
-  GameEditView _editView;
+  GameEditView* _editView;
 
 };
 }

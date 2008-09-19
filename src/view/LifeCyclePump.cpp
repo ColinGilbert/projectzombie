@@ -41,11 +41,11 @@ LifeCyclePump::updateOnItObs()
  * Update onUpdate observers
  */
 void
-LifeCyclePump::updateOnUpdateObs()
+LifeCyclePump::updateOnUpdateObs(const Ogre::FrameEvent& evt)
 {
-  for (LifeCycleObsItr it = _onUpdateObs.begin(); it != _onUpdateObs.end(); ++it)
+  for (LifeUpdateObsItr it = _onUpdateObs.begin(); it != _onUpdateObs.end(); ++it)
     {
-      (*it)(); //make delegate call
+      (*it)(evt); //make delegate call
     }
 }
 /**

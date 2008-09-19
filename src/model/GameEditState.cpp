@@ -6,10 +6,11 @@
  */
 #include <Ogre.h>
 #include "GameEditState.h"
+#include "GameEditView.h"
 
 namespace ZGame
 {
-GameEditState::GameEditState() : GameState()
+GameEditState::GameEditState() : GameState(),_editView(0)
 {
   // TODO Auto-generated constructor stub
 
@@ -24,6 +25,7 @@ GameEditState::~GameEditState()
 
 void GameEditState::initialize()
 {
+  _editView = new GameEditView();
   Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
   lm->logMessage(Ogre::LML_NORMAL,"In GameEditState initialize");
   //add life cycle stuff here
@@ -34,8 +36,8 @@ void GameEditState::initialize()
   keySubInjector.bind(&GameEditState::injectKeyEvtSubject,this);
   addKeySubjectInjector(keySubInjector); //add the injector
   //add gameview subject injector
-  _editView.fillLifeCycleSubjectInjector(lfSubInjector);
-  _editView.fillKeySubjectInjector(keySubInjector);
+  _editView->fillLifeCycleSubjectInjector(lfSubInjector);
+  _editView->fillKeySubjectInjector(keySubInjector);
   addLifeCycleSubjectInjector(lfSubInjector);
   addKeySubjectInjector(keySubInjector);
 
@@ -66,7 +68,7 @@ bool GameEditState::onInit()
   return true;
 }
 
-bool GameEditState::onUpdate()
+bool GameEditState::onUpdate(const Ogre::FrameEvent& evt)
 {
   //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditState::onUpdate");
   return true;
@@ -75,6 +77,7 @@ bool GameEditState::onUpdate()
 bool GameEditState::onDestroy()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditState::onDestroy");
+  delete _editView;
   return true;
 }
 

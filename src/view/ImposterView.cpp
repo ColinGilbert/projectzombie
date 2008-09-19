@@ -8,6 +8,7 @@
 #include <ostream>
 #include <stringstream>
 using namespace std;
+#include "Imposter.h"
 #include "ImposterView.h"
 #include "EngineView.h"
 using namespace ZGame;

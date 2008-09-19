@@ -6,7 +6,9 @@
  */
 #include <stdexcept>
 #include "GameStateFactory.h"
-
+#include "GameEditState.h"
+#include "GameMainMenuState.h"
+#include "GameMainState.h"
 namespace ZGame
 {
 GameStateFactory::GameStateFactory()
@@ -29,6 +31,8 @@ GameState* GameStateFactory::createGameState(const std::string gameStateClass)
     return new GameEditState();
   else if(gameStateClass.compare("GameMainMenuState") == 0)
     return new GameMainMenuState();
+  else if(gameStateClass.compare("GameMainState") == 0)
+    return new GameMainState();
   else
     throw(invalid_argument("The GameState you are trying to create is invalid!"));
 }

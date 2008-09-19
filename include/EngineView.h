@@ -9,7 +9,6 @@
 #define ENGINEVIEW_H_
 
 #include <Ogre.h>
-//#include "EngineController.h"
 
 namespace ZGame
 {

@@ -10,11 +10,12 @@
 
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
-#include "ImposterGen.h"
-#include "Imposter.h"
-#include "ImposterView.h"
+
 namespace ZGame
 {
+  class ImposterGen;
+  class Imposter;
+  class ImposterView;
   class GameEditView
   {
   public:
@@ -28,7 +29,7 @@ namespace ZGame
     void fillLifeCycleSubjectInjector(LifeCycle::LifeCycleSubjectInjector &injector);
 
     //life cycle methods
-    bool onUpdate();
+    bool onUpdate(const Ogre::FrameEvent& evt);
     bool onInit();
     bool onDestroy();
     //control event methods

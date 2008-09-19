@@ -15,7 +15,7 @@
 using namespace std;
 
 #include <Ogre.h>
-#include "Imposter.h"
+
 
 /**
  * This class defines a generator for Imposters. This class will generate a set of Imposters in a spherical coordinate framework,
@@ -24,6 +24,7 @@ using namespace std;
 
 namespace ZGame
 {
+  class Imposter;
   class ImposterGen
   {
   public:

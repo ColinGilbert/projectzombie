@@ -20,15 +20,15 @@ using namespace std;
 #include "LifeCycleDelegates.h"
 #include "LifeCyclePump.h"
 #include "KeyboardPump.h"
-#include "InputController.h"
 #include "GameStateInfo.h"
-#include "GameState.h"
 
 #include "InputController.h"
 
 namespace ZGame
 {
   class EngineView;
+  class InputController;
+  class GameState;
   class EngineController : Ogre::FrameListener
   {
   public:

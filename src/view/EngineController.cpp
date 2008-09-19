@@ -15,6 +15,8 @@ using namespace std;
 #include "EngineView.h"
 #include "GameStateFactory.h"
 #include "StatesLoader.h"
+#include "InputController.h"
+#include "GameState.h"
 
 namespace ZGame
 {
@@ -172,7 +174,7 @@ namespace ZGame
     if(!_stillRunning)
       return false;
     _inController->run();
-    _lfcPump.updateOnUpdateObs();
+    _lfcPump.updateOnUpdateObs(evt);
 
     return true;
 

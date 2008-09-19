@@ -10,9 +10,10 @@
 #include <string>
 using namespace std;
 #include "Ogre.h"
-#include "Imposter.h"
+
 namespace ZGame
 {
+  class Imposter;
   class ImposterView
   {
   public:

@@ -1,7 +1,11 @@
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
+
+
+#include <boost/random.hpp>
+#include <Ogre.h>
 #include "InputController.h"
 #include "EngineController.h"
-using namespace std;
+#include "GPUEntsDistributor.h"
 
 /*
  * ZombieDriver.cpp
@@ -10,20 +14,11 @@ using namespace std;
  *      Author: bey0nd
  */
 
-//ZGame::InputController inControl;
 
-/*
-struct MyInputThread
-{
-  void operator()()
-  {
-    inControl.run();
-    inControl.onDestroy();
-  }
-}inputThread;
-*/
 int main(int argc, char** argv)
 {
+  using namespace ZGame;
+  /*
   ZGame::EngineController engineControl;
   using namespace ZGame;
   if(!engineControl.onInit())
@@ -38,8 +33,30 @@ int main(int argc, char** argv)
 
  // myThread.join();
   engineControl.onDestroy();
+  */
+
+  boost::mt19937 rng;
+  boost::uniform_int<> six(1,6);
+
+  GPUEntsDistributor<boost::mt19937,boost::uniform_int<> > dist(rng,six);
+
+  Ogre::Vector3 pos;
+  dist.nextPosition(pos);
+
 
   return 0;
 }
 
 
+//ZGame::InputController inControl;
+
+/*
+struct MyInputThread
+{
+  void operator()()
+  {
+    inControl.run();
+    inControl.onDestroy();
+  }
+}inputThread;
+*/

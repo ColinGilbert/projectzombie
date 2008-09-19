@@ -41,7 +41,7 @@ void GameMainMenuState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject
   subject(keyObs);
 }
 
-bool GameMainMenuState::onUpdate()
+bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
 {
   return true;
 }

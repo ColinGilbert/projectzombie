@@ -9,7 +9,7 @@
 #include <stringstream>
 #include <ostream>
 using namespace std;
-
+#include "Imposter.h"
 #include "ImposterGen.h"
 #include "EngineView.h"
 using namespace ZGame;

@@ -7,6 +7,9 @@
 #include <Ogre.h>
 #include "GameEditView.h"
 #include "EngineView.h"
+#include "ImposterGen.h"
+#include "Imposter.h"
+#include "ImposterView.h"
 
 using namespace ZGame;
 
@@ -49,7 +52,7 @@ void GameEditView::fillLifeCycleSubjectInjector(LifeCycle::LifeCycleSubjectInjec
 }
 
 
-bool GameEditView::onUpdate()
+bool GameEditView::onUpdate(const Ogre::FrameEvent& evt)
 {
   return true;
 }
