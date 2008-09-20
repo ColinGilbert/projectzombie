@@ -12,14 +12,18 @@
 
 namespace ZGame
 {
+  class Imposter;
   class GPUEntities
   {
   public:
     GPUEntities(Ogre::TexturePtr entsData,Ogre::TexturePtr imposterTex);
     virtual ~GPUEntities();
+    void setEntsData(const Ogre::TexturePtr &texptr);
+    void setImposterTex(const Ogre::TexturePtr &texptr);
   protected:
     Ogre::TexturePtr _gpuEntsData;
     Ogre::TexturePtr _imposterTex;
+    Imposter* _imposter;
 
   private:
   };

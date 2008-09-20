@@ -23,9 +23,6 @@ Imposter::Imposter(const string meshName) : _meshName(meshName),TYPE_NAME("IMPOS
 Imposter::~Imposter()
 {
   ostringstream oss;
-  oss << "Destroying imposter: " << _curId;
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,oss.str());
-  Ogre::TextureManager::getSingleton().remove(_texture->getName());
 }
 
 void Imposter::setupTextures()

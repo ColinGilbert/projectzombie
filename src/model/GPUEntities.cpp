@@ -22,4 +22,13 @@ GPUEntities::~GPUEntities()
   texMgr->remove(_imposterTex->getName());
 }
 
+void GPUEntities::setEntsData(const Ogre::TexturePtr &texptr)
+{
+  _gpuEntsData = texptr;
+}
+
+void GPUEntities::setImposterTex(const Ogre::TexturePtr &texptr)
+{
+  _imposterTex = texptr;
+}
 

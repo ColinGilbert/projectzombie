@@ -15,10 +15,11 @@ namespace ZGame
 {
   class GPUEntities;
   class ZEntity;
+  class GPUEntsGenProps;
   class GPUEntsGen
   {
   public:
-    GPUEntsGen(ZEntity* ent,GPUEntities* input);
+    GPUEntsGen(ZEntity* ent,GPUEntities* input,GPUEntsGenProps* props);
     virtual ~GPUEntsGen();
 
     void build();
@@ -27,7 +28,7 @@ namespace ZGame
 
     GPUEntities* _input;
     ZEntity* _ent;
-
+    GPUEntsGenProps* _props;
     void genImposters();
     void genPosition();
 
