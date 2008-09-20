@@ -36,7 +36,6 @@ namespace ZGame
   GPUEntsDistributor<Engine,Distribution>::GPUEntsDistributor(EngType eng,DistType distX, DistType distZ) :
     _randX(eng,distX),_randZ(eng,distZ)
   {
-    //_rand = new boost::variate_generator<Eng_Type,Dist_Type>(eng,dist);
   }
 
   template<class Engine,class Distribution>

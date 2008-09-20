@@ -5,16 +5,21 @@
  *      Author: bey0nd
  */
 
+#include "EngineView.h"
 #include "GPUEntities.h"
 
 using namespace ZGame;
-
-GPUEntities::GPUEntities()
+using namespace Ogre;
+GPUEntities::GPUEntities(Ogre::TexturePtr entsData, Ogre::TexturePtr imposterTex) : _gpuEntsData(entsData),_imposterTex(imposterTex)
 {
 
 }
 
 GPUEntities::~GPUEntities()
 {
-
+  TextureManager* texMgr = TextureManager::getSingletonPtr();
+  texMgr->remove(_gpuEntsData->getName());
+  texMgr->remove(_imposterTex->getName());
 }
+
+

@@ -1181,7 +1181,8 @@
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1209917096.include/EngineController.h" name="EngineController.h" rcbsApplicability="disable" resourcePath="include/EngineController.h" toolsToInvoke=""/>
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1209917096.include/EventDelegates.h" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="include/EventDelegates.h" toolsToInvoke=""/>
 <sourceEntries>
-<entry excluding="src/ZombieDriver.cpp|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="src/test|src/ZombieDriver.cpp|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
 </sourceEntries>
 </configuration>
 </storageModule>

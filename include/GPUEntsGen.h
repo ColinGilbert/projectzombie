@@ -10,23 +10,27 @@
 
 
 #include <Ogre.h>
-#include "GPUEntities.h"
 
 namespace ZGame
 {
+  class GPUEntities;
+  class ZEntity;
   class GPUEntsGen
   {
   public:
-    GPUEntsGen();
+    GPUEntsGen(ZEntity* ent,GPUEntities* input);
     virtual ~GPUEntsGen();
-
-    void setInput(GPUEntities* input) {_input = input;}
 
     void build();
 
   protected:
 
     GPUEntities* _input;
+    ZEntity* _ent;
+
+    void genImposters();
+    void genPosition();
+
 
   private:
   };

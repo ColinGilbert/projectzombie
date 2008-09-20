@@ -9,7 +9,7 @@
 
 using namespace ZGame;
 
-GPUEntsGen::GPUEntsGen() : _input(0)
+GPUEntsGen::GPUEntsGen() : _input(0),_ent(0)
 {
 }
 
@@ -19,6 +19,11 @@ GPUEntsGen::~GPUEntsGen()
 
 void GPUEntsGen::build()
 {
+  //generate the imposters
+  //generate the gpu entity position
 }
+
+
+
 
 
