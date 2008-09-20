@@ -19,7 +19,13 @@
 <folderInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.exe.debug.478189306" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.exe.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.debug.293681489" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.debug"/>
-<builder buildPath="${workspace_loc:/PZombie/Debug}" id="cdt.managedbuild.target.gnu.builder.exe.debug.937869042" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.exe.debug"/>
+<builder buildPath="${workspace_loc:/PZombie/Debug}" id="cdt.managedbuild.target.gnu.builder.exe.debug.937869042" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.exe.debug">
+<outputEntries>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Debug"/>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Release"/>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="test"/>
+</outputEntries>
+</builder>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.120492396" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.980781576" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug">
 <option id="gnu.cpp.compiler.exe.debug.option.optimization.level.903329571" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
@@ -28,7 +34,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include/OGRE"/>
 <listOptionValue builtIn="false" value="/opt/bey0ndstuff/projects/workspace/PZombie/include"/>
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
-<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/"/>
+<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
 <listOptionValue builtIn="false" value="/usr/include/libnoise"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.871671032" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -36,6 +42,13 @@
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.699168558" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.exe.debug.option.optimization.level.28493971" name="Optimization Level" superClass="gnu.c.compiler.exe.debug.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.exe.debug.option.debugging.level.1578136639" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.1452604469" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="/usr/local/include/OGRE"/>
+<listOptionValue builtIn="false" value="/opt/bey0ndstuff/projects/workspace/PZombie/include"/>
+<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
+<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
+<listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1228938247" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.414990955" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
@@ -46,15 +59,20 @@
 <listOptionValue builtIn="false" value="noise"/>
 <listOptionValue builtIn="false" value="OIS"/>
 </option>
-<option id="gnu.cpp.link.option.paths.1999963474" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="/usr/local/lib"/>
-</option>
+<option id="gnu.cpp.link.option.paths.1999963474" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.760381804" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.472693384" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
+<option id="gnu.both.asm.option.include.paths.2036212630" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="/usr/local/include/OGRE"/>
+<listOptionValue builtIn="false" value="/opt/bey0ndstuff/projects/workspace/PZombie/include"/>
+<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
+<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
+<listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1731471188" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -62,7 +80,7 @@
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.648678351" name="EngineController.h" rcbsApplicability="disable" resourcePath="include/EngineController.h" toolsToInvoke=""/>
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1301233051" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="include/EventDelegates.h" toolsToInvoke=""/>
 <sourceEntries>
-<entry excluding="src/test|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="Debug|test|src/test|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -612,7 +630,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="src/test|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="test|src/test|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -1181,8 +1199,7 @@
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1209917096.include/EngineController.h" name="EngineController.h" rcbsApplicability="disable" resourcePath="include/EngineController.h" toolsToInvoke=""/>
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1209917096.include/EventDelegates.h" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="include/EventDelegates.h" toolsToInvoke=""/>
 <sourceEntries>
-<entry excluding="src/test|src/ZombieDriver.cpp|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
+<entry excluding="test|src/test|src/ZombieDriver.cpp|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
