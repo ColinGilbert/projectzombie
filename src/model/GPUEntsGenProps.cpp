@@ -9,6 +9,8 @@
 
 using namespace ZGame;
 using namespace Ogre;
+
+
 GPUEntsGenProps::GPUEntsGenProps()
 {
 

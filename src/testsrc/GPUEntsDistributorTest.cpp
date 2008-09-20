@@ -5,15 +5,15 @@
  *      Author: bey0nd
  */
 
+#include <iostream>
+using namespace std;
+
 #include <boost/random.hpp>
 #include <Ogre.h>
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE ZombieTesting
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include "GPUEntsDistributor.h"
-
+#include "ZTestSuite.h"
 BOOST_AUTO_TEST_SUITE(gpuentdist_test);
 BOOST_AUTO_TEST_CASE(test_gpuentdist_nextposition)
 {
@@ -33,6 +33,8 @@ BOOST_AUTO_TEST_CASE(test_gpuentdist_nextposition)
   //actually CHECK to see if the position is actually in the DISTRIBUTION. But I think that's overkill.
   BOOST_CHECK(pos.x >= START_X && pos.x <= END_X); //check X range.
   BOOST_CHECK(pos.z >= START_Z && pos.z <= END_Z);
+
+
 
 }
 BOOST_AUTO_TEST_SUITE_END();
