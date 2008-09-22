@@ -60,6 +60,7 @@ bool ZTestConfig::init()
    cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 
    _engineView = new ZGame::EngineView(_window,cam,_scnMgr);
+   LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
    return true;
 }

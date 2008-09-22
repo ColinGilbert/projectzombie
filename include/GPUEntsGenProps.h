@@ -10,22 +10,29 @@
 
 #ifndef GPUENTSGENPROPS_H_
 #define GPUENTSGENPROPS_H_
+#include <string>
+using namespace std;
 #include <Ogre.h>
 namespace ZGame
 {
   class GPUEntsGenProps
   {
   public:
-    GPUEntsGenProps();
+    GPUEntsGenProps(const int texWidth, const int texHeight);
     virtual ~GPUEntsGenProps();
 
-    void setNumOfEntities(size_t nums) {_numOfEntities = nums;}
     size_t getNumOfEntities() {return _numOfEntities;}
     void setExtents(Ogre::Real minx,Ogre::Real minz,Ogre::Real maxx,Ogre::Real maxz);
     const Ogre::AxisAlignedBox& getExtents() {return _extents;}
+    int getTexWidth() { return _texWidth;}
+    int getTexHeight(){ return _texHeight;}
   protected:
     size_t _numOfEntities;
     Ogre::AxisAlignedBox _extents;
+    int _texWidth;
+    int _texHeight;
+    void computeNumOfEnts(); //compute number of entities for a given texture width and height
+
 
   private:
   };

@@ -14,20 +14,22 @@ using namespace Ogre;
 #include <boost/test/unit_test.hpp>
 #include "GPUEntsGenProps.h"
 #include "ZTestSuite.h"
+#include "CommonFixtures.h"
 
 using namespace ZGame;
+
 
 
 BOOST_AUTO_TEST_SUITE(gpuentsgenprops_test);
 
 
-BOOST_AUTO_TEST_CASE(test_gpuentsgenprops_extents)
+BOOST_AUTO_TEST_CASE(test_gpuentsgenprops)
 {
-  Real minx = -100.0f; Real minz = -100.0f;
-  Real maxx = 100.0f; Real maxz = 100.0f;
-  GPUEntsGenProps props;
+  GPUEntsPropsFixture f;
 
-  props.setExtents(minx,minz,maxx,maxz);
+  GPUEntsGenProps props(f.texW,f.texH);
+
+  props.setExtents(f.minx,f.minz,f.maxx,f.maxz);
   Ogre::AxisAlignedBox testBox;
 
   testBox = props.getExtents();
@@ -35,20 +37,22 @@ BOOST_AUTO_TEST_CASE(test_gpuentsgenprops_extents)
   Vector3 min = testBox.getMinimum();
   Vector3 max = testBox.getMaximum();
 
-  if(min.x != minx || min.y != 0.0f || min.z != minz)
+  if(min.x != f.minx || min.y != 0.0f || min.z != f.minz)
     BOOST_FAIL("Miniumum extents did not match.");
-  if(max.x != maxx || max.y != 0.0f || max.z != maxz)
+  if(max.x != f.maxx || max.y != 0.0f || max.z != f.maxz)
     BOOST_FAIL("Maximum extents did not match.");
 
+  //test width and height
+  if(props.getTexWidth() != f.texW || props.getTexHeight() != f.texH)
+    BOOST_FAIL("Texture width and height did not match!");
+
+  //test num of entities
+  if(props.getNumOfEntities() != f.texW*f.texH)
+    BOOST_FAIL("Number of entities is incorrect!");
+
 }
 
-BOOST_AUTO_TEST_CASE(test_gpuentsgenprops_numents)
-{
-  size_t nums = 100000;
-  GPUEntsGenProps props;
-  props.setNumOfEntities(nums);
-  BOOST_CHECK(nums == props.getNumOfEntities());
-}
+
 
 
 

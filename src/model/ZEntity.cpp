@@ -9,7 +9,7 @@
 
 using namespace ZGame;
 
-ZEntity::ZEntity(const string meshName) : _meshName(meshName)
+ZEntity::ZEntity(const string entName,const string meshName) : _entName(entName), _meshName(meshName)
 {
 }
 

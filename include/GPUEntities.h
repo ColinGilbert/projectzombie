@@ -8,6 +8,8 @@
 
 #ifndef GPUENTITIES_H_
 #define GPUENTITIES_H_
+#include <string>
+using namespace std;
 #include <Ogre.h>
 
 namespace ZGame
@@ -16,15 +18,16 @@ namespace ZGame
   class GPUEntities
   {
   public:
-    GPUEntities(Ogre::TexturePtr entsData,Ogre::TexturePtr imposterTex);
+    GPUEntities(const string entsName,Ogre::TexturePtr entsData,Ogre::TexturePtr imposterTex);
     virtual ~GPUEntities();
+    const string getName();
     void setEntsData(const Ogre::TexturePtr &texptr);
     void setImposterTex(const Ogre::TexturePtr &texptr);
   protected:
     Ogre::TexturePtr _gpuEntsData;
     Ogre::TexturePtr _imposterTex;
     Imposter* _imposter;
-
+    string _entsName;
   private:
   };
 }

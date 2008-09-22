@@ -16,9 +16,10 @@ BOOST_AUTO_TEST_CASE(test_zentitymeshname)
   using namespace ZGame;
   using namespace Ogre;
   string testname = "TESTENTITYMESH";
-  ZEntity zentity(testname);
+  string meshname = "robot.mesh";
+  ZEntity zentity(testname,meshname);
   const string resultname = zentity.getMeshName();
-  BOOST_CHECK((resultname.compare(testname))==0);
+  BOOST_CHECK((resultname.compare(meshname))==0);
 }
 
 

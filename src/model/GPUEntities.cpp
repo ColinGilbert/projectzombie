@@ -10,9 +10,9 @@
 
 using namespace ZGame;
 using namespace Ogre;
-GPUEntities::GPUEntities(Ogre::TexturePtr entsData, Ogre::TexturePtr imposterTex) : _gpuEntsData(entsData),_imposterTex(imposterTex)
+GPUEntities::GPUEntities(const string entsName,Ogre::TexturePtr entsData, Ogre::TexturePtr imposterTex) :_gpuEntsData(entsData),_imposterTex(imposterTex),
+_entsName(entsName)
 {
-
 }
 
 GPUEntities::~GPUEntities()
@@ -32,3 +32,7 @@ void GPUEntities::setImposterTex(const Ogre::TexturePtr &texptr)
   _imposterTex = texptr;
 }
 
+const string GPUEntities::getName()
+{
+  return _entsName;
+}

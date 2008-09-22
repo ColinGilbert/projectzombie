@@ -7,7 +7,8 @@
 
 #ifndef GPUENTSLOADER_H_
 #define GPUENTSLOADER_H_
-
+#include <memory>
+using namespace std;
 
 #include <Ogre.h>
 
@@ -19,19 +20,25 @@ namespace ZGame
   class GPUEntsGen
   {
   public:
-    GPUEntsGen(ZEntity* ent,GPUEntities* input,GPUEntsGenProps* props);
+    GPUEntsGen(ZEntity* ent,GPUEntsGenProps* props);
     virtual ~GPUEntsGen();
 
     void build();
 
+    auto_ptr<GPUEntities> getOutput(); //returns GPUEntities. You know, the thing that this generator generates.
+
   protected:
 
-    GPUEntities* _input;
+    GPUEntities* _output;
     ZEntity* _ent;
     GPUEntsGenProps* _props;
+    Ogre::TexturePtr _stateTex;
+    Ogre::TexturePtr _imposterTex;
     void genImposters();
-    void genPosition();
+    void loadPositions();
+    void createStateTexture(); //Place-holder method for creating GPU entities state texture.
 
+    const string _gpuEntsName;
 
   private:
   };

@@ -17,13 +17,15 @@ namespace ZGame
   class ZEntity
   {
   public:
-    ZEntity(const string meshName);
+    ZEntity(const string entName,const string meshName);
     ~ZEntity();
 
-    const string& getMeshName() {return _meshName;}
+    const string getEntityName() {return _entName;}
+    const string getMeshName() {return _meshName;}
 
   protected:
 
+    string _entName;
     string _meshName;
 
   private:
