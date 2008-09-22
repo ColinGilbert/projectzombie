@@ -38,12 +38,12 @@ ImposterGen::ImposterGen() :_rotVal(0),_imposter(0)
     {
       ss << "<key,value>: " << it->first << "," << it->second << endl;
     }
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,ss.str());
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,ss.str());
 }
 
 ImposterGen::~ImposterGen()
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"in ~ImposterGen");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"in ~ImposterGen");
   Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
   root->removeAndDestroyChild(_imposterNode->getName());
   _scnMgr->destroyEntity(_imposterKeys["entity"]);
@@ -68,7 +68,7 @@ void ImposterGen::build()
       renderToTextures();
     }
   else
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"ImposterGen::build(), null imposter.");
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,"ImposterGen::build(), null imposter.");
 }
 
 void ImposterGen::renderToTextures()
@@ -211,7 +211,7 @@ void ImposterGen::setupRTT()
   vp = rttTex->addViewport(_cam);
   vp->setBackgroundColour(ColourValue::ZERO);
   rttTex->setAutoUpdated(false);
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,ss.str());
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,ss.str());
 }
 
 void ImposterGen::setupCam()

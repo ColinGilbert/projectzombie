@@ -21,7 +21,7 @@ GameMainState::~GameMainState()
 
 void GameMainState::initialize()
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameMainState::initialize()");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState::initialize()");
   //add life cycle stuff here
   LifeCycle::LifeCycleSubjectInjector lfSubInjector;
   lfSubInjector.bind(&GameMainState::injectLifeCycleSubject,this);
@@ -50,7 +50,7 @@ void GameMainState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject)
 
 bool GameMainState::onInit()
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameMainState onInit");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState onInit");
   return true;
 }
 
@@ -67,13 +67,13 @@ bool GameMainState::onDestroy()
 
 bool GameMainState::onKeyDown(const OIS::KeyEvent &evt)
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameMainState::onKeyDown");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState::onKeyDown");
   return true;
 }
 
 bool GameMainState::onKeyUp(const OIS::KeyEvent &evt)
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameMainState::onKeyUp");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState::onKeyUp");
   return true;
 }
 

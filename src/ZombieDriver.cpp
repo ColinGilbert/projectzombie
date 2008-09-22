@@ -18,7 +18,7 @@
 int main(int argc, char** argv)
 {
   using namespace ZGame;
-  /*
+
   ZGame::EngineController engineControl;
   using namespace ZGame;
   if(!engineControl.onInit())
@@ -31,18 +31,9 @@ int main(int argc, char** argv)
   engineControl.run();
 
 
- // myThread.join();
+  // myThread.join();
   engineControl.onDestroy();
-  */
 
-  boost::mt19937 rng;
-  boost::uniform_int<> six(1,6);
-  boost::uniform_int<> seven(1,7);
-
-  GPUEntsDistributor<boost::mt19937,boost::uniform_int<> > dist(rng,six,seven);
-
-  Ogre::Vector3 pos;
-  dist.nextPosition(pos);
 
 
   return 0;

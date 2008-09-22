@@ -59,7 +59,7 @@ bool GameEditView::onUpdate(const Ogre::FrameEvent& evt)
 
 bool GameEditView::onInit()
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"in GameEditView::onInit()");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"in GameEditView::onInit()");
 
   _imposter = new Imposter("robot.mesh");
   _imposterGen = new ImposterGen();
@@ -74,7 +74,7 @@ bool GameEditView::onInit()
 
 bool GameEditView::onDestroy()
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditView::onDestroy");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditView::onDestroy");
   if(_imposterGen)
     delete _imposterGen;
   if(_imposterView)
@@ -86,7 +86,7 @@ bool GameEditView::onDestroy()
 
 bool GameEditView::onKeyUp(const OIS::KeyEvent &evt)
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"GameEditView::keyUpEvt");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"GameEditView::keyUpEvt");
   return true;
 }
 
@@ -95,7 +95,7 @@ bool GameEditView::onKeyDown(const OIS::KeyEvent &evt)
   using namespace Ogre;
   Camera* cam = EngineView::getSingleton().getCurrentCamera();
 
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"GameEditView::keyDownEvt");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"GameEditView::keyDownEvt");
   if(evt.key == OIS::KC_W)
     {
       cam->moveRelative(Vector3(0.0f,0.0f,-_dz));

@@ -46,7 +46,7 @@ namespace ZGame
       sstream << "Exception: " << e.what() << endl;
       sstream << "Transition state does not exist: "<< key << endl;
       sstream << "Transitioning from state: " << _curStateInfo->key << endl;
-      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,sstream.str());
+      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,sstream.str());
     }
   }
 

@@ -38,7 +38,7 @@ auto_ptr<GPUEntities> GPUEntsGen::getOutput()
 void GPUEntsGen::build()
 {
   LogManager* lm = LogManager::getSingletonPtr();
-  lm->logMessage(Ogre::LML_NORMAL,"In GPUENtsGen::build()");
+  lm->logMessage(Ogre::LML_TRIVIAL,"In GPUENtsGen::build()");
   genImposters(); //gen the imposters
   lm->logMessage(Ogre::LML_NORMAL,"Finished generating imposters.");
   loadPositions(); //load the positions into the state texture
@@ -48,7 +48,7 @@ void GPUEntsGen::build()
 
 void GPUEntsGen::genImposters()
 {
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GPUEntsGen::genImposters");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GPUEntsGen::genImposters");
   Imposter imposter(_ent->getMeshName());
   ImposterGen impGen;
   impGen.setInput(&imposter);

@@ -27,7 +27,7 @@ void GameEditState::initialize()
 {
   _editView = new GameEditView();
   Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-  lm->logMessage(Ogre::LML_NORMAL,"In GameEditState initialize");
+  lm->logMessage(Ogre::LML_TRIVIAL,"In GameEditState initialize");
   //add life cycle stuff here
   LifeCycle::LifeCycleSubjectInjector lfSubInjector;
   lfSubInjector.bind(&GameEditState::injectLifeCycleSubject,this);

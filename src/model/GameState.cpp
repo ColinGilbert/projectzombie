@@ -26,21 +26,21 @@ namespace ZGame
   void GameState::addLifeCycleSubjectInjector(ZGame::LifeCycle::LifeCycleSubjectInjector &injector)
   {
     Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_NORMAL,"In addLifeCycleSubjectInjector");
+    lm->logMessage(Ogre::LML_TRIVIAL,"In addLifeCycleSubjectInjector");
     _subjectInjectors.push_back(injector);
   }
 
   void GameState::addKeySubjectInjector(ZGame::EVENT::KeyEvtSubjectInjector& injector)
   {
     Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_NORMAL,"In addKeySubjectInjector");
+    lm->logMessage(Ogre::LML_TRIVIAL,"In addKeySubjectInjector");
     _keyEvtSubjectInjectors.push_back(injector);
   }
 
   void GameState::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject)
   {
     Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_NORMAL,"In injectLifeCycleSubject");
+    lm->logMessage(Ogre::LML_TRIVIAL,"In injectLifeCycleSubject");
     for(SubjectInjectorsItr it=_subjectInjectors.begin(); it != _subjectInjectors.end(); ++it)
       {
         (*it)(subject);
@@ -51,7 +51,7 @@ namespace ZGame
   void GameState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject& subject)
   {
     Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_NORMAL,"In injectKeyEvtSubject");
+    lm->logMessage(Ogre::LML_TRIVIAL,"In injectKeyEvtSubject");
     for(KeyEvtSubInjectorItr it=_keyEvtSubjectInjectors.begin();it!=_keyEvtSubjectInjectors.end();++it)
       {
         (*it)(subject);
