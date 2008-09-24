@@ -18,8 +18,8 @@ BOOST_AUTO_TEST_CASE(test_zentitymeshname)
   string testname = "TESTENTITYMESH";
   string meshname = "robot.mesh";
   ZEntity zentity(testname,meshname);
-  const string resultname = zentity.getMeshName();
-  BOOST_CHECK((resultname.compare(meshname))==0);
+  string resultname = zentity.getMeshName();
+  BOOST_CHECK(resultname.compare(meshname)==0);
 }
 
 

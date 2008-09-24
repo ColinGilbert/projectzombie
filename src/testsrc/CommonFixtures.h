@@ -16,7 +16,7 @@ using namespace Ogre;
 struct GPUEntsPropsFixture
 {
   GPUEntsPropsFixture() : minx(-100.0f),minz(-100.0f),maxx(100.0f),maxz(100.0f),
-  texW(16),texH(16)
+  texW(16),texH(16),entHeight(1.0f)
   {
 
   }
@@ -24,6 +24,7 @@ struct GPUEntsPropsFixture
   Real minx; Real minz;
   Real maxx; Real maxz;
   int texW; int texH;
+  Real entHeight;
 };
 
 #endif /* COMMONFIXTURES_H_ */

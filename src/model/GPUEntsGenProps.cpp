@@ -11,8 +11,8 @@ using namespace ZGame;
 using namespace Ogre;
 
 
-GPUEntsGenProps::GPUEntsGenProps(const int texWidth,const int texHeight) :
-_texWidth(texWidth),_texHeight(texHeight)
+GPUEntsGenProps::GPUEntsGenProps(const int texWidth,const int texHeight,Real entsHeight) :
+_texWidth(texWidth),_texHeight(texHeight), _entHeight(entsHeight)
 {
   computeNumOfEnts();
 }

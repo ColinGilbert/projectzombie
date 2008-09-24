@@ -18,7 +18,7 @@ namespace ZGame
   class GPUEntsGenProps
   {
   public:
-    GPUEntsGenProps(const int texWidth, const int texHeight);
+    GPUEntsGenProps(const int texWidth, const int texHeight, Ogre::Real entsHeight);
     virtual ~GPUEntsGenProps();
 
     size_t getNumOfEntities() {return _numOfEntities;}
@@ -26,11 +26,13 @@ namespace ZGame
     const Ogre::AxisAlignedBox& getExtents() {return _extents;}
     int getTexWidth() { return _texWidth;}
     int getTexHeight(){ return _texHeight;}
+    Ogre::Real getEntHeight() {return _entHeight;}
   protected:
     size_t _numOfEntities;
     Ogre::AxisAlignedBox _extents;
     int _texWidth;
     int _texHeight;
+    Ogre::Real _entHeight; //height of entity
     void computeNumOfEnts(); //compute number of entities for a given texture width and height
 
 

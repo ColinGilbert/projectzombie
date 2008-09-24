@@ -20,8 +20,18 @@ using namespace ZGame;
 
 struct Fix
 {
-  Fix() : ent(0),props(0){BOOST_TEST_MESSAGE("Setup GPUEntsGenTest fixture");}
-  ~Fix(){BOOST_TEST_MESSAGE("Unsetup GPUEntsGenTest fixture"); delete ent; delete props;}
+  Fix() : ent(0),props(0)
+  {
+    cout << "In FIx() constructor" << endl;
+  }
+  ~Fix()
+  {
+    cout << "In ~Fix()" << endl;
+    if(ent)
+      delete ent;
+    if(props)
+      delete props;
+    }
   void setup();
   ZEntity* ent;
   GPUEntsGenProps* props;
@@ -29,9 +39,10 @@ struct Fix
 
 void Fix::setup()
 {
+  BOOST_TEST_MESSAGE("In Fix::setup");
   GPUEntsPropsFixture f;
   ent = new ZEntity("TESTENTITY", "robot.mesh");
-  props = new GPUEntsGenProps(f.texW, f.texH);
+  props = new GPUEntsGenProps(f.texW, f.texH,f.entHeight);
   props->setExtents(f.minx, f.minz, f.maxx, f.maxz);
 }
 
@@ -39,8 +50,9 @@ BOOST_AUTO_TEST_SUITE(gpuentsgen_test);
 BOOST_FIXTURE_TEST_CASE(test_gpuentsgenbuild,Fix)
 {
   setup();
-
-  GPUEntsGen entsGen(ent,props);
+  auto_ptr<GPUEntsGenProps> p(props);
+  props = 0;
+  GPUEntsGen entsGen(ent,p);
   entsGen.build();
 
 }
@@ -48,8 +60,9 @@ BOOST_FIXTURE_TEST_CASE(test_gpuentsgenbuild,Fix)
 BOOST_FIXTURE_TEST_CASE(test_gpuentsgenoutput,Fix)
 {
   setup();
-
-  GPUEntsGen entsGen(ent,props);
+  auto_ptr<GPUEntsGenProps> p(props);
+  props = 0;
+  GPUEntsGen entsGen(ent,p);
   entsGen.build();
   auto_ptr<GPUEntities> gpuEnts = entsGen.getOutput();
 }

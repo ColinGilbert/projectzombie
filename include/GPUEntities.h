@@ -9,25 +9,29 @@
 #ifndef GPUENTITIES_H_
 #define GPUENTITIES_H_
 #include <string>
+#include <memory>
 using namespace std;
 #include <Ogre.h>
 
 namespace ZGame
 {
   class Imposter;
+  class GPUEntsGenProps;
   class GPUEntities
   {
   public:
-    GPUEntities(const string entsName,Ogre::TexturePtr entsData,Ogre::TexturePtr imposterTex);
+    GPUEntities(const string entsName,const string entsData,const string imposterTex,
+        auto_ptr<GPUEntsGenProps> props);
     virtual ~GPUEntities();
     const string getName();
-    void setEntsData(const Ogre::TexturePtr &texptr);
-    void setImposterTex(const Ogre::TexturePtr &texptr);
+    void setEntsData(const string texName);
+    void setImposterTex(const string texName);
+    GPUEntsGenProps* getProperties() {return _props.get();}
   protected:
-    Ogre::TexturePtr _gpuEntsData;
-    Ogre::TexturePtr _imposterTex;
-    Imposter* _imposter;
+    string _gpuEntsData;
+    string _imposterTex;
     string _entsName;
+    auto_ptr<GPUEntsGenProps> _props;
   private:
   };
 }

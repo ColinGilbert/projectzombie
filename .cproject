@@ -80,7 +80,7 @@
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.648678351" name="EngineController.h" rcbsApplicability="disable" resourcePath="include/EngineController.h" toolsToInvoke=""/>
 <fileInfo id="cdt.managedbuild.config.gnu.exe.debug.711965575.1301233051" name="ZDelegates.h" rcbsApplicability="disable" resourcePath="include/EventDelegates.h" toolsToInvoke=""/>
 <sourceEntries>
-<entry excluding="src/testsrc/CommonFixtures.h|src/testsrc/GPUEntsGenTest.cpp|src/testsrc/ZTestSuite.h|src/testsrc/ZTestSuite.cpp|src/testsrc/ZEntityTest.cpp|src/testsrc/ImposterGenTest.cpp|src/testsrc/GPUEntsGenPropsTest.cpp|src/testsrc/GPUEntsDistributorTest.cpp|Debug|test|src/test|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="src/testsrc/GPUEntsTestSuite.cpp|src/testsrc/CommonFixtures.h|src/testsrc/GPUEntsGenTest.cpp|src/testsrc/ZTestSuite.h|src/testsrc/ZTestSuite.cpp|src/testsrc/ZEntityTest.cpp|src/testsrc/ImposterGenTest.cpp|src/testsrc/GPUEntsGenPropsTest.cpp|src/testsrc/GPUEntsDistributorTest.cpp|Debug|test|src/test|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -632,7 +632,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="src/testsrc/CommonFixtures.h|src/testsrc/GPUEntsGenTest.cpp|src/testsrc/ZTestSuite.h|src/testsrc/ZTestSuite.cpp|src/testsrc/ZEntityTest.cpp|src/testsrc/ImposterGenTest.cpp|src/testsrc/GPUEntsGenPropsTest.cpp|src/testsrc/GPUEntsDistributorTest.cpp|test|src/test|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="src/testsrc/GPUEntsTestSuite.cpp|src/testsrc/CommonFixtures.h|src/testsrc/GPUEntsGenTest.cpp|src/testsrc/ZTestSuite.h|src/testsrc/ZTestSuite.cpp|src/testsrc/ZEntityTest.cpp|src/testsrc/ImposterGenTest.cpp|src/testsrc/GPUEntsGenPropsTest.cpp|src/testsrc/GPUEntsDistributorTest.cpp|test|src/test|Debug|Media" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>

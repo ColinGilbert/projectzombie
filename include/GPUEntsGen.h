@@ -20,7 +20,7 @@ namespace ZGame
   class GPUEntsGen
   {
   public:
-    GPUEntsGen(ZEntity* ent,GPUEntsGenProps* props);
+    GPUEntsGen(ZEntity* ent,auto_ptr<GPUEntsGenProps> props);
     virtual ~GPUEntsGen();
 
     void build();
@@ -31,14 +31,18 @@ namespace ZGame
 
     GPUEntities* _output;
     ZEntity* _ent;
-    GPUEntsGenProps* _props;
+    auto_ptr<GPUEntsGenProps> _props;
     Ogre::TexturePtr _stateTex;
     Ogre::TexturePtr _imposterTex;
     void genImposters();
     void loadPositions();
+    void genEntsGeom();//generate the entities' geometry
     void createStateTexture(); //Place-holder method for creating GPU entities state texture.
+    size_t nextId(); //get the next availible id.
 
     const string _gpuEntsName;
+
+    static size_t _uniqueId; //a unqiue id
 
   private:
   };

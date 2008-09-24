@@ -107,6 +107,9 @@ namespace ZGame
 
     _root->addFrameListener(this);
 
+    //set logging lvl
+    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
+
     return true;
   }
 
@@ -216,7 +219,6 @@ namespace ZGame
 
   bool EngineController::onKeyUp(const OIS::KeyEvent &event)
   {
-    cout << "In EngineController::onKeyUp" << endl;
     if(event.key == OIS::KC_ESCAPE)
       _stillRunning = false;
     _keyPump.updateKeyUpObs(event);
@@ -225,7 +227,6 @@ namespace ZGame
 
   bool EngineController::onKeyDown(const OIS::KeyEvent &event)
   {
-    cout << "In EngineController::onKeyDown" << endl;
     if(event.key == OIS::KC_LEFT)
       {
         //transitionState("GameMainMenuStateKey");

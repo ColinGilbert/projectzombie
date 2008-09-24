@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(test_gpuentsgenprops)
 {
   GPUEntsPropsFixture f;
 
-  GPUEntsGenProps props(f.texW,f.texH);
+  GPUEntsGenProps props(f.texW,f.texH,f.entHeight);
 
   props.setExtents(f.minx,f.minz,f.maxx,f.maxz);
   Ogre::AxisAlignedBox testBox;

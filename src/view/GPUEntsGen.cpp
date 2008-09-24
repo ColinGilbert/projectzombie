@@ -17,9 +17,13 @@ using namespace std;
 #include "ImposterGen.h"
 #include "GPUEntsGenProps.h"
 #include "GPUEntsDistributor.h"
+#include "EngineView.h"
 using namespace ZGame;
 using namespace Ogre;
-GPUEntsGen::GPUEntsGen(ZEntity* ent,GPUEntsGenProps* props) :_output(0),_ent(ent),_props(props),
+
+size_t GPUEntsGen::_uniqueId = 0;
+
+GPUEntsGen::GPUEntsGen(ZEntity* ent,auto_ptr<GPUEntsGenProps> props) :_output(0),_ent(ent),_props(props),
 _gpuEntsName("gpuEnts")
 {
 }
@@ -43,7 +47,10 @@ void GPUEntsGen::build()
   lm->logMessage(Ogre::LML_NORMAL,"Finished generating imposters.");
   loadPositions(); //load the positions into the state texture
   lm->logMessage(Ogre::LML_NORMAL,"Finished loading state texture.");
-  _output = new GPUEntities(_gpuEntsName,_stateTex,_imposterTex); //now we have enough information to build output.
+  genEntsGeom();
+  lm->logMessage(Ogre::LML_NORMAL,"Finished generating entities geometry");
+  _output = new GPUEntities(_gpuEntsName,_stateTex->getName().c_str(),
+      _imposterTex->getName().c_str(),_props); //now we have enough information to build output.
 }
 
 void GPUEntsGen::genImposters()
@@ -103,7 +110,7 @@ void GPUEntsGen::loadPositions()
 void GPUEntsGen::createStateTexture()
 {
 
-  string texName = _gpuEntsName + "statettex";
+  string texName = _gpuEntsName + "statettex"+nextId();
 
   _stateTex = TextureManager::getSingleton().createManual(texName,ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,TEX_TYPE_2D,
       _props->getTexWidth(),_props->getTexHeight(),0,Ogre::PF_FLOAT32_RGBA,TU_RENDERTARGET);
@@ -111,4 +118,12 @@ void GPUEntsGen::createStateTexture()
 }
 
 
+void GPUEntsGen::genEntsGeom()
+{
 
+}
+
+size_t GPUEntsGen::nextId()
+{
+  return _uniqueId++;
+}
