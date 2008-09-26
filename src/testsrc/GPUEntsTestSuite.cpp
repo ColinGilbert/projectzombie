@@ -85,6 +85,7 @@ BOOST_AUTO_TEST_SUITE(gpuentsmeshbld_test);
 BOOST_FIXTURE_TEST_CASE(test_gpumeshbld,GPUEntsTestSuite::Fix)
 {
   Ogre::MeshPtr ptr = GPUEntsMeshBuilder::build("GPUEntsMesh",gpuEnts->getProperties());
+  MeshManager::getSingleton().remove(ptr->getName());
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -94,7 +95,6 @@ BOOST_AUTO_TEST_SUITE(gpuentsview_test);
 BOOST_FIXTURE_TEST_CASE(test_gpuentsview,GPUEntsTestSuite::Fix)
 {
   GPUEntsView entsView;
-  entsView.init();
   entsView.attachGPUEnts(gpuEnts.get());
 }
 

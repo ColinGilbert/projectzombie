@@ -1,0 +1,44 @@
+vertex_program brickVertProgram glsl
+{
+  source ../programs/brick.vert
+  default_params
+    {
+      //default light position
+      param_named LightPosition float3 -0.0 0.0 10000.0
+    }
+}
+
+fragment_program brickFragProgram glsl
+{
+  source ../programs/brick.frag
+  default_params
+    {
+      param_named BrickColor float3 1.0 0.0 0.0
+      param_named MortarColor float3 0.5 0.5 0.5
+      param_named BrickSize float2 0.20 0.20
+      param_named BrickPct float2 0.9 0.87
+    }
+}
+
+material GpuFlowSim/brickMaterial
+{
+  technique advect
+  {
+    pass advect
+    {
+      vertex_program_ref brickVertProgram
+      {
+	param_named_auto LightPosition custom 1
+      }
+      fragment_program_ref brickFragProgram
+      {
+	param_named_auto BrickColor custom 2
+	param_named_auto MortarColor custom 3
+        param_named_auto BrickSize custom 4
+        param_named_auto BrickPct custom 5
+      }
+    }
+  }
+}
+
+

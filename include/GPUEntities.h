@@ -25,7 +25,9 @@ namespace ZGame
     virtual ~GPUEntities();
     const string getName();
     void setEntsData(const string texName);
+    const string getEntsData() { return _gpuEntsData;}
     void setImposterTex(const string texName);
+    const string getImposterTex() { return _imposterTex;}
     GPUEntsGenProps* getProperties() {return _props.get();}
   protected:
     string _gpuEntsData;

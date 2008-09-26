@@ -1,0 +1,25 @@
+vertex_program resultVertProgram glsl
+{
+  source ../programs/defaultVertexProgram.vert
+}
+fragment_program resultFragProgram glsl
+{
+  source ../programs/result.frag
+}
+
+material GpuFlowSim/resultMaterial
+{
+  technique result
+  {
+    pass result
+    {
+      vertex_program_ref resultVertProgram
+      {
+      }
+      fragment_program_ref resultFragProgram
+      {
+        param_named resultMap int 0
+      }
+    }
+  }
+}

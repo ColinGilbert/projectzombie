@@ -7,6 +7,9 @@
 
 #ifndef GPUENTSVIEW_H_
 #define GPUENTSVIEW_H_
+#include <string>
+using namespace std;
+#include "Ogre.h"
 namespace ZGame
 {
   class GPUEntities;
@@ -15,10 +18,19 @@ namespace ZGame
     public:
       GPUEntsView();
       virtual ~GPUEntsView();
-      void init();
       void attachGPUEnts(GPUEntities* ents);
+      void alphaBlend();
       GPUEntities* _ents;
     protected:
+      string _meshName;
+      string _entsOgrEntName;
+      string _entsOgrEntMatName;
+      Ogre::Entity* _ogrEnt;
+      bool _sceneAlphaBld;
+
+
+      void init();
+      void initOgrEnt();
       void createGPUEntsMesh();
   };
 

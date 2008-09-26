@@ -110,7 +110,9 @@ void GPUEntsGen::loadPositions()
 void GPUEntsGen::createStateTexture()
 {
 
-  string texName = _gpuEntsName + "statettex"+nextId();
+  ostringstream oss;
+  oss << _gpuEntsName << "statetex" << nextId();
+  string texName = oss.str();
 
   _stateTex = TextureManager::getSingleton().createManual(texName,ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,TEX_TYPE_2D,
       _props->getTexWidth(),_props->getTexHeight(),0,Ogre::PF_FLOAT32_RGBA,TU_RENDERTARGET);

@@ -8,12 +8,17 @@
 #ifndef GAMEMAINSTATE_H_
 #define GAMEMAINSTATE_H_
 
+#include <memory>
+#include <string>
+using namespace std;
 #include <Ogre.h>
 
 #include "GameState.h"
 
 namespace ZGame
 {
+  class GPUEntities;
+  class GPUEntsView;
   class GameMainState : public ZGame::GameState
   {
   public:
@@ -32,7 +37,10 @@ namespace ZGame
     //key events
     bool onKeyDown(const OIS::KeyEvent &evt);
     bool onKeyUp(const OIS::KeyEvent &evt);
-
+  protected:
+    auto_ptr<GPUEntities> _gpuEnts;
+    GPUEntsView* _gpuEntsView;
+    void createGPUEntities();
   };
 }
 

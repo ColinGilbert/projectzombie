@@ -1,0 +1,34 @@
+vertex_program TerrainVertProgram glsl
+{
+	uses_vertex_texture_fetch true
+	source ../programs/terrainVP.vert
+}
+
+fragment_program TerrainFragProgram glsl
+{
+	source ../programs/terrainFP.frag
+}
+
+
+material ZombieSim/GPUTerrainMaterial
+{
+	technique result
+	{
+		pass result
+		{
+			depth_check on
+			
+			
+			vertex_program_ref TerrainVertProgram
+			{
+				
+				param_named heightMap int 0
+				
+			}
+			fragment_program_ref TerrainFragProgram
+			{
+				param_named terrainTexture int 1
+			}
+		}
+	}
+}

@@ -1,0 +1,504 @@
+//All common vertex and frag programs are defined in this file.
+vertex_program myFlowSimDefaultVertProgram glsl
+{
+  source ../programs/defaultVertexProgram.vert
+}
+
+//fragment utilties
+
+//fragment_program myFlowSimUtilFrag glsl
+//{
+ // source ../programs/myflowsimutil.frag
+//}
+
+//flowsim frag programs
+fragment_program myFlowSimFrag glsl
+{
+  
+  source ../programs/myflowsim.frag
+ // attach myFlowSimUtilFrag
+}
+
+fragment_program jacobiFragProgram glsl
+{
+  source ../programs/jacobi.frag
+  attach myFlowSimFrag
+  default_params
+    {  
+      param_named alpha float -1.0
+      param_named rbeta float 0.25
+    }
+}
+
+fragment_program advectFragProgram glsl
+{
+  source ../programs/advect.frag
+  attach myFlowSimFrag
+  default_params
+  {
+    param_named dt float 0.1
+    param_named rdx float 1.0
+    param_named drate float 1.0 
+  }
+}
+
+fragment_program borderFragProgram1 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram2 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram3 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram4 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram5 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram6 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram7 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+fragment_program borderFragProgram8 glsl
+{
+  source ../programs/borders.frag
+  attach myFlowSimFrag
+}
+
+
+fragment_program divergenceFragProgram glsl
+{
+  source ../programs/div.frag
+  attach myFlowSimFrag
+  default_params
+    {
+      param_named halfrdx float 0.5
+    }
+}
+
+fragment_program vortiPass1FragProgram glsl
+{
+  source ../programs/vorti1.frag
+  attach myFlowSimFrag
+}
+
+fragment_program vortiPass2FragProgram glsl
+{
+  source ../programs/vorti2.frag
+  attach myFlowSimFrag
+  default_params
+    {
+      param_named dt float 0.1
+    }
+}
+
+
+
+fragment_program gradientSubFragProgram glsl
+{
+  source ../programs/gradsub.frag
+  attach myFlowSimFrag
+  default_params
+    {
+      param_named halfrdx float 0.5
+      param_named pIndex int 0
+    }
+}
+
+fragment_program zeroFieldFragProgram glsl
+{
+  source ../programs/zerofield.frag
+}
+
+fragment_program copyFieldFragProgram glsl
+{
+  source ../programs/copyfield.frag
+}
+
+fragment_program sourcesFragProgram glsl
+{
+  source ../programs/sources.frag
+  default_params
+    {
+      param_named sources float4 -5.0 0.0001 0.0001 1.0
+    }
+}
+
+material GpuFlowSim/sourcesMaterial
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	  {
+	  }
+	  fragment_program_ref sourcesFragProgram
+	  {
+	    param_named_auto sources custom 1
+	  }
+	}
+    }
+}
+
+
+material GpuFlowSim/copyFieldMaterial 
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	  {
+	  }
+	  fragment_program_ref copyFieldFragProgram
+	  {
+	    param_named field int 0
+	  }
+	}
+    }
+}
+
+material GpuFlowSim/zeroFieldMaterial 
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	  {
+	  }
+	  fragment_program_ref zeroFieldFragProgram
+	  {
+	    
+	  }
+	}
+    }
+}
+
+material GpuFlowSim/vortiPass1Material
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	    {
+	    }
+	  fragment_program_ref vortiPass1FragProgram
+	    {
+	      param_named u int 0
+	    }
+	}
+    }
+}
+
+material GpuFlowSim/vortiPass2Material
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+	    vertex_program_ref myFlowSimDefaultVertProgram
+	    {
+	    }
+	    fragment_program_ref vortiPass2FragProgram
+	      {
+		param_named vort int 0
+		param_named u int 1
+	      }
+	}
+    }
+}
+
+material GpuFlowSim/gradSubMaterial
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	  {
+	  }
+	  fragment_program_ref gradientSubFragProgram
+	  {
+	    param_named p int 0
+	    param_named w int 1
+	      //param_named_auto halfrdx custom 1
+	      //param_named_auto pIndex custom 2
+	  }
+	}
+    }
+}
+
+
+material GpuFlowSim/divergenceMaterial
+{
+  technique
+    {
+      pass
+	{
+	  depth_check off
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	  {
+	  }
+	  fragment_program_ref divergenceFragProgram
+	  {
+	    param_named vectorField int 0 
+	    param_named_auto halfrdx custom 1 
+	  }
+	}
+    }
+}
+
+
+//left border velocity
+material GpuFlowSim/leftBorderVelMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram1
+      {
+        param_named interiorMap int 0
+	param_named offset float2 1.0 0.0
+	param_named scale float -1.0
+      }
+    }
+  }
+}
+//left border pressure
+material GpuFlowSim/leftBorderPreMaterial
+{
+  technique
+  {
+    pass
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram2
+      {
+        param_named interiorMap int 0
+	param_named offset float2 1.0 0.0
+	param_named scale float 1.0
+      }
+      
+    }
+  }
+}
+//top border vel
+material GpuFlowSim/topBorderVelMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram3
+      {
+        param_named interiorMap int 0
+	//param_named offset float2 0.0 1.0
+	param_named offset float2 0.0 -1.0
+	param_named scale float -1.0
+      }
+    
+    }
+  }
+}
+//top border pre
+material GpuFlowSim/topBorderPreMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram4
+      {
+        param_named interiorMap int 0
+	//param_named offset float2 0.0 1.0
+	param_named offset float2 0.0 -1.0
+	param_named scale float 1.0
+      }
+ 
+    }
+  }
+}
+//right border vel
+material GpuFlowSim/rightBorderVelMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram5
+      {
+        param_named interiorMap int 0
+	param_named offset float2 -1.0 0.0
+	param_named scale float -1.0
+      }
+  
+    }
+  }
+}
+//right border pre
+material GpuFlowSim/rightBorderPreMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram6
+      {
+        param_named interiorMap int 0
+	param_named offset float2 -1.0 0.0
+	param_named scale float 1.0
+      }
+   
+    }
+  }
+}
+
+//bottom border vel
+material GpuFlowSim/bottomBorderVelMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram7
+      {
+        param_named interiorMap int 0
+	//param_named offset float2 0.0 -1.0
+	param_named offset float2 0.0 1.0
+	param_named scale float -1.0
+      }
+  
+    }
+  }
+}
+//bottom border pre
+material GpuFlowSim/bottomBorderPreMaterial
+{
+  technique
+  {
+    pass 
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref borderFragProgram8
+      {
+        param_named interiorMap int 0
+	//param_named offset float2 0.0 -1.0
+	param_named offset float2 0.0 1.0
+	param_named scale float 1.0
+      
+      }      
+    }
+  }
+}
+
+
+
+material GpuFlowSim/advectionMaterial
+{
+  technique advect
+  {
+    pass advect
+    {
+      depth_check off
+      vertex_program_ref myFlowSimDefaultVertProgram
+      {
+      }
+      fragment_program_ref advectFragProgram
+      {
+        param_named velocityMap int 0
+	param_named quantityMap int 1
+	param_named_auto dt custom 1
+	param_named_auto rdx custom 2
+	param_named_auto drate custom 3
+      }
+    }
+  }
+}
+
+material GpuFlowSim/jacobiMaterial
+{
+  technique 
+    {
+      pass 
+	{
+	  depth_check off
+	  vertex_program_ref myFlowSimDefaultVertProgram
+	  {
+	  }
+	  fragment_program_ref jacobiFragProgram
+	  {
+	    param_named x int 0
+	    param_named b int 1
+	    param_named_auto alpha custom 1
+	    param_named_auto rbeta custom 2
+	  }
+	}
+    }
+}
+

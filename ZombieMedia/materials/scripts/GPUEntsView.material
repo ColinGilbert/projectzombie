@@ -1,0 +1,58 @@
+material ZGame/Imposter
+{
+	technique
+	{
+		pass result
+		{
+			depth_check on
+			scene_blend alpha_blend
+			texture_unit ImposterTexture
+			{
+				colour_op alpha_blend
+			}
+		}
+	}
+}
+
+vertex_program GPUEntsViewVP glsl
+{
+	uses_vertex_texture_fetch true
+	source ../programs/GPUEntsView.vert
+}
+
+fragment_program GPUEntsViewFP glsl
+{
+	source ../programs/GPUEntsView.frag
+	param_named imposterWidth float 128.0
+	param_named imposterHeight float 128.0
+}
+
+material ZGame/GPUEntsView
+{
+	technique
+	{
+		pass result
+		{
+			
+			depth_check off
+			scene_blend alpha_blend
+			texture_unit EntStatesTex
+			{
+			}
+			texture_unit ImposterTex
+			{
+			}
+			vertex_program_ref GPUEntsViewVP
+			{
+				param_named gpuEntsStates int 0
+			}
+			
+			fragment_program_ref GPUEntsViewFP
+			{
+				param_named imposterTex int 1
+				
+			}
+		}
+		
+	}
+}

@@ -55,7 +55,7 @@ namespace ZGame
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
-    cam->setPosition(0,0,1600);
+    cam->setPosition(0,0,100.0);
     cam->lookAt(0,0,-1);
     cam->setNearClipDistance(1.0);
     return cam;
