@@ -5,16 +5,18 @@
 //Transform into projection space.
 
 uniform sampler2D gpuEntsStates; //the gpu entities' state texture
-uniform float imposterWidth;
-uniform float imposterHeight;
-uniform float texDim;
+//uniform float imposterWidth;
+//uniform float imposterHeight;
+//uniform float texDim;
+uniform float scaleS;
+uniform float scaleT;
 void main()
 {
 	const int STATE = 1;
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	vec2 scaleUV;
-	scaleUV.s = texDim/imposterWidth;
-	scaleUV.t = texDim/imposterHeight;
+	scaleUV.s = scaleS;
+	scaleUV.t = scaleT;
 	gl_TexCoord[0].st *= scaleUV;
 	gl_TexCoord[1] = gl_MultiTexCoord1;
 	

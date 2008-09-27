@@ -50,9 +50,11 @@ material ZGame/GPUEntsView
 			vertex_program_ref GPUEntsViewVP
 			{
 				param_named gpuEntsStates int 0
-				param_named texDim float 256.0
-				param_named imposterWidth float 128.0
-				param_named imposterHeight float 128.0
+				//param_named texDim float 256.0
+				//param_named imposterWidth float 128.0
+				//param_named imposterHeight float 128.0
+				param_named scaleS float 128.0
+				param_named scaleT float 128.0
 			}
 			
 			fragment_program_ref GPUEntsViewFP

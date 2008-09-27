@@ -66,7 +66,7 @@ bool GameMainState::onInit()
   Plane plane(Vector3::UNIT_Y,0);
   //ground testing plane
   MeshManager::getSingleton().createPlane("TempGroundPlane",
-        ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,plane,1650,1650,1,1,true,1,1,1,Vector3::UNIT_Z);
+        ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,plane,5000,5000,1,1,true,1,1,1,Vector3::UNIT_Z);
     SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
     string planeName = "TempGroundPlaneEntity";
     Entity* texEnt = scnMgr->createEntity(planeName,"TempGroundPlane");
@@ -75,6 +75,7 @@ bool GameMainState::onInit()
     SceneNode* texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name,Vector3(0.0f,-1.0f,0.0f));
     texNode->attachObject(texEnt);
     texNode->setVisible(true,true);
+    texNode->yaw(Radian(Math::DegreesToRadians(90.0f)));
   return true;
 }
 
@@ -158,7 +159,7 @@ void GameMainState::createGPUEntities()
   int texW = 512;
   int texH = 512;
   Real minX,maxX,minZ,maxZ; //the space into which we want to distribute the GPU entities
-  minX = -100.0f; maxX = 100.0f; minZ = -800.0; maxZ = 800.0f;
+  minX = -800.0f; maxX = 800.0f; minZ = -1500.0; maxZ = 1500.0f;
   Real entHeight = 2.0f; //1.6 meters
   auto_ptr<GPUEntsGenProps> props(new GPUEntsGenProps(texW,texH,entHeight));
   props->setExtents(minX,minZ,maxX,maxZ);

@@ -74,8 +74,12 @@ void GPUEntsView::initOgrEnt()
   size_t impHeight = tex->getHeight();
   //setup the width and height parameters
   //fragParams->setNamedConstant("texDim",(Real)128.0);
-  fragParams->setNamedConstant("imposterWidth", (Real)impWidth);
-  fragParams->setNamedConstant("imposterHeight", (Real) impHeight);
+  Real scaleS = 256.0/impWidth;
+  Real scaleT = 256.0/impHeight;
+  fragParams->setNamedConstant("scaleS",scaleS);
+  fragParams->setNamedConstant("scaleT",scaleT);
+  //fragParams->setNamedConstant("imposterWidth", (Real)impWidth);
+  //fragParams->setNamedConstant("imposterHeight", (Real) impHeight);
 
 
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());

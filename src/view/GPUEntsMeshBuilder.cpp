@@ -65,7 +65,7 @@ namespace ZGame
     //Now loop N entities and create a quad for each entity, with each quad having an ID corresponding to the entity.
     for (size_t j = 0; j < texH; j++)
       {
-        if (pointIndex == 65536)
+        if (pointIndex >= 65536)
           {
             man->end();
             man->begin("BaseWhiteNoLighting", RenderOperation::OT_TRIANGLE_LIST);
