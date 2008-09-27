@@ -18,8 +18,8 @@ using namespace std;
 using namespace Ogre;
 using namespace ZGame;
 
-GameMainState::GameMainState() : GameState(), _gpuEntsView(0),_cam(0),_dz(1.0f),_forward(false),_backward(false),
-_trans(false)
+GameMainState::GameMainState() : GameState(), _gpuEntsView(0),_cam(0),_dz(1.5f),_forward(false),_backward(false),
+_trans(1.0)
 {
 
 }
@@ -129,12 +129,12 @@ bool GameMainState::onKeyDown(const OIS::KeyEvent &evt)
       {
         _dz += 0.1;
         _trans = Math::Exp(_dz);
+
       }
     else if(evt.key == OIS::KC_D)
       {
         _dz -= 0.1;
         _trans = Math::Exp(_dz);
-
       }
     else if(evt.key == OIS::KC_Q)
       {
