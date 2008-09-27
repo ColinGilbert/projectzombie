@@ -56,25 +56,33 @@ void GPUEntsView::alphaBlend()
 
 void GPUEntsView::initOgrEnt()
 {
+  int pass = 0;
   LogManager* lm = LogManager::getSingletonPtr();
   lm->logMessage(LML_TRIVIAL,"GPUEntsView::initOgrEnt");
   MaterialPtr mat = MaterialManager::getSingleton().getByName(_entsOgrEntMatName.c_str());
-  GpuProgramParametersSharedPtr fragParams(mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters());
+  GpuProgramParametersSharedPtr fragParams(mat->getTechnique(0)->getPass(pass)->getVertexProgramParameters());
   TexturePtr tex = TextureManager::getSingleton().getByName(_ents->getEntsData());
   lm->logMessage(LML_TRIVIAL,"state texture data name:"+_ents->getEntsData());
   //attach state and imposter textures to material
-  mat->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName(tex->getName()); //state texture
+  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(0)->setTextureName(tex->getName()); //state texture
   tex = TextureManager::getSingleton().getByName(_ents->getImposterTex()); //imposter texture
   lm->logMessage(LML_TRIVIAL,"imposter texture name:"+_ents->getImposterTex());
-  mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName(tex->getName());
+  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(1)->setTextureName(tex->getName());
 
   //setup shader parameters
   size_t impWidth = tex->getWidth();
   size_t impHeight = tex->getHeight();
   //setup the width and height parameters
+  //fragParams->setNamedConstant("texDim",(Real)128.0);
   fragParams->setNamedConstant("imposterWidth", (Real)impWidth);
   fragParams->setNamedConstant("imposterHeight", (Real) impHeight);
+
+
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());
+
+
+
+
   lm->logMessage(LML_TRIVIAL,"About to set _ogrEnt visible");
   _ogrEnt->setVisible(true);
   lm->logMessage(LML_TRIVIAL,"GPUEntsView::initOgrEnt out");

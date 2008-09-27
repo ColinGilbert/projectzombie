@@ -98,7 +98,11 @@ void GPUEntsGen::loadPositions()
       for(int i=0;i<w;i++)
         {
           dist.nextPosition(pos); //get randomly distributed position
-          PixelUtil::packColour((float)pos.x,(float)pos.y,(float)pos.z,1.0f,Ogre::PF_FLOAT32_RGBA,(void*)(&pDest[pitchY*j+i]));
+          //PixelUtil::packColour((float)pos.x,(float)pos.y,0.0,0.0f,Ogre::PF_FLOAT32_RGBA,(void*)(&pDest[pitchY*j+i]));
+          *pDest++ = pos.x;
+          *pDest++ = pos.y;
+          *pDest++ = pos.z;
+          *pDest++ = 0.0f;
         }
     }
   pixBuffer->unlock();
@@ -115,7 +119,7 @@ void GPUEntsGen::createStateTexture()
   string texName = oss.str();
 
   _stateTex = TextureManager::getSingleton().createManual(texName,ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,TEX_TYPE_2D,
-      _props->getTexWidth(),_props->getTexHeight(),0,Ogre::PF_FLOAT32_RGBA,TU_RENDERTARGET);
+      _props->getTexWidth(),_props->getTexHeight(),0,Ogre::PF_FLOAT32_RGBA,Ogre::TU_DEFAULT);
 
 }
 

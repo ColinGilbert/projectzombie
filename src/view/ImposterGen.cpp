@@ -96,6 +96,9 @@ void ImposterGen::renderToTextures()
         }
       camRotatePhi(rotPhi); //reposition the camera according to phi
     }
+  rtt->setActive(false);
+  rtt->removeAllViewports();
+  rtt->removeAllListeners();
   _imposterNode->setVisible(false,true); //hide imposter
 }
 

@@ -40,7 +40,17 @@ namespace ZGame
   protected:
     auto_ptr<GPUEntities> _gpuEnts;
     GPUEntsView* _gpuEntsView;
+    Ogre::Camera* _cam;
+    Ogre::Real _dz;
+    bool _forward;
+    bool _backward;
+    Ogre::Real _trans;
+
+    void move();
+
     void createGPUEntities();
+
+
   };
 }
 

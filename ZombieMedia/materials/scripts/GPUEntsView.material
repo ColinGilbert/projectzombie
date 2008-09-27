@@ -18,13 +18,18 @@ vertex_program GPUEntsViewVP glsl
 {
 	uses_vertex_texture_fetch true
 	source ../programs/GPUEntsView.vert
+	
 }
 
 fragment_program GPUEntsViewFP glsl
 {
 	source ../programs/GPUEntsView.frag
-	param_named imposterWidth float 128.0
-	param_named imposterHeight float 128.0
+	
+}
+
+fragment_program GPUEntsViewDepthWrtOnly glsl
+{
+	source ../programs/GPUEntsViweDepthWrt.frag
 }
 
 material ZGame/GPUEntsView
@@ -33,9 +38,9 @@ material ZGame/GPUEntsView
 	{
 		pass result
 		{
-			
-			depth_check off
-			scene_blend alpha_blend
+			depth_check on
+			alpha_rejection greater 0
+			//scene_blend alpha_blend
 			texture_unit EntStatesTex
 			{
 			}
@@ -45,6 +50,9 @@ material ZGame/GPUEntsView
 			vertex_program_ref GPUEntsViewVP
 			{
 				param_named gpuEntsStates int 0
+				param_named texDim float 256.0
+				param_named imposterWidth float 128.0
+				param_named imposterHeight float 128.0
 			}
 			
 			fragment_program_ref GPUEntsViewFP

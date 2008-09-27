@@ -57,7 +57,7 @@ namespace ZGame
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setPosition(0,0,100.0);
     cam->lookAt(0,0,-1);
-    cam->setNearClipDistance(1.0);
+    cam->setNearClipDistance(0.5);
     return cam;
   }
 
@@ -80,6 +80,7 @@ namespace ZGame
     vp->setBackgroundColour(Ogre::ColourValue(1.0,0.0,0.0));
 
     cam->setAspectRatio(Real(vp->getActualWidth())/Real(vp->getActualHeight()));
+
     ///vp->setBackgroundColour(Ogre::ColourValue::Green);
     //vp->setClearEveryFrame(true);
     //cam->setAspectRatio((Ogre::Real)(vp->getActualWidth())/(Ogre::Real)(vp->getActualHeight()));
@@ -106,6 +107,7 @@ namespace ZGame
     injectInputSubject(_inController);
 
     _root->addFrameListener(this);
+
 
     //set logging lvl
     Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);

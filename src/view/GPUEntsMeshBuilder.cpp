@@ -43,9 +43,9 @@ namespace ZGame
           min + changeX + changeY }; //upper right
     Vector2 texCoords[4] =
       { Vector2(0.0f, 0.0f), //upper left
-          Vector2(1.0f, 0.0f), //lower left
+          Vector2(0.0f, 1.0f), //lower left
           Vector2(1.0f, 1.0f), //lower right
-          Vector2(0.0, 1.0f) //uppper right
+          Vector2(1.0, 0.0f) //uppper right
         };
     SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
     ManualObject* man = scnMgr->createManualObject(manName.c_str());
@@ -96,7 +96,8 @@ namespace ZGame
       }
     man->end();
     Ogre::AxisAlignedBox infAAB;
-    infAAB.setInfinite();
+    //infAAB.setInfinite();
+    infAAB.setExtents(-2500.0,-2500.0,-2500.0,2500.0,2500.0,2500.0);
     man->setBoundingBox(infAAB);
     MeshPtr mesh = man->convertToMesh(name);
     scnMgr->destroyManualObject(man);
