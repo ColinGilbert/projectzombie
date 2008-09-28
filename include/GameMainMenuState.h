@@ -18,10 +18,6 @@ namespace ZGame
     GameMainMenuState();
     virtual ~GameMainMenuState();
 
-    virtual void initialize();
-    void injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject);
-    void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
-
     //life cycle methods
     bool onUpdate(const Ogre::FrameEvent& evt);
     bool onInit();
@@ -31,6 +27,9 @@ namespace ZGame
     bool onKeyUp(const OIS::KeyEvent &evt);
     bool onKeyDown(const OIS::KeyEvent &evt);
 
+  protected:
+    virtual void regLfcObsForInjection();
+    virtual void regKeyObsForInjection();
 
   };
 }

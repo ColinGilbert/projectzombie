@@ -29,33 +29,22 @@ GameMainState::~GameMainState()
 
 }
 
-void GameMainState::initialize()
-{
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState::initialize()");
-  //add life cycle stuff here
-  LifeCycle::LifeCycleSubjectInjector lfSubInjector;
-  lfSubInjector.bind(&GameMainState::injectLifeCycleSubject,this);
-  addLifeCycleSubjectInjector(lfSubInjector);
-  EVENT::KeyEvtSubjectInjector keySubInjector;
-  keySubInjector.bind(&GameMainState::injectKeyEvtSubject,this);
-  addKeySubjectInjector(keySubInjector);
-}
-
-void GameMainState::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject)
+void GameMainState::regLfcObsForInjection()
 {
   LifeCycle::LifeCycleObserver lfcObs;
   lfcObs.onInit.bind(&GameMainState::onInit,this);
   lfcObs.onUpdate.bind(&GameMainState::onUpdate,this);
   lfcObs.onDestroy.bind(&GameMainState::onDestroy,this);
-  subject(lfcObs);
+  //don't forget to call helper method to register, else exception is thrown.
+  registerLfcObs(lfcObs);
 }
 
-void GameMainState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject)
+void GameMainState::regKeyObsForInjection()
 {
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameMainState::onKeyDown,this);
   keyObs.kue.bind(&GameMainState::onKeyUp,this);
-  subject(keyObs);
+  registerKeyObs(keyObs);//make sure we register else exception!
 }
 
 bool GameMainState::onInit()

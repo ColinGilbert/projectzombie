@@ -19,26 +19,22 @@ GameMainMenuState::~GameMainMenuState()
 
 }
 
-void GameMainMenuState::initialize()
-{
 
-}
-
-void GameMainMenuState::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject)
+void GameMainMenuState::regLfcObsForInjection()
 {
   LifeCycle::LifeCycleObserver lfcObs;
   lfcObs.onInit.bind(&GameMainMenuState::onInit,this);
   lfcObs.onUpdate.bind(&GameMainMenuState::onUpdate,this);
   lfcObs.onDestroy.bind(&GameMainMenuState::onDestroy,this);
-  subject(lfcObs);
+  registerLfcObs(lfcObs);
 }
 
-void GameMainMenuState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject)
+void GameMainMenuState::regKeyObsForInjection()
 {
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameMainMenuState::onKeyDown,this);
   keyObs.kue.bind(&GameMainMenuState::onKeyUp,this);
-  subject(keyObs);
+  registerKeyObs(keyObs); //better register else exception is thrown
 }
 
 bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)

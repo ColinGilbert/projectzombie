@@ -22,41 +22,10 @@ namespace ZGame
     // TODO Auto-generated destructor stub
   }
 
-
-  void GameState::addLifeCycleSubjectInjector(ZGame::LifeCycle::LifeCycleSubjectInjector &injector)
+  void GameState::init()
   {
-    Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_TRIVIAL,"In addLifeCycleSubjectInjector");
-    _subjectInjectors.push_back(injector);
-  }
-
-  void GameState::addKeySubjectInjector(ZGame::EVENT::KeyEvtSubjectInjector& injector)
-  {
-    Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_TRIVIAL,"In addKeySubjectInjector");
-    _keyEvtSubjectInjectors.push_back(injector);
-  }
-
-  void GameState::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject)
-  {
-    Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_TRIVIAL,"In injectLifeCycleSubject");
-    for(SubjectInjectorsItr it=_subjectInjectors.begin(); it != _subjectInjectors.end(); ++it)
-      {
-        (*it)(subject);
-      }
-    _subjectInjectors.clear(); //we're done with injectors since we injected subject to them.
-  }
-
-  void GameState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject& subject)
-  {
-    Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-    lm->logMessage(Ogre::LML_TRIVIAL,"In injectKeyEvtSubject");
-    for(KeyEvtSubInjectorItr it=_keyEvtSubjectInjectors.begin();it!=_keyEvtSubjectInjectors.end();++it)
-      {
-        (*it)(subject);
-      }
-    _keyEvtSubjectInjectors.clear(); //done with injectors since we injected subjects to them.
+    regLfcObsForInjection(); //register life cycle observers for injection.
+    regKeyObsForInjection(); //register key observers for injection.
   }
 
 

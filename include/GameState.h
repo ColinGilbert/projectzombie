@@ -14,31 +14,19 @@ using namespace std;
 
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
-
+#include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
 namespace ZGame
 {
 
-  class GameState
+  class GameState : public LifeCycleRegister, public KeyEventRegister
   {
   public:
     virtual
     ~GameState();
-
-    void injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject);
-    void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
-    virtual void initialize() = 0;
-
+    void init();
   protected:
-    typedef vector<ZGame::LifeCycle::LifeCycleSubjectInjector>::iterator SubjectInjectorsItr;
-    typedef vector<ZGame::EVENT::KeyEvtSubjectInjector>::iterator KeyEvtSubInjectorItr;
-    vector<ZGame::LifeCycle::LifeCycleSubjectInjector> _subjectInjectors;
-    vector<ZGame::EVENT::KeyEvtSubjectInjector> _keyEvtSubjectInjectors;
-
     GameState(); //protected constructor
-
-    void addLifeCycleSubjectInjector(ZGame::LifeCycle::LifeCycleSubjectInjector &injector);
-    void addKeySubjectInjector(ZGame::EVENT::KeyEvtSubjectInjector &injector);
-
   };
 
 }

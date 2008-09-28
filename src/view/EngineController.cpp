@@ -326,20 +326,17 @@ namespace ZGame
         if(_curGameState != 0)
           throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState = ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass);
-        _curGameState->initialize();
-
+        _curGameState->init();
         //Inject LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
         lcs.bind(&LifeCyclePump::addLifeCycleObserver,&_lfcPump);
-        //lcs.bind(&EngineController::addLifeCycleObserver,this);
-        _curGameState->injectLifeCycleSubject(lcs);
-
+        _curGameState->injectLfcSubj(lcs);
         //Inject Keyboard subject
         EVENT::KeyEvtSubject ks; //keyboard subject
         ks.bind(&KeyboardPump::addKeyboardObserver,&_keyPump);
-        _curGameState->injectKeyEvtSubject(ks);
+        _curGameState->injectKeySubj(ks);
 
-        _lfcPump.updateOnItObs();
+        _lfcPump.updateOnItObs(); //pump on init event to observers.
       }
 
   }

@@ -22,44 +22,21 @@ GameEditState::~GameEditState()
 }
 
 
-
-void GameEditState::initialize()
-{
-  _editView = new GameEditView();
-  Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-  lm->logMessage(Ogre::LML_TRIVIAL,"In GameEditState initialize");
-  //add life cycle stuff here
-  LifeCycle::LifeCycleSubjectInjector lfSubInjector;
-  lfSubInjector.bind(&GameEditState::injectLifeCycleSubject,this);
-  addLifeCycleSubjectInjector(lfSubInjector); //add the injector
-  EVENT::KeyEvtSubjectInjector keySubInjector;
-  keySubInjector.bind(&GameEditState::injectKeyEvtSubject,this);
-  addKeySubjectInjector(keySubInjector); //add the injector
-  //add gameview subject injector
-  _editView->fillLifeCycleSubjectInjector(lfSubInjector);
-  _editView->fillKeySubjectInjector(keySubInjector);
-  addLifeCycleSubjectInjector(lfSubInjector);
-  addKeySubjectInjector(keySubInjector);
-
-}
-
-void GameEditState::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject)
+void GameEditState::regLfcObsForInjection()
 {
   LifeCycle::LifeCycleObserver lfcObs;
-  lfcObs.onInit.bind(&GameEditState::onInit,this);
-  lfcObs.onUpdate.bind(&GameEditState::onUpdate,this);
-  lfcObs.onDestroy.bind(&GameEditState::onDestroy,this);
-  subject(lfcObs);
-
-
+  lfcObs.onInit.bind(&GameEditState::onInit, this);
+  lfcObs.onUpdate.bind(&GameEditState::onUpdate, this);
+  lfcObs.onDestroy.bind(&GameEditState::onDestroy, this);
+  registerLfcObs(lfcObs); //register to LifeCycleRegister
 }
 
-void GameEditState::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject)
+void GameEditState::regKeyObsForInjection()
 {
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameEditState::onKeyDown,this);
   keyObs.kue.bind(&GameEditState::onKeyUp,this);
-  subject(keyObs); //make delegate call
+  registerKeyObs(keyObs); //better register else exception
 }
 
 bool GameEditState::onInit()

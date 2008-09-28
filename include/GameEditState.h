@@ -22,11 +22,7 @@ public:
   virtual
   ~GameEditState();
 
-  virtual void initialize();
-  void injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject);
-  void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
-
-  //life cycle methods
+   //life cycle methods
   bool onUpdate(const Ogre::FrameEvent& evt);
   bool onInit();
   bool onDestroy();
@@ -38,6 +34,8 @@ public:
 protected:
   GameEditView* _editView;
 
+  virtual void regLfcObsForInjection();
+  virtual void regKeyObsForInjection();
 };
 }
 #endif /* GAMEEDITSTATE_H_ */

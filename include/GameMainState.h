@@ -25,10 +25,6 @@ namespace ZGame
     GameMainState();
     virtual ~GameMainState();
 
-    virtual void initialize();
-    void injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject);
-    void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
-
     //life cycle methods
     bool onUpdate(const Ogre::FrameEvent &evt);
     bool onInit();
@@ -45,6 +41,9 @@ namespace ZGame
     bool _forward;
     bool _backward;
     Ogre::Real _trans;
+
+    virtual void regLfcObsForInjection();
+    virtual void regKeyObsForInjection();
 
     void move();
 

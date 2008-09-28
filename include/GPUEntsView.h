@@ -12,6 +12,7 @@ using namespace std;
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
 using namespace Ogre;
+#include "LifeCycleRegister.h"
 namespace ZGame
 {
   class GPUEntities;

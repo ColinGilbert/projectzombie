@@ -81,16 +81,7 @@ void GPUEntsView::initOgrEnt()
   Real scaleT = 256.0/impHeight;
   _vertParam->setNamedConstant("scaleS",scaleS);
   _vertParam->setNamedConstant("scaleT",scaleT);
-
-
-  //fragParams->setNamedConstant("imposterWidth", (Real)impWidth);
-  //fragParams->setNamedConstant("imposterHeight", (Real) impHeight);
-
-
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());
-
-
-
 
   lm->logMessage(LML_TRIVIAL,"About to set _ogrEnt visible");
   _ogrEnt->setVisible(true);
