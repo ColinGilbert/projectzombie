@@ -8,6 +8,7 @@
 #include "GPUEntities.h"
 #include "EngineView.h"
 #include "GPUEntsMeshBuilder.h"
+#include <Ogre.h>
 using namespace ZGame;
 using namespace Ogre;
 GPUEntsView::GPUEntsView() : _meshName("GPUEntsMesh"),_entsOgrEntName("GPUEntsEntities"),
@@ -54,13 +55,15 @@ void GPUEntsView::alphaBlend()
 }
 
 
+//void GPUEntsView::initOgrEnt()
 void GPUEntsView::initOgrEnt()
 {
   int pass = 0;
   LogManager* lm = LogManager::getSingletonPtr();
   lm->logMessage(LML_TRIVIAL,"GPUEntsView::initOgrEnt");
   MaterialPtr mat = MaterialManager::getSingleton().getByName(_entsOgrEntMatName.c_str());
-  GpuProgramParametersSharedPtr fragParams(mat->getTechnique(0)->getPass(pass)->getVertexProgramParameters());
+
+  _vertParam = mat->getTechnique(0)->getPass(pass)->getVertexProgramParameters();
   TexturePtr tex = TextureManager::getSingleton().getByName(_ents->getEntsData());
   lm->logMessage(LML_TRIVIAL,"state texture data name:"+_ents->getEntsData());
   //attach state and imposter textures to material
@@ -76,8 +79,10 @@ void GPUEntsView::initOgrEnt()
   //fragParams->setNamedConstant("texDim",(Real)128.0);
   Real scaleS = 256.0/impWidth;
   Real scaleT = 256.0/impHeight;
-  fragParams->setNamedConstant("scaleS",scaleS);
-  fragParams->setNamedConstant("scaleT",scaleT);
+  _vertParam->setNamedConstant("scaleS",scaleS);
+  _vertParam->setNamedConstant("scaleT",scaleT);
+
+
   //fragParams->setNamedConstant("imposterWidth", (Real)impWidth);
   //fragParams->setNamedConstant("imposterHeight", (Real) impHeight);
 

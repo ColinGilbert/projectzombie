@@ -55,6 +55,9 @@ material ZGame/GPUEntsView
 				//param_named imposterHeight float 128.0
 				param_named scaleS float 128.0
 				param_named scaleT float 128.0
+				param_named eyePos float3 0.0 0.0 0.0
+				param_named eyeUp float3 0.0 1.0 0.0
+				param_named eyeRightInverse float3 -1.0 0.0 0.0
 			}
 			
 			fragment_program_ref GPUEntsViewFP

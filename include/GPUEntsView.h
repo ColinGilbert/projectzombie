@@ -9,7 +9,9 @@
 #define GPUENTSVIEW_H_
 #include <string>
 using namespace std;
-#include "Ogre.h"
+#include <Ogre.h>
+#include <OgreGpuProgram.h>
+using namespace Ogre;
 namespace ZGame
 {
   class GPUEntities;
@@ -27,11 +29,12 @@ namespace ZGame
       string _entsOgrEntMatName;
       Ogre::Entity* _ogrEnt;
       bool _sceneAlphaBld;
-
+      GpuProgramParametersSharedPtr _vertParam;
 
       void init();
       void initOgrEnt();
       void createGPUEntsMesh();
+
   };
 
 }
