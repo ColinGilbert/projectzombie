@@ -28,7 +28,7 @@ void GameEditState::regLfcObsForInjection()
   lfcObs.onInit.bind(&GameEditState::onInit, this);
   lfcObs.onUpdate.bind(&GameEditState::onUpdate, this);
   lfcObs.onDestroy.bind(&GameEditState::onDestroy, this);
-  registerLfcObs(lfcObs); //register to LifeCycleRegister
+  _lfcRegister->registerLfcObs(lfcObs); //register to LifeCycleRegister
 }
 
 void GameEditState::regKeyObsForInjection()
@@ -36,7 +36,7 @@ void GameEditState::regKeyObsForInjection()
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameEditState::onKeyDown,this);
   keyObs.kue.bind(&GameEditState::onKeyUp,this);
-  registerKeyObs(keyObs); //better register else exception
+  _keyRegister->registerKeyObs(keyObs); //better register else exception
 }
 
 bool GameEditState::onInit()

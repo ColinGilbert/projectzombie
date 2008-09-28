@@ -14,7 +14,7 @@ using namespace std;
 #include "GPUEntsGen.h"
 #include "ZEntity.h"
 #include "EngineView.h"
-
+#include <Ogre.h>
 using namespace Ogre;
 using namespace ZGame;
 
@@ -26,17 +26,17 @@ _trans(1.0)
 
 GameMainState::~GameMainState()
 {
-
 }
 
 void GameMainState::regLfcObsForInjection()
 {
+
   LifeCycle::LifeCycleObserver lfcObs;
   lfcObs.onInit.bind(&GameMainState::onInit,this);
   lfcObs.onUpdate.bind(&GameMainState::onUpdate,this);
   lfcObs.onDestroy.bind(&GameMainState::onDestroy,this);
   //don't forget to call helper method to register, else exception is thrown.
-  registerLfcObs(lfcObs);
+  _lfcRegister->registerLfcObs(lfcObs);
 }
 
 void GameMainState::regKeyObsForInjection()
@@ -44,7 +44,7 @@ void GameMainState::regKeyObsForInjection()
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameMainState::onKeyDown,this);
   keyObs.kue.bind(&GameMainState::onKeyUp,this);
-  registerKeyObs(keyObs);//make sure we register else exception!
+  _keyRegister->registerKeyObs(keyObs);//make sure we register else exception!
 }
 
 bool GameMainState::onInit()

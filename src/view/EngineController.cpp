@@ -330,13 +330,14 @@ namespace ZGame
         //Inject LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
         lcs.bind(&LifeCyclePump::addLifeCycleObserver,&_lfcPump);
-        _curGameState->injectLfcSubj(lcs);
+        _curGameState->getLFCRegister()->injectLfcSubj(lcs);
         //Inject Keyboard subject
         EVENT::KeyEvtSubject ks; //keyboard subject
         ks.bind(&KeyboardPump::addKeyboardObserver,&_keyPump);
-        _curGameState->injectKeySubj(ks);
+        _curGameState->getKeyRegister()->injectKeySubj(ks);
 
         _lfcPump.updateOnItObs(); //pump on init event to observers.
+        _curGameState->cleanRegisters();
       }
 
   }

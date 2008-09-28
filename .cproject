@@ -36,6 +36,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
 <listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.871671032" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
@@ -48,6 +49,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
 <listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1228938247" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
@@ -72,6 +74,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
 <listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1731471188" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
@@ -793,6 +796,9 @@
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.767211214" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
 <option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1725819805" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.exe.release.option.debugging.level.448622561" name="Debug Level" superClass="gnu.c.compiler.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.1386606500" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1377781907" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1254557578" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
@@ -807,6 +813,12 @@
 </inputType>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.651836955" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release">
+<option id="gnu.both.asm.option.include.paths.442009868" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
+<listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+<listOptionValue builtIn="false" value="/usr/local/include/OGRE"/>
+<listOptionValue builtIn="false" value="/usr/local/include/boost-1_36"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1407417117" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -1520,12 +1532,16 @@
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/boost"/>
 <listOptionValue builtIn="false" value="/usr/local/include/boost-1_36/"/>
 <listOptionValue builtIn="false" value="/usr/include/libnoise"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1361547044" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1798104283" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.exe.debug.option.optimization.level.1379132053" name="Optimization Level" superClass="gnu.c.compiler.exe.debug.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.exe.debug.option.debugging.level.628082649" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.681364773" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.2040108088" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.43170921" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
@@ -1546,6 +1562,9 @@
 </inputType>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1678173002" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
+<option id="gnu.both.asm.option.include.paths.239540622" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PZombieGoogle/include}&quot;"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1859582092" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>

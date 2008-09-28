@@ -14,7 +14,8 @@ namespace ZGame
   GameState::GameState()
   {
     // TODO Auto-generated constructor stub
-
+    _lfcRegister = new LifeCycleRegister();
+    _keyRegister = new KeyEventRegister();
   }
 
   GameState::~GameState()
@@ -26,6 +27,8 @@ namespace ZGame
   {
     regLfcObsForInjection(); //register life cycle observers for injection.
     regKeyObsForInjection(); //register key observers for injection.
+    //done with registers
+
   }
 
 

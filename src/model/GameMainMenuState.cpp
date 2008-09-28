@@ -26,7 +26,7 @@ void GameMainMenuState::regLfcObsForInjection()
   lfcObs.onInit.bind(&GameMainMenuState::onInit,this);
   lfcObs.onUpdate.bind(&GameMainMenuState::onUpdate,this);
   lfcObs.onDestroy.bind(&GameMainMenuState::onDestroy,this);
-  registerLfcObs(lfcObs);
+  _lfcRegister->registerLfcObs(lfcObs);
 }
 
 void GameMainMenuState::regKeyObsForInjection()
@@ -34,7 +34,7 @@ void GameMainMenuState::regKeyObsForInjection()
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameMainMenuState::onKeyDown,this);
   keyObs.kue.bind(&GameMainMenuState::onKeyUp,this);
-  registerKeyObs(keyObs); //better register else exception is thrown
+  _keyRegister->registerKeyObs(keyObs); //better register else exception is thrown
 }
 
 bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
