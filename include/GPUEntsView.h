@@ -12,10 +12,14 @@ using namespace std;
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
 using namespace Ogre;
-#include "LifeCycleRegister.h"
+
 namespace ZGame
 {
   class GPUEntities;
+  namespace LifeCycle
+  {
+    struct LifeCycleObserver;
+  }
   class GPUEntsView
   {
     public:
@@ -23,6 +27,10 @@ namespace ZGame
       virtual ~GPUEntsView();
       void attachGPUEnts(GPUEntities* ents);
       void alphaBlend();
+      bool onUpdate(const Ogre::FrameEvent &evt);
+
+      void fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
+
       GPUEntities* _ents;
     protected:
       string _meshName;

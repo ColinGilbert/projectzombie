@@ -18,7 +18,7 @@ namespace ZGame
     KeyboardPump();
     ~KeyboardPump();
 
-    void addKeyboardObserver(ZGame::EVENT::KeyboardEvtObserver obs);
+    void addKeyboardObserver(const ZGame::EVENT::KeyboardEvtObserver &obs);
     void updateKeyUpObs(const OIS::KeyEvent &evt);
     void updateKeyDownObs(const OIS::KeyEvent &evt);
     void removeAllObs();

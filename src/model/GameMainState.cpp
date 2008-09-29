@@ -14,11 +14,12 @@ using namespace std;
 #include "GPUEntsGen.h"
 #include "ZEntity.h"
 #include "EngineView.h"
+#include "LifeCycleDelegatesUtil.h"
 #include <Ogre.h>
 using namespace Ogre;
 using namespace ZGame;
 
-GameMainState::GameMainState() : GameState(), _gpuEntsView(0),_cam(0),_dz(1.5f),_forward(false),_backward(false),
+GameMainState::GameMainState() : GameState(), _gpuEntsView(new GPUEntsView()),_cam(0),_dz(1.5f),_forward(false),_backward(false),
 _trans(1.0)
 {
 
@@ -36,6 +37,10 @@ void GameMainState::regLfcObsForInjection()
   lfcObs.onUpdate.bind(&GameMainState::onUpdate,this);
   lfcObs.onDestroy.bind(&GameMainState::onDestroy,this);
   //don't forget to call helper method to register, else exception is thrown.
+  _lfcRegister->registerLfcObs(lfcObs);
+  //register objects that belongs in this state
+  LifeCycle::clearLfcObs(lfcObs);
+  _gpuEntsView->fillLfcObservers(lfcObs);
   _lfcRegister->registerLfcObs(lfcObs);
 }
 
@@ -155,7 +160,7 @@ void GameMainState::createGPUEntities()
   GPUEntsGen entsGen(&zent,props);
   entsGen.build();
   _gpuEnts = entsGen.getOutput();
-  _gpuEntsView = new GPUEntsView();
+  //_gpuEntsView = new GPUEntsView();
   _gpuEntsView->attachGPUEnts(_gpuEnts.get());
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"GameMainState::createGPUEntities done");
 }

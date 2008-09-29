@@ -17,7 +17,7 @@ namespace ZGame
     LifeCyclePump();
     ~LifeCyclePump();
 
-    void addLifeCycleObserver(ZGame::LifeCycle::LifeCycleObserver obs);
+    void addLifeCycleObserver(const ZGame::LifeCycle::LifeCycleObserver &obs);
 
     //life cycle updates
     void updateOnItObs();

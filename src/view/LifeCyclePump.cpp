@@ -19,11 +19,14 @@ LifeCyclePump::~LifeCyclePump()
 
 }
 
-void LifeCyclePump::addLifeCycleObserver(ZGame::LifeCycle::LifeCycleObserver obs)
+void LifeCyclePump::addLifeCycleObserver(const ZGame::LifeCycle::LifeCycleObserver &obs)
 {
-  _onInitObs.push_back(obs.onInit);
-  _onUpdateObs.push_back(obs.onUpdate);
-  _onDestroyObs.push_back(obs.onDestroy);
+  if(obs.onInit != 0)
+    _onInitObs.push_back(obs.onInit);
+  if(obs.onUpdate != 0)
+    _onUpdateObs.push_back(obs.onUpdate);
+  if(obs.onDestroy != 0)
+    _onDestroyObs.push_back(obs.onDestroy);
 }
 
 /**

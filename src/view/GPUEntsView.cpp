@@ -4,11 +4,13 @@
  *  Created on: Sep 22, 2008
  *      Author: bey0nd
  */
+#include <iostream>
+using namespace std;
 #include "GPUEntsView.h"
 #include "GPUEntities.h"
 #include "EngineView.h"
 #include "GPUEntsMeshBuilder.h"
-#include <Ogre.h>
+#include "LifeCycleDelegates.h"
 using namespace ZGame;
 using namespace Ogre;
 GPUEntsView::GPUEntsView() : _meshName("GPUEntsMesh"),_entsOgrEntName("GPUEntsEntities"),
@@ -37,6 +39,17 @@ void GPUEntsView::init()
   node->attachObject(_ogrEnt);
   initOgrEnt();
   lm->logMessage(LML_TRIVIAL,"GPUEntsView::init out");
+}
+
+bool GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
+{
+  return true;
+}
+
+
+void GPUEntsView::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
+{
+  obs.onUpdate.bind(&GPUEntsView::onUpdate,this);
 }
 
 void GPUEntsView::alphaBlend()
