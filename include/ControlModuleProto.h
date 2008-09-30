@@ -15,6 +15,15 @@ using namespace Ogre;
 namespace ZGame
 {
 
+  namespace EVENT
+  {
+    struct KeyboardEvtObserver;
+    struct MouseEvtObserver;
+  }
+  namespace LifeCycle
+  {
+    struct LifeCycleObserver;
+  }
   class ControlModuleProto
   {
   public:
@@ -22,8 +31,27 @@ namespace ZGame
     virtual
     ~ControlModuleProto();
 
+    //register observers for event
+    void fillKeyObs(EVENT::KeyboardEvtObserver &obs);
+    void fillMouseObs(EVENT::MouseEvtObserver &obs);
+    void fillLfcObs(LifeCycle::LifeCycleObserver &obs);
+    //events methods
     bool onKeyDown(const OIS::KeyEvent &evt);
     bool onKeyUp(const OIS::KeyEvent &evt);
+    bool onMouseMove(const OIS::MouseEvent &evt);
+    bool onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+    bool onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+    bool onUpdate(const Ogre::FrameEvent &evt);
+  protected:
+
+    enum CtrlModes {NONE,FORWARD,BACKWARD,LEFT,RIGHT,UP,DOWN};
+    CtrlModes _ctrlModes;
+
+    Real _dz; //change in z in the local axes
+    Real _transFactor; //translation factor;
+    Ogre::Camera* _cam;
+
+    void updateTransFactor(Real factor);
 
   };
 

@@ -22,6 +22,7 @@ namespace ZGame
   class LifeCycleRegister;
   class KeyEventRegister;
   class MouseEventRegister;
+  class ControlModuleProto;
   class GameMainState : public ZGame::GameState
   {
   public:
@@ -44,6 +45,7 @@ namespace ZGame
     bool _forward;
     bool _backward;
     Ogre::Real _trans;
+    ControlModuleProto* _controlMod;
 
     virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
     virtual void regKeyObsForInjection(KeyEventRegister &keyReg);

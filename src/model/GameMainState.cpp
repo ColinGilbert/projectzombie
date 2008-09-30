@@ -18,11 +18,12 @@ using namespace std;
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
+#include "ControlModuleProto.h"
 using namespace Ogre;
 using namespace ZGame;
 
 GameMainState::GameMainState() : GameState(), _gpuEntsView(new GPUEntsView()),_cam(0),_dz(1.5f),_forward(false),_backward(false),
-_trans(1.0)
+_trans(1.0),_controlMod(new ControlModuleProto())
 {
 
 }
@@ -44,14 +45,24 @@ void GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
   LifeCycle::clearLfcObs(lfcObs);
   _gpuEntsView->fillLfcObservers(lfcObs);
   lfcReg.registerLfcObs(lfcObs);
+  //register control module
+  LifeCycle::clearLfcObs(lfcObs);
+  _controlMod->fillLfcObs(lfcObs);
+  lfcReg.registerLfcObs(lfcObs);
 }
 
 void GameMainState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
+
   EVENT::KeyboardEvtObserver keyObs;
+  /*
   keyObs.kde.bind(&GameMainState::onKeyDown,this);
   keyObs.kue.bind(&GameMainState::onKeyUp,this);
   keyReg.registerKeyObs(keyObs);//make sure we register else exception!
+  */
+  _controlMod->fillKeyObs(keyObs);
+  keyReg.registerKeyObs(keyObs);
+
 }
 
 void GameMainState::regMouseObsForInjection(MouseEventRegister &mouseReg)
@@ -80,21 +91,8 @@ bool GameMainState::onInit()
   return true;
 }
 
-void GameMainState::move()
-{
-  if(_forward)
-    {
-      _cam->moveRelative(Vector3(0.0f,0.0f,-_trans));
-    }
-  else if(_backward)
-    {
-      _cam->moveRelative(Vector3(0.0f,0.0f,_trans));
-    }
-}
-
 bool GameMainState::onUpdate(const Ogre::FrameEvent &evt)
 {
-  move();
  return true;
 }
 
@@ -108,48 +106,11 @@ bool GameMainState::onDestroy()
 
 bool GameMainState::onKeyDown(const OIS::KeyEvent &evt)
 {
-
-
-  //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState::onKeyDown");
-  if(evt.key == OIS::KC_W)
-      {
-        _forward = true;
-      }
-    else if(evt.key == OIS::KC_S)
-      {
-        _backward = true;
-      }
-    else if(evt.key == OIS::KC_UP)
-      {
-        _cam->moveRelative(Vector3(0.0f,_trans,0.0f));
-      }
-    else if(evt.key == OIS::KC_DOWN)
-      {
-        _cam->moveRelative(Vector3(0.0f,-_trans,0.0f));
-      }
-    else if(evt.key == OIS::KC_A)
-      {
-        _dz += 0.1;
-        _trans = Math::Exp(_dz);
-
-      }
-    else if(evt.key == OIS::KC_D)
-      {
-        _dz -= 0.1;
-        _trans = Math::Exp(_dz);
-      }
-    else if(evt.key == OIS::KC_Q)
-      {
-        _gpuEntsView->alphaBlend();
-      }
   return true;
 }
 
 bool GameMainState::onKeyUp(const OIS::KeyEvent &evt)
 {
-  //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameMainState::onKeyUp");
-  _forward = false;
-  _backward = false;
   return true;
 }
 
