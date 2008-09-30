@@ -44,15 +44,16 @@ namespace ZGame
     bool onUpdate(const Ogre::FrameEvent &evt);
   protected:
 
-    enum CtrlModes {NONE,FORWARD,BACKWARD,LEFT,RIGHT,UP,DOWN};
-    CtrlModes _ctrlModes;
-
-    Real _dz; //change in z in the local axes
+    Vector3 _transVector;
+    Real _dTrans; //change in translation
     Real _transFactor; //translation factor;
     Ogre::Camera* _cam;
 
-    void updateTransFactor(Real factor);
+    enum TransMode {forw,backw,left,right,up,down};
+    bool _transMode[6];
 
+    void updateTransFactor(Real factor);
+    void toggleMode(enum TransMode mode);
   };
 
 }

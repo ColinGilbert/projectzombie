@@ -12,10 +12,16 @@
 namespace ZGame
 {
 
-  ControlModuleProto::ControlModuleProto() :_ctrlModes(NONE),_dz(0.1),_transFactor(0.05),
+  ControlModuleProto::ControlModuleProto() :_transVector(Vector3::ZERO),_dTrans(0.1),_transFactor(0.05),
   _cam(EngineView::getSingleton().getCurrentCamera())
   {
     // TODO Auto-generated constructor stub
+    _transMode[forw]=false;
+    _transMode[backw]=false;
+    _transMode[left]=false;
+    _transMode[right]=false;
+    _transMode[up]=false;
+    _transMode[down]=false;
   }
 
   ControlModuleProto::~ControlModuleProto()
@@ -41,15 +47,26 @@ namespace ZGame
     obs.onUpdate.bind(&ControlModuleProto::onUpdate,this);
   }
 
+  void ControlModuleProto::toggleMode(enum TransMode mode)
+  {
+    if(_transMode[mode])
+      _transMode[mode] = false;
+    else
+      _transMode[mode] = true;
+
+  }
+
   bool ControlModuleProto::onKeyDown(const OIS::KeyEvent &evt)
   {
     if(evt.key == OIS::KC_W)
       {
-        _ctrlModes = FORWARD;
+        _transVector.z -= _dTrans;
+        toggleMode(forw);
       }
     else if(evt.key == OIS::KC_S)
       {
-        _ctrlModes = BACKWARD;
+        _transVector.z += _dTrans;
+        toggleMode(backw);
       }
     else if(evt.key == OIS::KC_Q)
       {
@@ -61,31 +78,66 @@ namespace ZGame
       }
     else if(evt.key == OIS::KC_A)
       {
-        _ctrlModes = LEFT;
+        _transVector.x -= _dTrans;
+        toggleMode(left);
       }
     else if(evt.key == OIS::KC_D)
       {
-        _ctrlModes = RIGHT;
+        _transVector.x += _dTrans;
+        toggleMode(right);
       }
     else if(evt.key == OIS::KC_UP)
       {
-       _ctrlModes = UP;
+       _transVector.y += _dTrans;
+       toggleMode(up);
       }
     else if(evt.key == OIS::KC_DOWN)
       {
-        _ctrlModes = DOWN;
+        _transVector.y -= _dTrans;
+        toggleMode(down);
       }
     return true;
   }
 
   bool ControlModuleProto::onKeyUp(const OIS::KeyEvent &evt)
   {
-    _ctrlModes = NONE;
+    //turn off control signal
+    if(evt.key == OIS::KC_W)
+          {
+            _transVector.z = 0;
+            toggleMode(forw);
+          }
+        else if(evt.key == OIS::KC_S)
+          {
+            _transVector.z = 0;
+            toggleMode(backw);
+          }
+        else if(evt.key == OIS::KC_A)
+          {
+            _transVector.x = 0;
+            toggleMode(left);
+          }
+        else if(evt.key == OIS::KC_D)
+          {
+            _transVector.x = 0;
+            toggleMode(right);
+          }
+        else if(evt.key == OIS::KC_UP)
+          {
+           _transVector.y = 0;
+           toggleMode(up);
+          }
+        else if(evt.key == OIS::KC_DOWN)
+          {
+            _transVector.y = 0;
+            toggleMode(down);
+          }
     return true;
   }
 
   bool ControlModuleProto::onMouseMove(const OIS::MouseEvent &evt)
   {
+
     return true;
   }
 
@@ -101,36 +153,14 @@ namespace ZGame
 
   bool ControlModuleProto::onUpdate(const Ogre::FrameEvent &evt)
   {
-    switch(_ctrlModes)
-    {
-      case FORWARD:
-        _cam->moveRelative(Vector3(0.0,0.0,-_dz));
-        break;
-      case BACKWARD:
-        _cam->moveRelative(Vector3(0.0,0.0,_dz));
-        break;
-      case LEFT:
-        _cam->moveRelative(Vector3(-_dz,0.0,0.0));
-        break;
-      case RIGHT:
-        _cam->moveRelative(Vector3(_dz,0.0,0.0));
-        break;
-      case UP:
-        _cam->moveRelative(Vector3(0.0,_dz,0.0));
-        break;
-      case DOWN:
-        _cam->moveRelative(Vector3(0.0,-_dz,0.0));
-        break;
-      default:
-        break;
-    }
+    _cam->moveRelative(_transVector);
     return true;
   }
 
   void ControlModuleProto::updateTransFactor(Real factor)
   {
     _transFactor += factor;
-    _dz = Math::Exp(_transFactor);
+    _dTrans = Math::Exp(_transFactor);
   }
 
 }
