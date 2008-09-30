@@ -39,9 +39,12 @@ namespace ZGame
       Ogre::Entity* _ogrEnt;
       bool _sceneAlphaBld;
       GpuProgramParametersSharedPtr _vertParam;
+      Ogre::Camera* _cam;
 
       void init();
+      void initGPUEntsMesh();
       void initOgrEnt();
+      void initCamera();
       void createGPUEntsMesh();
 
   };

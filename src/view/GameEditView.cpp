@@ -23,7 +23,7 @@ GameEditView::~GameEditView()
 
 }
 
-void GameEditView::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject)
+void GameEditView::injectLifeCycleSubject(const ZGame::LifeCycle::LifeCycleSubject &subject)
 {
   LifeCycle::LifeCycleObserver lfcObs;
   lfcObs.onInit.bind(&GameEditView::onInit,this);
@@ -33,7 +33,7 @@ void GameEditView::injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &su
   subject(lfcObs); //make fast delegate call
 }
 
-void GameEditView::injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject)
+void GameEditView::injectKeyEvtSubject(const ZGame::EVENT::KeyEvtSubject &subject)
 {
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameEditView::onKeyDown,this);

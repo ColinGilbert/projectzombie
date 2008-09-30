@@ -7,7 +7,8 @@
 
 #include <stdexcept>
 #include "LifeCycleRegister.h"
-
+#include <Ogre.h>
+using namespace Ogre;
 namespace ZGame
 {
 
@@ -24,8 +25,7 @@ namespace ZGame
 
   void LifeCycleRegister::injectLfcSubj(const LifeCycle::LifeCycleSubject &subj)
   {
-    if(!_isRegistered)
-      throw std::invalid_argument("You are trying to inject life cycle observer to subject without registering said observer.");
+    LogManager::getSingleton().logMessage(LML_TRIVIAL,"LifeCycleRegister::injectLfcSubj");
     for(LfcObsIt it=_lfcObs.begin();it != _lfcObs.end(); ++it)
       {
         subj(*it);
@@ -34,7 +34,6 @@ namespace ZGame
 
   void LifeCycleRegister::registerLfcObs(const LifeCycle::LifeCycleObserver& obs)
   {
-    _isRegistered = true;
     _lfcObs.push_back(obs);
   }
 

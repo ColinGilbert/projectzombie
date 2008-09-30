@@ -14,8 +14,10 @@ using namespace std;
 #include "GPUEntsGen.h"
 #include "ZEntity.h"
 #include "EngineView.h"
-#include "LifeCycleDelegatesUtil.h"
-#include <Ogre.h>
+#include "DelegatesUtil.h"
+#include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
+#include "MouseEventRegister.h"
 using namespace Ogre;
 using namespace ZGame;
 
@@ -29,7 +31,7 @@ GameMainState::~GameMainState()
 {
 }
 
-void GameMainState::regLfcObsForInjection()
+void GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
 
   LifeCycle::LifeCycleObserver lfcObs;
@@ -37,19 +39,24 @@ void GameMainState::regLfcObsForInjection()
   lfcObs.onUpdate.bind(&GameMainState::onUpdate,this);
   lfcObs.onDestroy.bind(&GameMainState::onDestroy,this);
   //don't forget to call helper method to register, else exception is thrown.
-  _lfcRegister->registerLfcObs(lfcObs);
+  lfcReg.registerLfcObs(lfcObs);
   //register objects that belongs in this state
   LifeCycle::clearLfcObs(lfcObs);
   _gpuEntsView->fillLfcObservers(lfcObs);
-  _lfcRegister->registerLfcObs(lfcObs);
+  lfcReg.registerLfcObs(lfcObs);
 }
 
-void GameMainState::regKeyObsForInjection()
+void GameMainState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameMainState::onKeyDown,this);
   keyObs.kue.bind(&GameMainState::onKeyUp,this);
-  _keyRegister->registerKeyObs(keyObs);//make sure we register else exception!
+  keyReg.registerKeyObs(keyObs);//make sure we register else exception!
+}
+
+void GameMainState::regMouseObsForInjection(MouseEventRegister &mouseReg)
+{
+
 }
 
 bool GameMainState::onInit()

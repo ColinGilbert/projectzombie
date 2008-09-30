@@ -7,15 +7,15 @@
 
 #include <Ogre.h>
 #include "GameState.h"
-
+#include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
+#include "MouseEventRegister.h"
 namespace ZGame
 {
 
   GameState::GameState()
   {
     // TODO Auto-generated constructor stub
-    _lfcRegister = new LifeCycleRegister();
-    _keyRegister = new KeyEventRegister();
   }
 
   GameState::~GameState()
@@ -23,13 +23,14 @@ namespace ZGame
     // TODO Auto-generated destructor stub
   }
 
-  void GameState::init()
+  void GameState::init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg, MouseEventRegister &mouseReg)
   {
-    regLfcObsForInjection(); //register life cycle observers for injection.
-    regKeyObsForInjection(); //register key observers for injection.
-    //done with registers
-
+    regLfcObsForInjection(lfcReg); //register life cycle observers for injection.
+    regKeyObsForInjection(keyReg); //register key observers for injection.
+    regMouseObsForInjection(mouseReg);
   }
+
+
 
 
 }

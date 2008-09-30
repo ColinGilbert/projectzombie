@@ -17,11 +17,18 @@ using namespace std;
 #include "StatesLoader.h"
 #include "InputController.h"
 #include "GameState.h"
+#include "LifeCyclePump.h"
+#include "KeyboardPump.h"
+#include "MousePump.h"
+#include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
+#include "MouseEventRegister.h"
 
 namespace ZGame
 {
 
-  EngineController::EngineController() : _root(0),_scnMgr(0),_stillRunning(true),_engineView(0),_curStateInfo(0),_curGameState(0)
+  EngineController::EngineController() : _root(0),_scnMgr(0),_stillRunning(true),_engineView(0),_curStateInfo(0),_curGameState(0),
+  _lfcPump(new LifeCyclePump()),_keyPump(new KeyboardPump()),_mousePump(new MousePump())
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -31,7 +38,7 @@ namespace ZGame
   {
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
-    //delete _root;
+
   }
 
   void EngineController::transitionState(const string key)
@@ -57,7 +64,7 @@ namespace ZGame
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setPosition(0,0,100.0);
     cam->lookAt(0,0,-1);
-    cam->setNearClipDistance(0.5);
+    cam->setNearClipDistance(1.0);
     return cam;
   }
 
@@ -115,36 +122,18 @@ namespace ZGame
     return true;
   }
 
-
-  void EngineController::addMouseObserver(ZGame::EVENT::MouseEvtObserver obs)
-  {
-    _onMouseUpObs.push_back(obs.mue);
-    _onMouseDownObs.push_back(obs.mde);
-    _onMouseMoveObs.push_back(obs.mme);
-  }
-
-
-  /*
-  void EngineController::updateMouseDownObs()
-  {
-    for(MouseDownObsItr it=_onMouseDownObs.begin();it!=_onMouseDownObs.end();++it)
-      {
-        (*it)();
-      }
-  }*/
-
-
-
-
-
-
   void EngineController::injectInputSubject(ZGame::InputController* inControl)
   {
     _inController = inControl;
     ZGame::EVENT::KeyboardEvtObserver keyObs;
     keyObs.kde.bind(&ZGame::EngineController::onKeyDown,this);
     keyObs.kue.bind(&ZGame::EngineController::onKeyUp,this);
-    inControl->addKeyListeners(_listenerID,keyObs);
+    _inController->addKeyListeners(_listenerID,keyObs);
+    ZGame::EVENT::MouseEvtObserver mouseObs;
+    mouseObs.mde.bind(&ZGame::EngineController::onMouseDown,this);
+    mouseObs.mue.bind(&ZGame::EngineController::onMouseUp,this);
+    mouseObs.mme.bind(&ZGame::EngineController::onMouseMove,this);
+    _inController->addMouseListeners(_listenerID,mouseObs);
   }
 
 
@@ -179,7 +168,7 @@ namespace ZGame
     if(!_stillRunning)
       return false;
     _inController->run();
-    _lfcPump.updateOnUpdateObs(evt);
+    _lfcPump->updateOnUpdateObs(evt);
 
     return true;
 
@@ -208,6 +197,11 @@ namespace ZGame
     //_root->shutdown();
     if(_root)
       delete _root;
+    if(_engineView)
+      delete _engineView;
+    delete _lfcPump;
+    delete _keyPump;
+    delete _mousePump;
   }
 
   void EngineController::loadStates()
@@ -223,27 +217,34 @@ namespace ZGame
   {
     if(event.key == OIS::KC_ESCAPE)
       _stillRunning = false;
-    _keyPump.updateKeyUpObs(event);
+    _keyPump->updateKeyUpObs(event);
     return true;
   }
 
   bool EngineController::onKeyDown(const OIS::KeyEvent &event)
   {
-    if(event.key == OIS::KC_LEFT)
-      {
-        //transitionState("GameMainMenuStateKey");
-      }
-    else if(event.key == OIS::KC_RIGHT)
-      {
-        //transitionState("GameEditStateKey");
-      }
-    else if(event.key == OIS::KC_DOWN)
-      {
-        //transitionState("ErrorState");
-      }
-    _keyPump.updateKeyDownObs(event);
+    _keyPump->updateKeyDownObs(event);
     return true;
   }
+
+  bool EngineController::onMouseMove(const OIS::MouseEvent &event)
+  {
+    _mousePump->updateMouseMoveEvt(event);
+    return true;
+  }
+
+  bool EngineController::onMouseDown(const OIS::MouseEvent &event, const OIS::MouseButtonID id)
+  {
+    _mousePump->updateMouseDownEvt(event,id);
+    return true;
+  }
+
+  bool EngineController::onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id)
+  {
+    _mousePump->updateMouseUpEvt(event,id);
+    return true;
+  }
+
 
 
 
@@ -257,8 +258,8 @@ namespace ZGame
         _curStateInfo = &it->second;
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
-            _lfcPump.removeAllObs(); //make sure we clear all LFC observers.
-            _keyPump.removeAllObs();
+            _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
+            _keyPump->removeAllObs();
             //removeAllLifeCycleObs(); //make sure we clear any observers.
             _curGameState = 0;
           }
@@ -297,11 +298,12 @@ namespace ZGame
   }
   void EngineController::unloadCurrentState()
   {
-    _lfcPump.updateOnDestroyObs();
+    _lfcPump->updateOnDestroyObs();
     if(_curGameState)
       delete _curGameState;
-    _lfcPump.removeAllObs();
-    _keyPump.removeAllObs();
+    _lfcPump->removeAllObs();
+    _keyPump->removeAllObs();
+    _mousePump->removeAllObs();
     _curGameState = 0;
   }
   /**
@@ -326,18 +328,31 @@ namespace ZGame
         if(_curGameState != 0)
           throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState = ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass);
-        _curGameState->init();
-        //Inject LifeCycleSubject
-        LifeCycle::LifeCycleSubject lcs; //life cycle subject
-        lcs.bind(&LifeCyclePump::addLifeCycleObserver,&_lfcPump);
-        _curGameState->getLFCRegister()->injectLfcSubj(lcs);
-        //Inject Keyboard subject
-        EVENT::KeyEvtSubject ks; //keyboard subject
-        ks.bind(&KeyboardPump::addKeyboardObserver,&_keyPump);
-        _curGameState->getKeyRegister()->injectKeySubj(ks);
 
-        _lfcPump.updateOnItObs(); //pump on init event to observers.
-        _curGameState->cleanRegisters();
+        //LifeCycleSubject
+        LifeCycle::LifeCycleSubject lcs; //life cycle subject
+        lcs.bind(&LifeCyclePump::addLifeCycleObserver,_lfcPump);
+        //Keyboard subject
+        EVENT::KeyEvtSubject ks; //keyboard subject
+        ks.bind(&KeyboardPump::addKeyboardObserver,_keyPump);
+        //Inject Mouse subject
+        EVENT::MouseEvtSubject ms;
+        ms.bind(&MousePump::addMouseObserver,_mousePump);
+
+        //Registers for events
+        LifeCycleRegister lfcReg;
+        KeyEventRegister keyReg;
+        MouseEventRegister mouseReg;
+
+        _curGameState->init(lfcReg,keyReg,mouseReg);
+
+        //inject subject to observers
+        lfcReg.injectLfcSubj(lcs);
+        keyReg.injectKeySubj(ks);
+        mouseReg.injectMouseSubj(ms);
+        cout << "About to update onInit obs" << endl;
+        _lfcPump->updateOnItObs(); //pump on init event to observers.
+
       }
 
   }

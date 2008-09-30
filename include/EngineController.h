@@ -18,17 +18,17 @@ using namespace std;
 
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
-#include "LifeCyclePump.h"
-#include "KeyboardPump.h"
 #include "GameStateInfo.h"
-
-#include "InputController.h"
 
 namespace ZGame
 {
   class EngineView;
   class InputController;
   class GameState;
+  class GameStateInfo;
+  class LifeCyclePump;
+  class KeyboardPump;
+  class MousePump;
   class EngineController : Ogre::FrameListener
   {
   public:
@@ -71,16 +71,9 @@ namespace ZGame
     GameState* _curGameState;
 
     //LifeCycle pump
-    LifeCyclePump _lfcPump;
-    KeyboardPump _keyPump;
-
-    //input
-    typedef vector<ZGame::EVENT::ZMouseDownEvt>::iterator MouseDownObsItr;
-    typedef vector<ZGame::EVENT::ZMouseUpEvt>::iterator MouseUpObsItr;
-    typedef vector<ZGame::EVENT::ZMouseMoveEvt>::iterator MouseMoveObsItr;
-    vector<ZGame::EVENT::ZMouseDownEvt> _onMouseDownObs;
-    vector<ZGame::EVENT::ZMouseUpEvt> _onMouseUpObs;
-    vector<ZGame::EVENT::ZMouseMoveEvt> _onMouseMoveObs;
+    LifeCyclePump* _lfcPump;
+    KeyboardPump* _keyPump;
+    MousePump* _mousePump;
 
 
     void loadAssets();
@@ -90,13 +83,6 @@ namespace ZGame
     void loadCurrentState(const string curKey);
     void unloadCurrentState();
     void realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
-
-    //input updates
-
-    void updateMouseUpObs();
-    void updateMouseDownObs();
-    void updateMouseMoveObs();
-
 
     Ogre::Camera* createDefaultCamera();
 

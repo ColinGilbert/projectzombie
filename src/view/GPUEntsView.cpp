@@ -14,7 +14,7 @@ using namespace std;
 using namespace ZGame;
 using namespace Ogre;
 GPUEntsView::GPUEntsView() : _meshName("GPUEntsMesh"),_entsOgrEntName("GPUEntsEntities"),
-_entsOgrEntMatName("ZGame/GPUEntsView"),_sceneAlphaBld(true)
+_entsOgrEntMatName("ZGame/GPUEntsView"),_sceneAlphaBld(true),_cam(0)
 {
 
 }
@@ -31,18 +31,42 @@ void GPUEntsView::init()
 {
   LogManager* lm = Ogre::LogManager::getSingletonPtr();
   lm->logMessage(Ogre::LML_TRIVIAL,"GPUEntsView::init");
-  //generate the GPUEntsMesh
-  MeshPtr ptr = GPUEntsMeshBuilder::build(_meshName.c_str(),_ents->getProperties());
-  SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-  _ogrEnt = scnMgr->createEntity(_entsOgrEntName.c_str(),ptr->getName());
-  SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode(Vector3(0.0f,0.0f,0.0f));
-  node->attachObject(_ogrEnt);
+  initGPUEntsMesh();
   initOgrEnt();
+  initCamera();
   lm->logMessage(LML_TRIVIAL,"GPUEntsView::init out");
 }
 
+void GPUEntsView::initGPUEntsMesh()
+{
+  //generate the GPUEntsMesh
+  MeshPtr ptr = GPUEntsMeshBuilder::build(_meshName.c_str(),
+      _ents->getProperties());
+  SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
+  _ogrEnt = scnMgr->createEntity(_entsOgrEntName.c_str(), ptr->getName());
+  SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode(Vector3(
+      0.0f, 0.0f, 0.0f));
+  node->attachObject(_ogrEnt);
+}
+
+void GPUEntsView::initCamera()
+{
+  _cam = EngineView::getSingleton().getCurrentCamera();
+}
+
+
 bool GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
 {
+  /*
+  Vector3 eyePos,eyeUp,eyeRightInverse;
+  eyePos = _cam->getPosition();
+  eyeUp = _cam->getUp();
+  eyeRightInverse = _cam->getRight();
+  eyeRightInverse *= -1;
+  */
+  //_vertParam->setNamedConstant("eyePos",eyePos);
+  //_vertParam->setNamedConstant("eyeUp",eyeUp);
+  //_vertParam->setNamedConstant("eyeRightInverse",eyeRightInverse);
   return true;
 }
 

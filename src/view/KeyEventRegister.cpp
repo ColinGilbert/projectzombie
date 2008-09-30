@@ -7,6 +7,8 @@
 
 #include <stdexcept>
 using namespace std;
+#include <Ogre.h>
+using namespace Ogre;
 #include "KeyEventRegister.h"
 
 namespace ZGame
@@ -25,9 +27,8 @@ namespace ZGame
 
   void KeyEventRegister::injectKeySubj(const EVENT::KeyEvtSubject &subj)
   {
-    if(!_registered)
-      throw std::invalid_argument("Trying to inject observers to key subject when no observers have been registered!");
-    for(KeyObsIt it=_keyObs.begin();it<_keyObs.end();++it)
+    Ogre::LogManager::getSingleton().logMessage(LML_TRIVIAL,"KeyEventRegister::injectKeySubj");
+    for(KeyObsIt it=_keyObs.begin();it!=_keyObs.end();++it)
       {
         subj(*it);
       }
@@ -35,7 +36,6 @@ namespace ZGame
 
   void KeyEventRegister::registerKeyObs(const EVENT::KeyboardEvtObserver &obs)
   {
-    _registered = true;
     _keyObs.push_back(obs);
   }
 

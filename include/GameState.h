@@ -12,32 +12,22 @@
 
 using namespace std;
 
-#include "LifeCycleRegister.h"
-#include "KeyEventRegister.h"
 namespace ZGame
 {
-
+  class LifeCycleRegister;
+  class KeyEventRegister;
+  class MouseEventRegister;
   class GameState
   {
   public:
     virtual
     ~GameState();
-    void init();
-    void cleanRegisters() //called when done with registers.
-    {
-      delete _lfcRegister;
-      delete _keyRegister;
-      _lfcRegister =0;
-      _keyRegister = 0;
-    }
-    LifeCycleRegister* getLFCRegister(){ return _lfcRegister;}
-    KeyEventRegister* getKeyRegister(){ return _keyRegister;}
+    void init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg, MouseEventRegister &mouseReg);
   protected:
     GameState(); //protected constructor
-    LifeCycleRegister* _lfcRegister;
-    KeyEventRegister* _keyRegister;
-    virtual void regLfcObsForInjection() = 0;
-    virtual void regKeyObsForInjection() = 0;
+    virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg){}
+    virtual void regKeyObsForInjection(KeyEventRegister &keyReg){}
+    virtual void regMouseObsForInjection(MouseEventRegister &mouseReg){}
   };
 
 }

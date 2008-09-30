@@ -7,11 +7,14 @@
 
 #ifndef GAMEMAINMENUSTATE_H_
 #define GAMEMAINMENUSTATE_H_
-
+#include <OIS/OIS.h>
+#include <Ogre.h>
 #include "GameState.h"
 
 namespace ZGame
 {
+  class LifeCycleRegister;
+  class KeyEventRegister;
   class GameMainMenuState : public GameState
   {
   public:
@@ -28,8 +31,8 @@ namespace ZGame
     bool onKeyDown(const OIS::KeyEvent &evt);
 
   protected:
-    virtual void regLfcObsForInjection();
-    virtual void regKeyObsForInjection();
+    virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
+    virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
 
   };
 }

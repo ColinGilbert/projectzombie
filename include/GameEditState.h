@@ -9,12 +9,15 @@
 #define GAMEEDITSTATE_H_
 
 #include <Ogre.h>
-
+#include <OIS/OIS.h>
 #include "GameState.h"
+
 
 namespace ZGame
 {
 class GameEditView;
+class LifeCycleRegister;
+class KeyEventRegister;
 class GameEditState : public ZGame::GameState
 {
 public:
@@ -34,8 +37,8 @@ public:
 protected:
   GameEditView* _editView;
 
-  virtual void regLfcObsForInjection();
-  virtual void regKeyObsForInjection();
+  virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
+  virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
 };
 }
 #endif /* GAMEEDITSTATE_H_ */

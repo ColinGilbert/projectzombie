@@ -22,8 +22,8 @@ namespace ZGame
     GameEditView();
     ~GameEditView();
 
-    void injectLifeCycleSubject(ZGame::LifeCycle::LifeCycleSubject &subject);
-    void injectKeyEvtSubject(ZGame::EVENT::KeyEvtSubject &subject);
+    void injectLifeCycleSubject(const ZGame::LifeCycle::LifeCycleSubject &subject);
+    void injectKeyEvtSubject(const ZGame::EVENT::KeyEvtSubject &subject);
 
     void fillKeySubjectInjector(EVENT::KeyEvtSubjectInjector &injector); //fill out the detail of key subject injector
     void fillLifeCycleSubjectInjector(LifeCycle::LifeCycleSubjectInjector &injector);

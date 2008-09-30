@@ -12,13 +12,16 @@
 #include <string>
 using namespace std;
 #include <Ogre.h>
-
+#include <OIS/OIS.h>
 #include "GameState.h"
 
 namespace ZGame
 {
   class GPUEntities;
   class GPUEntsView;
+  class LifeCycleRegister;
+  class KeyEventRegister;
+  class MouseEventRegister;
   class GameMainState : public ZGame::GameState
   {
   public:
@@ -42,8 +45,9 @@ namespace ZGame
     bool _backward;
     Ogre::Real _trans;
 
-    virtual void regLfcObsForInjection();
-    virtual void regKeyObsForInjection();
+    virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
+    virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
+    virtual void regMouseObsForInjection(MouseEventRegister &mouseReg);
 
     void move();
 

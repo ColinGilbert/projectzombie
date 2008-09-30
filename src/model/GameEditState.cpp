@@ -7,7 +7,8 @@
 #include <Ogre.h>
 #include "GameEditState.h"
 #include "GameEditView.h"
-
+#include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
 namespace ZGame
 {
 GameEditState::GameEditState() : GameState(),_editView(0)
@@ -22,21 +23,21 @@ GameEditState::~GameEditState()
 }
 
 
-void GameEditState::regLfcObsForInjection()
+void GameEditState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
   LifeCycle::LifeCycleObserver lfcObs;
   lfcObs.onInit.bind(&GameEditState::onInit, this);
   lfcObs.onUpdate.bind(&GameEditState::onUpdate, this);
   lfcObs.onDestroy.bind(&GameEditState::onDestroy, this);
-  _lfcRegister->registerLfcObs(lfcObs); //register to LifeCycleRegister
+  lfcReg.registerLfcObs(lfcObs); //register to LifeCycleRegister
 }
 
-void GameEditState::regKeyObsForInjection()
+void GameEditState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
   EVENT::KeyboardEvtObserver keyObs;
   keyObs.kde.bind(&GameEditState::onKeyDown,this);
   keyObs.kue.bind(&GameEditState::onKeyUp,this);
-  _keyRegister->registerKeyObs(keyObs); //better register else exception
+  keyReg.registerKeyObs(keyObs); //better register else exception
 }
 
 bool GameEditState::onInit()
