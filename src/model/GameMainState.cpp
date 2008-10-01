@@ -67,7 +67,9 @@ void GameMainState::regKeyObsForInjection(KeyEventRegister &keyReg)
 
 void GameMainState::regMouseObsForInjection(MouseEventRegister &mouseReg)
 {
-
+  EVENT::MouseEvtObserver mouseObs;
+  _controlMod->fillMouseObs(mouseObs);
+  mouseReg.registerMouseObs(mouseObs);
 }
 
 bool GameMainState::onInit()
@@ -118,8 +120,8 @@ void GameMainState::createGPUEntities()
 {
   Ogre::LogManager::getSingleton().logMessage(LML_NORMAL,"GameMainState::createGPUEntities");
   ZEntity zent("ZombieEntity","robot.mesh");
-  int texW = 712;
-  int texH = 712;
+  int texW = 512;
+  int texH = 512;
   Real minX,maxX,minZ,maxZ; //the space into which we want to distribute the GPU entities
   minX = -800.0f; maxX = 800.0f; minZ = -1500.0; maxZ = 1500.0f;
   Real entHeight = 2.0f; //1.6 meters

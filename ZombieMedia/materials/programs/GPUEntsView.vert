@@ -32,6 +32,7 @@ void main()
 	vec3 dir = normalize(camPos-entPos.xyz); //billboard direction
 	vec3 side = cross(viewUp,dir);
 	vec3 up = cross(dir,side);
+	side = cross(up,dir);
 	
 	gl_Position.x = dot(side,gl_Vertex.xyz); //we are manually rotating into the billboard's coorindate frame.
 	gl_Position.y = dot(up,gl_Vertex.xyz);

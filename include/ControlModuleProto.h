@@ -47,7 +47,12 @@ namespace ZGame
     Vector3 _transVector;
     Real _dTrans; //change in translation
     Real _transFactor; //translation factor;
+    Real _rotYaw;
+    Real _rotPitch;
+    Real _rotFactor;
     Ogre::Camera* _cam;
+
+
 
     enum TransMode {forw,backw,left,right,up,down};
     bool _transMode[6];

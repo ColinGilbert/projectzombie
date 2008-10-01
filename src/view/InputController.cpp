@@ -39,7 +39,7 @@ bool InputController::onInit(Ogre::RenderWindow* window)
   }
 #elif defined OIS_LINUX_PLATFORM
   {
-    paramList.insert(std::make_pair(std::string("x11_mouse_grab"),std::string("false") ));
+    paramList.insert(std::make_pair(std::string("x11_mouse_grab"),std::string("true") ));
     window->getCustomAttribute("WINDOW",&winHnd);
   }
 #endif
@@ -116,9 +116,11 @@ void InputController::run()
 
 void InputController::capture()
 {
-  //if(_mouse)_mouse->capture();
+  if(_mouse)_mouse->capture();
   if(_keyb)_keyb->capture();
-
+  OIS::MouseState &mutableMouseState = const_cast<OIS::MouseState &>(_mouse->getMouseState());
+      mutableMouseState.X.abs = 500.0;
+      mutableMouseState.Y.abs = 500.0;
 }
 
 void InputController::addKeyListeners(const string& oID,::EVENT::KeyboardEvtObserver keo)

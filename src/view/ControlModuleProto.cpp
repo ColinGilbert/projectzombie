@@ -12,7 +12,8 @@
 namespace ZGame
 {
 
-  ControlModuleProto::ControlModuleProto() :_transVector(Vector3::ZERO),_dTrans(0.1),_transFactor(0.05),
+  ControlModuleProto::ControlModuleProto() :_transVector(Vector3::ZERO),_dTrans(0.1),_transFactor(0.05),_rotYaw(0.0),
+  _rotPitch(0.0),_rotFactor(0.07),
   _cam(EngineView::getSingleton().getCurrentCamera())
   {
     // TODO Auto-generated constructor stub
@@ -49,11 +50,7 @@ namespace ZGame
 
   void ControlModuleProto::toggleMode(enum TransMode mode)
   {
-    if(_transMode[mode])
-      _transMode[mode] = false;
-    else
-      _transMode[mode] = true;
-
+    _transMode[mode] = !_transMode[mode];
   }
 
   bool ControlModuleProto::onKeyDown(const OIS::KeyEvent &evt)
@@ -137,6 +134,8 @@ namespace ZGame
 
   bool ControlModuleProto::onMouseMove(const OIS::MouseEvent &evt)
   {
+      _cam->yaw(Radian(-Math::DegreesToRadians(_rotFactor*evt.state.X.rel)));
+    _cam->pitch(Radian(-Math::DegreesToRadians(_rotFactor*evt.state.Y.rel)));
 
     return true;
   }
