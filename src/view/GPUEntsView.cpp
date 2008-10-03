@@ -13,8 +13,9 @@ using namespace std;
 #include "LifeCycleDelegates.h"
 using namespace ZGame;
 using namespace Ogre;
-GPUEntsView::GPUEntsView() : _meshName("GPUEntsMesh"),_entsOgrEntName("GPUEntsEntities"),
-_entsOgrEntMatName("ZGame/GPUEntsView"),_sceneAlphaBld(true),_cam(0)
+GPUEntsView::GPUEntsView() :
+  _meshName("GPUEntsMesh"), _entsOgrEntName("GPUEntsEntities"),
+      _entsOgrEntMatName("ZGame/GPUEntsView"), _sceneAlphaBld(true), _cam(0)
 {
 
 }
@@ -27,17 +28,29 @@ GPUEntsView::~GPUEntsView()
 /**
  * Initialize this view.
  */
-void GPUEntsView::init()
+void
+GPUEntsView::init()
 {
   LogManager* lm = Ogre::LogManager::getSingletonPtr();
-  lm->logMessage(Ogre::LML_TRIVIAL,"GPUEntsView::init");
-  initGPUEntsMesh();
+  lm->logMessage(Ogre::LML_TRIVIAL, "GPUEntsView::init");
+  try
+    {
+      initGPUEntsMesh();
+    }
+  catch (Exception e)
+    {
+      ostringstream oss;
+      oss << " .Exeception in GLUEntsView::init() on initGPUEntsMesh()." << endl;
+      throw Exception(e.getNumber(),e.getDescription()+oss.str(),e.getSource());
+    }
   initOgrEnt();
   initCamera();
-  lm->logMessage(LML_TRIVIAL,"GPUEntsView::init out");
+  lm->logMessage(LML_TRIVIAL, "GPUEntsView::init out");
+
 }
 
-void GPUEntsView::initGPUEntsMesh()
+void
+GPUEntsView::initGPUEntsMesh()
 {
   //generate the GPUEntsMesh
   MeshPtr ptr = GPUEntsMeshBuilder::build(_meshName.c_str(),
@@ -49,89 +62,87 @@ void GPUEntsView::initGPUEntsMesh()
   node->attachObject(_ogrEnt);
 }
 
-void GPUEntsView::initCamera()
+void
+GPUEntsView::initCamera()
 {
   _cam = EngineView::getSingleton().getCurrentCamera();
 }
 
-
-bool GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
+bool
+GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
 {
-  /*
-  Vector3 eyePos,eyeUp,eyeRightInverse;
-  eyePos = _cam->getPosition();
-  eyeUp = _cam->getUp();
-  eyeRightInverse = _cam->getRight();
-  eyeRightInverse *= -1;
-  */
-  //_vertParam->setNamedConstant("eyePos",eyePos);
-  //_vertParam->setNamedConstant("eyeUp",eyeUp);
-  //_vertParam->setNamedConstant("eyeRightInverse",eyeRightInverse);
   return true;
 }
 
-
-void GPUEntsView::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
+void
+GPUEntsView::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
 {
-  obs.onUpdate.bind(&GPUEntsView::onUpdate,this);
+  obs.onUpdate.bind(&GPUEntsView::onUpdate, this);
 }
 
-void GPUEntsView::alphaBlend()
+void
+GPUEntsView::alphaBlend()
 {
-  MaterialPtr mat = MaterialManager::getSingleton().getByName(_entsOgrEntMatName.c_str());
-  if(_sceneAlphaBld)
+  MaterialPtr mat = MaterialManager::getSingleton().getByName(
+      _entsOgrEntMatName.c_str());
+  if (_sceneAlphaBld)
     {
-      mat->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBF_ONE,Ogre::SBF_ZERO);
+      mat->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBF_ONE,
+          Ogre::SBF_ZERO);
       _sceneAlphaBld = false;
     }
   else
     {
-      mat->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+      mat->getTechnique(0)->getPass(0)->setSceneBlending(
+          Ogre::SBT_TRANSPARENT_ALPHA);
       _sceneAlphaBld = true;
     }
 }
 
-
 //void GPUEntsView::initOgrEnt()
-void GPUEntsView::initOgrEnt()
+void
+GPUEntsView::initOgrEnt()
 {
   int pass = 0;
   LogManager* lm = LogManager::getSingletonPtr();
-  lm->logMessage(LML_TRIVIAL,"GPUEntsView::initOgrEnt");
-  MaterialPtr mat = MaterialManager::getSingleton().getByName(_entsOgrEntMatName.c_str());
+  lm->logMessage(LML_TRIVIAL, "GPUEntsView::initOgrEnt");
+  MaterialPtr mat = MaterialManager::getSingleton().getByName(
+      _entsOgrEntMatName.c_str());
 
-  _vertParam = mat->getTechnique(0)->getPass(pass)->getVertexProgramParameters();
-  TexturePtr tex = TextureManager::getSingleton().getByName(_ents->getEntsData());
-  lm->logMessage(LML_TRIVIAL,"state texture data name:"+_ents->getEntsData());
+  _vertParam
+      = mat->getTechnique(0)->getPass(pass)->getVertexProgramParameters();
+  TexturePtr tex = TextureManager::getSingleton().getByName(
+      _ents->getEntsData());
+  lm->logMessage(LML_TRIVIAL, "state texture data name:" + _ents->getEntsData());
   //attach state and imposter textures to material
-  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(0)->setTextureName(tex->getName()); //state texture
+  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(0)->setTextureName(
+      tex->getName()); //state texture
   tex = TextureManager::getSingleton().getByName(_ents->getImposterTex()); //imposter texture
-  lm->logMessage(LML_TRIVIAL,"imposter texture name:"+_ents->getImposterTex());
-  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(1)->setTextureName(tex->getName());
+  lm->logMessage(LML_TRIVIAL, "imposter texture name:"
+      + _ents->getImposterTex());
+  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(1)->setTextureName(
+      tex->getName());
 
   //setup shader parameters
   size_t impWidth = tex->getWidth();
   size_t impHeight = tex->getHeight();
   //setup the width and height parameters
   //fragParams->setNamedConstant("texDim",(Real)128.0);
-  Real scaleS = 256.0/impWidth;
-  Real scaleT = 256.0/impHeight;
-  _vertParam->setNamedConstant("scaleS",scaleS);
-  _vertParam->setNamedConstant("scaleT",scaleT);
+  Real scaleS = 256.0 / impWidth;
+  Real scaleT = 256.0 / impHeight;
+  _vertParam->setNamedConstant("scaleS", scaleS);
+  _vertParam->setNamedConstant("scaleT", scaleT);
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());
 
-  lm->logMessage(LML_TRIVIAL,"About to set _ogrEnt visible");
+  lm->logMessage(LML_TRIVIAL, "About to set _ogrEnt visible");
   _ogrEnt->setVisible(true);
-  lm->logMessage(LML_TRIVIAL,"GPUEntsView::initOgrEnt out");
+  lm->logMessage(LML_TRIVIAL, "GPUEntsView::initOgrEnt out");
 }
 
-void GPUEntsView::attachGPUEnts(GPUEntities* ent)
+void
+GPUEntsView::attachGPUEnts(GPUEntities* ent)
 {
   _ents = ent;
   init();
 }
-
-
-
-
 

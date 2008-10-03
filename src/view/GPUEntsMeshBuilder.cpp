@@ -24,7 +24,8 @@ namespace ZGame
     // TODO Auto-generated destructor stub
   }
 
-  MeshPtr GPUEntsMeshBuilder::build(const string name,GPUEntsGenProps* props)
+  MeshPtr
+  GPUEntsMeshBuilder::build(const string name, GPUEntsGenProps* props)
   {
     Real entHeight = props->getEntHeight();
     Real halfHeight = entHeight * 0.5;
@@ -49,8 +50,11 @@ namespace ZGame
         };
     SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
     ManualObject* man = scnMgr->createManualObject(manName.c_str());
+    man->setDynamic(false);
     man->begin("BaseWhiteNoLighting", RenderOperation::OT_TRIANGLE_LIST);
-    unsigned int pointIndex = 0;
+
+    //unsigned int pointIndex = 0;
+    uint32 pointIndex = 0;
     Real u, v; //texture coordinate correspond to entity ID.
     u = v = 0.0f;
 
@@ -65,12 +69,13 @@ namespace ZGame
     //Now loop N entities and create a quad for each entity, with each quad having an ID corresponding to the entity.
     for (size_t j = 0; j < texH; j++)
       {
+        /*
         if (pointIndex >= 65536)
           {
             man->end();
             man->begin("BaseWhiteNoLighting", RenderOperation::OT_TRIANGLE_LIST);
             pointIndex = 0;
-          }
+          }*/
         for (size_t i = 0; i < texW; i++)
           {
             man->position(corners[UPL]); //upper left
@@ -97,12 +102,11 @@ namespace ZGame
     man->end();
     Ogre::AxisAlignedBox infAAB;
     //infAAB.setInfinite();
-    infAAB.setExtents(-2500.0,-2500.0,-2500.0,2500.0,2500.0,2500.0);
+    infAAB.setExtents(-2500.0, -2500.0, -2500.0, 2500.0, 2500.0, 2500.0);
     man->setBoundingBox(infAAB);
     MeshPtr mesh = man->convertToMesh(name);
     scnMgr->destroyManualObject(man);
     return mesh;
   }
-
 
 }

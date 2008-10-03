@@ -18,13 +18,13 @@ vertex_program GPUEntsViewVP glsl
 {
 	uses_vertex_texture_fetch true
 	source ../programs/GPUEntsView.vert
-	
+	profiles gp4vp
 }
 
 fragment_program GPUEntsViewFP glsl
 {
 	source ../programs/GPUEntsView.frag
-	
+	profiles gp4fp	
 }
 
 fragment_program GPUEntsViewDepthWrtOnly glsl
@@ -40,6 +40,7 @@ material ZGame/GPUEntsView
 		{
 			depth_check on
 			alpha_rejection greater 0
+			cull_hardware clockwise
 			//scene_blend alpha_blend
 			texture_unit EntStatesTex
 			{

@@ -1,6 +1,7 @@
 //#include <boost/thread.hpp>
 
-
+#include <iostream>
+using namespace std;
 #include <boost/random.hpp>
 #include <Ogre.h>
 #include "InputController.h"
@@ -21,20 +22,31 @@ int main(int argc, char** argv)
 
   ZGame::EngineController engineControl;
   using namespace ZGame;
-  if(!engineControl.onInit())
+  try
+  {
+    if(!engineControl.onInit())
+      return 1;
+  }catch(Ogre::Exception e)
+  {
+    ostringstream oss;
+    oss << "EngineControl onInit failed: " << endl;
+    oss << e.what() << endl;
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,oss.str());
+    engineControl.onDestroy();
     return 1;
-  //if(!inControl.onInit(engineControl.getRenderWindow()))
-    //return 1;
-  //engineControl.injectInputSubject(&inControl);
-  //boost::thread myThread(inputThread);
+  }
 
-  engineControl.run();
-
-
-  // myThread.join();
+  try
+  {
+    engineControl.run();
+  }catch(Ogre::Exception e)
+  {
+    ostringstream oss;
+    oss << "Something bad happened when running the engine." << endl;
+    oss << e.what() << endl;
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,oss.str());
+  }
   engineControl.onDestroy();
-
-
 
   return 0;
 }
