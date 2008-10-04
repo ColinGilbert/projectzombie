@@ -23,17 +23,21 @@ namespace ZGame
     // TODO Auto-generated destructor stub
   }
 
-  void MouseEventRegister::injectMouseSubj(const EVENT::MouseEvtSubject &subj)
+  void
+  MouseEventRegister::injectMouseSubj(const EVENT::MouseEvtSubject &subj)
   {
-    LogManager::getSingleton().logMessage(LML_TRIVIAL,"MouseEventRegister::injectMouseSubj");
-    for(ObsItr it=_obs.begin();it!=_obs.end();++it)
+    LogManager::getSingleton().logMessage(LML_TRIVIAL,
+        "MouseEventRegister::injectMouseSubj");
+    for (ObsItr it = _obs.begin(); it != _obs.end(); ++it)
       {
         subj(*it);
       }
-    LogManager::getSingleton().logMessage(LML_TRIVIAL,"MouseEventRegister::injectMouseSubj done");
+    LogManager::getSingleton().logMessage(LML_TRIVIAL,
+        "MouseEventRegister::injectMouseSubj done");
   }
 
-  void MouseEventRegister::registerMouseObs(const EVENT::MouseEvtObserver &obs)
+  void
+  MouseEventRegister::registerMouseObs(const EVENT::MouseEvtObserver &obs)
   {
     _obs.push_back(obs);
   }

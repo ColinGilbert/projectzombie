@@ -176,7 +176,8 @@ namespace ZGame
   void
   EngineController::onDestroy()
   {
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"EngineController.onDestroy()");
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
+        "EngineController.onDestroy()");
     unloadCurrentState();
     _inController->onDestroy();
     delete _inController;
