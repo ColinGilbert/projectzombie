@@ -23,6 +23,7 @@ namespace ZGame
   class KeyEventRegister;
   class MouseEventRegister;
   class ControlModuleProto;
+  class WhiteNoiseView;
   class GameMainState : public ZGame::GameState
   {
   public:
@@ -46,12 +47,11 @@ namespace ZGame
     bool _backward;
     Ogre::Real _trans;
     ControlModuleProto* _controlMod;
+    WhiteNoiseView* _whtNoiseView;
 
     virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
     virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
     virtual void regMouseObsForInjection(MouseEventRegister &mouseReg);
-
-    void move();
 
     void createGPUEntities();
 

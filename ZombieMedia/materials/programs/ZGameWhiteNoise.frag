@@ -20,7 +20,7 @@ void setupInput(in uvec4 input, in unsigned int key, inout unsigned int data[16]
 //initialize to the 4 hexes.
 uvec4 initDigest()
 {
-	return uvec4(0x01234567u,0x89ABCDEFu,0xFEDCBA98,0x76543210);
+	return uvec4(0x01234567u,0x89ABCDEFu,0xFEDCBA98u,0x76543210u);
 }
 //F compression functions
 //(b & c) | ((not b) & d)
@@ -28,7 +28,7 @@ unsigned int F0_15(in uvec3 tD)
 {
 	return (tD.x & tD.y) | ((~tD.x) & tD.z);
 }
-//(d & b) | ((^d) & c)
+//(d & b) | ((not d) & c)
 unsigned int F16_31(in uvec3 tD)
 {
 	return (tD.z & tD.x) | ((~tD.z) & tD.y);
@@ -44,6 +44,33 @@ unsigned int F48_63(in uvec3 tD)
 	return tD.y ^ (tD.x | (~tD.z));
 }
 
+//this function converts unsigned 
+//ints to lay within [0,1)
+//What we assume is that we pretend 
+//the uint is really a float, in 
+//the normal IEEE sense.
+//We only care about the integer 
+//portion (from 1st to 24 position bit,
+// disregarding 0th sign bit) of input.
+//So we mask that portion out, 
+//then right shift it, then convert it to [0,1)
+vec4 convertToR0_R1(in uvec4 input)
+{
+	vec4 output = vec4(0,0,0,0);
+	unsigned int mask = 0x7FFFFF00u; //we only want the first 23 bits starting at 2nd bit.
+	float MAX = 8388607.0; //2^24-1 .
+	input.x = input.x & mask; 
+	input.x = input.x >> 7u; //shift 7 place.
+	output.x = float(input.x)/MAX;
+	input.y = input.y & mask; 
+	input.y = input.y >> 7u;
+	output.y = float(input.y)/MAX;
+	input.z = input.z & mask; 
+	input.z = input.z >> 7u;
+	output.z = float(input.z)/MAX;
+	
+	return output;
+}
 
 uvec4 whiteNoise(in uvec4 input,in unsigned int key)
 {
@@ -64,43 +91,585 @@ uvec4 whiteNoise(in uvec4 input,in unsigned int key)
 	//What follows is the unrolled loop from 0 through 63
 	//0
 	tD = digest;
+	
 	fTmp = F0_15(tD.yzw);
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = unsigned int(floor(abs(sin(float(i)))*float(MAXFT)));
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
-	//16-31
-	tD = digest;
-	fTmp = F16_31(tD.yzw);
+	//1
+	fTmp = F0_15(tD.yzw);
 	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//2
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//3
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//4
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//5
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//6
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//7
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//8
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//9
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//10
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//11
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//12
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//13
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//14
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//15
+	fTmp = F0_15(tD.yzw);
+	idx = i++;
+	r = rot0_15.x;
+	rot0_15 = rot0_15.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	
+	//16-31	
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = floor(abs(sin(float(i)))*float(MAXFT));
-	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+unsigned int(trig)) << r);
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
+	//17
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//18
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//19
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//20
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//21
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//22
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//23
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//24
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//25
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//26
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//27
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//28
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//29
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//30
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//31
+	fTmp = F16_31(tD.yzw);
+	idx = (5u*i++ + 1u) % 16u;
+	r = rot16_31.x;
+	rot16_31 = rot16_31.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+
 	//32-47
-	tD = digest;
 	fTmp = F32_47(tD.yzw);
-	idx = i++;
+	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = floor(abs(sin(float(i)))*float(MAXFT));
-	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+unsigned int(trig)) << r);
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
+	//33
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//34
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//35
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//36
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//37
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//38
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//39
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//40
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//41
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//42
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//43
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//44
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//45
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//46
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//47
+	fTmp = F32_47(tD.yzw);
+	idx = (3u*i++ + 5u) % 16u;
+	r = rot32_47.x;
+	rot32_47 = rot32_47.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	
 	//48-63
-	tD = digest;
 	fTmp = F48_63(tD.yzw);
-	idx = i++;
+	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = floor(abs(sin(float(i)))*float(MAXFT));
-	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+unsigned int(trig)) << r);
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
+	//49
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//50
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//51
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//52
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//53
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//54
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//55
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//56
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//57
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//58
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//59
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//60
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//61
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//62
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	//63
+	fTmp = F48_63(tD.yzw);
+	idx = (7u*i++) % 16u;
+	r = rot48_63.x;
+	rot48_63 = rot48_63.yzwx;
+	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
+	tD = tD.yzwx;
+	digest +=tD;
+	
 	return digest; 	
 } 

@@ -45,6 +45,7 @@ int main(int argc, char** argv)
     oss << "Something bad happened when running the engine." << endl;
     oss << e.what() << endl;
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,oss.str());
+    engineControl.onDestroy();
   }
   engineControl.onDestroy();
 

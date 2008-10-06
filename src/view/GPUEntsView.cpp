@@ -57,6 +57,7 @@ GPUEntsView::initGPUEntsMesh()
       _ents->getProperties());
   SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
   _ogrEnt = scnMgr->createEntity(_entsOgrEntName.c_str(), ptr->getName());
+  //_ogrEnt->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAIN);
   SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode(Vector3(
       0.0f, 0.0f, 0.0f));
   node->attachObject(_ogrEnt);
@@ -133,6 +134,7 @@ GPUEntsView::initOgrEnt()
   _vertParam->setNamedConstant("scaleS", scaleS);
   _vertParam->setNamedConstant("scaleT", scaleT);
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());
+
 
   lm->logMessage(LML_TRIVIAL, "About to set _ogrEnt visible");
   _ogrEnt->setVisible(true);

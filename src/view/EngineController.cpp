@@ -160,8 +160,14 @@ namespace ZGame
   {
     if (!_stillRunning)
       return false;
+    try
+    {
     _inController->run();
     _lfcPump->updateOnUpdateObs(evt);
+    }catch(Ogre::Exception e)
+    {
+      throw e;
+    }
 
     return true;
 
