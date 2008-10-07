@@ -3,19 +3,7 @@ fragment_program WhiteNoiseFunc glsl
 	source ../programs/ZGameWhiteNoise.frag
 }
 
-vertex_program GPUEntsControlVP glsl
-{
-	uses_vertex_texture_fetch
-	profiles gp4vp
-	source ../programs/terrainVP.vert
-}
 
-vertex_program GPUEntsControlFP glsl
-{
-	profiles gp4fp
-	source ../programs/terrainFP.frag
-	attach WhiteNoiseFunc
-}
 
 vertex_program WhiteNoiseVP glsl
 {
@@ -67,22 +55,3 @@ material ZGame/WhiteNoiseQuad
 	}
 }
 
-material ZGame/GPUEntsControl
-{
-	technique
-	{
-		pass result
-		{
-			depth_check off
-			texture_unit EntStatesTex
-			{
-			}
-			vertex_program_ref GPUEntsControlVP
-			{
-			}
-			fragment_program_ref GPUEntsControlFP
-			{
-			}
-		}
-	}
-}

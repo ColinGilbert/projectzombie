@@ -27,9 +27,8 @@ namespace ZGame
 {
 
   EngineController::EngineController() :
-    _root(0), _scnMgr(0), _stillRunning(true), _engineView(0),
-        _curStateInfo(0), _curGameState(0), _lfcPump(new LifeCyclePump()),
-        _keyPump(new KeyboardPump()), _mousePump(new MousePump())
+    _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
+        new KeyboardPump()), _mousePump(new MousePump())
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -77,7 +76,8 @@ namespace ZGame
   EngineController::onInit()
   {
     using namespace Ogre;
-    _root = new Ogre::Root("plugins.cfg");
+    //_root = new Ogre::Root("plugins.cfg");
+    _root.reset(new Ogre::Root("plugins.cfg"));
     if (_root->showConfigDialog())
       {
         _window = _root->initialise(true);
@@ -95,28 +95,27 @@ namespace ZGame
     cam->setAspectRatio(Real(vp->getActualWidth())
         / Real(vp->getActualHeight()));
 
-    _engineView = new ZGame::EngineView(_window, cam, _scnMgr);
+    _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
 
     //load states
     loadStates();
 
     //input
-    _inController = new InputController();
+    _inController.reset(new InputController());
     _inController->onInit(_window);
-    injectInputSubject(_inController);
+    injectInputSubject();
 
     _root->addFrameListener(this);
 
     //set logging lvl
-    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
+    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
 
     return true;
   }
 
   void
-  EngineController::injectInputSubject(ZGame::InputController* inControl)
+  EngineController::injectInputSubject()
   {
-    _inController = inControl;
     ZGame::EVENT::KeyboardEvtObserver keyObs;
     keyObs.kde.bind(&ZGame::EngineController::onKeyDown, this);
     keyObs.kue.bind(&ZGame::EngineController::onKeyUp, this);
@@ -161,13 +160,14 @@ namespace ZGame
     if (!_stillRunning)
       return false;
     try
-    {
-    _inController->run();
-    _lfcPump->updateOnUpdateObs(evt);
-    }catch(Ogre::Exception e)
-    {
-      throw e;
-    }
+      {
+        _inController->run();
+        _lfcPump->updateOnUpdateObs(evt);
+      }
+    catch (Ogre::Exception e)
+      {
+        throw e;
+      }
 
     return true;
 
@@ -177,6 +177,7 @@ namespace ZGame
   {
     realizeCurrentState();
     _root->startRendering();
+    //_root->renderOneFrame();
   }
 
   void
@@ -184,18 +185,20 @@ namespace ZGame
   {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "EngineController.onDestroy()");
-    unloadCurrentState();
-    _inController->onDestroy();
-    delete _inController;
-    delete _window;
-    _root->shutdown();
-    if (_root)
-      delete _root;
-    if (_engineView)
-      delete _engineView;
-    delete _lfcPump;
-    delete _keyPump;
-    delete _mousePump;
+    //unloadCurrentState();
+
+    try
+      {
+        _inController->onDestroy();
+        Ogre::Root* root = _root.release();
+        delete root;
+        //_root->shutdown();
+
+      }
+    catch (Ogre::Exception e)
+      {
+        cout << "Exeception during shutdown: " << e.what() << endl;
+      }
   }
 
   void
@@ -255,13 +258,12 @@ namespace ZGame
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
     if (it != _gameSInfoMap.end())
       {
-        _curStateInfo = &it->second;
+        _curStateInfo.reset(&it->second);
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
             _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
             _keyPump->removeAllObs();
-            //removeAllLifeCycleObs(); //make sure we clear any observers.
-            _curGameState = 0;
+            _curGameState.release();
           }
         else
           {
@@ -283,11 +285,11 @@ namespace ZGame
       {
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
-            if (_curGameState == 0)
+            if (_curGameState.get() == 0)
               throw(invalid_argument(
                   "Current game state is null when trying to load a new STATELESS current state"));
             unloadCurrentState();
-            _curStateInfo = &it->second;
+            _curStateInfo.reset(&it->second);
           }
         else
           {
@@ -302,12 +304,10 @@ namespace ZGame
   EngineController::unloadCurrentState()
   {
     _lfcPump->updateOnDestroyObs();
-    if (_curGameState)
-      delete _curGameState;
     _lfcPump->removeAllObs();
     _keyPump->removeAllObs();
     _mousePump->removeAllObs();
-    _curGameState = 0;
+    _curGameState.release();
   }
   /**
    * This class realizes the current state. What it does is load the data pointed to by current state meta data.
@@ -330,21 +330,21 @@ namespace ZGame
     else
       {
         ZGame::EVENT::KeyboardEvtObserver keyObs;
-        if (_curGameState != 0)
+        if (_curGameState.get() != 0)
           throw(invalid_argument(
               "Invalid current game state when realizing new state. Current game state is not null!"));
-        _curGameState = ZGame::GameStateFactory::createGameState(
-            _curStateInfo->gameStateClass);
+        _curGameState.reset(ZGame::GameStateFactory::createGameState(
+            _curStateInfo->gameStateClass));
 
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
-        lcs.bind(&LifeCyclePump::addLifeCycleObserver, _lfcPump);
+        lcs.bind(&LifeCyclePump::addLifeCycleObserver, _lfcPump.get());
         //Keyboard subject
         EVENT::KeyEvtSubject ks; //keyboard subject
-        ks.bind(&KeyboardPump::addKeyboardObserver, _keyPump);
+        ks.bind(&KeyboardPump::addKeyboardObserver, _keyPump.get());
         //Inject Mouse subject
         EVENT::MouseEvtSubject ms;
-        ms.bind(&MousePump::addMouseObserver, _mousePump);
+        ms.bind(&MousePump::addMouseObserver, _mousePump.get());
 
         //Registers for events
         LifeCycleRegister lfcReg;
@@ -357,7 +357,7 @@ namespace ZGame
         lfcReg.injectLfcSubj(lcs);
         keyReg.injectKeySubj(ks);
         mouseReg.injectMouseSubj(ms);
-        cout << "About to update onInit obs" << endl;
+        logM->logMessage(Ogre::LML_TRIVIAL, "About to update onInit obs");
         _lfcPump->updateOnItObs(); //pump on init event to observers.
 
       }

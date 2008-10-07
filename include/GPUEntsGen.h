@@ -34,12 +34,14 @@ namespace ZGame
     auto_ptr<GPUEntsGenProps> _props;
     Ogre::TexturePtr _stateTex;
     Ogre::TexturePtr _imposterTex;
+    Ogre::TexturePtr _dirTex;
     void genImposters();
     void loadPositions();
     void genEntsGeom();//generate the entities' geometry
     void createStateTexture(); //Place-holder method for creating GPU entities state texture.
     size_t nextId(); //get the next availible id.
-
+    void loadDirections();
+    void createDirTexture();
     const string _gpuEntsName;
 
     static size_t _uniqueId; //a unqiue id

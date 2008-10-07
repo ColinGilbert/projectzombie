@@ -40,7 +40,7 @@ GPUEntsView::init()
   catch (Exception e)
     {
       ostringstream oss;
-      oss << " .Exeception in GLUEntsView::init() on initGPUEntsMesh()." << endl;
+      oss << " .Exeception in GpUEntsView::init() on initGPUEntsMesh()." << endl;
       throw Exception(e.getNumber(),e.getDescription()+oss.str(),e.getSource());
     }
   initOgrEnt();

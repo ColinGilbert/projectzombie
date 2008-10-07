@@ -145,8 +145,8 @@ GameMainState::createGPUEntities()
   Ogre::LogManager::getSingleton().logMessage(LML_NORMAL,
       "GameMainState::createGPUEntities");
   ZEntity zent("ZombieEntity", "robot.mesh");
-  int texW = 512;
-  int texH = 512;
+  int texW = 32;
+  int texH = 32;
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
   minX = -800.0f;
   maxX = 800.0f;

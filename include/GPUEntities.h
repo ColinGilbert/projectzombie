@@ -20,20 +20,43 @@ namespace ZGame
   class GPUEntities
   {
   public:
-    GPUEntities(const string entsName,const string entsData,const string imposterTex,
-        auto_ptr<GPUEntsGenProps> props);
-    virtual ~GPUEntities();
-    const string getName();
-    void setEntsData(const string texName);
-    const string getEntsData() { return _gpuEntsData;}
-    void setImposterTex(const string texName);
-    const string getImposterTex() { return _imposterTex;}
-    GPUEntsGenProps* getProperties() {return _props.get();}
+    GPUEntities(const string entsName, const string entsData,
+        const string dirData, const string imposterTex, auto_ptr<
+            GPUEntsGenProps> props);
+    virtual
+    ~GPUEntities();
+    const string
+    getName();
+    void
+    setEntsData(const string texName);
+    const string
+    getEntsData()
+    {
+      return _gpuEntsData;
+    }
+    void
+    setImposterTex(const string texName);
+    const string
+    getImposterTex()
+    {
+      return _imposterTex;
+    }
+    GPUEntsGenProps*
+    getProperties()
+    {
+      return _props.get();
+    }
+    string
+    getGpuEntsDirData()
+    {
+      return _dirData;
+    }
   protected:
     string _gpuEntsData;
     string _imposterTex;
     string _entsName;
     auto_ptr<GPUEntsGenProps> _props;
+    string _dirData;
   private:
   };
 }

@@ -9,6 +9,7 @@
 #define ENGINECONTROLLER_H_
 
 #include <string>
+#include <memory>
 using namespace std;
 #include <Ogre.h>
 #include <fastdelegate/delegate.h>
@@ -43,7 +44,7 @@ namespace ZGame
     void run();
     void onDestroy();
 
-    void injectInputSubject(InputController* inControl);
+    void injectInputSubject();
 
     //input events
     bool onKeyUp(const OIS::KeyEvent &event);
@@ -55,25 +56,25 @@ namespace ZGame
     //input observers
     void addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
     //setters getters
-    Ogre::RenderWindow* getRenderWindow(){return _window;}
+    //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
   protected:
-    Ogre::Root* _root;
+    auto_ptr<Ogre::Root> _root;
     Ogre::SceneManager* _scnMgr;
     Ogre::RenderWindow* _window;
-    ZGame::EngineView* _engineView;
+    auto_ptr<ZGame::EngineView> _engineView;
 
-    ZGame::InputController* _inController;
+    auto_ptr<ZGame::InputController> _inController;
 
     GameStateInfoMap _gameSInfoMap;
 
     //Current state
-    GameStateInfo* _curStateInfo;
-    GameState* _curGameState;
+    auto_ptr<GameStateInfo> _curStateInfo;
+    auto_ptr<GameState> _curGameState;
 
     //LifeCycle pump
-    LifeCyclePump* _lfcPump;
-    KeyboardPump* _keyPump;
-    MousePump* _mousePump;
+    auto_ptr<LifeCyclePump> _lfcPump;
+    auto_ptr<KeyboardPump> _keyPump;
+    auto_ptr<MousePump> _mousePump;
 
 
     void loadAssets();

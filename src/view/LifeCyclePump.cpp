@@ -4,7 +4,8 @@
  *  Created on: Sep 5, 2008
  *      Author: bey0nd
  */
-
+#include <iostream>
+using namespace std;
 #include "LifeCyclePump.h"
 
 using namespace ZGame;
@@ -16,16 +17,18 @@ LifeCyclePump::LifeCyclePump()
 
 LifeCyclePump::~LifeCyclePump()
 {
-
+  cout << "In LifeCyclePump::~LifeCyclePump()" << endl;
 }
 
-void LifeCyclePump::addLifeCycleObserver(const ZGame::LifeCycle::LifeCycleObserver &obs)
+void
+LifeCyclePump::addLifeCycleObserver(
+    const ZGame::LifeCycle::LifeCycleObserver &obs)
 {
-  if(obs.onInit != 0)
+  if (obs.onInit != 0)
     _onInitObs.push_back(obs.onInit);
-  if(obs.onUpdate != 0)
+  if (obs.onUpdate != 0)
     _onUpdateObs.push_back(obs.onUpdate);
-  if(obs.onDestroy != 0)
+  if (obs.onDestroy != 0)
     _onDestroyObs.push_back(obs.onDestroy);
 }
 
@@ -63,7 +66,8 @@ LifeCyclePump::updateOnDestroyObs()
     }
 }
 
-void LifeCyclePump::removeAllObs()
+void
+LifeCyclePump::removeAllObs()
 {
   _onInitObs.clear();
   _onUpdateObs.clear();

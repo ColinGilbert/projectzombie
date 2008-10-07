@@ -11,9 +11,11 @@
 
 using namespace ZGame;
 using namespace Ogre;
-GPUEntities::GPUEntities(const string entsName,const string entsData, const string imposterTex,
-    auto_ptr<GPUEntsGenProps> props) :_gpuEntsData(entsData),_imposterTex(imposterTex),
-_entsName(entsName),_props(props)
+GPUEntities::GPUEntities(const string entsName, const string entsData,
+    const string dirData, const string imposterTex,
+    auto_ptr<GPUEntsGenProps> props) :
+      _dirData(dirData),_gpuEntsData(entsData), _imposterTex(imposterTex), _entsName(entsName),
+      _props(props)
 {
 }
 
@@ -24,17 +26,20 @@ GPUEntities::~GPUEntities()
   texMgr->remove(_imposterTex.c_str());
 }
 
-void GPUEntities::setEntsData(const string texName)
+void
+GPUEntities::setEntsData(const string texName)
 {
   _gpuEntsData = texName;
 }
 
-void GPUEntities::setImposterTex(const string texName)
+void
+GPUEntities::setImposterTex(const string texName)
 {
   _imposterTex = texName;
 }
 
-const string GPUEntities::getName()
+const string
+GPUEntities::getName()
 {
   return _entsName;
 }
