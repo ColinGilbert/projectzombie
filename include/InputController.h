@@ -35,24 +35,37 @@ namespace ZGame
     virtual
     ~InputController();
 
-    bool onInit(Ogre::RenderWindow* window);
-    void onDestroy();
-    void run();
-    void addKeyListeners(const string& oID,ZGame::EVENT::KeyboardEvtObserver keo);
-    void removeKeyListeners(const string& oID);
-    void addMouseListeners(const string& oID,ZGame::EVENT::MouseEvtObserver meo);
-    void removeMouseListeners(const string& oID);
-    void removeAllListeners();
-    void setWindowExtents(int width,int height);
-
+    bool
+    onInit(Ogre::RenderWindow* window);
+    void
+    onDestroy();
+    void
+    run();
+    void
+    addKeyListeners(const string& oID, ZGame::EVENT::KeyboardEvtObserver keo);
+    void
+    removeKeyListeners(const string& oID);
+    void
+    addMouseListeners(const string& oID, ZGame::EVENT::MouseEvtObserver meo);
+    void
+    removeMouseListeners(const string& oID);
+    void
+    removeAllListeners();
+    void
+    setWindowExtents(int width, int height);
 
     //abstract methods from KeyListener,MouseListener
-    bool keyPressed(const OIS::KeyEvent &e);
-    bool keyReleased(const OIS::KeyEvent &e);
+    bool
+    keyPressed(const OIS::KeyEvent &e);
+    bool
+    keyReleased(const OIS::KeyEvent &e);
 
-    bool mouseMoved(const OIS::MouseEvent &e);
-    bool mousePressed(const OIS::MouseEvent &e,OIS::MouseButtonID id);
-    bool mouseReleased(const OIS::MouseEvent &e,OIS::MouseButtonID id);
+    bool
+    mouseMoved(const OIS::MouseEvent &e);
+    bool
+    mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool
+    mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
   protected:
     OIS::InputManager *_inputSystem;
@@ -61,14 +74,15 @@ namespace ZGame
 
     vector<bool> _keyStates;
 
-    typedef map<string,ZGame::EVENT::KeyboardEvtObserver> KeyObsType;
-    typedef map<string,ZGame::EVENT::MouseEvtObserver> MouseObsType;
+    typedef map<string, ZGame::EVENT::KeyboardEvtObserver> KeyObsType;
+    typedef map<string, ZGame::EVENT::MouseEvtObserver> MouseObsType;
     typedef KeyObsType::iterator KeyObsIterator;
     typedef MouseObsType::iterator MouseObsIterator;
     KeyObsType _keyObservers;
     MouseObsType _mouseObservers;
 
-    void capture();
+    void
+    capture();
 
   private:
     bool _stillRunning;

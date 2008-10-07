@@ -8,6 +8,8 @@
 #ifndef GAMEEDITVIEW_H_
 #define GAMEEDITVIEW_H_
 
+#include <memory>
+using namespace std;
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
 
@@ -38,9 +40,9 @@ namespace ZGame
     bool onKeyDown(const OIS::KeyEvent &evt);
 
   protected:
-    ImposterGen* _imposterGen;
-    Imposter* _imposter;
-    ImposterView* _imposterView;
+    //ImposterGen* _imposterGen;
+    auto_ptr<Imposter> _imposter;
+    auto_ptr<ImposterView> _imposterView;
     Ogre::Real _dz;
   };
 }

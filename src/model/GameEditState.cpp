@@ -11,7 +11,7 @@
 #include "KeyEventRegister.h"
 namespace ZGame
 {
-GameEditState::GameEditState() : GameState(),_editView(0)
+GameEditState::GameEditState() : GameState()
 {
   // TODO Auto-generated constructor stub
 
@@ -55,7 +55,6 @@ bool GameEditState::onUpdate(const Ogre::FrameEvent& evt)
 bool GameEditState::onDestroy()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditState::onDestroy");
-  delete _editView;
   return true;
 }
 

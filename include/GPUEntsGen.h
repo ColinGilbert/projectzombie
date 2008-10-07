@@ -9,7 +9,7 @@
 #define GPUENTSLOADER_H_
 #include <memory>
 using namespace std;
-
+#include <boost/weak_ptr.hpp>
 #include <Ogre.h>
 
 namespace ZGame
@@ -20,7 +20,7 @@ namespace ZGame
   class GPUEntsGen
   {
   public:
-    GPUEntsGen(ZEntity* ent,auto_ptr<GPUEntsGenProps> props);
+    GPUEntsGen(const boost::shared_ptr<ZEntity> &ent,auto_ptr<GPUEntsGenProps> props);
     virtual ~GPUEntsGen();
 
     void build();
@@ -29,8 +29,8 @@ namespace ZGame
 
   protected:
 
-    GPUEntities* _output;
-    ZEntity* _ent;
+    auto_ptr<GPUEntities> _output;
+    boost::shared_ptr<ZEntity> _ent;
     auto_ptr<GPUEntsGenProps> _props;
     Ogre::TexturePtr _stateTex;
     Ogre::TexturePtr _imposterTex;

@@ -40,14 +40,14 @@ namespace ZGame
     bool onKeyUp(const OIS::KeyEvent &evt);
   protected:
     auto_ptr<GPUEntities> _gpuEnts;
-    GPUEntsView* _gpuEntsView;
+    auto_ptr<GPUEntsView> _gpuEntsView;
     Ogre::Camera* _cam;
     Ogre::Real _dz;
     bool _forward;
     bool _backward;
     Ogre::Real _trans;
-    ControlModuleProto* _controlMod;
-    WhiteNoiseView* _whtNoiseView;
+    auto_ptr<ControlModuleProto> _controlMod;
+    auto_ptr<WhiteNoiseView> _whtNoiseView;
 
     virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
     virtual void regKeyObsForInjection(KeyEventRegister &keyReg);

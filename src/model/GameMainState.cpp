@@ -7,6 +7,7 @@
 
 #include <cmath>
 using namespace std;
+#include <boost/shared_ptr.hpp>
 #include "GameMainState.h"
 #include "GPUEntities.h"
 #include "GPUEntsGenProps.h"
@@ -120,10 +121,6 @@ GameMainState::onDestroy()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
       "In GameMainState::noDestroy()");
-  if (_gpuEntsView)
-    delete _gpuEntsView;
-  if (_whtNoiseView)
-    delete _whtNoiseView;
   return true;
 }
 
@@ -144,7 +141,8 @@ GameMainState::createGPUEntities()
 {
   Ogre::LogManager::getSingleton().logMessage(LML_NORMAL,
       "GameMainState::createGPUEntities");
-  ZEntity zent("ZombieEntity", "robot.mesh");
+  //note: we are using shared_ptr here is because later we will have an entity resource manager.
+  boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", "robot.mesh"));
   int texW = 32;
   int texH = 32;
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
@@ -155,7 +153,7 @@ GameMainState::createGPUEntities()
   Real entHeight = 2.0f; //1.6 meters
   auto_ptr<GPUEntsGenProps> props(new GPUEntsGenProps(texW, texH, entHeight));
   props->setExtents(minX, minZ, maxX, maxZ);
-  GPUEntsGen entsGen(&zent, props);
+  GPUEntsGen entsGen(zent, props);
   entsGen.build();
   _gpuEnts = entsGen.getOutput();
   //_gpuEntsView = new GPUEntsView();

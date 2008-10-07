@@ -23,7 +23,7 @@ using namespace Ogre;
 
 size_t GPUEntsGen::_uniqueId = 0;
 
-GPUEntsGen::GPUEntsGen(ZEntity* ent, auto_ptr<GPUEntsGenProps> props) :
+GPUEntsGen::GPUEntsGen(const boost::shared_ptr<ZEntity> &ent, auto_ptr<GPUEntsGenProps> props) :
   _output(0), _ent(ent), _props(props), _gpuEntsName("gpuEnts")
 {
 }
@@ -35,9 +35,9 @@ GPUEntsGen::~GPUEntsGen()
 auto_ptr<GPUEntities>
 GPUEntsGen::getOutput()
 {
-  if (!_output)
+  if (_output.get() == 0)
     throw logic_error("GPUEntsGen output is null! Try calling build first.");
-  return auto_ptr<GPUEntities> (_output);
+  return _output;
 }
 
 void
@@ -101,8 +101,8 @@ GPUEntsGen::build()
           e.getSource());
     }
   lm->logMessage(Ogre::LML_NORMAL, "Finished generating entities geometry");
-  _output = new GPUEntities(_gpuEntsName, _stateTex->getName().c_str(),
-      _dirTex->getName().c_str(), _imposterTex->getName().c_str(), _props); //now we have enough information to build output.
+  _output.reset(new GPUEntities(_gpuEntsName, _stateTex->getName().c_str(),
+      _dirTex->getName().c_str(), _imposterTex->getName().c_str(), _props)); //now we have enough information to build output.
 }
 
 void
@@ -171,7 +171,6 @@ GPUEntsGen::loadDirections()
   lm->logMessage(Ogre::LML_TRIVIAL, "In GPUEntsGen::loadDirections()");
   createDirTexture();
 
-  /*
   lm->logMessage(LML_TRIVIAL, "Finished creating textures");
   boost::minstd_rand rng;
   boost::uniform_real<> thetaDist(0.0, Math::TWO_PI);
@@ -201,7 +200,7 @@ GPUEntsGen::loadDirections()
     }
   pixBuffer->unlock();
 
-  */
+
 }
 
 /**

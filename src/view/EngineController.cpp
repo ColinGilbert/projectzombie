@@ -263,7 +263,7 @@ namespace ZGame
           {
             _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
             _keyPump->removeAllObs();
-            _curGameState.release();
+            _curGameState.reset(0); //delete current game state
           }
         else
           {
@@ -307,7 +307,7 @@ namespace ZGame
     _lfcPump->removeAllObs();
     _keyPump->removeAllObs();
     _mousePump->removeAllObs();
-    _curGameState.release();
+    _curGameState.reset(0);
   }
   /**
    * This class realizes the current state. What it does is load the data pointed to by current state meta data.

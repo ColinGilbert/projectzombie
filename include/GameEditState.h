@@ -8,6 +8,8 @@
 #ifndef GAMEEDITSTATE_H_
 #define GAMEEDITSTATE_H_
 
+#include <memory>
+using namespace std;
 #include <Ogre.h>
 #include <OIS/OIS.h>
 #include "GameState.h"
@@ -35,7 +37,7 @@ public:
   bool onKeyDown(const OIS::KeyEvent &evt);
 
 protected:
-  GameEditView* _editView;
+  auto_ptr<GameEditView> _editView;
 
   virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
   virtual void regKeyObsForInjection(KeyEventRegister &keyReg);

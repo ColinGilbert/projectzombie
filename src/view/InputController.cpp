@@ -83,10 +83,10 @@ void InputController::onDestroy()
 {
   cout << "InputController::onDestroy" << endl;
     // TODO Auto-generated destructor stub
-    if(_inputSystem)
-      {
-        if(_mouse)
-          {
+    if (_inputSystem)
+    {
+      if (_mouse)
+        {
             _inputSystem->destroyInputObject(_mouse);
             _mouse = 0;
           }
