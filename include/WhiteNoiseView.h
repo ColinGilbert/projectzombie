@@ -7,34 +7,38 @@
 
 #ifndef WHITENOISEVIEW_H_
 #define WHITENOISEVIEW_H_
-
+#include <memory>
+using namespace std;
 #include <Ogre.h>
 using namespace Ogre;
+#include "LFCObsInjector.h" //interface so we can get Life Cycle observers injectected to us.
 
 namespace ZGame
 {
+  /*
   namespace LifeCycle
   {
     struct LifeCycleObserver;
-  }
+  }*/
 
-  class WhiteNoiseView
+  class WhiteNoiseView : public LifeCycle::LFCObsInjector
   {
   public:
     WhiteNoiseView();
     virtual
     ~WhiteNoiseView();
 
+    bool onInit();
     bool onUpdate(const Ogre::FrameEvent &evt);
     void fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
 
-    void init();
+
 
   protected:
 
     TexturePtr _whiteNoiseTex;
-    Ogre::RenderTarget* _rtt;
-    Rectangle2D* _fullScreenQuad;
+    auto_ptr<Rectangle2D> _fullScreenQuad;
+    Ogre::Timer _timer;
 
     void createMesh();
 

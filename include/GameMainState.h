@@ -13,6 +13,8 @@
 using namespace std;
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include <boost/shared_ptr.hpp>
+using namespace boost;
 #include "GameState.h"
 
 namespace ZGame
@@ -47,13 +49,14 @@ namespace ZGame
     bool _backward;
     Ogre::Real _trans;
     auto_ptr<ControlModuleProto> _controlMod;
-    auto_ptr<WhiteNoiseView> _whtNoiseView;
+    shared_ptr<WhiteNoiseView> _whtNoiseView;
 
     virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
     virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
     virtual void regMouseObsForInjection(MouseEventRegister &mouseReg);
 
     void createGPUEntities();
+    void createWorld(); //create the world that the game resides in.
 
 
   };

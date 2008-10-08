@@ -12,35 +12,51 @@
 
 namespace ZGame
 {
-class EngineController;
-class EngineView : public Ogre::Singleton<EngineView>
-{
-public:
-  Ogre::RenderWindow* renderWindow;
-  Ogre::Camera* camera;
+  class EngineController;
+  class EngineView : public Ogre::Singleton<EngineView>
+  {
+  public:
 
-  EngineView(Ogre::RenderWindow *window,Ogre::Camera* cam,Ogre::SceneManager* scnMgr);
-  virtual
-  ~EngineView();
+    Ogre::RenderWindow* renderWindow;
+    Ogre::Camera* camera;
 
-  void setCurrentCamera(Ogre::Camera* cam);
-  Ogre::Camera* getCurrentCamera(){return _curCam;}
-  Ogre::SceneManager* getSceneManager(){return _scnMgr;}
+    EngineView(Ogre::RenderWindow *window, Ogre::Camera* cam,
+        Ogre::SceneManager* scnMgr);
+    virtual
+    ~EngineView();
 
-  static ZGame::EngineView& getSingleton();
-  static ZGame::EngineView* getSingletonPtr();
+    void
+    setCurrentCamera(Ogre::Camera* cam);
+    Ogre::Camera*
+    getCurrentCamera()
+    {
+      return _curCam;
+    }
+    Ogre::SceneManager*
+    getSceneManager()
+    {
+      return _scnMgr;
+    }
 
-protected:
-  Ogre::Camera* _curCam;
-  Ogre::SceneManager* _scnMgr;
+    static ZGame::EngineView&
+    getSingleton();
+    static ZGame::EngineView*
+    getSingletonPtr();
 
-  friend class ZGame::EngineController;
-  //life-cycle methods
-  void onInit();
-  void onDestroy();
-  void onUpdate();
+  protected:
+    Ogre::Camera* _curCam;
+    Ogre::SceneManager* _scnMgr;
 
-};
+    friend class ZGame::EngineController;
+    //life-cycle methods
+    void
+    onInit();
+    void
+    onDestroy();
+    void
+    onUpdate();
+
+  };
 }
 
 #endif /* ENGINEVIEW_H_ */

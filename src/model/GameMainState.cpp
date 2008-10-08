@@ -54,9 +54,9 @@ GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
   LifeCycle::clearLfcObs(lfcObs);
   _controlMod->fillLfcObs(lfcObs);
   lfcReg.registerLfcObs(lfcObs);
-  LifeCycle::clearLfcObs(lfcObs);
-  _whtNoiseView->fillLfcObservers(lfcObs);
-  lfcReg.registerLfcObs(lfcObs);
+
+  this->addLfcObsInjector(_whtNoiseView);
+
 }
 
 void
@@ -64,11 +64,6 @@ GameMainState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
 
   EVENT::KeyboardEvtObserver keyObs;
-  /*
-   keyObs.kde.bind(&GameMainState::onKeyDown,this);
-   keyObs.kue.bind(&GameMainState::onKeyUp,this);
-   keyReg.registerKeyObs(keyObs);//make sure we register else exception!
-   */
   _controlMod->fillKeyObs(keyObs);
   keyReg.registerKeyObs(keyObs);
 
@@ -88,25 +83,8 @@ GameMainState::onInit()
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "In GameMainState onInit");
   createGPUEntities();
-  _cam = EngineView::getSingleton().getCurrentCamera();
-  Plane plane(Vector3::UNIT_Y, 0);
-  //ground testing plane
-  MeshManager::getSingleton().createPlane("TempGroundPlane",
-      ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 5000, 5000, 1,
-      1, true, 1, 1, 1, Vector3::UNIT_Z);
-  SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-  string planeName = "TempGroundPlaneEntity";
-  Entity* texEnt = scnMgr->createEntity(planeName, "TempGroundPlane");
-  texEnt->setMaterialName("Examples/OgreLogo");
-  string name;
-  name = "TempGroundPlaneNode";
-  SceneNode* texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name,
-      Vector3(0.0f, -1.0f, 0.0f));
-  texNode->attachObject(texEnt);
-  texNode->setVisible(true, true);
-  texNode->yaw(Radian(Math::DegreesToRadians(90.0f)));
-  //white noise
-  _whtNoiseView->init();
+  createWorld();
+
   return true;
 }
 
@@ -143,8 +121,8 @@ GameMainState::createGPUEntities()
       "GameMainState::createGPUEntities");
   //note: we are using shared_ptr here is because later we will have an entity resource manager.
   boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", "robot.mesh"));
-  int texW = 32;
-  int texH = 32;
+  int texW = 512;
+  int texH = 512;
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
   minX = -800.0f;
   maxX = 800.0f;
@@ -160,5 +138,27 @@ GameMainState::createGPUEntities()
   _gpuEntsView->attachGPUEnts(_gpuEnts.get());
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "GameMainState::createGPUEntities done");
+}
+
+void
+GameMainState::createWorld()
+{
+  _cam = EngineView::getSingleton().getCurrentCamera();
+  Plane plane(Vector3::UNIT_Y, 0);
+  //ground testing plane
+  MeshManager::getSingleton().createPlane("TempGroundPlane",
+      ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 5000, 5000, 1,
+      1, true, 1, 1, 1, Vector3::UNIT_Z);
+  SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
+  string planeName = "TempGroundPlaneEntity";
+  Entity* texEnt = scnMgr->createEntity(planeName, "TempGroundPlane");
+  texEnt->setMaterialName("Examples/OgreLogo");
+  string name;
+  name = "TempGroundPlaneNode";
+  SceneNode* texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name,
+      Vector3(0.0f, -1.0f, 0.0f));
+  texNode->attachObject(texEnt);
+  texNode->setVisible(true, true);
+  texNode->yaw(Radian(Math::DegreesToRadians(90.0f)));
 }
 

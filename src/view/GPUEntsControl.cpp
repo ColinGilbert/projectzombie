@@ -5,7 +5,7 @@
  *      Author: bey0nd
  */
 
-#include "../../include/GPUEntsControl.h"
+#include "GPUEntsControl.h"
 
 namespace ZGame
 {

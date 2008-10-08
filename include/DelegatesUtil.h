@@ -14,7 +14,7 @@ namespace ZGame
 {
   namespace LifeCycle
   {
-    void clearLfcObs(LifeCycleObserver& lfcObs)
+    static void clearLfcObs(LifeCycleObserver& lfcObs)
     {
       lfcObs.onDestroy.clear();
       lfcObs.onInit.clear();

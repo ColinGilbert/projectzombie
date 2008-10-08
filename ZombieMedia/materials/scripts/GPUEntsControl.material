@@ -26,14 +26,15 @@ material ZGame/WhiteNoiseTest
 		pass result
 		{
 			ambient 1.0 1.0 1.0
-			depth_check on
+			depth_check off
 			lighting off
 			vertex_program_ref WhiteNoiseVP
 			{
-				//param_named key int 128
+				
 			}
 			fragment_program_ref WhiteNoiseFP
 			{
+				param_named key int 420
 			}
 		}
 	}
@@ -47,6 +48,7 @@ material ZGame/WhiteNoiseQuad
 		{
 			ambient 1.0 1.0 1.0
 			lighting off
+			depth_test on
 			texture_unit WhiteNoiseTex
 			{
 				texture terrain.bmp

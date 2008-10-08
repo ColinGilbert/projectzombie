@@ -86,6 +86,8 @@ namespace ZGame
       return false;
 
     _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ExampleSMInstance");
+    RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
+    rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
 
     loadAssets();
     Ogre::Camera* cam = createDefaultCamera();
