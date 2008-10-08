@@ -10,7 +10,7 @@
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
-#include "LFCObsInjector.h"
+#include "ObsInjectors.h"
 #include "LifeCycleDelegates.h"
 #include "DelegatesUtil.h"
 namespace ZGame
@@ -31,23 +31,37 @@ namespace ZGame
       MouseEventRegister &mouseReg)
   {
     regLfcObsForInjection(lfcReg); //register life cycle observers for injection.
-    registerLfcObs(lfcReg);
     regKeyObsForInjection(keyReg); //register key observers for injection.
     regMouseObsForInjection(mouseReg);
+    registerObs(lfcReg, keyReg, mouseReg);
   }
 
   void
   GameState::addLfcObsInjector(
-      const boost::shared_ptr<LifeCycle::LFCObsInjector> &injector)
+      const boost::shared_ptr<LFCObsInjector> &injector)
   {
-    _lfcObsInjectors.push_back(injector);
+    _lfcObsInj.push_back(injector);
+  }
+  void
+  GameState::addKeyObsInjector(
+      const boost::shared_ptr<KeyEvtObsInjector> &injector)
+  {
+    _keyObsInj.push_back(injector);
+  }
+  void
+  GameState::addMouseObsInjector(
+      const boost::shared_ptr<MouseEvtObsInjector> &injector)
+  {
+    _mouseObsInj.push_back(injector);
   }
 
   void
-  GameState::registerLfcObs(LifeCycleRegister &lfcReg)
+  GameState::registerObs(LifeCycleRegister &lfcReg,
+      KeyEventRegister &keyReg, MouseEventRegister &mouseReg)
   {
-    InjIter it(_lfcObsInjectors.begin());
-    InjIter end(_lfcObsInjectors.end());
+    //Life Cycle
+    LfcInjIter it(_lfcObsInj.begin());
+    LfcInjIter end(_lfcObsInj.end());
     for (; it != end; ++it)
       {
         LifeCycle::LifeCycleObserver obs;
@@ -56,7 +70,29 @@ namespace ZGame
         lfcReg.registerLfcObs(obs);
         LifeCycle::clearLfcObs(obs);
       }
-    _lfcObsInjectors.clear(); //we done with injection, clear memory.
+    _lfcObsInj.clear(); //we done with injection, clear memory.
+
+    //Key
+    KeyInjIter itk(_keyObsInj.begin());
+    KeyInjIter endk(_keyObsInj.end());
+    for (; itk != endk; ++itk)
+      {
+        EVENT::KeyboardEvtObserver obs;
+        (*itk)->fillKeyObservers(obs);
+        keyReg.registerKeyObs(obs);
+        EVENT::clearKeyObs(obs);
+      }
+
+    //mouse
+    MouseInjIter itm(_mouseObsInj.begin());
+    MouseInjIter endm(_mouseObsInj.end());
+    for (; itm != endm; ++itm)
+      {
+        EVENT::MouseEvtObserver obs;
+        (*itm)->fillMouseObservers(obs);
+        mouseReg.registerMouseObs(obs);
+        EVENT::clearMouseObs(obs);
+      }
   }
 
 }

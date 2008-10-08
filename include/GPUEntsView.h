@@ -14,6 +14,7 @@ using namespace std;
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
 using namespace Ogre;
+#include <ObsInjectors.h>
 
 namespace ZGame
 {
@@ -22,7 +23,7 @@ namespace ZGame
   {
     struct LifeCycleObserver;
   }
-  class GPUEntsView
+  class GPUEntsView : public LFCObsInjector
   {
   public:
     GPUEntsView();

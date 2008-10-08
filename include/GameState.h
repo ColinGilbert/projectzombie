@@ -17,10 +17,9 @@ namespace ZGame
   class LifeCycleRegister;
   class KeyEventRegister;
   class MouseEventRegister;
-  namespace LifeCycle
-  {
-    class LFCObsInjector; //interface
-  }
+  class LFCObsInjector; //interface
+  class KeyEvtObsInjector;
+  class MouseEvtObsInjector;
   class GameState
   {
   public:
@@ -46,13 +45,25 @@ namespace ZGame
     }
 
     void
-    addLfcObsInjector(const boost::shared_ptr<LifeCycle::LFCObsInjector> &injector);
+    addLfcObsInjector(
+        const boost::shared_ptr<LFCObsInjector> &injector);
+    void
+    addKeyObsInjector(
+        const boost::shared_ptr<KeyEvtObsInjector> &injector);
+    void
+    addMouseObsInjector(
+        const boost::shared_ptr<MouseEvtObsInjector> &injector);
   private:
-    typedef vector<boost::shared_ptr<LifeCycle::LFCObsInjector> >::iterator InjIter;
-    vector<boost::shared_ptr<LifeCycle::LFCObsInjector> > _lfcObsInjectors;
+    typedef vector<boost::shared_ptr<LFCObsInjector> >::iterator LfcInjIter;
+    vector<boost::shared_ptr<LFCObsInjector> > _lfcObsInj;
+    typedef vector<boost::shared_ptr<KeyEvtObsInjector> >::iterator KeyInjIter;
+    vector<boost::shared_ptr<KeyEvtObsInjector> > _keyObsInj;
+    typedef vector<boost::shared_ptr<MouseEvtObsInjector> >::iterator MouseInjIter;
+    vector<boost::shared_ptr<MouseEvtObsInjector> > _mouseObsInj;
 
     void
-    registerLfcObs(LifeCycleRegister &lfcReg);
+    registerObs(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
+        MouseEventRegister &mouseReg);
 
   };
 

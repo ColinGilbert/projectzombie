@@ -12,6 +12,7 @@
 #include <Ogre.h>
 #include <OIS/OIS.h>
 using namespace Ogre;
+#include "ObsInjectors.h"
 namespace ZGame
 {
 
@@ -24,7 +25,9 @@ namespace ZGame
   {
     struct LifeCycleObserver;
   }
-  class ControlModuleProto
+  class ControlModuleProto : public LFCObsInjector,
+      public KeyEvtObsInjector,
+      public MouseEvtObsInjector
   {
   public:
     ControlModuleProto();
@@ -32,16 +35,25 @@ namespace ZGame
     ~ControlModuleProto();
 
     //register observers for event
-    void fillKeyObs(EVENT::KeyboardEvtObserver &obs);
-    void fillMouseObs(EVENT::MouseEvtObserver &obs);
-    void fillLfcObs(LifeCycle::LifeCycleObserver &obs);
+    void
+    fillKeyObservers(EVENT::KeyboardEvtObserver &obs);
+    void
+    fillMouseObservers(EVENT::MouseEvtObserver &obs);
+    void
+    fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
     //events methods
-    bool onKeyDown(const OIS::KeyEvent &evt);
-    bool onKeyUp(const OIS::KeyEvent &evt);
-    bool onMouseMove(const OIS::MouseEvent &evt);
-    bool onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
-    bool onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
-    bool onUpdate(const Ogre::FrameEvent &evt);
+    bool
+    onKeyDown(const OIS::KeyEvent &evt);
+    bool
+    onKeyUp(const OIS::KeyEvent &evt);
+    bool
+    onMouseMove(const OIS::MouseEvent &evt);
+    bool
+    onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+    bool
+    onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+    bool
+    onUpdate(const Ogre::FrameEvent &evt);
   protected:
 
     Vector3 _transVector;
@@ -52,13 +64,16 @@ namespace ZGame
     Real _rotFactor;
     Ogre::Camera* _cam;
 
-
-
-    enum TransMode {forw,backw,left,right,up,down};
+    enum TransMode
+    {
+      forw, backw, left, right, up, down
+    };
     bool _transMode[6];
 
-    void updateTransFactor(Real factor);
-    void toggleMode(enum TransMode mode);
+    void
+    updateTransFactor(Real factor);
+    void
+    toggleMode(enum TransMode mode);
   };
 
 }

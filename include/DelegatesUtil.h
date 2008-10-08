@@ -9,7 +9,7 @@
 #define LIFECYCLEDELEGATESUTIL_H_
 
 #include "LifeCycleDelegates.h"
-
+#include "EventDelegates.h"
 namespace ZGame
 {
   namespace LifeCycle
@@ -19,6 +19,20 @@ namespace ZGame
       lfcObs.onDestroy.clear();
       lfcObs.onInit.clear();
       lfcObs.onUpdate.clear();
+    }
+  }
+  namespace EVENT
+  {
+    static void clearKeyObs(EVENT::KeyboardEvtObserver &keyObs)
+    {
+      keyObs.kde.clear();
+      keyObs.kue.clear();
+    }
+    static void clearMouseObs(EVENT::MouseEvtObserver &mouseObs)
+    {
+      mouseObs.mde.clear();
+      mouseObs.mme.clear();
+      mouseObs.mue.clear();
     }
   }
 }

@@ -30,20 +30,20 @@ namespace ZGame
     // TODO Auto-generated destructor stub
   }
 
-  void ControlModuleProto::fillKeyObs(EVENT::KeyboardEvtObserver &obs)
+  void ControlModuleProto::fillKeyObservers(EVENT::KeyboardEvtObserver &obs)
   {
     obs.kde.bind(&ControlModuleProto::onKeyDown,this);
     obs.kue.bind(&ControlModuleProto::onKeyUp,this);
   }
 
-  void ControlModuleProto::fillMouseObs(EVENT::MouseEvtObserver &obs)
+  void ControlModuleProto::fillMouseObservers(EVENT::MouseEvtObserver &obs)
   {
     obs.mde.bind(&ControlModuleProto::onMouseDown,this);
     obs.mue.bind(&ControlModuleProto::onMouseUp,this);
     obs.mme.bind(&ControlModuleProto::onMouseMove,this);
   }
 
-  void ControlModuleProto::fillLfcObs(LifeCycle::LifeCycleObserver &obs)
+  void ControlModuleProto::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
   {
     obs.onUpdate.bind(&ControlModuleProto::onUpdate,this);
   }

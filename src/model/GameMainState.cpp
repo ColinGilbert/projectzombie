@@ -44,37 +44,27 @@ GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
   lfcObs.onInit.bind(&GameMainState::onInit, this);
   lfcObs.onUpdate.bind(&GameMainState::onUpdate, this);
   lfcObs.onDestroy.bind(&GameMainState::onDestroy, this);
-  //don't forget to call helper method to register, else exception is thrown.
+
   lfcReg.registerLfcObs(lfcObs);
   //register objects that belongs in this state
-  LifeCycle::clearLfcObs(lfcObs);
-  _gpuEntsView->fillLfcObservers(lfcObs);
-  lfcReg.registerLfcObs(lfcObs);
+  addLfcObsInjector(_gpuEntsView);
   //register control module
-  LifeCycle::clearLfcObs(lfcObs);
-  _controlMod->fillLfcObs(lfcObs);
-  lfcReg.registerLfcObs(lfcObs);
-
-  this->addLfcObsInjector(_whtNoiseView);
+  addLfcObsInjector(_controlMod);
+  //register white noise
+  addLfcObsInjector(_whtNoiseView);
 
 }
 
 void
 GameMainState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
-
-  EVENT::KeyboardEvtObserver keyObs;
-  _controlMod->fillKeyObs(keyObs);
-  keyReg.registerKeyObs(keyObs);
-
+  addKeyObsInjector(_controlMod);
 }
 
 void
 GameMainState::regMouseObsForInjection(MouseEventRegister &mouseReg)
 {
-  EVENT::MouseEvtObserver mouseObs;
-  _controlMod->fillMouseObs(mouseObs);
-  mouseReg.registerMouseObs(mouseObs);
+  addMouseObsInjector(_controlMod);
 }
 
 bool

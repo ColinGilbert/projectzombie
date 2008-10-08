@@ -11,7 +11,7 @@
 using namespace std;
 #include <Ogre.h>
 using namespace Ogre;
-#include "LFCObsInjector.h" //interface so we can get Life Cycle observers injectected to us.
+#include "ObsInjectors.h" //interface so we can get Life Cycle observers injectected to us.
 
 namespace ZGame
 {
@@ -21,7 +21,7 @@ namespace ZGame
     struct LifeCycleObserver;
   }*/
 
-  class WhiteNoiseView : public LifeCycle::LFCObsInjector
+  class WhiteNoiseView : public LFCObsInjector
   {
   public:
     WhiteNoiseView();
