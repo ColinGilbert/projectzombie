@@ -13,25 +13,45 @@
 using namespace std;
 #include <Ogre.h>
 using namespace Ogre;
+#include "ObsInjectors.h"
 namespace ZGame
 {
   class GPUEntities;
+  class PingPongShaders;
   namespace LifeCycle
   {
     struct LifeCycleObserver;
   }
-  class GPUEntsControl
+  class GPUEntsControl : public LFCObsInjector
   {
   public:
     GPUEntsControl();
     virtual
     ~GPUEntsControl();
-    //This method attachs the GPUEntities that this controller is going to control.
+    //This method attaches the GPUEntities that this controller is going to control.
     void
     attachGPUEnts(GPUEntities* ents);
-    //This method allows Life Cycle observers to be pushed
+    //This method allows Life Cycle observers functors to be pushed to us.
     void
     fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
+    //Life Cycle methods
+    //This method called during initialization phase of the life cycle.
+    bool
+    onInit();
+    //This method called during the update phase of the life cycle
+    bool
+    onUpdate(const Ogre::FrameEvent &evt);
+  protected:
+    TexturePtr _stateTex; //gpu entities state texture
+    TexturePtr _dirTex; //gpu entities direction texture.
+    GPUEntities* _gpuEnts;
+    Ogre::Timer _timer;
+    auto_ptr<PingPongShaders> _posPingPong; //the ping pong to update positions.
+    auto_ptr<PingPongShaders> _dirPingPong; //the ping pong to update directions.
+    static const Real _DIRUPDATEPERIOD = 2.0; //two seconds per update of direction.
+    Real _elapsedT;
+    void
+    init();
 
   };
 

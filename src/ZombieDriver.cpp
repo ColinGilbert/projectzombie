@@ -37,6 +37,15 @@ main(int argc, char** argv)
       engineControl.onDestroy();
       return 1;
     }
+  catch (std::exception e)
+    {
+      ostringstream oss;
+      oss << "EngineContro onInit failed: " << endl;
+      oss << e.what() << endl;
+      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
+      engineControl.onDestroy();
+      return 1;
+    }
 
   try
     {

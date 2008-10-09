@@ -14,7 +14,7 @@ using namespace std;
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
 using namespace Ogre;
-#include <ObsInjectors.h>
+#include "ObsInjectors.h"
 
 namespace ZGame
 {

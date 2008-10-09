@@ -15,7 +15,7 @@ using namespace ZGame;
 using namespace Ogre;
 GPUEntsView::GPUEntsView() :
   _meshName("GPUEntsMesh"), _entsOgrEntName("GPUEntsEntities"),
-      _entsOgrEntMatName("ZGame/GPUEntsView"), _sceneAlphaBld(true), _cam(0)
+      _entsOgrEntMatName("ZGame/GPUEntsView"), _sceneAlphaBld(true), _cam(0),_ents(0)
 {
 
 }
@@ -40,8 +40,10 @@ GPUEntsView::init()
   catch (Exception e)
     {
       ostringstream oss;
-      oss << " .Exeception in GpUEntsView::init() on initGPUEntsMesh()." << endl;
-      throw Exception(e.getNumber(),e.getDescription()+oss.str(),e.getSource());
+      oss << " .Exeception in GpUEntsView::init() on initGPUEntsMesh()."
+          << endl;
+      throw Exception(e.getNumber(), e.getDescription() + oss.str(),
+          e.getSource());
     }
   initOgrEnt();
   initCamera();
@@ -52,6 +54,8 @@ GPUEntsView::init()
 void
 GPUEntsView::initGPUEntsMesh()
 {
+  Ogre::LogManager* lm = LogManager::getSingletonPtr();
+  lm->logMessage(LML_TRIVIAL, "In GPUEntsView::initGPUEntsMesh");
   //generate the GPUEntsMesh
   MeshPtr ptr = GPUEntsMeshBuilder::build(_meshName.c_str(),
       _ents->getProperties());
@@ -61,6 +65,7 @@ GPUEntsView::initGPUEntsMesh()
   SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode(Vector3(
       0.0f, 0.0f, 0.0f));
   node->attachObject(_ogrEnt);
+  lm->logMessage(LML_TRIVIAL, "Out GPUEntsView::initGPUEntsMesh");
 }
 
 void
@@ -134,7 +139,6 @@ GPUEntsView::initOgrEnt()
   _vertParam->setNamedConstant("scaleS", scaleS);
   _vertParam->setNamedConstant("scaleT", scaleT);
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());
-
 
   lm->logMessage(LML_TRIVIAL, "About to set _ogrEnt visible");
   _ogrEnt->setVisible(true);

@@ -1,5 +1,6 @@
 fragment_program WhiteNoiseFunc glsl
 {
+	profiles fp40
 	source ../programs/ZGameWhiteNoise.frag
 }
 
@@ -7,7 +8,7 @@ fragment_program WhiteNoiseFunc glsl
 
 vertex_program WhiteNoiseVP glsl
 {
-	profiles gp4vp
+	profiles vp40
 	source ../programs/defaultVertexProgram.vert
 }
 
@@ -15,6 +16,44 @@ fragment_program WhiteNoiseFP glsl
 {
 	profiles fp40
 	source ../programs/WhiteNoiseTest.frag
+	attach WhiteNoiseFunc
+}
+
+vertex_program PingPongShadersVP glsl
+{
+	profiles vp40
+	source ../programs/defaultVertexProgram.vert
+}
+
+fragment_program PingPongShadersFP glsl
+{
+	profiles fp40
+	source ../programs/PingPongShadersTest.frag
+	attach WhiteNoiseFunc
+}
+
+vertex_program GPUEntsPosUpdateVP glsl
+{
+	profiles vp40
+	source ../programs/defaultVertexProgram.vert
+}
+
+fragment_program GPUEntsPosUpdateFP glsl
+{
+	profiles fp40
+	source ../programs/GPUEntsPosUpdate.frag 
+}
+
+vertex_program GPUEntsDirUpdateVP glsl
+{
+	profiles vp40
+	source ../programs/defaultVertexProgram.vert
+}
+
+fragment_program GPUEntsDirUpdateFP glsl
+{
+	profiles fp40
+	source ../programs/GPUEntsDirUpdate.frag
 	attach WhiteNoiseFunc
 }
 
@@ -48,10 +87,88 @@ material ZGame/WhiteNoiseQuad
 		{
 			ambient 1.0 1.0 1.0
 			lighting off
-			depth_test on
+			depth_check on
 			texture_unit WhiteNoiseTex
 			{
 				texture terrain.bmp
+			}
+		}
+	}
+}
+
+material ZGame/PingPongShadersTest
+{
+	technique
+	{
+		pass result
+		{
+			ambient 1.0 1.0 1.0
+			lighting off
+			depth_check off
+			texture_unit input
+			{
+			}
+			vertex_program_ref PingPongShadersVP
+			{
+				
+			}
+			fragment_program_ref PingPongShadersFP
+			{
+				param_named input int 0
+				param_named key int 420
+			}
+		}
+	}
+}
+
+material ZGame/GPUEntsDirUpdatePingPong
+{
+	technique
+	{
+		pass result
+		{
+			ambient 1.0 1.0 1.0
+			lighting off
+			depth_check off
+			texture_unit input
+			{
+			}
+			vertex_program_ref GPUEntsDirUpdateVP
+			{
+			}
+			fragment_program_ref GPUEntsDirUpdateFP
+			{
+				param_named input int 0
+				param_named key int 420
+			}
+		}
+	}
+}
+
+material ZGame/GPUEntsPosUpdatePingPong
+{
+	technique
+	{
+		pass result
+		{
+			ambient 1.0 1.0 1.0
+			lighting off
+			depth_check off
+			texture_unit input
+			{
+			}
+			texture_unit dir
+			{
+			}
+			vertex_program_ref GPUEntsPosUpdateVP
+			{
+			}
+			fragment_program_ref GPUEntsPosUpdateFP
+			{
+				//input is the position
+				param_named input int 0 
+				param_named dir int 1
+				param_named dt float 0.01
 			}
 		}
 	}

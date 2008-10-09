@@ -26,6 +26,7 @@ namespace ZGame
   class MouseEventRegister;
   class ControlModuleProto;
   class WhiteNoiseView;
+  class GPUEntsControl;
   class GameMainState : public ZGame::GameState
   {
   public:
@@ -50,6 +51,7 @@ namespace ZGame
     Ogre::Real _trans;
     shared_ptr<ControlModuleProto> _controlMod;
     shared_ptr<WhiteNoiseView> _whtNoiseView;
+    shared_ptr<GPUEntsControl> _gpuEntsControl;
 
     virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
     virtual void regKeyObsForInjection(KeyEventRegister &keyReg);

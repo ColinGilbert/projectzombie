@@ -21,6 +21,7 @@ namespace ZGame
     struct LifeCycleObserver;
   }*/
 
+  class PingPongShaders;
   class WhiteNoiseView : public LFCObsInjector
   {
   public:
@@ -39,6 +40,7 @@ namespace ZGame
     TexturePtr _whiteNoiseTex;
     auto_ptr<Rectangle2D> _fullScreenQuad;
     Ogre::Timer _timer;
+    auto_ptr<PingPongShaders> _pingPong;
 
     void createMesh();
 

@@ -23,7 +23,8 @@ using namespace Ogre;
 
 size_t GPUEntsGen::_uniqueId = 0;
 
-GPUEntsGen::GPUEntsGen(const boost::shared_ptr<ZEntity> &ent, auto_ptr<GPUEntsGenProps> props) :
+GPUEntsGen::GPUEntsGen(const boost::shared_ptr<ZEntity> &ent, auto_ptr<
+    GPUEntsGenProps> props) :
   _output(0), _ent(ent), _props(props), _gpuEntsName("gpuEnts")
 {
 }
@@ -103,6 +104,8 @@ GPUEntsGen::build()
   lm->logMessage(Ogre::LML_NORMAL, "Finished generating entities geometry");
   _output.reset(new GPUEntities(_gpuEntsName, _stateTex->getName().c_str(),
       _dirTex->getName().c_str(), _imposterTex->getName().c_str(), _props)); //now we have enough information to build output.
+  lm->logMessage(LML_NORMAL,
+      "Finished generating GPU Entities. Output is now availible.");
 }
 
 void
@@ -200,7 +203,6 @@ GPUEntsGen::loadDirections()
     }
   pixBuffer->unlock();
 
-
 }
 
 /**
@@ -217,7 +219,7 @@ GPUEntsGen::createStateTexture()
   _stateTex = TextureManager::getSingleton().createManual(texName,
       ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME, TEX_TYPE_2D,
       _props->getTexWidth(), _props->getTexHeight(), 0, Ogre::PF_FLOAT32_RGBA,
-      Ogre::TU_DEFAULT);
+      Ogre::TU_RENDERTARGET);
 
 }
 
@@ -230,7 +232,7 @@ GPUEntsGen::createDirTexture()
   _dirTex = TextureManager::getSingleton().createManual(texName,
       ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME, TEX_TYPE_2D,
       _props->getTexWidth(), _props->getTexHeight(), 0, Ogre::PF_FLOAT32_RGBA,
-      Ogre::TU_DEFAULT);
+      Ogre::TU_RENDERTARGET);
 
 }
 

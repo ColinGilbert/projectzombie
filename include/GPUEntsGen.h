@@ -30,6 +30,7 @@ namespace ZGame
   protected:
 
     auto_ptr<GPUEntities> _output;
+    //auto_ptr<GPUEntities> _output;
     boost::shared_ptr<ZEntity> _ent;
     auto_ptr<GPUEntsGenProps> _props;
     Ogre::TexturePtr _stateTex;

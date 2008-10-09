@@ -21,13 +21,15 @@ using namespace std;
 #include "MouseEventRegister.h"
 #include "ControlModuleProto.h"
 #include "WhiteNoiseView.h"
+#include "GPUEntsControl.h"
 using namespace Ogre;
 using namespace ZGame;
 
 GameMainState::GameMainState() :
   GameState(), _gpuEntsView(new GPUEntsView()), _cam(0), _dz(1.5f), _forward(
       false), _backward(false), _trans(1.0), _controlMod(
-      new ControlModuleProto()), _whtNoiseView(new WhiteNoiseView())
+      new ControlModuleProto()), _whtNoiseView(new WhiteNoiseView()),
+      _gpuEntsControl(new GPUEntsControl())
 {
 
 }
@@ -51,7 +53,9 @@ GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
   //register control module
   addLfcObsInjector(_controlMod);
   //register white noise
-  addLfcObsInjector(_whtNoiseView);
+  //addLfcObsInjector(_whtNoiseView);
+  //register GPUEntsControl
+  addLfcObsInjector(_gpuEntsControl);
 
 }
 
@@ -74,7 +78,7 @@ GameMainState::onInit()
       "In GameMainState onInit");
   createGPUEntities();
   createWorld();
-
+  cout << "Create world done!" << endl;
   return true;
 }
 
@@ -107,15 +111,15 @@ GameMainState::onKeyUp(const OIS::KeyEvent &evt)
 void
 GameMainState::createGPUEntities()
 {
-  Ogre::LogManager::getSingleton().logMessage(LML_NORMAL,
-      "GameMainState::createGPUEntities");
+  LogManager* lm = LogManager::getSingletonPtr();
+  lm->logMessage(LML_NORMAL, "GameMainState::createGPUEntities");
   //note: we are using shared_ptr here is because later we will have an entity resource manager.
   boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", "robot.mesh"));
-  int texW = 512;
-  int texH = 512;
+  int texW = 256;
+  int texH = 256;
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
-  minX = -800.0f;
-  maxX = 800.0f;
+  minX = -100.0f;
+  maxX = 100.0f;
   minZ = -1500.0;
   maxZ = 1500.0f;
   Real entHeight = 2.0f; //1.6 meters
@@ -124,15 +128,19 @@ GameMainState::createGPUEntities()
   GPUEntsGen entsGen(zent, props);
   entsGen.build();
   _gpuEnts = entsGen.getOutput();
-  //_gpuEntsView = new GPUEntsView();
+  lm->logMessage(LML_TRIVIAL, "About to attach GPU ents");
   _gpuEntsView->attachGPUEnts(_gpuEnts.get());
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
-      "GameMainState::createGPUEntities done");
+  lm->logMessage(Ogre::LML_TRIVIAL, "GameMainState::createGPUEntities done");
+  cout << "Calling gpuEntsControl attach GPUEnts" << endl;
+  _gpuEntsControl->attachGPUEnts(_gpuEnts.get());
+  cout << "Done calling" << endl;
+  lm->logMessage(LML_TRIVIAL, "Out Gamestate createGPUEntities");
 }
 
 void
 GameMainState::createWorld()
 {
+  cout << "Create world!" << endl;
   _cam = EngineView::getSingleton().getCurrentCamera();
   Plane plane(Vector3::UNIT_Y, 0);
   //ground testing plane
