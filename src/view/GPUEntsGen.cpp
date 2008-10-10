@@ -197,8 +197,8 @@ GPUEntsGen::loadDirections()
           dir.z = Math::Sin(theta);
           *pDest++ = dir.x;
           *pDest++ = dir.z;
-          *pDest++ = dir.y;
           *pDest++ = 0.0f;
+          *pDest++ = theta;
         }
     }
   pixBuffer->unlock();

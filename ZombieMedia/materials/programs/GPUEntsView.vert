@@ -15,6 +15,7 @@ uniform float scaleT;
 uniform vec3 viewUp;
 uniform vec3 viewSide;
 uniform vec3 camPos;
+uniform vec3 viewDirObjS;
 const float EPSILON = 2.4414e-4;
 
 void computeNewS(inout vec3 s)
@@ -31,14 +32,20 @@ void main()
 {
 	const int STATE = 1;
 	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_TexCoord[1] = gl_MultiTexCoord1;
+	//figure out which imposter texture to access based on viewDirObjectSpace
+	
+	vec3 forward = vec3(0.0,0.0,1.0); //forward in object space
+	vec3 side = vec3(1.0,0.0,0.0);
+	
+	vec3 xzview = viewDirObjS;
+	xzview.y = 0; //we only care about this vector on the xz plane.
+	
 	vec2 scaleUV;
 	scaleUV.s = scaleS;
 	scaleUV.t = scaleT;
 	gl_TexCoord[0].st *= scaleUV;
-	gl_TexCoord[1] = gl_MultiTexCoord1;
 	
-	uvec4 test = uvec4(1u,1u,1u,1u);
-	unsigned int test2 = 1u;
 	
 	gl_Position = gl_Vertex;
 	vec4 entPos = texture2D(gpuEntsStates,gl_TexCoord[STATE].st);

@@ -134,8 +134,8 @@ GPUEntsView::initOgrEnt()
   size_t impHeight = tex->getHeight();
   //setup the width and height parameters
   //fragParams->setNamedConstant("texDim",(Real)128.0);
-  Real scaleS = 256.0 / impWidth;
-  Real scaleT = 256.0 / impHeight;
+  Real scaleS = 128.0 / impWidth;
+  Real scaleT = 128.0 / impHeight;
   _vertParam->setNamedConstant("scaleS", scaleS);
   _vertParam->setNamedConstant("scaleT", scaleT);
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());

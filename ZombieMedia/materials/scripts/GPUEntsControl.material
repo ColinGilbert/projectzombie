@@ -140,6 +140,7 @@ material ZGame/GPUEntsDirUpdatePingPong
 			{
 				param_named input int 0
 				param_named key int 420
+				param_named dt float 0.01
 			}
 		}
 	}

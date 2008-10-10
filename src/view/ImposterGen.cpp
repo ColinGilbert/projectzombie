@@ -96,6 +96,7 @@ ImposterGen::renderToTextures()
   int height = _imposter->getHeight();
   Real unitWidth = (Real) _imposter->getDim() / width;
   Real unitHeight = (Real) _imposter->getDim() / height;
+  vp->getCamera()->setAspectRatio(1.0);
   for (size_t i = 0; i <= _imposter->SEGPHI; i++)
     {
       for (size_t j = 0; j < _imposter->SEGTHETA; j++)

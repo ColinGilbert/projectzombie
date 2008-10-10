@@ -17,7 +17,7 @@ namespace ZGame
 {
 
   GPUEntsControl::GPUEntsControl() :
-    _elapsedT(0.0f),_gpuEnts(0)
+    _elapsedT(0.0f), _gpuEnts(0)
   {
     // TODO Auto-generated constructor stub
 
@@ -83,25 +83,22 @@ namespace ZGame
   bool
   GPUEntsControl::onUpdate(const Ogre::FrameEvent &evt)
   {
-    if (_elapsedT > _DIRUPDATEPERIOD) //we only do directional updates per _DIRUPDATEPERIOD
-      {
-        srand(_timer.getMillisecondsCPU());
-        int randNum = rand();
-        MaterialPtr mat = MaterialManager::getSingleton().getByName(
-            "ZGame/GPUEntsDirUpdatePingPong");
-        mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
-            "key", randNum);
-        _dirPingPong->pingPong();
-        _elapsedT = 0.0f-evt.timeSinceLastFrame;
-      }
-
-    //update position
+    srand(_timer.getMillisecondsCPU());
+    int randNum = rand();
     MaterialPtr mat = MaterialManager::getSingleton().getByName(
+        "ZGame/GPUEntsDirUpdatePingPong");
+    Ogre::GpuProgramParametersSharedPtr gpu =
+        mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+    //update direction
+    gpu->setNamedConstant("key", randNum);
+    _dirPingPong->pingPong();
+    gpu->setNamedConstant("dt", evt.timeSinceLastFrame);
+    //update position
+    mat = MaterialManager::getSingleton().getByName(
         "ZGame/GPUEntsPosUpdatePingPong");
-    mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("dt",
-        evt.timeSinceLastFrame);
+    mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
+        "dt", evt.timeSinceLastFrame);
     _posPingPong->pingPong();
-    _elapsedT += evt.timeSinceLastFrame;
     return true;
   }
 

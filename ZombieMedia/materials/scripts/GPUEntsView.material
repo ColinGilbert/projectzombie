@@ -48,20 +48,19 @@ material ZGame/GPUEntsView
 			texture_unit ImposterTex
 			{
 			}
+			texture_unit DirTex
+			{
+			}
 			vertex_program_ref GPUEntsViewVP
 			{
 				param_named gpuEntsStates int 0
-				//param_named texDim float 256.0
-				//param_named imposterWidth float 128.0
-				//param_named imposterHeight float 128.0
-				param_named scaleS float 128.0
-				param_named scaleT float 128.0
+				param_named DirTex int 2
+				param_named scaleS float 256.0
+				param_named scaleT float 256.0
 				param_named_auto camPos camera_position
 				param_named_auto viewUp view_up_vector
 				param_named_auto viewSide view_side_vector
-				//param_named eyePos float3 0.0 0.0 0.0
-				//param_named eyeUp float3 0.0 1.0 0.0
-				//param_named eyeRightInverse float3 -1.0 0.0 0.0
+				param_named_auto viewDirObjS view_direction
 			}
 			
 			fragment_program_ref GPUEntsViewFP

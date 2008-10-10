@@ -120,8 +120,8 @@ GameMainState::createGPUEntities()
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
   minX = -100.0f;
   maxX = 100.0f;
-  minZ = -1500.0;
-  maxZ = 1500.0f;
+  minZ = -250.0;
+  maxZ = 250.0f;
   Real entHeight = 2.0f; //1.6 meters
   auto_ptr<GPUEntsGenProps> props(new GPUEntsGenProps(texW, texH, entHeight));
   props->setExtents(minX, minZ, maxX, maxZ);

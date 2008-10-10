@@ -2,6 +2,7 @@
 
 uniform int key;
 uniform sampler2D input; //input texture
+uniform float dt; //time
 uvec4 whiteNoise(in uvec4 input, in unsigned int key);
 
 vec4 convertToR0_R1(in uvec4 input);
@@ -13,25 +14,32 @@ vec4 convertToR0_R1(in uvec4 input);
 //Where x is the e1 axis and y e2 axis.
 void main()
 {
-	vec4 dir = texture2D(input,gl_TexCoord[0].st);
-	//next throw dice to determine whether we want to change
-	uvec4 coord;
-	unsigned int uintkey = unsigned int(key);
-	coord.x = gl_TexCoord[0].x*20000.0;
-	coord.y = gl_TexCoord[0].y*20000.0;
-	coord.z = uintkey;
-	coord.w = uintkey;
+	vec4 state = texture2D(input,gl_TexCoord[0].st);
 	
-	uvec4 noise = whiteNoise(coord,uintkey);
-	vec4 rand = convertToR0_R1(noise);
-	
-	if(rand.x < rand.y) //do our probability thing
+	if(state.z > state.w)
 	{
-		const float twopi = 6.283185;
-		rand.z = rand.z*twopi; //theta
-		dir.x = cos(rand.z);
-		dir.y = sin(rand.z);
+		state.z = 0.0-dt;
+		//next throw dice to determine whether we want to change
+		uvec4 coord;
+		unsigned int uintkey = unsigned int(key);
+		coord.x = gl_TexCoord[0].x*20000.0;
+		coord.y = gl_TexCoord[0].y*20000.0;
+		coord.z = uintkey;
+		coord.w = uintkey;
+		
+		uvec4 noise = whiteNoise(coord,uintkey);
+		vec4 rand = convertToR0_R1(noise);
+		
+		state.w = rand.w*15.00+1.0; //change sometime in 1 to 5 sec
+		
+		if(rand.x < rand.y) //do our probability thing
+		{
+			const float twopi = 6.283185;
+			rand.z = rand.z*twopi; //theta
+			state.x = cos(rand.z);
+			state.y = sin(rand.z);
+		}
 	}
-	
-	gl_FragColor = dir;
+	state.z += dt;
+	gl_FragColor = state;
 }
