@@ -4,6 +4,8 @@ material ZGame/Imposter
 	{
 		pass result
 		{
+			ambient 0.3 0.3 0.3
+			lighting on 
 			depth_check on
 			scene_blend alpha_blend
 			texture_unit ImposterTexture
@@ -59,13 +61,16 @@ material ZGame/GPUEntsView
 				param_named scaleT float 256.0
 				param_named_auto camPos camera_position
 				param_named_auto viewUp view_up_vector
-				param_named_auto viewSide view_side_vector
-				param_named_auto viewDirObjS view_direction
+				param_named vPos float3 0.0 0.0 0.0
+				param_named segPhi int 5
+				param_named segTheta int 12
+				//param_named lightPos float4 1.0 0.0 0.0 1.0
 			}
 			
 			fragment_program_ref GPUEntsViewFP
 			{
 				param_named imposterTex int 1
+				param_named positionTex int 0
 				
 			}
 		}

@@ -42,6 +42,7 @@ fragment_program GPUEntsPosUpdateFP glsl
 {
 	profiles fp40
 	source ../programs/GPUEntsPosUpdate.frag 
+	attach WhiteNoiseFunc
 }
 
 vertex_program GPUEntsDirUpdateVP glsl
@@ -133,14 +134,20 @@ material ZGame/GPUEntsDirUpdatePingPong
 			texture_unit input
 			{
 			}
+			texture_unit StateTex
+			{
+			}
 			vertex_program_ref GPUEntsDirUpdateVP
 			{
 			}
 			fragment_program_ref GPUEntsDirUpdateFP
 			{
 				param_named input int 0
+				param_named stateTex int 1
 				param_named key int 420
 				param_named dt float 0.01
+				param_named camPos float3 0.0 0.0 0.0
+				
 			}
 		}
 	}
@@ -167,9 +174,12 @@ material ZGame/GPUEntsPosUpdatePingPong
 			fragment_program_ref GPUEntsPosUpdateFP
 			{
 				//input is the position
+				param_named key int 420
 				param_named input int 0 
 				param_named dir int 1
 				param_named dt float 0.01
+				param_named camPos float3 0.0 0.0 0.0
+				
 			}
 		}
 	}

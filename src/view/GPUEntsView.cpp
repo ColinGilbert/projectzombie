@@ -11,11 +11,12 @@ using namespace std;
 #include "EngineView.h"
 #include "GPUEntsMeshBuilder.h"
 #include "LifeCycleDelegates.h"
+#include "Imposter.h"
 using namespace ZGame;
 using namespace Ogre;
 GPUEntsView::GPUEntsView() :
-  _meshName("GPUEntsMesh"), _entsOgrEntName("GPUEntsEntities"),
-      _entsOgrEntMatName("ZGame/GPUEntsView"), _sceneAlphaBld(true), _cam(0),_ents(0)
+  _ents(0), _meshName("GPUEntsMesh"), _entsOgrEntName("GPUEntsEntities"),
+      _entsOgrEntMatName("ZGame/GPUEntsView"), _sceneAlphaBld(true), _cam(0)
 {
 
 }
@@ -77,6 +78,13 @@ GPUEntsView::initCamera()
 bool
 GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
 {
+  //MaterialPtr mat = MaterialManager::getSingleton().getByName(
+      // _entsOgrEntMatName.c_str());
+  Camera* cam = EngineView::getSingleton().getCurrentCamera();
+  Vector3 camPos = cam->getPosition();
+
+  _vertParam->setNamedConstant("vPos", camPos);
+
   return true;
 }
 
@@ -121,23 +129,38 @@ GPUEntsView::initOgrEnt()
       _ents->getEntsData());
   lm->logMessage(LML_TRIVIAL, "state texture data name:" + _ents->getEntsData());
   //attach state and imposter textures to material
+  //state
   mat->getTechnique(0)->getPass(pass)->getTextureUnitState(0)->setTextureName(
       tex->getName()); //state texture
+  //imposter
   tex = TextureManager::getSingleton().getByName(_ents->getImposterTex()); //imposter texture
   lm->logMessage(LML_TRIVIAL, "imposter texture name:"
       + _ents->getImposterTex());
+  size_t impWidth = tex->getWidth();
+    size_t impHeight = tex->getHeight();
+
   mat->getTechnique(0)->getPass(pass)->getTextureUnitState(1)->setTextureName(
+      tex->getName());
+  //dir
+  tex = TextureManager::getSingleton().getByName(_ents->getGpuEntsDirData());
+  mat->getTechnique(0)->getPass(pass)->getTextureUnitState(2)->setTextureName(
       tex->getName());
 
   //setup shader parameters
-  size_t impWidth = tex->getWidth();
-  size_t impHeight = tex->getHeight();
+
   //setup the width and height parameters
   //fragParams->setNamedConstant("texDim",(Real)128.0);
-  Real scaleS = 128.0 / impWidth;
-  Real scaleT = 128.0 / impHeight;
+  Real scaleS = 128.0/ impWidth;
+  Real scaleT = 128.0/ impHeight;
+
   _vertParam->setNamedConstant("scaleS", scaleS);
   _vertParam->setNamedConstant("scaleT", scaleT);
+
+  _vertParam->setNamedConstant("segPhi", int(Imposter::SEGPHI)); //number of segments for phi
+  _vertParam->setNamedConstant("segTheta", int(Imposter::SEGTHETA)); //number of segments for theta
+
+
+
   _ogrEnt->setMaterialName(_entsOgrEntMatName.c_str());
 
   lm->logMessage(LML_TRIVIAL, "About to set _ogrEnt visible");

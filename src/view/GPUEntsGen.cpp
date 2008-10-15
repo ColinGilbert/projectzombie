@@ -152,16 +152,16 @@ GPUEntsGen::loadPositions()
   oss << "width,height: " << w << "," << h << endl;
   lm->logMessage(Ogre::LML_TRIVIAL, oss.str());
   //for each texel in the state texture. ASSUMING FLOAT_RGBA. We need to address this assumption later, so we do NOT ASSUME it.
-  for (int j = 0; j < h; j++)
+  for (int j = 0; j < w; j++)
     {
-      for (int i = 0; i < w; i++)
+      for (int i = 0; i < h; i++)
         {
           dist.nextPosition(pos); //get randomly distributed position
           //PixelUtil::packColour((float)pos.x,(float)pos.y,0.0,0.0f,Ogre::PF_FLOAT32_RGBA,(void*)(&pDest[pitchY*j+i]));
-          *pDest++ = pos.x;
-          *pDest++ = pos.y;
-          *pDest++ = pos.z;
-          *pDest++ = 0.0f;
+          *pDest++ = pos.x; //b
+          *pDest++ = pos.y;  //g
+          *pDest++ = pos.z; //r
+          *pDest++ = 0.0f; //a
         }
     }
   pixBuffer->unlock();

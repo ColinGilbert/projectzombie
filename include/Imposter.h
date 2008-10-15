@@ -23,7 +23,7 @@ namespace ZGame
   public:
     static const size_t TEXDIM = 128;
     static const size_t SEGTHETA = 12;
-    static const size_t SEGPHI = 4;
+    static const size_t SEGPHI = 5;
 
     Imposter(const string meshName);
     ~Imposter();
@@ -32,7 +32,7 @@ namespace ZGame
     Ogre::TexturePtr getTextures(){return _texture;}
 
     int getWidth(){return SEGTHETA*TEXDIM;}
-    int getHeight(){return (SEGPHI+1)*TEXDIM;}
+    int getHeight(){return SEGPHI*TEXDIM;}
     int getDim(){return TEXDIM;}
 
 

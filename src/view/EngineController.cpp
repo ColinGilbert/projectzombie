@@ -92,7 +92,7 @@ namespace ZGame
     loadAssets();
     Ogre::Camera* cam = createDefaultCamera();
     Ogre::Viewport* vp = _window->addViewport(cam);
-    vp->setBackgroundColour(Ogre::ColourValue(1.0, 0.0, 0.0));
+    vp->setBackgroundColour(Ogre::ColourValue(0.3, 0.0, 0.0));
 
     cam->setAspectRatio(Real(vp->getActualWidth())
         / Real(vp->getActualHeight()));

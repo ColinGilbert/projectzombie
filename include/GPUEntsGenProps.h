@@ -11,29 +11,55 @@
 #ifndef GPUENTSGENPROPS_H_
 #define GPUENTSGENPROPS_H_
 #include <string>
+#include <memory>
 using namespace std;
 #include <Ogre.h>
 namespace ZGame
 {
+  class Imposter;
   class GPUEntsGenProps
   {
   public:
-    GPUEntsGenProps(const int texWidth, const int texHeight, Ogre::Real entsHeight);
-    virtual ~GPUEntsGenProps();
+    GPUEntsGenProps(const int texWidth, const int texHeight,
+        Ogre::Real entsHeight);
+    virtual
+    ~GPUEntsGenProps();
 
-    size_t getNumOfEntities() {return _numOfEntities;}
-    void setExtents(Ogre::Real minx,Ogre::Real minz,Ogre::Real maxx,Ogre::Real maxz);
-    const Ogre::AxisAlignedBox& getExtents() {return _extents;}
-    int getTexWidth() { return _texWidth;}
-    int getTexHeight(){ return _texHeight;}
-    Ogre::Real getEntHeight() {return _entHeight;}
+    size_t
+    getNumOfEntities()
+    {
+      return _numOfEntities;
+    }
+    void
+    setExtents(Ogre::Real minx, Ogre::Real minz, Ogre::Real maxx,
+        Ogre::Real maxz);
+    const Ogre::AxisAlignedBox&
+    getExtents();
+
+    int
+    getTexWidth();
+
+    int
+    getTexHeight();
+
+    Ogre::Real
+    getEntHeight();
+
+    void
+    setImposter(auto_ptr<Imposter> &imposter);
+
+    Imposter*
+    getImposter();
+
   protected:
     size_t _numOfEntities;
     Ogre::AxisAlignedBox _extents;
     int _texWidth;
     int _texHeight;
     Ogre::Real _entHeight; //height of entity
-    void computeNumOfEnts(); //compute number of entities for a given texture width and height
+    auto_ptr<Imposter> _imposter; //the imposter that compose this set of GPU entities.
+    void
+    computeNumOfEnts(); //compute number of entities for a given texture width and height
 
 
   private:

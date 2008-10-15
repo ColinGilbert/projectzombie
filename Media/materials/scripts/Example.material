@@ -27,8 +27,8 @@ material Examples/OgreLogo
 	{
 		pass
 		{
-			ambient 1.0 1.0 1.0
-			lighting off
+			ambient 0.2 0.2 0.2
+			lighting on
 			depth_check on
 			texture_unit
 			{

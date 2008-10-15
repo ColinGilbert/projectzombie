@@ -85,7 +85,7 @@ ImposterGen::renderToTextures()
 {
   using namespace Ogre;
   Radian rotPhi(-Math::HALF_PI / _imposter->SEGPHI);
-  Radian rotTheta(-Math::TWO_PI / _imposter->SEGTHETA);
+  Radian rotTheta(Math::TWO_PI / _imposter->SEGTHETA);
   //for each phi value,
   TexturePtr tex = _imposter->getTextures();
   RenderTarget* rtt = tex->getBuffer()->getRenderTarget();
@@ -97,7 +97,7 @@ ImposterGen::renderToTextures()
   Real unitWidth = (Real) _imposter->getDim() / width;
   Real unitHeight = (Real) _imposter->getDim() / height;
   vp->getCamera()->setAspectRatio(1.0);
-  for (size_t i = 0; i <= _imposter->SEGPHI; i++)
+  for (size_t i = 0; i < _imposter->SEGPHI; i++)
     {
       for (size_t j = 0; j < _imposter->SEGTHETA; j++)
         {
@@ -252,8 +252,8 @@ ImposterGen::setupCam()
   _cam->setAspectRatio(_ASPECT_RATIO);
   _cam->lookAt(0.0, 0.0, -1.0);
 
-  _scnMgr->setAmbientLight(ColourValue(0.25, 0.25, 0.25));
-
+  _scnMgr->setAmbientLight(ColourValue(0.50, 0.50, 0.50));
+  /*
   Ogre::Light* l = _scnMgr->createLight(_imposterKeys["light"].c_str());
   l->setType(Ogre::Light::LT_DIRECTIONAL);
   Vector3 dir(0.5, 0.5, -1.0);
@@ -261,6 +261,7 @@ ImposterGen::setupCam()
   l->setDirection(dir);
   l->setDiffuseColour(1.0f, 1.0f, 0.8f);
   l->setSpecularColour(1.0f, 1.0f, 1.0f);
+  */
 }
 
 /**

@@ -20,12 +20,16 @@ namespace ZGame
   class GPUEntsGen
   {
   public:
-    GPUEntsGen(const boost::shared_ptr<ZEntity> &ent,auto_ptr<GPUEntsGenProps> props);
-    virtual ~GPUEntsGen();
+    GPUEntsGen(const boost::shared_ptr<ZEntity> &ent,
+        auto_ptr<GPUEntsGenProps> props);
+    virtual
+    ~GPUEntsGen();
 
-    void build();
+    void
+    build();
 
-    auto_ptr<GPUEntities> getOutput(); //returns GPUEntities. You know, the thing that this generator generates.
+    auto_ptr<GPUEntities>
+    getOutput(); //returns GPUEntities. You know, the thing that this generator generates.
 
   protected:
 
@@ -36,13 +40,20 @@ namespace ZGame
     Ogre::TexturePtr _stateTex;
     Ogre::TexturePtr _imposterTex;
     Ogre::TexturePtr _dirTex;
-    void genImposters();
-    void loadPositions();
-    void genEntsGeom();//generate the entities' geometry
-    void createStateTexture(); //Place-holder method for creating GPU entities state texture.
-    size_t nextId(); //get the next availible id.
-    void loadDirections();
-    void createDirTexture();
+    void
+    genImposters();
+    void
+    loadPositions();
+    void
+    genEntsGeom();//generate the entities' geometry
+    void
+    createStateTexture(); //Place-holder method for creating GPU entities state texture.
+    size_t
+    nextId(); //get the next availible id.
+    void
+    loadDirections();
+    void
+    createDirTexture();
     const string _gpuEntsName;
 
     static size_t _uniqueId; //a unqiue id
@@ -50,6 +61,5 @@ namespace ZGame
   private:
   };
 }
-
 
 #endif /* GPUENTSLOADER_H_ */

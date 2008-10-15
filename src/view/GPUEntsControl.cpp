@@ -12,6 +12,7 @@ using namespace std;
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
 #include "PingPongShaders.h"
+#include "EngineView.h"
 
 namespace ZGame
 {
@@ -64,6 +65,10 @@ namespace ZGame
     assert(!posMat.isNull() && "posMat in null GPUEntsControl::init");
     posMat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName(
         _dirTex->getName());
+    MaterialPtr dirMat = MaterialManager::getSingleton().getByName(
+        "ZGame/GPUEntsDirUpdatePingPong");
+    dirMat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName(
+        _stateTex->getName());
 
     lm->logMessage(LML_TRIVIAL, "Out GPUEntsControl::init");
   }
@@ -83,6 +88,8 @@ namespace ZGame
   bool
   GPUEntsControl::onUpdate(const Ogre::FrameEvent &evt)
   {
+    Vector3 camPos = EngineView::getSingleton().getCurrentCamera()->getPosition();
+
     srand(_timer.getMillisecondsCPU());
     int randNum = rand();
     MaterialPtr mat = MaterialManager::getSingleton().getByName(
@@ -91,13 +98,21 @@ namespace ZGame
         mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
     //update direction
     gpu->setNamedConstant("key", randNum);
-    _dirPingPong->pingPong();
     gpu->setNamedConstant("dt", evt.timeSinceLastFrame);
+    gpu->setNamedConstant("camPos",camPos);
+    _dirPingPong->pingPong();
+
+
     //update position
     mat = MaterialManager::getSingleton().getByName(
         "ZGame/GPUEntsPosUpdatePingPong");
     mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
         "dt", evt.timeSinceLastFrame);
+    gpu = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+    gpu->setNamedConstant("key", randNum);
+    gpu->setNamedConstant("camPos",camPos);
+
+
     _posPingPong->pingPong();
     return true;
   }

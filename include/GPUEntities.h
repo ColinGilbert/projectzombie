@@ -30,27 +30,15 @@ namespace ZGame
     void
     setEntsData(const string texName);
     const string
-    getEntsData()
-    {
-      return _gpuEntsData;
-    }
+    getEntsData();
     void
     setImposterTex(const string texName);
     const string
-    getImposterTex()
-    {
-      return _imposterTex;
-    }
+    getImposterTex();
     GPUEntsGenProps*
-    getProperties()
-    {
-      return _props.get();
-    }
+    getProperties();
     string
-    getGpuEntsDirData()
-    {
-      return _dirData;
-    }
+    getGpuEntsDirData();
   protected:
     string _gpuEntsData;
     string _imposterTex;
