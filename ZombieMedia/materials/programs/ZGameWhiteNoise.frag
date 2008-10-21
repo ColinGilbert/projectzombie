@@ -44,30 +44,20 @@ unsigned int F48_63(in uvec3 tD)
 	return tD.y ^ (tD.x | (~tD.z));
 }
 
-//this function converts unsigned 
-//ints to lay within [0,1)
-//What we assume is that we pretend 
-//the uint is really a float, in 
-//the normal IEEE sense.
-//We only care about the integer 
-//portion (from 1st to 24 position bit,
-// disregarding 0th sign bit) of input.
-//So we mask that portion out, 
-//then right shift it, then convert it to [0,1)
+const unsigned int RAND_MAX = 4294967295;
+
+float conv(in unsigned int input)
+{
+	return float(input) / (float(RAND_MAX)+1.0);
+}
+
 vec4 convertToR0_R1(in uvec4 input)
 {
-	vec4 output = vec4(0,0,0,0);
-	unsigned int mask = 0x7FFFFF00u; //we only want the first 23 bits starting at 2nd bit.
-	float MAX = 8388607.0; //2^24-1 .
-	input.x = input.x & mask; 
-	input.x = input.x >> 7u; //shift 7 place.
-	output.x = float(input.x)/MAX;
-	input.y = input.y & mask; 
-	input.y = input.y >> 7u;
-	output.y = float(input.y)/MAX;
-	input.z = input.z & mask; 
-	input.z = input.z >> 7u;
-	output.z = float(input.z)/MAX;
+	vec4 output;
+	output.x = conv(input.x);
+	output.y = conv(input.y);
+	output.z = conv(input.z);
+	output.w = conv(input.w);
 	
 	return output;
 }

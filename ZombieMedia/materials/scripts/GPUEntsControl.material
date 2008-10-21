@@ -109,13 +109,13 @@ material ZGame/PingPongShadersTest
 			texture_unit input
 			{
 			}
-			vertex_program_ref PingPongShadersVP
+			vertex_program_ref WhiteNoiseVP
 			{
 				
 			}
-			fragment_program_ref PingPongShadersFP
+			fragment_program_ref WhiteNoiseFP
 			{
-				param_named input int 0
+				//param_named input int 0
 				param_named key int 420
 			}
 		}
