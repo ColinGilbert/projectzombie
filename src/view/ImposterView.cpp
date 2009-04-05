@@ -6,7 +6,11 @@
  */
 #include <vector>
 #include <ostream>
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <sstream>
+#else
 #include <stringstream>
+#endif
 using namespace std;
 #include "Imposter.h"
 #include "ImposterView.h"

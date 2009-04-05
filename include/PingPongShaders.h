@@ -11,9 +11,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
-using namespace std;
 #include "Ogre.h"
-using namespace Ogre;
 namespace ZGame
 {
 
@@ -30,31 +28,31 @@ namespace ZGame
   {
   public:
     PingPongShaders(Ogre::TexturePtr tex, Ogre::MaterialPtr mat,
-        const Real camZDepth);
+		const Ogre::Real camZDepth);
     virtual
     ~PingPongShaders();
     //This method does the ping pong.
     void
     pingPong();
   protected:
-    TexturePtr _input;
-    TexturePtr _output;
-    MaterialPtr _mat;
-    Real _camZDepth; //the z depth where we place our camera
-    static const Real _NEARPLANE = 1.0;
-    static const Real _FARPLANE = 2.0;
-    static uint32 _ID;
-    uint32 _curId;
-    string _pingPongName;
-    Camera* _cam;
-    auto_ptr<Ogre::Rectangle2D> _fsQuad;
-    Vector3 _camCoords;
+	Ogre::TexturePtr _input;
+	Ogre::TexturePtr _output;
+	Ogre::MaterialPtr _mat;
+	Ogre::Real _camZDepth; //the z depth where we place our camera
+	static const Ogre::Real _NEARPLANE;// = 1.0;
+	static const Ogre::Real _FARPLANE;// = 2.0;
+	static Ogre::uint32 _ID;
+	Ogre::uint32 _curId;
+	std::string _pingPongName;
+	Ogre::Camera* _cam;
+	std::auto_ptr<Ogre::Rectangle2D> _fsQuad;
+	Ogre::Vector3 _camCoords;
 
     void
     init();
 
     void
-    setupRTT(TexturePtr &mat, Camera* cam);
+	setupRTT(Ogre::TexturePtr &mat, Ogre::Camera* cam);
 
     void
     duplicateInput();

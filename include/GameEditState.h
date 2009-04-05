@@ -37,7 +37,7 @@ public:
   bool onKeyDown(const OIS::KeyEvent &evt);
 
 protected:
-  auto_ptr<GameEditView> _editView;
+  std::auto_ptr<GameEditView> _editView;
 
   virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
   virtual void regKeyObsForInjection(KeyEventRegister &keyReg);

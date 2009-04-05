@@ -9,9 +9,9 @@
 //block 5-13: 0. This corresponds to appending zeros up to 448 bit.
 //block 14-15: 0x0000000000000080. This correspond to the bit length of the input (128 bit), as a 64bit 
 //litten endian.
-void setupInput(in uvec4 input, in unsigned int key, inout unsigned int data[16])
+void setupInput(in uvec4 _input, in unsigned int key, inout unsigned int data[16])
 {
-	data[0] = input.x^key; data[1] = input.y^key; data[2] = input.z^key; data[3] = input.w^key; //xor base with key
+	data[0] = _input.x^key; data[1] = _input.y^key; data[2] = _input.z^key; data[3] = _input.w^key; //xor base with key
 	data[4] = 0x80000000u;
 	data[5] = 0u; data[6] = 0u; data[7] = 0u; data[8] = 0u; 
 	data[9]=0u; data[10]=0u; data[11]=0u; data[12]=0u; data[13]=0u;
@@ -44,28 +44,29 @@ unsigned int F48_63(in uvec3 tD)
 	return tD.y ^ (tD.x | (~tD.z));
 }
 
-const unsigned int RAND_MAX = 4294967295;
+//const unsigned int RAND_MAX = 4294967295;
+unsigned int RAND_MAX = 429467294;
 
-float conv(in unsigned int input)
+float conv(in unsigned int _input)
 {
-	return float(input) / (float(RAND_MAX)+1.0);
+	return float(_input) / (float(RAND_MAX)+1.0);
 }
 
-vec4 convertToR0_R1(in uvec4 input)
+vec4 convertToR0_R1(in uvec4 _input)
 {
-	vec4 output;
-	output.x = conv(input.x);
-	output.y = conv(input.y);
-	output.z = conv(input.z);
-	output.w = conv(input.w);
+	vec4 _output;
+	_output.x = conv(_input.x);
+	_output.y = conv(_input.y);
+	_output.z = conv(_input.z);
+	_output.w = conv(_input.w);
 	
-	return output;
+	return _output;
 }
 
-uvec4 whiteNoise(in uvec4 input,in unsigned int key)
+uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 {
 	unsigned int data[16];
-	setupInput(input,key,data);
+	setupInput(_input,key,data);
 	uvec4 rot0_15 = uvec4(7u,12u,17u,22u);
 	uvec4 rot16_31 = uvec4(5u,9u,14u,20u);
 	uvec4 rot32_47 = uvec4(4u,11u,16u,23u);
@@ -73,11 +74,17 @@ uvec4 whiteNoise(in uvec4 input,in unsigned int key)
 	
 	uvec4 digest = initDigest();
 	uvec4 tD;
-	uvec4 fTmp;
+	//uvec4 fTmp;
+	unsigned int fTmp;
 	unsigned int i = 0u;
 	unsigned int idx;
 	unsigned int r;
-	unsigned int trig; const unsigned int MAXFT = 4294967295; //2^32-1
+	unsigned int trig; 
+	//const unsigned int MAXFT = 4294967295; 
+	//2^32-1
+	//unsigned int MAXFT = 4294967000;
+	unsigned int MAXFT = 429467294;
+	uint MAXFT2 = 1;
 	//What follows is the unrolled loop from 0 through 63
 	//0
 	tD = digest;
@@ -86,7 +93,7 @@ uvec4 whiteNoise(in uvec4 input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -95,7 +102,7 @@ uvec4 whiteNoise(in uvec4 input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;

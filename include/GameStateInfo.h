@@ -33,7 +33,7 @@ namespace ZGame
 
   };
 
-  typedef map<std::string, ZGame::GameStateInfo> GameStateInfoMap;
+  typedef std::map<std::string, ZGame::GameStateInfo> GameStateInfoMap;
   typedef GameStateInfoMap::iterator GameStateInfoMapItr;
 
 }

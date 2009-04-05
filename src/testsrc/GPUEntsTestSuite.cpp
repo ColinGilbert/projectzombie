@@ -26,7 +26,7 @@ namespace GPUEntsTestSuite
 {
 struct Fix
 {
-  Fix() : ent(0),props(0)
+  Fix() : props(0)
   {
     cout << "In FIx() constructor" << endl;
     setup();
@@ -34,8 +34,7 @@ struct Fix
   ~Fix()
   {
     cout << "In ~Fix()" << endl;
-    if(ent)
-      delete ent;
+
     if(props)
       delete props;
     cout << "Deleting GPU entities" << endl;
@@ -43,7 +42,8 @@ struct Fix
     }
   void setup();
   void createGPUEntities();
-  ZEntity* ent;
+  //ZEntity* ent;
+  boost::shared_ptr<ZEntity> ent;
   GPUEntsGenProps* props;
   auto_ptr<GPUEntities> gpuEnts;
 };
@@ -52,7 +52,8 @@ void Fix::setup()
 {
   BOOST_TEST_MESSAGE("In Fix::setup");
   GPUEntsPropsFixture f;
-  ent = new ZEntity("TESTENTITY", "robot.mesh");
+  //ent = new ZEntity("TESTENTITY", "robot.mesh");
+  ent.reset(new ZEntity("TESTENTITY","rbot.mesh"));
   props = new GPUEntsGenProps(f.texW, f.texH,f.entHeight);
   props->setExtents(f.minx, f.minz, f.maxx, f.maxz);
   createGPUEntities();

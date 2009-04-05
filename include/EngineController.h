@@ -10,7 +10,7 @@
 
 #include <string>
 #include <memory>
-using namespace std;
+#include <vector>
 #include <Ogre.h>
 #include <fastdelegate/delegate.h>
 #include <OIS/OIS.h>
@@ -39,7 +39,7 @@ namespace ZGame
 
     bool frameStarted(const Ogre::FrameEvent &evt);
 
-    void transitionState(const string key);
+	void transitionState(const std::string key);
     bool onInit();
     void run();
     void onDestroy();
@@ -58,23 +58,23 @@ namespace ZGame
     //setters getters
     //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
   protected:
-    auto_ptr<Ogre::Root> _root;
+	std::auto_ptr<Ogre::Root> _root;
     Ogre::SceneManager* _scnMgr;
     Ogre::RenderWindow* _window;
-    auto_ptr<ZGame::EngineView> _engineView;
+	std::auto_ptr<ZGame::EngineView> _engineView;
 
-    auto_ptr<ZGame::InputController> _inController;
+	std::auto_ptr<ZGame::InputController> _inController;
 
-    GameStateInfoMap _gameSInfoMap;
+	GameStateInfoMap _gameSInfoMap;
 
     //Current state
-    auto_ptr<GameStateInfo> _curStateInfo;
-    auto_ptr<GameState> _curGameState;
+	std::auto_ptr<GameStateInfo> _curStateInfo;
+	std::auto_ptr<GameState> _curGameState;
 
     //LifeCycle pump
-    auto_ptr<LifeCyclePump> _lfcPump;
-    auto_ptr<KeyboardPump> _keyPump;
-    auto_ptr<MousePump> _mousePump;
+	std::auto_ptr<LifeCyclePump> _lfcPump;
+	std::auto_ptr<KeyboardPump> _keyPump;
+	std::auto_ptr<MousePump> _mousePump;
 
 
     void loadAssets();
@@ -88,7 +88,7 @@ namespace ZGame
     Ogre::Camera* createDefaultCamera();
 
   private:
-    string _listenerID;
+	std::string _listenerID;
     bool _stillRunning;
 
     void loadStartStateToCurrentState(const string curKey);

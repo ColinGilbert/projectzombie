@@ -11,7 +11,6 @@
 #define CONTROLMODULEPROTO_H_
 #include <Ogre.h>
 #include <OIS/OIS.h>
-using namespace Ogre;
 #include "ObsInjectors.h"
 namespace ZGame
 {
@@ -56,12 +55,12 @@ namespace ZGame
     onUpdate(const Ogre::FrameEvent &evt);
   protected:
 
-    Vector3 _transVector;
-    Real _dTrans; //change in translation
-    Real _transFactor; //translation factor;
-    Real _rotYaw;
-    Real _rotPitch;
-    Real _rotFactor;
+	Ogre::Vector3 _transVector;
+	Ogre::Real _dTrans; //change in translation
+	Ogre::Real _transFactor; //translation factor;
+	Ogre::Real _rotYaw;
+	Ogre::Real _rotPitch;
+	Ogre::Real _rotFactor;
     Ogre::Camera* _cam;
 
     enum TransMode
@@ -71,7 +70,7 @@ namespace ZGame
     bool _transMode[6];
 
     void
-    updateTransFactor(Real factor);
+	updateTransFactor(Ogre::Real factor);
     void
     toggleMode(enum TransMode mode);
   };

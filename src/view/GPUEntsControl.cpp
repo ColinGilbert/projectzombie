@@ -16,6 +16,8 @@ using namespace std;
 
 namespace ZGame
 {
+  using namespace Ogre;
+  const Real GPUEntsControl::_DIRUPDATEPERIOD = 2.0; //two seconds per update of direction.
 
   GPUEntsControl::GPUEntsControl() :
     _elapsedT(0.0f), _gpuEnts(0)

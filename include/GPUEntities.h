@@ -10,7 +10,7 @@
 #define GPUENTITIES_H_
 #include <string>
 #include <memory>
-using namespace std;
+
 #include <Ogre.h>
 
 namespace ZGame
@@ -20,31 +20,31 @@ namespace ZGame
   class GPUEntities
   {
   public:
-    GPUEntities(const string entsName, const string entsData,
-        const string dirData, const string imposterTex, auto_ptr<
+	  GPUEntities(const std::string entsName, const std::string entsData,
+		  const std::string dirData, const std::string imposterTex, std::auto_ptr<
             GPUEntsGenProps> props);
     virtual
     ~GPUEntities();
-    const string
+	const std::string
     getName();
     void
-    setEntsData(const string texName);
-    const string
+	setEntsData(const std::string texName);
+	const std::string
     getEntsData();
     void
-    setImposterTex(const string texName);
-    const string
+	setImposterTex(const std::string texName);
+	const std::string
     getImposterTex();
     GPUEntsGenProps*
     getProperties();
-    string
+	const std::string
     getGpuEntsDirData();
   protected:
-    string _gpuEntsData;
-    string _imposterTex;
-    string _entsName;
-    auto_ptr<GPUEntsGenProps> _props;
-    string _dirData;
+	std::string _gpuEntsData;
+	std::string _imposterTex;
+    std::string _entsName;
+	std::auto_ptr<GPUEntsGenProps> _props;
+    std::string _dirData;
   private:
   };
 }

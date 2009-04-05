@@ -6,13 +6,21 @@
  */
 
 #include <cmath>
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <sstream>
+#else
 #include <stringstream>
+#endif
 #include <ostream>
 using namespace std;
 #include "Imposter.h"
 #include "ImposterGen.h"
 #include "EngineView.h"
 using namespace ZGame;
+
+const Ogre::Real ZGame::ImposterGen::_NEAR_CLIP = 1.0f;
+const Ogre::Real ZGame::ImposterGen::_FAR_CLIP = 200.0f;
+const Ogre::Real ZGame::ImposterGen::_ASPECT_RATIO = 1.0f;
 
 int ImposterGen::_id = 0;
 

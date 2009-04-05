@@ -8,7 +8,7 @@
 #ifndef KEYEVENTREGISTER_H_
 #define KEYEVENTREGISTER_H_
 #include <memory>
-using namespace std;
+#include <vector>
 #include "EventDelegates.h"
 
 namespace ZGame
@@ -25,8 +25,8 @@ namespace ZGame
     void injectKeySubj(const EVENT::KeyEvtSubject &subj);
     void registerKeyObs(const EVENT::KeyboardEvtObserver& obs); //utility method for register key observers.
   protected:
-    typedef vector<EVENT::KeyboardEvtObserver>::iterator KeyObsIt;
-    vector<EVENT::KeyboardEvtObserver> _keyObs;
+	typedef std::vector<EVENT::KeyboardEvtObserver>::iterator KeyObsIt;
+	std::vector<EVENT::KeyboardEvtObserver> _keyObs;
     bool _registered;
   };
 

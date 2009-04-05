@@ -33,7 +33,7 @@ bool InputController::onInit(Ogre::RenderWindow* window)
   //Get Window handle
 #if defined OIS_WIN32_PLATFORM
   {
-    window->getCustomAttributee("WINDOW",&winHnd);
+    window->getCustomAttribute("WINDOW",&winHnd);
     paramList.insert(std::make_pair(std::string("w32_mouse"),std::string("DISCL_FOREGROUND") ));
     paramList.insert(std::make_pair(string("w32_mouse"),string("DISCL_NONEXCLUSIVE") ));
   }

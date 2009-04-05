@@ -4,7 +4,12 @@
  *  Created on: Sep 11, 2008
  *      Author: bey0nd
  */
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <sstream>
+#else
 #include <stringstream>
+#endif
+
 #include <iostream>
 using namespace std;
 #include "Imposter.h"

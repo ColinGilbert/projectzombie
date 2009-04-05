@@ -8,7 +8,7 @@
 #ifndef MOUSEEVENTREGISTER_H_
 #define MOUSEEVENTREGISTER_H_
 #include <memory>
-using namespace std;
+#include <vector>
 #include "EventDelegates.h"
 namespace ZGame
 {
@@ -23,8 +23,8 @@ namespace ZGame
     void injectMouseSubj(const EVENT::MouseEvtSubject &subj);
     void registerMouseObs(const EVENT::MouseEvtObserver &obs);
   protected:
-    typedef vector<EVENT::MouseEvtObserver>::iterator ObsItr;
-    vector<EVENT::MouseEvtObserver> _obs;
+	typedef std::vector<EVENT::MouseEvtObserver>::iterator ObsItr;
+	std::vector<EVENT::MouseEvtObserver> _obs;
 
   };
 

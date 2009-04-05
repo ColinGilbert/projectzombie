@@ -11,6 +11,7 @@
 
 using namespace ZGame;
 using namespace Ogre;
+using namespace std;
 GPUEntities::GPUEntities(const string entsName, const string entsData,
     const string dirData, const string imposterTex,
     auto_ptr<GPUEntsGenProps> props) :
@@ -38,7 +39,7 @@ GPUEntities::getImposterTex()
   return _imposterTex;
 }
 
-string
+const string
 GPUEntities::getGpuEntsDirData()
 {
   return _dirData;

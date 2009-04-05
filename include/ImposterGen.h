@@ -12,8 +12,6 @@
 #include <string>
 #include <vector>
 #include <map>
-using namespace std;
-
 #include <Ogre.h>
 
 
@@ -62,13 +60,13 @@ namespace ZGame
     static int _id;
     int _curId;
 
-    map<string,string> _imposterKeys;
+	std::map<string,string> _imposterKeys;
 
     Imposter* _imposter;
 
-    static const Ogre::Real _NEAR_CLIP = 1.0f;
-    static const Ogre::Real _FAR_CLIP = 2000.0f;
-    static const Ogre::Real _ASPECT_RATIO = 1.0f; //tex width / tex_height, in our case is 1 since our texture is square.
+    static const Ogre::Real _NEAR_CLIP; //= 1.0f;
+    static const Ogre::Real _FAR_CLIP; //= 2000.0f;
+    static const Ogre::Real _ASPECT_RATIO; //= 1.0f; //tex width / tex_height, in our case is 1 since our texture is square.
 
     Ogre::Real _rotVal;
     Ogre::Vector3 _cen;
@@ -79,5 +77,7 @@ namespace ZGame
   };
 
 }
+
+
 
 #endif /* IMPOSTERGEN_H_ */

@@ -5,8 +5,13 @@
  *      Author: bey0nd
  */
 #include <string>
-#include <ostringstream>
+//#include <ostringstream>
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <stdexcept>
+#else
 #include <logic_error>
+#endif
+
 using namespace std;
 #include <boost/random.hpp>
 #include <OgreBitwise.h>

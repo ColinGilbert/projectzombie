@@ -9,13 +9,13 @@
 #define LIFECYCLEREGISTER_H_
 
 #include <memory>
-using namespace std;
+#include <vector>
 #include "LifeCycleDelegates.h"
 
 
 namespace ZGame
 {
-
+  
   class LifeCycleRegister
   {
   public:
@@ -28,8 +28,9 @@ namespace ZGame
 
   protected:
 
-    typedef vector<LifeCycle::LifeCycleObserver>::iterator LfcObsIt;
-    vector<LifeCycle::LifeCycleObserver> _lfcObs;
+    
+	typedef std::vector<LifeCycle::LifeCycleObserver>::iterator LfcObsIt;
+	std::vector<LifeCycle::LifeCycleObserver> _lfcObs;
     bool _isRegistered;
 
   };

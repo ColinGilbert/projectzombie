@@ -20,20 +20,19 @@ using namespace ZGame;
 
 struct Fix
 {
-  Fix() : ent(0),props(0)
+  Fix() : props(0)
   {
     cout << "In FIx() constructor" << endl;
   }
   ~Fix()
   {
     cout << "In ~Fix()" << endl;
-    if(ent)
-      delete ent;
     if(props)
       delete props;
     }
   void setup();
-  ZEntity* ent;
+  boost::shared_ptr<ZEntity> ent;
+  //ZEntity* ent;
   GPUEntsGenProps* props;
 };
 
@@ -41,7 +40,8 @@ void Fix::setup()
 {
   BOOST_TEST_MESSAGE("In Fix::setup");
   GPUEntsPropsFixture f;
-  ent = new ZEntity("TESTENTITY", "robot.mesh");
+  //ent = new ZEntity("TESTENTITY", "robot.mesh");
+  ent.reset(new ZEntity("TESTENTITY","robot.mesh"));
   props = new GPUEntsGenProps(f.texW, f.texH,f.entHeight);
   props->setExtents(f.minx, f.minz, f.maxx, f.maxz);
 }

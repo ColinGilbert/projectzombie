@@ -12,7 +12,10 @@
 
 namespace ZGame
 {
-
+  using namespace Ogre;
+  using namespace std;
+  const Ogre::Real PingPongShaders::_NEARPLANE = 1.0;
+  const Ogre::Real PingPongShaders::_FARPLANE = 2.0;
   uint32 PingPongShaders::_ID = 0;
   PingPongShaders::PingPongShaders(Ogre::TexturePtr tex, Ogre::MaterialPtr mat,
       Ogre::Real camZDepth) :

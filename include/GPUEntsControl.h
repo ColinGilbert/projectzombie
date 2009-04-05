@@ -10,9 +10,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
-using namespace std;
 #include <Ogre.h>
-using namespace Ogre;
 #include "ObsInjectors.h"
 namespace ZGame
 {
@@ -42,14 +40,14 @@ namespace ZGame
     bool
     onUpdate(const Ogre::FrameEvent &evt);
   protected:
-    TexturePtr _stateTex; //gpu entities state texture
-    TexturePtr _dirTex; //gpu entities direction texture.
+	Ogre::TexturePtr _stateTex; //gpu entities state texture
+	Ogre::TexturePtr _dirTex; //gpu entities direction texture.
     GPUEntities* _gpuEnts;
     Ogre::Timer _timer;
-    auto_ptr<PingPongShaders> _posPingPong; //the ping pong to update positions.
-    auto_ptr<PingPongShaders> _dirPingPong; //the ping pong to update directions.
-    static const Real _DIRUPDATEPERIOD = 2.0; //two seconds per update of direction.
-    Real _elapsedT;
+	std::auto_ptr<PingPongShaders> _posPingPong; //the ping pong to update positions.
+	std::auto_ptr<PingPongShaders> _dirPingPong; //the ping pong to update directions.
+	static const Ogre::Real _DIRUPDATEPERIOD; //= 2.0; //two seconds per update of direction.
+	Ogre::Real _elapsedT;
     void
     init();
 

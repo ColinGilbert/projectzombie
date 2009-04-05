@@ -6,7 +6,12 @@
  */
 
 #include <iostream>
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <stdexcept>
+#else
 #include <runtime_error>
+#endif
 using namespace std;
 
 #define BOOST_TEST_MAIN
