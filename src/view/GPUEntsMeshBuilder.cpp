@@ -52,10 +52,11 @@ namespace ZGame
     SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
     ManualObject* man = scnMgr->createManualObject(manName.c_str());
     man->setDynamic(false);
-    man->begin("BaseWhiteNoLighting", RenderOperation::OT_TRIANGLE_LIST);
+    
 
     //unsigned int pointIndex = 0;
-    uint16 pointIndex = 0;
+    uint32 pointIndex = 0;
+    //uint16 pointIndex = 0;
     Real u, v; //texture coordinate correspond to entity ID.
     u = 0.0f;
     v = 0.0f;
@@ -68,16 +69,18 @@ namespace ZGame
     Vector2 du(tOffset, 0.0f);
     Vector2 dv(0.0f, tOffset);
 
+    man->begin("BaseWhiteNoLighting", RenderOperation::OT_TRIANGLE_LIST);
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Began man mesh looping build");
     //Now loop N entities and create a quad for each entity, with each quad having an ID corresponding to the entity.
     for (size_t j = 0; j < texH; j++)
       {
-
+        /*
         if (pointIndex >= 65536)
           {
             man->end();
             man->begin("BaseWhiteNoLighting", RenderOperation::OT_TRIANGLE_LIST);
             pointIndex = 0;
-          }
+          }*/
         for (size_t i = 0; i < texW; i++)
           {
             man->position(corners[UPL]); //upper left
@@ -108,13 +111,17 @@ namespace ZGame
         uv.y += tOffset;
         //uv += dv;
       }
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Finished looping creation of manual mesh.");
     man->end();
     Ogre::AxisAlignedBox infAAB;
     //infAAB.setInfinite();
-    infAAB.setExtents(-2500.0, -2500.0, -2500.0, 2500.0, 2500.0, 2500.0);
+    infAAB.setExtents(-5500.0, -5500.0, -5500.0, 5500.0, 5500.0, 5500.0);
     man->setBoundingBox(infAAB);
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"InfABB set");
     MeshPtr mesh = man->convertToMesh(name);
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Mesh converted.");
     scnMgr->destroyManualObject(man);
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Manual Mesh build!");
     return mesh;
   }
 

@@ -62,11 +62,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalDependencies="kernel32.lib $(NoInherit)"
+				AdditionalDependencies="kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib $(NoInherit)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\lib"
+				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\lib"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool

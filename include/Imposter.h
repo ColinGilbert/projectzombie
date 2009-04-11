@@ -21,7 +21,7 @@ namespace ZGame
   class Imposter
   {
   public:
-    static const size_t TEXDIM = 128;
+    static const size_t TEXDIM = 512;
     static const size_t SEGTHETA = 12;
     static const size_t SEGPHI = 5;
 

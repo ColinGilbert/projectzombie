@@ -2,17 +2,17 @@
 
 uniform int key;
 
-uvec4 whiteNoise(in uvec4 input, in unsigned int key);
+uvec4 whiteNoise(in uvec4 _input, in unsigned int key);
 
-vec4 convertToR0_R1(in uvec4 input);
+vec4 convertToR0_R1(in uvec4 _input);
 
 
 void main()
 {
 	uvec4 coord;
 	
-	coord.x = gl_TexCoord[0].x*1024.0;
-	coord.y = gl_TexCoord[0].y*1024.0;
+	coord.x = uint(gl_TexCoord[0].x*1024.0);
+	coord.y = uint(gl_TexCoord[0].y*1024.0);
 	coord.z = 0u;
 	coord.w = 0u;
 	uvec4 noise = whiteNoise(coord,unsigned int(key));

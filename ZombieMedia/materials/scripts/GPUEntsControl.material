@@ -106,7 +106,7 @@ material ZGame/PingPongShadersTest
 			ambient 1.0 1.0 1.0
 			lighting off
 			depth_check off
-			texture_unit input
+			texture_unit _input
 			{
 			}
 			vertex_program_ref WhiteNoiseVP
@@ -131,7 +131,7 @@ material ZGame/GPUEntsDirUpdatePingPong
 			ambient 1.0 1.0 1.0
 			lighting off
 			depth_check off
-			texture_unit input
+			texture_unit _input
 			{
 			}
 			texture_unit StateTex
@@ -142,7 +142,8 @@ material ZGame/GPUEntsDirUpdatePingPong
 			}
 			fragment_program_ref GPUEntsDirUpdateFP
 			{
-				param_named input int 0
+				//param_named input int 0
+				param_named _input int 0
 				param_named stateTex int 1
 				param_named key int 420
 				param_named dt float 0.01
@@ -162,7 +163,7 @@ material ZGame/GPUEntsPosUpdatePingPong
 			ambient 1.0 1.0 1.0
 			lighting off
 			depth_check off
-			texture_unit input
+			texture_unit _input
 			{
 			}
 			texture_unit dir
@@ -175,7 +176,7 @@ material ZGame/GPUEntsPosUpdatePingPong
 			{
 				//input is the position
 				param_named key int 420
-				param_named input int 0 
+				param_named _input int 0 
 				param_named dir int 1
 				param_named dt float 0.01
 				param_named camPos float3 0.0 0.0 0.0

@@ -110,7 +110,7 @@ namespace ZGame
     _root->addFrameListener(this);
 
     //set logging lvl
-    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
+	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
     return true;
   }
@@ -192,8 +192,8 @@ namespace ZGame
     try
       {
         _inController->onDestroy();
-        Ogre::Root* root = _root.release();
-        delete root;
+        //Ogre::Root* root = _root.release();
+        //delete root;
         //_root->shutdown();
 
       }
@@ -216,9 +216,13 @@ namespace ZGame
   bool
   EngineController::onKeyUp(const OIS::KeyEvent &event)
   {
-    if (event.key == OIS::KC_ESCAPE)
-      _stillRunning = false;
     _keyPump->updateKeyUpObs(event);
+    if (event.key == OIS::KC_ESCAPE)
+    {
+      _stillRunning = false;
+      unloadCurrentState();
+    }
+    
     return true;
   }
 
@@ -354,7 +358,7 @@ namespace ZGame
         MouseEventRegister mouseReg;
 
         _curGameState->init(lfcReg, keyReg, mouseReg);
-
+      
         //inject subject to observers
         lfcReg.injectLfcSubj(lcs);
         keyReg.injectKeySubj(ks);
@@ -363,7 +367,7 @@ namespace ZGame
         _lfcPump->updateOnItObs(); //pump on init event to observers.
 
       }
-
+    logM->logMessage(Ogre::LML_NORMAL,"Realizing current state done");
   }
-
+  
 }

@@ -90,6 +90,7 @@ namespace ZGame
   bool
   GPUEntsControl::onUpdate(const Ogre::FrameEvent &evt)
   {
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GPUEntsControl onUpdate");
     Vector3 camPos = EngineView::getSingleton().getCurrentCamera()->getPosition();
 
     srand(_timer.getMillisecondsCPU());
@@ -98,12 +99,16 @@ namespace ZGame
         "ZGame/GPUEntsDirUpdatePingPong");
     Ogre::GpuProgramParametersSharedPtr gpu =
         mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Finished getting GPU parameters");
     //update direction
     gpu->setNamedConstant("key", randNum);
     gpu->setNamedConstant("dt", evt.timeSinceLastFrame);
     gpu->setNamedConstant("camPos",camPos);
-    _dirPingPong->pingPong();
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"FInished setting GPU parameters");
 
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"About to ping-pong direction update");
+    _dirPingPong->pingPong();
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"FInish ping-ponging direction update");
 
     //update position
     mat = MaterialManager::getSingleton().getByName(
@@ -113,9 +118,11 @@ namespace ZGame
     gpu = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
     gpu->setNamedConstant("key", randNum);
     gpu->setNamedConstant("camPos",camPos);
-
-
+    
     _posPingPong->pingPong();
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Finished ping-ponging position update");
+
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out of GPUEntsControl onUpdate");
     return true;
   }
 

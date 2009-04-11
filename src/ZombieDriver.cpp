@@ -35,7 +35,6 @@ main(int argc, char** argv)
   using namespace ZGame;
 
   ZGame::EngineController engineControl;
-  using namespace ZGame;
   try
     {
       if (!engineControl.onInit())

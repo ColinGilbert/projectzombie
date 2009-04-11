@@ -111,7 +111,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -120,7 +120,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+        trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -129,7 +129,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -138,7 +138,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -147,7 +147,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -156,7 +156,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -165,7 +165,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -174,7 +174,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -183,7 +183,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -192,7 +192,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -201,7 +201,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -210,7 +210,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -219,7 +219,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -228,7 +228,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = i++;
 	r = rot0_15.x;
 	rot0_15 = rot0_15.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -238,7 +238,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -247,7 +247,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -256,7 +256,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -265,7 +265,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -274,7 +274,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -283,7 +283,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -292,7 +292,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -301,7 +301,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -310,7 +310,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -319,7 +319,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -328,7 +328,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -337,7 +337,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -346,7 +346,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -355,7 +355,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -364,7 +364,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -373,7 +373,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (5u*i++ + 1u) % 16u;
 	r = rot16_31.x;
 	rot16_31 = rot16_31.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -383,7 +383,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -392,7 +392,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -401,7 +401,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -410,7 +410,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -419,7 +419,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -428,7 +428,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -437,7 +437,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -446,7 +446,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -455,7 +455,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -464,7 +464,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -473,7 +473,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -482,7 +482,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -491,7 +491,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -500,7 +500,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -509,7 +509,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -518,7 +518,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (3u*i++ + 5u) % 16u;
 	r = rot32_47.x;
 	rot32_47 = rot32_47.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -528,7 +528,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -537,7 +537,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -546,7 +546,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -555,7 +555,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -564,7 +564,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -573,7 +573,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -582,7 +582,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -591,7 +591,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -600,7 +600,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -609,7 +609,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -618,7 +618,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -627,7 +627,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -636,7 +636,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -645,7 +645,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -654,7 +654,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;
@@ -663,7 +663,7 @@ uvec4 whiteNoise(in uvec4 _input,in unsigned int key)
 	idx = (7u*i++) % 16u;
 	r = rot48_63.x;
 	rot48_63 = rot48_63.yzwx;
-	trig = truncate(abs(sin(float(i)))*float(MAXFT));
+	trig = uint(trunc(abs(sin(float(i)))*float(MAXFT)));
 	tD.x = tD.y + ((tD.x+fTmp+data[int(idx)]+trig) << r);
 	tD = tD.yzwx;
 	digest +=tD;

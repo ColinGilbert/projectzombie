@@ -78,6 +78,7 @@ GPUEntsView::initCamera()
 bool
 GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
 {
+  //Ogre::LogManager::getSingleton().logMessage("In GPUENtsView onUpdate");
   //MaterialPtr mat = MaterialManager::getSingleton().getByName(
       // _entsOgrEntMatName.c_str());
   Camera* cam = EngineView::getSingleton().getCurrentCamera();
@@ -150,8 +151,8 @@ GPUEntsView::initOgrEnt()
 
   //setup the width and height parameters
   //fragParams->setNamedConstant("texDim",(Real)128.0);
-  Real scaleS = 128.0/ impWidth;
-  Real scaleT = 128.0/ impHeight;
+  Real scaleS = 512.0/ impWidth;
+  Real scaleT = 512.0/ impHeight;
 
   _vertParam->setNamedConstant("scaleS", scaleS);
   _vertParam->setNamedConstant("scaleT", scaleT);

@@ -51,6 +51,7 @@ LifeCyclePump::updateOnUpdateObs(const Ogre::FrameEvent& evt)
 {
   for (LifeUpdateObsItr it = _onUpdateObs.begin(); it != _onUpdateObs.end(); ++it)
     {
+      //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"upming updates to observers.");
       (*it)(evt); //make delegate call
     }
 }

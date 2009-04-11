@@ -1,6 +1,6 @@
 #extension GL_EXT_gpu_shader4 : enable
 
-uniform sampler2D input;
+uniform sampler2D _input;
 uniform sampler2D dir;
 uniform float dt; //change in time
 uniform int key;
@@ -8,9 +8,9 @@ uniform vec3 camPos;
 const float EPSILON = 2.4414e-4;
 const float STOPRANGE = 6.0; //stop
 
-uvec4 whiteNoise(in uvec4 input, in unsigned int key);
+uvec4 whiteNoise(in uvec4 _input, in unsigned int key);
 
-vec4 convertToR0_R1(in uvec4 input);
+vec4 convertToR0_R1(in uvec4 _input);
 
 void main()
 {
@@ -19,13 +19,13 @@ void main()
 	//update position using old euler's method
 	vec2 tc = gl_TexCoord[0].st;
 	//tc.t = 1.0 - tc.t;
-	vec4 pos = texture2D(input,tc);
+	vec4 pos = texture2D(_input,tc);
 	vec4 dir = texture2D(dir,tc);
 	
 	uvec4 coord;
 	unsigned int uintkey = unsigned int(key);
-	coord.x = gl_TexCoord[0].x*20000.0;
-	coord.y = gl_TexCoord[0].y*20000.0;
+	coord.x = uint(gl_TexCoord[0].x*20000.0);
+	coord.y = uint(gl_TexCoord[0].y*20000.0);
 	coord.z = uintkey;
 	coord.w = uintkey;
 	

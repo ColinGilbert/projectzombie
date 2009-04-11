@@ -88,7 +88,7 @@ namespace ZGame
   {
     //Set the input texture for the material to input texture. If this input does not exist
     //in said material, then an Ogre::Exception will be thrown, and our engine will catch it eventually upstream.
-    _mat->getTechnique(0)->getPass(0)->getTextureUnitState("input")->setTextureName(
+    _mat->getTechnique(0)->getPass(0)->getTextureUnitState("_input")->setTextureName(
       _input->getName());
     RenderTarget* rtt = _output->getBuffer()->getRenderTarget();
     _fsQuad->setVisible(true);
