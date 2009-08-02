@@ -10,20 +10,44 @@
 #include "ImposterGen.h"
 #include "Imposter.h"
 #include "ImposterView.h"
-
+#include "LifeCycleDelegates.h"
+#include "EventDelegates.h"
+#include "ZEntity.h"
+using namespace Ogre;
 using namespace ZGame;
 
 GameEditView::GameEditView() :
-  _imposter(0), _imposterView(0), _dz(1.0)
+  _imposter(0), _imposterView(0), _dz(1.0),_ent(new ZEntity("ZombieEntity","RZR-002.mesh"))
 {
 
 }
 
 GameEditView::~GameEditView()
 {
-
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In ~GameDitView");
+  delete _imposter;
 }
 
+void
+GameEditView::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
+{
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditView fillLfcObservers");
+  obs.onInit.bind(&GameEditView::onInit,this);
+  obs.onUpdate.bind(&GameEditView::onUpdate,this);
+  obs.onDestroy.bind(&GameEditView::onDestroy,this);
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out GameEditView fillLfcObservers");
+}
+
+void
+GameEditView::fillKeyObservers(EVENT::KeyboardEvtObserver &obs)
+{
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditView fillKeyObservers");
+  obs.kde.bind(&GameEditView::onKeyDown,this);
+  obs.kue.bind(&GameEditView::onKeyUp,this);
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out GameEditView fillKeyObservers");
+}
+
+/*
 void
 GameEditView::injectLifeCycleSubject(
     const ZGame::LifeCycle::LifeCycleSubject &subject)
@@ -57,7 +81,7 @@ GameEditView::fillLifeCycleSubjectInjector(
 {
   injector.bind(&GameEditView::injectLifeCycleSubject, this);
 }
-
+*/
 bool
 GameEditView::onUpdate(const Ogre::FrameEvent& evt)
 {
@@ -70,13 +94,23 @@ GameEditView::onInit()
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "in GameEditView::onInit()");
 
-  _imposter.reset(new Imposter("robot.mesh"));
-  auto_ptr<ImposterGen> imposterGen(new ImposterGen());
-  imposterGen->setInput(_imposter.get());
+  std::auto_ptr<ImposterGen> imposterGen(new ImposterGen());
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Creating Imposter");
+  _imposter = new Imposter(_ent->getMeshName());
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Finished creating imposter");
+  _imposter->init();
+    if(_imposter == 0)
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"!!!!!!!!!!!!!imp is fucking null! after init");
+  imposterGen->setInput(_imposter);
+   if(_imposter == 0)
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"!!!!!!!!!!!!!imp is fucking null! after setinput");
   imposterGen->build();
-  imposterGen.reset(0); //we done with generator
+  if(_imposter == 0)
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"imp is fucking null! after build");
   _imposterView.reset(new ImposterView());
-  _imposterView->setInput(_imposter.get());
+  _imposterView->setInput(_imposter);
+  imposterGen.reset(0); //we done with generator
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out of GameEditView onInit");
   return true;
 }
 
@@ -121,5 +155,9 @@ GameEditView::onKeyDown(const OIS::KeyEvent &evt)
     {
       _dz -= 1.0;
     }
+  else if(evt.key == OIS::KC_F)
+  {
+    _imposterView->flip();
+  }
   return true;
 }

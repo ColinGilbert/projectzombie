@@ -119,6 +119,7 @@ GPUEntsGen::genImposters()
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "In GPUEntsGen::genImposters");
   Imposter imposter(_ent->getMeshName());
+  imposter.init();
   ImposterGen impGen;
   impGen.setInput(&imposter);
   impGen.build();
@@ -163,9 +164,9 @@ GPUEntsGen::loadPositions()
         {
           dist.nextPosition(pos); //get randomly distributed position
           //PixelUtil::packColour((float)pos.x,(float)pos.y,0.0,0.0f,Ogre::PF_FLOAT32_RGBA,(void*)(&pDest[pitchY*j+i]));
-          *pDest++ = pos.x; //b
-          *pDest++ = pos.y;  //g
-          *pDest++ = pos.z; //r
+          *pDest++ = pos.z; //b
+          *pDest++ = pos.x;  //g
+          *pDest++ = pos.y; //r
           *pDest++ = 0.0f; //a
         }
     }

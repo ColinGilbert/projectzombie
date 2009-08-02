@@ -20,6 +20,10 @@
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
 #include "GameStateInfo.h"
+#include "MainController.h"
+#include "RakNetworkFactory.h"
+#include "RakPeerInterface.h"
+
 
 namespace ZGame
 {
@@ -30,7 +34,8 @@ namespace ZGame
   class LifeCyclePump;
   class KeyboardPump;
   class MousePump;
-  class EngineController : Ogre::FrameListener
+  class EngineController : public Ogre::FrameListener,
+                           public MainController
   {
   public:
     EngineController();
@@ -39,7 +44,7 @@ namespace ZGame
 
     bool frameStarted(const Ogre::FrameEvent &evt);
 
-	void transitionState(const std::string key);
+	  void transitionState(const std::string key);
     bool onInit();
     void run();
     void onDestroy();
@@ -88,8 +93,21 @@ namespace ZGame
     Ogre::Camera* createDefaultCamera();
 
   private:
-	std::string _listenerID;
+	  std::string _listenerID;
     bool _stillRunning;
+    std::auto_ptr<RakPeerInterface> peer;
+    bool _isConnected;
+
+    SystemAddress _serverSysAddress;
+
+    void connect();
+    void disconnect();
+
+    void handlePacket(); //initial implementing handle packets.
+    
+    unsigned char getPacketIdentifer(Packet* p);
+    void printPacketId(unsigned char id);
+
 
     void loadStartStateToCurrentState(const string curKey);
 

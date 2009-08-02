@@ -23,6 +23,7 @@ void main()
 	//color = texture2D(imposterTex,gl_TexCoord[IMPOSTER].st);
 	vec3 lightDir = gl_TexCoord[2].xyz;
 	gl_FragColor = texture2D(imposterTex,gl_TexCoord[IMPOSTER].st);
+	/*
 	float ndl = dot(normal,lightDir);
 	gl_FragColor.xyz *= ndl;
 	//calculate specular
@@ -32,8 +33,11 @@ void main()
 		ndl = 1.0;
 	else
 		ndl = 0.0;
+ 	
 	float spec = 0.8*pow(max(dot(normal,h),0.0),42.0)*ndl;
 	vec3 specFac = specColor*spec;
-	gl_FragColor.xyz += specFac;
-	
+	gl_FragColor.w = 1.0;
+	*/
+	//gl_FragColor.xyz += specFac;
+	//gl_FragColor.xyz = color.xyz;
 }

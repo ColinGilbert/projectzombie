@@ -22,13 +22,15 @@ using namespace std;
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
+#include "MessageIdentifiers.h"
 
 namespace ZGame
 {
 
   EngineController::EngineController() :
     _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
-        new KeyboardPump()), _mousePump(new MousePump())
+        new KeyboardPump()), _mousePump(new MousePump()),
+        _isConnected(false)
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -109,6 +111,13 @@ namespace ZGame
 
     _root->addFrameListener(this);
 
+
+    cout << "Starting multiplayer engine!" << endl;
+    peer.reset(RakNetworkFactory::GetRakPeerInterface());
+    if(peer.get() == 0)
+      return false;
+    peer->Startup(1,30,&SocketDescriptor(),1);
+
     //set logging lvl
 	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
@@ -165,11 +174,13 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
+        handlePacket();
       }
     catch (Ogre::Exception e)
       {
         throw e;
       }
+
 
     return true;
 
@@ -196,6 +207,10 @@ namespace ZGame
         //delete root;
         //_root->shutdown();
 
+        peer->Shutdown(300);
+
+        RakNetworkFactory::DestroyRakPeerInterface(peer.release());
+
       }
     catch (Ogre::Exception e)
       {
@@ -221,6 +236,14 @@ namespace ZGame
     {
       _stillRunning = false;
       unloadCurrentState();
+    }
+    else if(event.key == OIS::KC_I)
+    {
+      connect();
+    }
+    else if(event.key == OIS::KC_O)
+    {
+      disconnect();
     }
     
     return true;
@@ -368,6 +391,72 @@ namespace ZGame
 
       }
     logM->logMessage(Ogre::LML_NORMAL,"Realizing current state done");
+  }
+
+  void
+    EngineController::connect()
+  {
+    if(_isConnected)
+      return;
+    _isConnected = true;
+    cout << "Trying to connect. " << endl;
+    peer->Connect("127.0.0.1",6666,0,0);
+  }
+
+  void
+    EngineController::disconnect()
+  {
+    if(!_isConnected)
+      return;
+
+    _isConnected =false;
+    cout << "Disconnecting. " << endl;
+    peer->CloseConnection(_serverSysAddress,true,0);
+
+  }
+
+  void
+    EngineController::handlePacket()
+  {
+    unsigned char packetId;
+
+    Packet* packet = peer->Receive();
+
+    if(packet)
+    {
+      packetId = getPacketIdentifer(packet);
+      if(packetId == ID_CONNECTION_REQUEST_ACCEPTED)
+      {
+        _serverSysAddress == packet->systemAddress;
+      }
+      printPacketId(packetId);
+      peer->DeallocatePacket(packet);
+    }
+  }
+
+  unsigned char 
+    EngineController::getPacketIdentifer(Packet* p)
+  {
+    if((unsigned char)p->data[0] == ID_TIMESTAMP)
+      return (unsigned char)p->data[sizeof(unsigned char)+sizeof(unsigned long)];
+    else
+      return (unsigned char)p->data[0];
+  }
+
+   void
+    EngineController::printPacketId(unsigned char id)
+  {
+    using namespace std;
+    switch(id)
+     {
+      case ID_CONNECTION_REQUEST_ACCEPTED:
+        cout << "We have connected!" << endl;
+        break;
+      default:
+        cout << "Got an id: " << id << endl;
+        break;
+    }
+    
   }
   
 }

@@ -59,6 +59,8 @@ namespace ZGame
   GameState::registerObs(LifeCycleRegister &lfcReg,
       KeyEventRegister &keyReg, MouseEventRegister &mouseReg)
   {
+    Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
+    lm->logMessage(Ogre::LML_TRIVIAL,"In GameState registerObs");
     //Life Cycle
     LfcInjIter it(_lfcObsInj.begin());
     LfcInjIter end(_lfcObsInj.end());
@@ -70,7 +72,8 @@ namespace ZGame
         lfcReg.registerLfcObs(obs);
         LifeCycle::clearLfcObs(obs);
       }
-    _lfcObsInj.clear(); //we done with injection, clear memory.
+    
+    lm->logMessage(Ogre::LML_TRIVIAL,"Finished reg. life cycle observers");
 
     //Key
     KeyInjIter itk(_keyObsInj.begin());
@@ -82,6 +85,8 @@ namespace ZGame
         keyReg.registerKeyObs(obs);
         EVENT::clearKeyObs(obs);
       }
+    
+    lm->logMessage(Ogre::LML_TRIVIAL,"Finished reg. key cycle observers.");
 
     //mouse
     MouseInjIter itm(_mouseObsInj.begin());
@@ -93,6 +98,14 @@ namespace ZGame
         mouseReg.registerMouseObs(obs);
         EVENT::clearMouseObs(obs);
       }
+
+    lm->logMessage(Ogre::LML_TRIVIAL,"Finished reg. mouse cycle observers.");
+
+    _lfcObsInj.clear(); //we done with injection, clear memory.
+    _keyObsInj.clear();
+    _mouseObsInj.clear();
+
+    lm->logMessage(Ogre::LML_TRIVIAL,"Out of GameState register observers.");
   }
 
 }

@@ -10,10 +10,10 @@
 #ifndef GPUENTSVIEW_H_
 #define GPUENTSVIEW_H_
 #include <string>
-using namespace std;
+//using namespace std;
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
-using namespace Ogre;
+//using namespace Ogre;
 #include "ObsInjectors.h"
 
 namespace ZGame
@@ -42,12 +42,12 @@ namespace ZGame
 
   protected:
     GPUEntities* _ents;
-    string _meshName;
-    string _entsOgrEntName;
-    string _entsOgrEntMatName;
+    std::string _meshName;
+    std::string _entsOgrEntName;
+    std::string _entsOgrEntMatName;
     Ogre::Entity* _ogrEnt;
     bool _sceneAlphaBld;
-    GpuProgramParametersSharedPtr _vertParam;
+    Ogre::GpuProgramParametersSharedPtr _vertParam;
     Ogre::Camera* _cam;
 
     void

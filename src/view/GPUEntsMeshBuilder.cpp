@@ -83,6 +83,8 @@ namespace ZGame
           }*/
         for (size_t i = 0; i < texW; i++)
           {
+            //random offset the height to get rid of homogenous heights
+
             man->position(corners[UPL]); //upper left
             man->textureCoord(texCoords[UPL]);
             man->textureCoord(uv); //we store the entity ID in the 2nd set of texture coords.

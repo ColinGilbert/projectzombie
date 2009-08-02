@@ -60,7 +60,7 @@ namespace ZGame
     static int _id;
     int _curId;
 
-	std::map<string,string> _imposterKeys;
+    std::map<std::string,std::string> _imposterKeys;
 
     Imposter* _imposter;
 

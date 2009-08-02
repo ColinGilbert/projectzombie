@@ -22,22 +22,24 @@ namespace ZGame
   {
   public:
     static const size_t TEXDIM = 512;
-    static const size_t SEGTHETA = 12;
-    static const size_t SEGPHI = 5;
+    static const size_t SEGTHETA = 16;
+    static const size_t SEGPHI = 16;
 
     Imposter(const string meshName);
     ~Imposter();
 
-    const string getMeshName(){return _meshName;}
-    Ogre::TexturePtr getTextures(){return _texture;}
+    const std::string getMeshName();
+    Ogre::TexturePtr getTextures();//{return _texture;}
 
-    int getWidth(){return SEGTHETA*TEXDIM;}
-    int getHeight(){return SEGPHI*TEXDIM;}
-    int getDim(){return TEXDIM;}
+    void init();
+
+    int getWidth();
+    int getHeight();
+    int getDim();
 
 
   protected:
-    string _meshName;
+    std::string _meshName;
     Ogre::TexturePtr _texture;
 
     void setupTextures();

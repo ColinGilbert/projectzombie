@@ -115,12 +115,14 @@ GameMainState::createGPUEntities()
   LogManager* lm = LogManager::getSingletonPtr();
   lm->logMessage(LML_NORMAL, "GameMainState::createGPUEntities");
   //note: we are using shared_ptr here is because later we will have an entity resource manager.
-  boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", "robot.mesh"));
-  int texW = 432;
-  int texH = 432;
+  boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", //"robot.mesh"));
+    "RZR-002.mesh"));
+    //"athene.mesh"));
+  int texW = 256;
+  int texH = 256;
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
-  minX = -100.0f;
-  maxX = 100.0f;
+  minX = -500.0f;
+  maxX = 500.0f;
   minZ = -500.0;
   maxZ = 500.0f;
   Real entHeight = 2.0f; //1.6 meters

@@ -34,33 +34,37 @@ ImposterView::~ImposterView()
 void
 ImposterView::flip()
 {
-  //switchTexture();
+  switchTexture();
 }
 void
 ImposterView::setInput(Imposter* input)
 {
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In ImposterView setInput");
   _imposter = input;
+  if(_imposter == 0)
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"_imposter is null");
   setupView();
   attachMaterial();
   switchTexture();
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out ImposterView setInput");
 }
 
 void
 ImposterView::setupView()
 {
   using namespace Ogre;
-  Plane plane(Vector3::UNIT_Y, 0);
+  Plane plane(Vector3::UNIT_Z, 0);
   string name = _TYPENAME + "PLANE";
   MeshManager::getSingleton().createPlane(name.c_str(),
       ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 1500, 1500, 1,
-      1, true, 1, 1, 1, Vector3::UNIT_Z);
+      1, true, 1, 1, 1, Vector3::UNIT_Y);
   SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
   string planeName = name + "ENTITY";
   _texEnt = scnMgr->createEntity(planeName, name);
   name.clear();
   name = _TYPENAME + "PLANENODE";
   _texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name, Vector3(
-      0.0f, -1.0f, 0.0f));
+      -2.0f, -1.0f, 0.0f));
   _texNode->attachObject(_texEnt);
 }
 

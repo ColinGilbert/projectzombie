@@ -1,20 +1,5 @@
-material ZGame/Imposter
-{
-	technique
-	{
-		pass result
-		{
-			ambient 0.3 0.3 0.3
-			lighting on 
-			depth_check on
-			scene_blend alpha_blend
-			texture_unit ImposterTexture
-			{
-				colour_op alpha_blend
-			}
-		}
-	}
-}
+
+
 
 vertex_program GPUEntsViewVP glsl
 {
@@ -43,7 +28,7 @@ material ZGame/GPUEntsView
 			depth_check on
 			alpha_rejection greater 0
 			cull_hardware clockwise
-			//scene_blend alpha_blend
+			  //scene_blend alpha_blend
 			texture_unit EntStatesTex
 			{
 			}
@@ -57,8 +42,8 @@ material ZGame/GPUEntsView
 			{
 				param_named gpuEntsStates int 0
 				param_named DirTex int 2
-				param_named scaleS float 256.0
-				param_named scaleT float 256.0
+				param_named scaleS float 512.0
+				param_named scaleT float 512.0
 				param_named_auto camPos camera_position
 				param_named_auto viewUp view_up_vector
 				param_named vPos float3 0.0 0.0 0.0

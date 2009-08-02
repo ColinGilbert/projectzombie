@@ -140,11 +140,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\lib;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\lib;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -284,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\include\MainController.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\view\MouseEventRegister.cpp"
 				>
 			</File>
@@ -293,6 +297,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\view\PingPongShaders.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\view\ServerController.cpp"
 				>
 			</File>
 			<File
@@ -462,6 +470,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\include\MessageIdentifiers.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\MouseEventRegister.h"
 				>
 			</File>
@@ -474,15 +486,35 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\include\PacketPriority.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\PingPongShaders.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\StatesLoader.h"
+				RelativePath="..\..\..\include\RakNetDefines.h"
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath="..\..\..\include\RakNetTypes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\RakNetworkFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\RakPeerInterface.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\ServerController.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\StatesLoader.h"
 				>
 			</File>
 			<File

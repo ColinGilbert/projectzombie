@@ -7,6 +7,7 @@ using namespace std;
 #include <Ogre.h>
 #include "InputController.h"
 #include "EngineController.h"
+#include "ServerController.h"
 #include "GPUEntsDistributor.h"
 
 /*
@@ -23,21 +24,28 @@ using namespace std;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/*
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 INT 
 WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
+#else*/
 int
 main(int argc, char** argv)
-#endif
+//#endif
 {
   using namespace ZGame;
 
-  ZGame::EngineController engineControl;
+  ZGame::MainController* engineControl = 0;
+
+//#if
+  if(argc == 1) //run client
+    engineControl = new ZGame::EngineController();
+  else if(argc >= 1) //run server
+    engineControl = new ZGame::ServerController();
+  //ZGame::EngineController engineControl;
   try
     {
-      if (!engineControl.onInit())
+      if (!engineControl->onInit())
         return 1;
     }
   catch (Ogre::Exception e)
@@ -46,7 +54,7 @@ main(int argc, char** argv)
       oss << "EngineControl onInit failed: " << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl.onDestroy();
+      engineControl->onDestroy();
       return 1;
     }
   catch (std::exception e)
@@ -55,13 +63,13 @@ main(int argc, char** argv)
       oss << "EngineContro onInit failed: " << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl.onDestroy();
+      engineControl->onDestroy();
       return 1;
     }
 
   try
     {
-      engineControl.run();
+      engineControl->run();
     }
   catch (Ogre::Exception e)
     {
@@ -69,7 +77,7 @@ main(int argc, char** argv)
       oss << "Something bad happened, when running the engine." << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl.onDestroy();
+      engineControl->onDestroy();
     }
   catch (std::exception e)
     {
@@ -77,10 +85,11 @@ main(int argc, char** argv)
       oss << "Something bad happened, when running the engine." << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl.onDestroy();
+      engineControl->onDestroy();
     }
-  engineControl.onDestroy();
+  engineControl->onDestroy();
   cout << "returinging. " << endl;
+  delete engineControl;
   return 0;
 }
 #ifdef __cplusplus

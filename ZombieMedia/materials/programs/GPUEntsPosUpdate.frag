@@ -31,7 +31,8 @@ void main()
 	
 	uvec4 noise = whiteNoise(coord,uintkey);
 	vec4 rand = convertToR0_R1(noise);
-	rand.x = rand.x+1.0; //speed
+	//rand.x = rand.x*0.03; //speed
+	rand.x = rand.x*0.5;
 	vec3 camPosG = camPos;
 	camPosG.y = 0.0;
 	vec3 vecToPlayer = camPosG - pos.xyz;
@@ -43,8 +44,8 @@ void main()
 	}	
 	else
 		dis = 1.0;
-		
-	pos.xz = pos.xz + dt*rand.x*(1.0 - dis)*dir.xy; //old euler's method
+	pos.xz = pos.xz + dt*rand.x*dir.xy;	
+	//pos.xz = pos.xz + dt*rand.x*(1.0 - dis)*dir.xy; //old euler's method
 	//pos.xz = pos.xz + dt*rand.x*vecToPlayer.xz;
 	gl_FragColor = pos;
 }

@@ -34,7 +34,7 @@ void main()
 		uvec4 noise = whiteNoise(coord,uintkey);
 		vec4 rand = convertToR0_R1(noise);
 		
-		state.w = rand.w*10.00+1.0; //change sometime in 1 to 5 sec
+		state.w = rand.w*30.00+1.0; //change sometime in 1 to 5 sec
 		
 		if(rand.x < rand.y) //do our probability thing
 		{

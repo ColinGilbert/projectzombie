@@ -68,17 +68,31 @@ ImposterGen::~ImposterGen()
 void
 ImposterGen::setInput(Imposter* input)
 {
+  Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
+  lm->logMessage(Ogre::LML_TRIVIAL,"In ImposterGen setInput");
+  assert(input != 0 && "Input is null");
+  if(input == 0)
+    lm->logMessage(Ogre::LML_CRITICAL,"input in imposter gen is null!");
   _imposter = input;
   _rotVal = 2 * Ogre::Math::PI / _imposter->SEGTHETA;
+  lm->logMessage(Ogre::LML_TRIVIAL,"_rotVal set.");
   setupCam();
+  lm->logMessage(Ogre::LML_TRIVIAL,"Setup cam done.");
+  if(_imposter == 0)
+    lm->logMessage(Ogre::LML_CRITICAL,"_imposter is null for some reason!");
   loadMesh();
+  lm->logMessage(Ogre::LML_TRIVIAL,"Mesh loading done.");
   setupRTT();
-
+  lm->logMessage(Ogre::LML_TRIVIAL,"RTT setup done.");
+  lm->logMessage(Ogre::LML_TRIVIAL,"Out ImposterGen setInput");
 }
 
 void
 ImposterGen::build()
 {
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In ImposterGen build()");
+  if(_imposter == 0)
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Imposter is null!");
   if (_imposter)
     {
       renderToTextures();
@@ -86,6 +100,9 @@ ImposterGen::build()
   else
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,
         "ImposterGen::build(), null imposter.");
+  if(_imposter == 0)
+     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Imposter is null!");
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out ImposterGen build()");
 }
 
 void
@@ -104,7 +121,9 @@ ImposterGen::renderToTextures()
   int height = _imposter->getHeight();
   Real unitWidth = (Real) _imposter->getDim() / width;
   Real unitHeight = (Real) _imposter->getDim() / height;
-  vp->getCamera()->setAspectRatio(1.0);
+  //vp->getCamera()->setAspectRatio(1.0);
+  assert(unitHeight != 0 && "Unit height is zero.");
+  vp->getCamera()->setAspectRatio(unitWidth/unitHeight);
   for (size_t i = 0; i < _imposter->SEGPHI; i++)
     {
       for (size_t j = 0; j < _imposter->SEGTHETA; j++)
@@ -120,6 +139,8 @@ ImposterGen::renderToTextures()
   rtt->removeAllViewports();
   rtt->removeAllListeners();
   _imposterNode->setVisible(false, true); //hide imposter
+  if(_imposter == 0)
+     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Imposter is null!");
 }
 
 void
@@ -135,7 +156,7 @@ ImposterGen::camRotatePhi(Ogre::Radian& rot)
   pos.z = pos.z - _cen.z;
   _cam->setPosition(pos);
   _cam->pitch(rot);
-  _cam->moveRelative(Vector3(0.0f, 0.0f, -(_camOffset + _cen.z)));
+  _cam->moveRelative(Vector3(0.0f, 0.0f, -_camOffset - _cen.z));
 }
 void
 ImposterGen::camRotateTheta(Ogre::Radian& rot)
@@ -146,7 +167,7 @@ ImposterGen::camRotateTheta(Ogre::Radian& rot)
   pos.z = pos.z - _cen.z;
   _cam->setPosition(pos);
   _cam->yaw(rot);
-  _cam->moveRelative(Vector3(0.0f, 0.0f, -(_camOffset + _cen.z)));
+  _cam->moveRelative(Vector3(0.0f, 0.0f, -_camOffset - _cen.z));
 }
 
 void
@@ -159,7 +180,7 @@ ImposterGen::rotateRight()
   pos.z = pos.z - _cen.z; //move to center
   _cam->setPosition(pos);
   _cam->yaw(rot);
-  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
+  _cam->moveRelative(Vector3(0.0, 0.0, -_camOffset - _cen.z));
 }
 
 void
@@ -173,7 +194,7 @@ ImposterGen::rotateUp()
   pos.z = pos.z - _cen.z;
   _cam->setPosition(pos);
   _cam->pitch(rot);
-  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
+  _cam->moveRelative(Vector3(0.0, 0.0, -_camOffset - _cen.z));
 
   //_imposterNode->roll(rot,Ogre::Node::TS_LOCAL);
   //_imposterNode->translate(-_cen.x,-_cen.y,0.0);
@@ -190,7 +211,7 @@ ImposterGen::rotateDown()
   pos.z = pos.z - _cen.z;
   _cam->setPosition(pos);
   _cam->pitch(rot);
-  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
+  _cam->moveRelative(Vector3(0.0, 0.0, -_camOffset - _cen.z));
 }
 
 void
@@ -203,7 +224,7 @@ ImposterGen::rotateLeft()
   pos.z = pos.z - _cen.z; //move to center
   _cam->setPosition(pos);
   _cam->yaw(rot);
-  _cam->moveRelative(Vector3(0.0, 0.0, -(_camOffset + _cen.z)));
+  _cam->moveRelative(Vector3(0.0, 0.0, -_camOffset - _cen.z));
 
 }
 
@@ -211,27 +232,60 @@ void
 ImposterGen::loadMesh()
 {
   using namespace Ogre;
+  LogManager* lm = LogManager::getSingletonPtr();
+  lm->logMessage(Ogre::LML_TRIVIAL,"In ImposterGen loadMesh");
+  lm->logMessage(Ogre::LML_TRIVIAL,"blah blah");
+  assert(_imposter != 0 && "Imposter is null!");
+  if(_imposter == 0)
+  {
+    lm->logMessage(Ogre::LML_TRIVIAL,"_imposter is nulL!");
+  }
+  lm->logMessage(Ogre::LML_TRIVIAL,"Imposter is mesh is"+_imposter->getMeshName());
   Ogre::MeshPtr m = Ogre::MeshManager::getSingleton().getByName(
       _imposter->getMeshName().c_str());
+  
+  
+  /*
+  Ogre::MeshPtr m = Ogre::MeshManager::getSingleton().getByName(
+      "athena.mesh");*/
   if (m.isNull())
     {
+      lm->logMessage(Ogre::LML_TRIVIAL,"Imposter's mesh is null, attempting to build.");
+      
       m = Ogre::MeshManager::getSingleton().load(
           _imposter->getMeshName().c_str(),
           Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+          
+      /*
+      m = Ogre::MeshManager::getSingleton().load(
+          "athene.mesh",
+          Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+      lm->logMessage(Ogre::LML_TRIVIAL,"Imposter's mesh is loaded.");
+      */
     }
-  Real defaultZ = -100.0;
+  Real defaultZ = -10000.0;
   Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
   Ogre::Entity* ent = _scnMgr->createEntity(_imposterKeys["entity"].c_str(),
       _imposter->getMeshName().c_str());
+  //Ogre::MaterialPtr impostGenMat = Ogre::MaterialManager::getSingleton().getByName("ZGame/ImposterGen");
+  //Ogre::MaterialPtr impostGenMat = Ogre::MaterialManager::getSingleton().getByName("DeferredDemo/DeferredAthena");
+  
+    //Ogre::MaterialPtr impostGenMat = Ogre::MaterialManager::getSingleton().getByName("Examples/Athene/NormalMapped");
+    //Ogre::MaterialPtr impostGenMat = Ogre::MaterialManager::getSingleton().getByName("Examples/Athene/NormalMapped");
+  //ent->setMaterial(impostGenMat);
   _imposterNode = root->createChildSceneNode(_imposterKeys["scnnode"].c_str(),
-      Ogre::Vector3(0.0, 0.0, defaultZ), Quaternion::IDENTITY);
+      Ogre::Vector3(0.0, 0.0, 0.0), Quaternion::IDENTITY);
   _imposterNode->attachObject(ent);
   _imposterNode->setVisible(false, true); //hide imposter
   Ogre::Quaternion orient;
   orient.FromAxes(Ogre::Vector3::UNIT_Z, Ogre::Vector3::UNIT_Y,
-      Ogre::Vector3::NEGATIVE_UNIT_X);
+    Ogre::Vector3::UNIT_X);
   _imposterNode->setOrientation(orient);
   fitImposterExtent(ent, _imposterNode, defaultZ);
+
+  
+  
+  lm->logMessage(Ogre::LML_TRIVIAL,"Out ImposterGen loadMesh");
 }
 
 void
@@ -260,16 +314,16 @@ ImposterGen::setupCam()
   _cam->setAspectRatio(_ASPECT_RATIO);
   _cam->lookAt(0.0, 0.0, -1.0);
 
-  _scnMgr->setAmbientLight(ColourValue(0.50, 0.50, 0.50));
-  /*
+  _scnMgr->setAmbientLight(ColourValue(0.25, 0.25, 0.25));
+  
   Ogre::Light* l = _scnMgr->createLight(_imposterKeys["light"].c_str());
   l->setType(Ogre::Light::LT_DIRECTIONAL);
-  Vector3 dir(0.5, 0.5, -1.0);
+  Vector3 dir(0.1, -.25, 1.0);
   dir.normalise();
   l->setDirection(dir);
   l->setDiffuseColour(1.0f, 1.0f, 0.8f);
   l->setSpecularColour(1.0f, 1.0f, 1.0f);
-  */
+  
 }
 
 /**
@@ -280,12 +334,18 @@ ImposterGen::fitImposterExtent(Ogre::Entity* ent, Ogre::SceneNode* node,
     Ogre::Real defaultZ)
 {
   using namespace Ogre;
+  ostringstream ss;
   AxisAlignedBox aabox = ent->getWorldBoundingBox(true);
+  //AxisAlignedBox aabox = ent->getBoundingBox();
   Vector3 max = aabox.getMaximum();
   Vector3 min = aabox.getMinimum();
   Vector3 cen = aabox.getCenter();
+
+  
+
   Real fovy = _cam->getFOVy().valueRadians() / 2; //remember it's Beta/2
   node->setPosition(-cen.x, -cen.y, defaultZ); //center the bounding box
+  node->setPosition(0, -cen.y, defaultZ);
   //now we want to move the entity such that it's bound box is bounded by the screen exactly.
   //recal world bound
   aabox = ent->getWorldBoundingBox(true);
@@ -293,7 +353,7 @@ ImposterGen::fitImposterExtent(Ogre::Entity* ent, Ogre::SceneNode* node,
   min = aabox.getMinimum();
   //equation is given by: We're looking for the point at which distance between two rays is minimum. For our CASE it is assumed
   //this t is the intersection point due to the nature of our problem.
-  Real offset = 3.5;
+  Real offset = 10.5;
   Vector2 s1(max.z, max.y + offset);
   Vector2 p1(0, max.y + offset);
   Vector2 p0(0, 0.0);
@@ -307,6 +367,8 @@ ImposterGen::fitImposterExtent(Ogre::Entity* ent, Ogre::SceneNode* node,
   Real j = (p1 - p0).dotProduct(s1);
   det = det * (-s0.dotProduct(s1) * i + j);
 
+  float detOffset = 0;
+  det += detOffset;
   _imposterNode->setPosition(-cen.x, -cen.y, det);
   aabox = ent->getBoundingBox();
   _cen = aabox.getCenter();
