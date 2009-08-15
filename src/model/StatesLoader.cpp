@@ -4,7 +4,7 @@
  *  Created on: Aug 27, 2008
  *      Author: bey0nd
  */
-
+#include <Ogre.h>
 #include "StatesLoader.h"
 
 using namespace ZGame;
@@ -22,28 +22,44 @@ StatesLoader::~StatesLoader()
 
 void StatesLoader::loadStates(GameStateInfoMap &stateInfoMap, GameStateInfo &startState)
 {
-  GameStateInfo info;
 
-  fillSInfo(info,"GameMainStateKey","GameMainState",GameStateInfo::STATELESS);
-  addSInfo(stateInfoMap,info);
+  Ogre::ConfigFile cf;
+  cf.load("states.cfg");
 
-  startState = info;
-  
+  Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 
-  fillSInfo(info,"GameEditStateKey","GameEditState",GameStateInfo::STATELESS);
-  addSInfo(stateInfoMap,info);
+  Ogre::String secName, typeName, archName, startName;
 
-  
-  
-  
-  
-
-
-
-  fillSInfo(info,"GameMainMenuStateKey","GameMainMenuState",GameStateInfo::STATELESS);
-  addSInfo(stateInfoMap,info);
-
-
+  while(seci.hasMoreElements())
+  {
+    
+    secName = seci.peekNextKey();
+    Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+    Ogre::ConfigFile::SettingsMultiMap::iterator i;
+    for(i = settings->begin(); i!= settings->end(); ++i)
+    {
+       
+       typeName = i->first;
+       archName = i->second;
+       cout << "SEC_NAME,TYPENAME,ARCHNAME:" << secName << " " << typeName << " " << archName << endl;
+       
+      if(secName.compare("BeginState") == 0)
+      {
+        startName = archName;
+      }
+      else
+      {
+        GameStateInfo info;
+        fillSInfo(info,typeName,archName,GameStateInfo::STATELESS);
+        addSInfo(stateInfoMap,info);
+        if(typeName.compare(startName) == 0)
+        {
+          startState = info;
+        }
+      }
+      
+    }
+  }
 
 }
 

@@ -49,13 +49,13 @@ GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 
   lfcReg.registerLfcObs(lfcObs);
   //register objects that belongs in this state
-  addLfcObsInjector(_gpuEntsView);
+  //addLfcObsInjector(_gpuEntsView);
   //register control module
   addLfcObsInjector(_controlMod);
   //register white noise
   //addLfcObsInjector(_whtNoiseView);
   //register GPUEntsControl
-  addLfcObsInjector(_gpuEntsControl);
+  //addLfcObsInjector(_gpuEntsControl);
 
 }
 
@@ -76,7 +76,7 @@ GameMainState::onInit()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "In GameMainState onInit");
-  createGPUEntities();
+  //createGPUEntities();
   Ogre::LogManager::getSingleton().logMessage("Done creating GPU entities");
   createWorld();
   Ogre::LogManager::getSingleton().logMessage("Done creating world");
@@ -118,11 +118,11 @@ GameMainState::createGPUEntities()
   boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", //"robot.mesh"));
     "RZR-002.mesh"));
     //"athene.mesh"));
-  int texW = 256;
-  int texH = 256;
+  int texW = 64;
+  int texH = 64;
   Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
-  minX = -500.0f;
-  maxX = 500.0f;
+  minX = -2000.0f;
+  maxX = 2000.0f;
   minZ = -500.0;
   maxZ = 500.0f;
   Real entHeight = 2.0f; //1.6 meters

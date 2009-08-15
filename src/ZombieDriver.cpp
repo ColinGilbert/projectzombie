@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <stdexcept>
+
 using namespace std;
 #include <boost/random.hpp>
 #include <Ogre.h>
+#include <signal.h>
 #include "InputController.h"
 #include "EngineController.h"
 #include "ServerController.h"
@@ -24,6 +26,16 @@ using namespace std;
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+ZGame::MainController* engineControl = 0;
+
+
+void clean_up_func(int signum)
+{
+  engineControl->onDestroy();
+  delete engineControl; 
+  exit(0);
+}
 /*
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 INT 
@@ -35,8 +47,9 @@ main(int argc, char** argv)
 {
   using namespace ZGame;
 
-  ZGame::MainController* engineControl = 0;
+  signal(SIGINT,clean_up_func);
 
+  
 //#if
   if(argc == 1) //run client
     engineControl = new ZGame::EngineController();
@@ -54,19 +67,15 @@ main(int argc, char** argv)
       oss << "EngineControl onInit failed: " << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl->onDestroy();
-      return 1;
     }
   catch (std::exception e)
     {
       ostringstream oss;
       oss << "EngineContro onInit failed: " << endl;
       oss << e.what() << endl;
-      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl->onDestroy();
-      return 1;
+      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());    
     }
-
+  
   try
     {
       engineControl->run();
@@ -77,7 +86,6 @@ main(int argc, char** argv)
       oss << "Something bad happened, when running the engine." << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl->onDestroy();
     }
   catch (std::exception e)
     {
@@ -85,12 +93,14 @@ main(int argc, char** argv)
       oss << "Something bad happened, when running the engine." << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
-      engineControl->onDestroy();
+      return 0;
     }
-  engineControl->onDestroy();
-  cout << "returinging. " << endl;
-  delete engineControl;
-  return 0;
+  
+    engineControl->onDestroy();
+  
+    cout << "returinging. " << endl;
+    delete engineControl;
+    return 0;
 }
 #ifdef __cplusplus
 }

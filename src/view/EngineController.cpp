@@ -78,6 +78,7 @@ namespace ZGame
   EngineController::onInit()
   {
     using namespace Ogre;
+     
     //_root = new Ogre::Root("plugins.cfg");
     _root.reset(new Ogre::Root("plugins.cfg"));
     if (_root->showConfigDialog())
@@ -101,25 +102,36 @@ namespace ZGame
 
     _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
 
+     //set logging lvl
+	  Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
+
     //load states
     loadStates();
 
+    Ogre::LogManager* lm = LogManager::getSingletonPtr();
+
+    lm->logMessage(Ogre::LML_TRIVIAL,"States finished loading");
+
+
     //input
     _inController.reset(new InputController());
+    cout << "this is getting weird!" << endl;
     _inController->onInit(_window);
+    //cout << "weird." << endl;
     injectInputSubject();
 
+    cout << "input controller pumped!" << endl;
+
+   
+    lm->logMessage(Ogre::LML_TRIVIAL,"Injected input.");
+    
     _root->addFrameListener(this);
 
-
-    cout << "Starting multiplayer engine!" << endl;
+    lm->logMessage(Ogre::LML_TRIVIAL,"Starting multiplayer engine!");
     peer.reset(RakNetworkFactory::GetRakPeerInterface());
     if(peer.get() == 0)
       return false;
     peer->Startup(1,30,&SocketDescriptor(),1);
-
-    //set logging lvl
-	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
     return true;
   }
@@ -198,7 +210,7 @@ namespace ZGame
   {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "EngineController.onDestroy()");
-    //unloadCurrentState();
+    unloadCurrentState();
 
     try
       {
@@ -224,8 +236,9 @@ namespace ZGame
     StatesLoader stLoader;
     GameStateInfo startState;
     stLoader.loadStates(_gameSInfoMap, startState);
+    cout << "startState.key: " << startState.key << endl;
     loadStartStateToCurrentState(startState.key);
-
+    cout << "crash5!" << endl;
   }
 
   bool
@@ -284,20 +297,33 @@ namespace ZGame
   {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "In loadStartStateToCurrentstate");
+
+    for(ZGame::GameStateInfoMapItr it = _gameSInfoMap.begin(); it != _gameSInfoMap.end(); ++it)
+    {
+      cout << "info keys,keys: " << it->first << " " <<
+        it->second.key << endl;
+    }
+
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
+
+    cout << "crash1?" << endl;
+
     if (it != _gameSInfoMap.end())
       {
         _curStateInfo.reset(&it->second);
+        cout << "crash2?" << endl;
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
             _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
             _keyPump->removeAllObs();
             _curGameState.reset(0); //delete current game state
+            cout << "Crash3?" << endl;
           }
         else
           {
             //do stateful crap here.
           }
+        cout << "crash34" << endl;
       }
     else
       throw(std::invalid_argument("Current State does not exist!"));

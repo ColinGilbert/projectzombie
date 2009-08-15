@@ -16,6 +16,7 @@
 #include <OIS/OIS.h>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/xtime.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
@@ -68,8 +69,8 @@ namespace ZGame
     Ogre::RenderWindow* _window;
 	std::auto_ptr<ZGame::EngineView> _engineView;
 
-	std::auto_ptr<ZGame::InputController> _inController;
-
+	//boost::shared_ptr<ZGame::InputController> _inController;
+  std::auto_ptr<ZGame::InputController> _inController;
 	GameStateInfoMap _gameSInfoMap;
 
     //Current state
