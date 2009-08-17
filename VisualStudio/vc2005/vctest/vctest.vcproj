@@ -296,6 +296,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\model\Network\NetworkClientState.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\model\Network\NetworkingState.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\view\PingPongShaders.cpp"
 				>
 			</File>
@@ -479,6 +487,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\MousePump.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\NetworkClientState.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\NetworkingState.h"
 				>
 			</File>
 			<File
