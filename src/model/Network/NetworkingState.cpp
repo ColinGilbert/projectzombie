@@ -1,4 +1,5 @@
-#include "Network/NetworkingState.h"
+#include "NetworkingState.h"
+#include "MessageIdentifiers.h"
 
 namespace ZGame
 {
@@ -36,7 +37,7 @@ namespace ZGame
         cout << "A client has lost connect." << endl;
         break;
       default:
-        cout << "Got an id: " << id << endl;
+        //cout << "Got an id: " << id << endl;
         break;
       }
 

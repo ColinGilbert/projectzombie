@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="vc2005"
+	Name="projectz"
 	ProjectGUID="{190852A1-E385-4C7F-9792-3DFD6AC69173}"
 	RootNamespace="vctest"
 	Keyword="Win32Proj"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\boost\boost_1_38&quot;;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\prjz\pznew\include\fastdelegate;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\ogresrc\Dependencies\include"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\ogresrc\build\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -96,7 +96,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\..\ZombieMedia\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\prjz\pznew\include\fastdelegate"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -140,9 +140,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib $(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\lib;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\build\lib\release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -172,6 +172,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -183,6 +184,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath="..\..\..\src\view\CommandController.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\..\src\testsrc\CommonFixtures.h"
 				>
@@ -284,10 +289,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\MainController.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\view\MouseEventRegister.cpp"
 				>
 			</File>
@@ -301,6 +302,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\model\Network\NetworkingState.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\view\ogreconsole.cpp"
 				>
 			</File>
 			<File
@@ -327,6 +332,22 @@
 				RelativePath="..\..\..\src\ZombieDriver.cpp"
 				>
 			</File>
+			<Filter
+				Name="world"
+				>
+				<File
+					RelativePath="..\..\..\src\world\WorldController.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="utilities"
+				>
+				<File
+					RelativePath="..\..\..\src\utilities\CharacterUtil.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -334,11 +355,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\include\fastdelegate\allocator.hpp"
+				RelativePath="..\..\..\include\Command.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\fastdelegate\bindtmpl.hpp"
+				RelativePath="..\..\..\include\CommandController.h"
 				>
 			</File>
 			<File
@@ -346,23 +367,11 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\include\Controller.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\ControlModuleProto.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\fastdelegate\delegate.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\DelegatesUtil.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\fastdelegate\delegatetmpl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\fastdelegate\delegatetmpl.hpp"
 				>
 			</File>
 			<File
@@ -371,10 +380,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\EngineView.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\EventDelegates.h"
 				>
 			</File>
 			<File
@@ -403,10 +408,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\GameStateInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\fastdelegate\get_pointer.hpp"
 				>
 			</File>
 			<File
@@ -458,31 +459,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\KeyEventRegister.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\LifeCycleDelegates.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\include\LifeCyclePump.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\LifeCycleRegister.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\fastdelegate\make_delegatetmpl.hpp"
+				RelativePath="..\..\..\include\MainController.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\include\MessageIdentifiers.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\MouseEventRegister.h"
 				>
 			</File>
 			<File
@@ -498,7 +483,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\ObsInjectors.h"
+				RelativePath="..\..\..\include\ogreconsole.h"
 				>
 			</File>
 			<File
@@ -541,6 +526,86 @@
 				RelativePath="..\..\..\include\ZEntity.h"
 				>
 			</File>
+			<Filter
+				Name="world"
+				>
+				<File
+					RelativePath="..\..\..\include\world\WorldController.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="utilities"
+				>
+				<File
+					RelativePath="..\..\..\include\utilities\CharacterUtil.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="fastdelegates"
+				>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\allocator.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\bindtmpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\delegate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\delegatetmpl.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\delegatetmpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\get_pointer.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\fastdelegate\make_delegatetmpl.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="mydelegates"
+				>
+				<File
+					RelativePath="..\..\..\include\CommandDelegates.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\DelegatesUtil.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\EventDelegates.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\KeyEventRegister.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\LifeCycleDelegates.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\LifeCycleRegister.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\MouseEventRegister.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

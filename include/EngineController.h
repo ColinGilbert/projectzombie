@@ -24,7 +24,7 @@
 #include "MainController.h"
 #include "RakNetworkFactory.h"
 #include "RakPeerInterface.h"
-
+#include "NetworkClientState.h"
 
 namespace ZGame
 {
@@ -35,6 +35,7 @@ namespace ZGame
   class LifeCyclePump;
   class KeyboardPump;
   class MousePump;
+  class CommandController;
   class EngineController : public Ogre::FrameListener,
                            public MainController
   {
@@ -58,6 +59,7 @@ namespace ZGame
     bool onMouseMove(const OIS::MouseEvent &event);
     bool onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
     bool onMouseDown(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
+    
 
     //input observers
     void addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
@@ -81,9 +83,11 @@ namespace ZGame
 	std::auto_ptr<LifeCyclePump> _lfcPump;
 	std::auto_ptr<KeyboardPump> _keyPump;
 	std::auto_ptr<MousePump> _mousePump;
-
-
+    
+   
     void loadAssets();
+    void chooseSceneManager();
+
     void loadStates();
 
     //state handling
@@ -94,6 +98,10 @@ namespace ZGame
     Ogre::Camera* createDefaultCamera();
 
   private:
+
+    ZGame::Networking::NetworkClientState _netClient;
+    auto_ptr<ZGame::CommandController> _commandController;
+
 	  std::string _listenerID;
     bool _stillRunning;
     std::auto_ptr<RakPeerInterface> peer;
@@ -108,9 +116,9 @@ namespace ZGame
     
     unsigned char getPacketIdentifer(Packet* p);
     void printPacketId(unsigned char id);
-
-
     void loadStartStateToCurrentState(const string curKey);
+
+    void initConsole();
 
   };
 

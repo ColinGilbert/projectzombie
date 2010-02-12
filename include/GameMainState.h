@@ -27,6 +27,15 @@ namespace ZGame
   class ControlModuleProto;
   class WhiteNoiseView;
   class GPUEntsControl;
+  namespace World
+  {
+    class WorldController;
+  }
+  namespace Util
+  {
+    class CharacterUtil;
+  }
+
   class GameMainState : public ZGame::GameState
   {
   public:
@@ -53,13 +62,23 @@ namespace ZGame
     shared_ptr<WhiteNoiseView> _whtNoiseView;
     shared_ptr<GPUEntsControl> _gpuEntsControl;
 
-    virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
-    virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
-    virtual void regMouseObsForInjection(MouseEventRegister &mouseReg);
-
     void createGPUEntities();
     void createWorld(); //create the world that the game resides in.
+    void createCharacters();
 
+    virtual void
+      regLfcObsForInjection(LifeCycleRegister &lfcReg);
+    virtual void
+      regKeyObsForInjection(KeyEventRegister &keyReg);
+    virtual void
+      regMouseObsForInjection(MouseEventRegister &mouseReg);
+
+
+
+  private:
+    auto_ptr<ZGame::World::WorldController> _worldController;
+    //Utilities for call back execution of commands
+    auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
 
   };
 }

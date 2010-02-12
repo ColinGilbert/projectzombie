@@ -27,61 +27,6 @@ GameEditView::~GameEditView()
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In ~GameDitView");
   delete _imposter;
 }
-
-void
-GameEditView::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
-{
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditView fillLfcObservers");
-  obs.onInit.bind(&GameEditView::onInit,this);
-  obs.onUpdate.bind(&GameEditView::onUpdate,this);
-  obs.onDestroy.bind(&GameEditView::onDestroy,this);
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out GameEditView fillLfcObservers");
-}
-
-void
-GameEditView::fillKeyObservers(EVENT::KeyboardEvtObserver &obs)
-{
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditView fillKeyObservers");
-  obs.kde.bind(&GameEditView::onKeyDown,this);
-  obs.kue.bind(&GameEditView::onKeyUp,this);
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out GameEditView fillKeyObservers");
-}
-
-/*
-void
-GameEditView::injectLifeCycleSubject(
-    const ZGame::LifeCycle::LifeCycleSubject &subject)
-{
-  LifeCycle::LifeCycleObserver lfcObs;
-  lfcObs.onInit.bind(&GameEditView::onInit, this);
-  lfcObs.onUpdate.bind(&GameEditView::onUpdate, this);
-  lfcObs.onDestroy.bind(&GameEditView::onDestroy, this);
-
-  subject(lfcObs); //make fast delegate call
-}
-
-void
-GameEditView::injectKeyEvtSubject(const ZGame::EVENT::KeyEvtSubject &subject)
-{
-  EVENT::KeyboardEvtObserver keyObs;
-  keyObs.kde.bind(&GameEditView::onKeyDown, this);
-  keyObs.kue.bind(&GameEditView::onKeyUp, this);
-  subject(keyObs);
-}
-
-void
-GameEditView::fillKeySubjectInjector(EVENT::KeyEvtSubjectInjector &injector)
-{
-  injector.bind(&GameEditView::injectKeyEvtSubject, this);
-}
-
-void
-GameEditView::fillLifeCycleSubjectInjector(
-    LifeCycle::LifeCycleSubjectInjector &injector)
-{
-  injector.bind(&GameEditView::injectLifeCycleSubject, this);
-}
-*/
 bool
 GameEditView::onUpdate(const Ogre::FrameEvent& evt)
 {

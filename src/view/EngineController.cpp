@@ -23,6 +23,8 @@ using namespace std;
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
 #include "MessageIdentifiers.h"
+#include "ogreconsole.h"
+#include "CommandController.h"
 
 namespace ZGame
 {
@@ -30,7 +32,8 @@ namespace ZGame
   EngineController::EngineController() :
     _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
         new KeyboardPump()), _mousePump(new MousePump()),
-        _isConnected(false)
+        _isConnected(false),
+        _commandController(new CommandController())
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -68,9 +71,7 @@ namespace ZGame
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
-    cam->setPosition(0, 0, 100.0);
-    cam->lookAt(0, 0, -1);
-    cam->setNearClipDistance(1.0);
+    cam->setNearClipDistance(0.01f);
     return cam;
   }
 
@@ -80,7 +81,7 @@ namespace ZGame
     using namespace Ogre;
      
     //_root = new Ogre::Root("plugins.cfg");
-    _root.reset(new Ogre::Root("plugins.cfg"));
+    _root.reset(new Ogre::Root("plugins.cfg","plsm2_display.cfg","Pchaos.log"));
     if (_root->showConfigDialog())
       {
         _window = _root->initialise(true);
@@ -88,14 +89,12 @@ namespace ZGame
     else
       return false;
 
-    _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ExampleSMInstance");
-    RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
-    rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
-
     loadAssets();
+    chooseSceneManager();
+
     Ogre::Camera* cam = createDefaultCamera();
     Ogre::Viewport* vp = _window->addViewport(cam);
-    vp->setBackgroundColour(Ogre::ColourValue(0.3, 0.0, 0.0));
+    vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
     cam->setAspectRatio(Real(vp->getActualWidth())
         / Real(vp->getActualHeight()));
@@ -115,25 +114,47 @@ namespace ZGame
 
     //input
     _inController.reset(new InputController());
-    cout << "this is getting weird!" << endl;
     _inController->onInit(_window);
-    //cout << "weird." << endl;
     injectInputSubject();
-
-    cout << "input controller pumped!" << endl;
-
-   
     lm->logMessage(Ogre::LML_TRIVIAL,"Injected input.");
     
     _root->addFrameListener(this);
 
     lm->logMessage(Ogre::LML_TRIVIAL,"Starting multiplayer engine!");
-    peer.reset(RakNetworkFactory::GetRakPeerInterface());
-    if(peer.get() == 0)
-      return false;
-    peer->Startup(1,30,&SocketDescriptor(),1);
+ 
+    _netClient.initClient();
 
+    //let's init the console now.
+    lm->logMessage(Ogre::LML_NORMAL,"initializing console.");
+    initConsole();
     return true;
+  }
+
+  void
+    EngineController::chooseSceneManager()
+  {
+    bool notFound = true;
+    SceneManagerEnumerator::MetaDataIterator it = _root->getSceneManagerMetaDataIterator();
+    while(it.hasMoreElements())
+    {
+      const SceneManagerMetaData *metaData = it.getNext();
+       if(metaData->sceneTypeMask == ST_EXTERIOR_REAL_FAR &&
+        metaData->worldGeometrySupported == true &&
+        metaData->typeName == "PagingLandScapeSceneManager")
+      {
+        notFound = false;
+        break;
+      }
+    }
+    if(notFound)
+    {
+      OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Could not find Paging Landscape plugin. Check if it is in plugin.cfg",
+        "chooseSceneManager");
+    }
+    _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
+    //_scnMgr = _root->createSceneManager("PagingLandScapeSceneManager","ProjectChaos");
+    RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
+    rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
   }
 
   void
@@ -175,6 +196,7 @@ namespace ZGame
           }
       }
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    
   }
 
   bool
@@ -186,7 +208,7 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-        handlePacket();
+        //handlePacket();
       }
     catch (Ogre::Exception e)
       {
@@ -215,14 +237,7 @@ namespace ZGame
     try
       {
         _inController->onDestroy();
-        //Ogre::Root* root = _root.release();
-        //delete root;
-        //_root->shutdown();
-
-        peer->Shutdown(300);
-
-        RakNetworkFactory::DestroyRakPeerInterface(peer.release());
-
+        _netClient.shutdown();
       }
     catch (Ogre::Exception e)
       {
@@ -238,9 +253,9 @@ namespace ZGame
     stLoader.loadStates(_gameSInfoMap, startState);
     cout << "startState.key: " << startState.key << endl;
     loadStartStateToCurrentState(startState.key);
-    cout << "crash5!" << endl;
   }
 
+  
   bool
   EngineController::onKeyUp(const OIS::KeyEvent &event)
   {
@@ -252,20 +267,36 @@ namespace ZGame
     }
     else if(event.key == OIS::KC_I)
     {
-      connect();
+      _netClient.connect();
     }
     else if(event.key == OIS::KC_O)
     {
-      disconnect();
+      _netClient.disconnect();
     }
-    
     return true;
   }
 
   bool
   EngineController::onKeyDown(const OIS::KeyEvent &event)
   {
+    bool consoleVis = OgreConsole::getSingleton().isVisible();
+    //console
+    if(event.key == OIS::KC_TAB)
+    {
+      if(consoleVis)
+      {
+        //turn off console
+        OgreConsole::getSingleton().setVisible(false);
+      }
+      else
+        OgreConsole::getSingleton().setVisible(true);
+    }
+    
+    OgreConsole::getSingleton().onKeyPressed(event);
+    if(!consoleVis)
+    {
     _keyPump->updateKeyDownObs(event);
+    }
     return true;
   }
 
@@ -305,25 +336,19 @@ namespace ZGame
     }
 
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
-
-    cout << "crash1?" << endl;
-
     if (it != _gameSInfoMap.end())
       {
         _curStateInfo.reset(&it->second);
-        cout << "crash2?" << endl;
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
             _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
             _keyPump->removeAllObs();
             _curGameState.reset(0); //delete current game state
-            cout << "Crash3?" << endl;
           }
         else
           {
             //do stateful crap here.
           }
-        cout << "crash34" << endl;
       }
     else
       throw(std::invalid_argument("Current State does not exist!"));
@@ -407,6 +432,8 @@ namespace ZGame
         MouseEventRegister mouseReg;
 
         _curGameState->init(lfcReg, keyReg, mouseReg);
+
+        _netClient.regLfcObs(lfcReg);
       
         //inject subject to observers
         lfcReg.injectLfcSubj(lcs);
@@ -484,5 +511,14 @@ namespace ZGame
     }
     
   }
+
+   void 
+     EngineController::initConsole()
+   {
+     new OgreConsole;
+     OgreConsole::getSingleton().init(_root.get());
+
+     _commandController->init();
+   }
   
 }

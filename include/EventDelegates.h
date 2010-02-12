@@ -35,6 +35,8 @@ namespace ZGame
       ZKeyDownEvt kde;
     };
 
+
+
     typedef fd::delegate<void(const KeyboardEvtObserver&)> KeyEvtSubject;
     typedef fd::delegate<void(const MouseEvtObserver&)> MouseEvtSubject;
     typedef fd::delegate<void(const KeyEvtSubject&)> KeyEvtSubjectInjector;

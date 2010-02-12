@@ -89,11 +89,7 @@ GPUEntsView::onUpdate(const Ogre::FrameEvent &evt)
   return true;
 }
 
-void
-GPUEntsView::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
-{
-  obs.onUpdate.bind(&GPUEntsView::onUpdate, this);
-}
+
 
 void
 GPUEntsView::alphaBlend()
@@ -151,8 +147,8 @@ GPUEntsView::initOgrEnt()
 
   //setup the width and height parameters
   //fragParams->setNamedConstant("texDim",(Real)128.0);
-  Real scaleS = 512.0/ impWidth;
-  Real scaleT = 512.0/ impHeight;
+  Real scaleS = 512.0f/ impWidth;
+  Real scaleT = 512.0f/ impHeight;
 
   _vertParam->setNamedConstant("scaleS", scaleS);
   _vertParam->setNamedConstant("scaleT", scaleT);

@@ -11,7 +11,6 @@
 #define CONTROLMODULEPROTO_H_
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include "ObsInjectors.h"
 namespace ZGame
 {
 
@@ -24,22 +23,13 @@ namespace ZGame
   {
     struct LifeCycleObserver;
   }
-  class ControlModuleProto : public LFCObsInjector,
-      public KeyEvtObsInjector,
-      public MouseEvtObsInjector
+  class ControlModuleProto 
   {
   public:
     ControlModuleProto();
     virtual
     ~ControlModuleProto();
 
-    //register observers for event
-    void
-    fillKeyObservers(EVENT::KeyboardEvtObserver &obs);
-    void
-    fillMouseObservers(EVENT::MouseEvtObserver &obs);
-    void
-    fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
     //events methods
     bool
     onKeyDown(const OIS::KeyEvent &evt);
@@ -53,6 +43,14 @@ namespace ZGame
     onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
     bool
     onUpdate(const Ogre::FrameEvent &evt);
+    bool
+    onInit(){return true;}
+    bool
+    onDestroy(){return true;}
+
+    
+    bool attachNode(std::vector<Ogre::String> &params);
+
   protected:
 
 	Ogre::Vector3 _transVector;
@@ -73,6 +71,18 @@ namespace ZGame
 	updateTransFactor(Ogre::Real factor);
     void
     toggleMode(enum TransMode mode);
+
+  private:
+    void printUsage();
+
+    Ogre::SceneNode* _lookAtNode;
+    Ogre::SceneNode* _cameraNode;
+
+    Ogre::Real _camLocalZOffset;
+
+    //Clean up the lookat and camera nodes.
+    void cleanUpNodes();
+
   };
 
 }

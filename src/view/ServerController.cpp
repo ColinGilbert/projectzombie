@@ -57,12 +57,18 @@ namespace ZGame
     unsigned char packetId;
 
     Packet* packet = peer->Receive();
-
+  
+    while(packet)
+    {
     if(packet)
     {
       packetId = getPacketIdentifer(packet);
       printPacketId(packetId);
       peer->DeallocatePacket(packet);
+     
+    }
+    packet = peer->Receive();
+
     }
     
     return true;

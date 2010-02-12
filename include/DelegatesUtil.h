@@ -20,13 +20,36 @@ namespace ZGame
       lfcObs.onInit.clear();
       lfcObs.onUpdate.clear();
     }
+    template<typename T>
+    static void bindLifeCycleObserver(LifeCycleObserver &lfcObs,
+                                 T& binder)
+    {
+      lfcObs.onInit.bind(&T::onInit,&binder);
+      lfcObs.onUpdate.bind(&T::onUpdate,&binder);
+      lfcObs.onDestroy.bind(&T::onDestroy,&binder);
+    }
   }
   namespace EVENT
   {
+    template<typename T>
+    static void bindKeyObserver(KeyboardEvtObserver &keyObs,
+                                T& binder)
+    {
+      keyObs.kde.bind(&T::onKeyDown,&binder);
+      keyObs.kue.bind(&T::onKeyUp,&binder);
+    }
     static void clearKeyObs(EVENT::KeyboardEvtObserver &keyObs)
     {
       keyObs.kde.clear();
       keyObs.kue.clear();
+    }
+    template<typename T>
+    static void bindMouseObserver(MouseEvtObserver &mouseObs,
+                                  T& binder)
+    {
+      mouseObs.mde.bind(&T::onMouseDown,&binder);
+      mouseObs.mme.bind(&T::onMouseMove,&binder);
+      mouseObs.mue.bind(&T::onMouseUp,&binder);
     }
     static void clearMouseObs(EVENT::MouseEvtObserver &mouseObs)
     {
@@ -34,6 +57,8 @@ namespace ZGame
       mouseObs.mme.clear();
       mouseObs.mue.clear();
     }
+
+    
   }
 }
 

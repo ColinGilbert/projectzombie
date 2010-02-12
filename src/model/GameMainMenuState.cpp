@@ -8,6 +8,7 @@
 #include "GameMainMenuState.h"
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
+#include "DelegatesUtil.h"
 using namespace ZGame;
 
 GameMainMenuState::GameMainMenuState()
@@ -23,19 +24,20 @@ GameMainMenuState::~GameMainMenuState()
 
 void GameMainMenuState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
+  //This
   LifeCycle::LifeCycleObserver lfcObs;
-  lfcObs.onInit.bind(&GameMainMenuState::onInit,this);
-  lfcObs.onUpdate.bind(&GameMainMenuState::onUpdate,this);
-  lfcObs.onDestroy.bind(&GameMainMenuState::onDestroy,this);
+  LifeCycle::bindLifeCycleObserver(lfcObs,*this);
   lfcReg.registerLfcObs(lfcObs);
+  LifeCycle::clearLfcObs(lfcObs);
 }
 
 void GameMainMenuState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
+  //This
   EVENT::KeyboardEvtObserver keyObs;
-  keyObs.kde.bind(&GameMainMenuState::onKeyDown,this);
-  keyObs.kue.bind(&GameMainMenuState::onKeyUp,this);
-  keyReg.registerKeyObs(keyObs); //better register else exception is thrown
+  EVENT::bindKeyObserver(keyObs,*this);
+  keyReg.registerKeyObs(keyObs);
+  EVENT::clearKeyObs(keyObs);
 }
 
 bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)

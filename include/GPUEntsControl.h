@@ -11,7 +11,6 @@
 #include <iostream>
 #include <memory>
 #include <Ogre.h>
-#include "ObsInjectors.h"
 namespace ZGame
 {
   class GPUEntities;
@@ -20,7 +19,7 @@ namespace ZGame
   {
     struct LifeCycleObserver;
   }
-  class GPUEntsControl : public LFCObsInjector
+  class GPUEntsControl
   {
   public:
     GPUEntsControl();
@@ -30,8 +29,6 @@ namespace ZGame
     void
     attachGPUEnts(GPUEntities* ents);
     //This method allows Life Cycle observers functors to be pushed to us.
-    void
-    fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
     //Life Cycle methods
     //This method called during initialization phase of the life cycle.
     bool

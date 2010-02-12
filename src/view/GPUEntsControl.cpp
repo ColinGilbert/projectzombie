@@ -75,11 +75,7 @@ namespace ZGame
     lm->logMessage(LML_TRIVIAL, "Out GPUEntsControl::init");
   }
 
-  void
-  GPUEntsControl::fillLfcObservers(LifeCycle::LifeCycleObserver &obs)
-  {
-    obs.onUpdate.bind(&GPUEntsControl::onUpdate, this);
-  }
+  
 
   bool
   GPUEntsControl::onInit()

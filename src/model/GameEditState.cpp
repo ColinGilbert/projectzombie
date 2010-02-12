@@ -9,6 +9,7 @@
 #include "GameEditView.h"
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
+#include "DelegatesUtil.h" //This is for LifeCycle::bindLifeCycleObserver and etc...
 namespace ZGame
 {
 GameEditState::GameEditState() : GameState(), _editView(new GameEditView())
@@ -24,24 +25,31 @@ GameEditState::~GameEditState()
 
 void GameEditState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
+  //This state
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditState regLfcObsForInjection");
   LifeCycle::LifeCycleObserver lfcObs;
-  lfcObs.onInit.bind(&GameEditState::onInit, this);
-  lfcObs.onUpdate.bind(&GameEditState::onUpdate, this);
-  lfcObs.onDestroy.bind(&GameEditState::onDestroy, this);
-  lfcReg.registerLfcObs(lfcObs); //register to LifeCycleRegister
-  addLfcObsInjector(_editView);
+  LifeCycle::bindLifeCycleObserver(lfcObs,*this);
+  lfcReg.registerLfcObs(lfcObs);
+  LifeCycle::clearLfcObs(lfcObs);
+
+  //GameEditView
+  LifeCycle::bindLifeCycleObserver(lfcObs,*_editView);
+  lfcReg.registerLfcObs(lfcObs);
+  LifeCycle::clearLfcObs(lfcObs);
+
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out GameEditState regLfcObsForInjection");
 }
 
 void GameEditState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditState regKeyObsForInjection");
+  
+  //This
   EVENT::KeyboardEvtObserver keyObs;
-  keyObs.kde.bind(&GameEditState::onKeyDown,this);
-  keyObs.kue.bind(&GameEditState::onKeyUp,this);
-  keyReg.registerKeyObs(keyObs); //better register else exception
-  addKeyObsInjector(_editView);
+  EVENT::bindKeyObserver(keyObs,*this);
+  keyReg.registerKeyObs(keyObs);
+  EVENT::clearKeyObs(keyObs);
+
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"In GameEditState regKeyObsForInjection");
 }
 

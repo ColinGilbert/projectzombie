@@ -3,6 +3,11 @@
  *
  *  Created on: Aug 28, 2008
  *      Author: bey0nd
+ *
+ * This class defines the GameState class. The GameState class is the super class for the concept of states in ZGame's engine.
+ * Mainly the idea here is that the state class will store the current state of the game. For example: In the GameMainState, we would store all the controllers and managers
+ * used by the GameMainState. It will also handle registering any objects residing in the state for events. So conceptually this is similar to a controller. The other idea
+ * is we can push stuff to the objects residing in a game state--dependency injection,sort of.
  */
 
 #ifndef GAMESTATE_H_
@@ -17,9 +22,6 @@ namespace ZGame
   class LifeCycleRegister;
   class KeyEventRegister;
   class MouseEventRegister;
-  class LFCObsInjector; //interface
-  class KeyEvtObsInjector;
-  class MouseEvtObsInjector;
   class GameState
   {
   public:
@@ -43,28 +45,6 @@ namespace ZGame
     regMouseObsForInjection(MouseEventRegister &mouseReg)
     {
     }
-
-    void
-    addLfcObsInjector(
-        const boost::shared_ptr<LFCObsInjector> &injector);
-    void
-    addKeyObsInjector(
-        const boost::shared_ptr<KeyEvtObsInjector> &injector);
-    void
-    addMouseObsInjector(
-        const boost::shared_ptr<MouseEvtObsInjector> &injector);
-  private:
-    typedef vector<boost::shared_ptr<LFCObsInjector> >::iterator LfcInjIter;
-    vector<boost::shared_ptr<LFCObsInjector> > _lfcObsInj;
-    typedef vector<boost::shared_ptr<KeyEvtObsInjector> >::iterator KeyInjIter;
-    vector<boost::shared_ptr<KeyEvtObsInjector> > _keyObsInj;
-    typedef vector<boost::shared_ptr<MouseEvtObsInjector> >::iterator MouseInjIter;
-    vector<boost::shared_ptr<MouseEvtObsInjector> > _mouseObsInj;
-
-    void
-    registerObs(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
-        MouseEventRegister &mouseReg);
-
   };
 
 }

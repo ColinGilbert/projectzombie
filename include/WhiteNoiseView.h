@@ -11,7 +11,6 @@
 using namespace std;
 #include <Ogre.h>
 using namespace Ogre;
-#include "ObsInjectors.h" //interface so we can get Life Cycle observers injectected to us.
 
 namespace ZGame
 {
@@ -22,7 +21,7 @@ namespace ZGame
   }*/
 
   class PingPongShaders;
-  class WhiteNoiseView : public LFCObsInjector
+  class WhiteNoiseView
   {
   public:
     WhiteNoiseView();
@@ -31,9 +30,6 @@ namespace ZGame
 
     bool onInit();
     bool onUpdate(const Ogre::FrameEvent &evt);
-    void fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
-
-
 
   protected:
 

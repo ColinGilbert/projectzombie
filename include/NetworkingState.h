@@ -7,6 +7,7 @@
 
 #include "RakNetworkFactory.h"
 #include "RakPeerInterface.h"
+#include "MessageIdentifiers.h"
 
 namespace ZGame
 {
@@ -24,7 +25,11 @@ namespace ZGame
 
     virtual bool initNetwork() = 0; //pure virtual
     virtual bool shutDownNetwork() = 0; //pure virtual
+    virtual void handlePacket() = 0;
     void printPacketId(unsigned char packetId);
+    
+
+    
   };
   }
 }

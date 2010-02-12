@@ -55,7 +55,6 @@ main(int argc, char** argv)
     engineControl = new ZGame::EngineController();
   else if(argc >= 1) //run server
     engineControl = new ZGame::ServerController();
-  //ZGame::EngineController engineControl;
   try
     {
       if (!engineControl->onInit())

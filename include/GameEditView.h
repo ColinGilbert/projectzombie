@@ -11,7 +11,6 @@
 #include <memory>
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include "ObsInjectors.h"
 
 namespace ZGame
 {
@@ -30,22 +29,11 @@ namespace ZGame
     struct MouseEvtObserver;
   }
 
-  class GameEditView : public LFCObsInjector, public KeyEvtObsInjector
+  class GameEditView 
   {
   public:
     GameEditView();
     ~GameEditView();
-
-    //void injectLifeCycleSubject(const ZGame::LifeCycle::LifeCycleSubject &subject);
-    //void injectKeyEvtSubject(const ZGame::EVENT::KeyEvtSubject &subject);
-
-    //void fillKeySubjectInjector(EVENT::KeyEvtSubjectInjector &injector); //fill out the detail of key subject injector
-    //void fillLifeCycleSubjectInjector(LifeCycle::LifeCycleSubjectInjector &injector);
-
-    void
-    fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
-    void
-    fillKeyObservers(EVENT::KeyboardEvtObserver &obs);
 
     //life cycle methods
     bool onUpdate(const Ogre::FrameEvent& evt);

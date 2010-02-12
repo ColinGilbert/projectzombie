@@ -46,13 +46,6 @@ namespace ZGame
     return true;
   }
 
-  void
-  WhiteNoiseView::fillLfcObservers(ZGame::LifeCycle::LifeCycleObserver &obs)
-  {
-    obs.onUpdate.bind(&WhiteNoiseView::onUpdate, this);
-    obs.onInit.bind(&WhiteNoiseView::onInit, this);
-  }
-
   bool
   WhiteNoiseView::onInit()
   {
@@ -61,7 +54,7 @@ namespace ZGame
     _whiteNoiseTex = TextureManager::getSingleton().createManual(
         "WhiteNoiseTestRTT",
         ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME, TEX_TYPE_2D,
-        512.0, 512.0, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+        512, 512, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
 
     //initialize ping pong

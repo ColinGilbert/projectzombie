@@ -14,7 +14,6 @@
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
 //using namespace Ogre;
-#include "ObsInjectors.h"
 
 namespace ZGame
 {
@@ -23,7 +22,7 @@ namespace ZGame
   {
     struct LifeCycleObserver;
   }
-  class GPUEntsView : public LFCObsInjector
+  class GPUEntsView 
   {
   public:
     GPUEntsView();
@@ -35,11 +34,6 @@ namespace ZGame
     alphaBlend();
     bool
     onUpdate(const Ogre::FrameEvent &evt);
-
-    void
-    fillLfcObservers(LifeCycle::LifeCycleObserver &obs);
-
-
   protected:
     GPUEntities* _ents;
     std::string _meshName;
