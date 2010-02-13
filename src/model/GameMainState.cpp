@@ -255,6 +255,7 @@ GameMainState::createWorld()
   texNode->attachObject(texEnt);
 
   //texNode->setVisible(true, true);
+  texNode->setPosition(Vector3(0.0f,-5.2f,0.0f));
   texNode->yaw(Radian(Math::DegreesToRadians(90.0f)));
   
   

@@ -55,11 +55,30 @@ void WorldController::init()
   Ogre::SceneManager* sceneManager = EngineView::getSingleton().getSceneManager();
   Ogre::LogManager* log = Ogre::LogManager::getSingletonPtr();
   
-  log->logMessage(Ogre::LML_TRIVIAL,"In WorldController::init");
-  log->logMessage(Ogre::LML_TRIVIAL,"Load DAE file.");
+  //log->logMessage(Ogre::LML_TRIVIAL,"In WorldController::init");
+  //log->logMessage(Ogre::LML_TRIVIAL,"Load DAE file.");
   int ret = 0;
+
+  log->logMessage(Ogre::LML_TRIVIAL,"Loading citymesh.");
+
+  Ogre::Entity *cityEnt = sceneManager->createEntity("CityEnt","cityMesh.mesh");
+  Ogre::StaticGeometry *sg = sceneManager->createStaticGeometry("CityArea");
+  //sg->setCastShadows(true);
+  sg->setRegionDimensions(Ogre::Vector3(200,200,200));
+  sg->setOrigin(Ogre::Vector3(-200/2,0,-200/2));
+
+  sg->addEntity(cityEnt,Ogre::Vector3::ZERO,Ogre::Quaternion::IDENTITY,Ogre::Vector3(10.0f,10.0f,10.0f));
+
+  sg->build();
+
+
+  
+
+
+
+  /*
   //if(ret = db.load("data/characters/bob/bob.dae"))
-  if(ret = db.load("data/nukeonetestworld.dae"))
+  if(ret = db.load("data/citytestworld.dae"))
   {
     throw std::invalid_argument("Cannot find a dae to load in WorldController::init.");
     return;
@@ -75,7 +94,7 @@ void WorldController::init()
   log->logMessage(Ogre::LML_NORMAL,"Finished coverting resources.");
   db.convertScene(sceneManager);
   log->logMessage(Ogre::LML_NORMAL,"Finished converting scene.");
-
+  */
   //setup the camera
   Ogre::Camera* cam = EngineView::getSingleton().getCurrentCamera();
   //cam->setPosition(-6.97490,-7.11573,4.90586);

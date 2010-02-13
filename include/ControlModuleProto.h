@@ -59,7 +59,7 @@ namespace ZGame
 	Ogre::Real _rotYaw;
 	Ogre::Real _rotPitch;
 	Ogre::Real _rotFactor;
-    Ogre::Camera* _cam;
+  Ogre::Camera* _cam;
 
     enum TransMode
     {
@@ -79,6 +79,7 @@ namespace ZGame
     Ogre::SceneNode* _cameraNode;
 
     Ogre::Real _camLocalZOffset;
+    Ogre::Real _zoomFactor;
 
     //Clean up the lookat and camera nodes.
     void cleanUpNodes();

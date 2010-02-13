@@ -25,7 +25,8 @@ namespace ZGame
   _cam(EngineView::getSingleton().getCurrentCamera()),
   _lookAtNode(0),
   _cameraNode(0),
-  _camLocalZOffset(1.0f)
+  _camLocalZOffset(40.0f),
+  _zoomFactor(0.1f)
   {
     // TODO Auto-generated constructor stub
     
@@ -137,10 +138,13 @@ namespace ZGame
           }
         else if(evt.key == OIS::KC_L)
         {
-          if(_lookAtNode)
-          {
-            _lookAtNode->scale(0.9f,0.9f,0.9f);
-          }
+          _zoomFactor += 0.5f;
+          _camLocalZOffset = Math::Exp(_zoomFactor);
+        }
+        else if(evt.key == OIS::KC_I)
+        {
+          _zoomFactor -= 0.5f;
+          _camLocalZOffset = Math::Exp(_zoomFactor);
         }
     return true;
   }
@@ -151,7 +155,9 @@ namespace ZGame
 	  //_cam->pitch(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.Y.rel)));
     if(_lookAtNode)
     {
-      _cameraNode->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)),Ogre::Node::TS_WORLD);
+      //_cameraNode->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)),Ogre::Node::TS_WORLD);
+      _cameraNode->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)));
+      _cameraNode->pitch(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.Y.rel)));
     }
     
 
@@ -181,7 +187,7 @@ namespace ZGame
       _lookAtNode->translate(_lookAtNode->getOrientation()*_transVector);
       //then rotate about lookatNode
       _cameraNode->setPosition(Ogre::Vector3::ZERO);
-      _cameraNode->translate(_cameraNode->getLocalAxes(),Ogre::Vector3(0.0,0.0,10.0));
+      _cameraNode->translate(_cameraNode->getLocalAxes(),Ogre::Vector3(0.0,0.0,_camLocalZOffset));
     }
     return true;
   }
