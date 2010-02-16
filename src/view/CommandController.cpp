@@ -33,6 +33,7 @@ CommandController::CommandController()
 
 CommandController::~CommandController()
 {
+  cout << "In CommandController destructor." << endl;
 }
 
 int CommandController::execute(ZGame::Command cmd)

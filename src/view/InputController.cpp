@@ -11,7 +11,7 @@ using namespace std;
 
 using namespace ZGame;
 
-InputController::InputController() : _inputSystem(0),_mouse(0),_keyb(0),_keyStates(0xFF,false)
+InputController::InputController() : _inputSystem(0),_mouse(0),_keyb(0),_keyStates(256,false)
 ,_stillRunning(true)
 {
   // TODO Auto-generated constructor stub
@@ -74,6 +74,7 @@ bool InputController::onInit(Ogre::RenderWindow* window)
 
 void InputController::setWindowExtents(int width,int height)
 {
+  
   const OIS::MouseState &mouseState = _mouse->getMouseState();
   mouseState.width = width;
   mouseState.height = height;
@@ -118,6 +119,7 @@ void InputController::capture()
 {
   if(_mouse)_mouse->capture();
   if(_keyb)_keyb->capture();
+  
   OIS::MouseState &mutableMouseState = const_cast<OIS::MouseState &>(_mouse->getMouseState());
       mutableMouseState.X.abs = 500.0;
       mutableMouseState.Y.abs = 500.0;
@@ -165,7 +167,7 @@ void InputController::removeAllListeners()
 
 bool InputController::keyPressed(const OIS::KeyEvent &e)
 {
-  _keyStates[e.key] = true;
+  //_keyStates[e.key] = true;
   for(KeyObsIterator it = _keyObservers.begin(); it != _keyObservers.end();++it)
     {
       it->second.kde(e);
@@ -175,7 +177,7 @@ bool InputController::keyPressed(const OIS::KeyEvent &e)
 
 bool InputController::keyReleased(const OIS::KeyEvent &e)
 {
-  _keyStates[e.key] = false;
+  //_keyStates[e.key] = false;
   for(KeyObsIterator it=_keyObservers.begin();it!=_keyObservers.end();++it)
     {
       it->second.kue(e);

@@ -53,7 +53,7 @@ main(int argc, char** argv)
 //#if
   if(argc == 1) //run client
     engineControl = new ZGame::EngineController();
-  else if(argc >= 1) //run server
+  else if(argc > 1) //run server
     engineControl = new ZGame::ServerController();
   try
     {
@@ -82,14 +82,14 @@ main(int argc, char** argv)
   catch (Ogre::Exception e)
     {
       ostringstream oss;
-      oss << "Something bad happened, when running the engine." << endl;
+      oss << "Something bad happened when running the engine." << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
     }
   catch (std::exception e)
     {
       ostringstream oss;
-      oss << "Something bad happened, when running the engine." << endl;
+      oss << "Something bad happened when running the engine." << endl;
       oss << e.what() << endl;
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, oss.str());
       return 0;

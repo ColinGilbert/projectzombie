@@ -25,6 +25,7 @@ using namespace std;
 #include "MessageIdentifiers.h"
 #include "ogreconsole.h"
 #include "CommandController.h"
+#include "DelegatesUtil.h"
 
 namespace ZGame
 {
@@ -32,7 +33,7 @@ namespace ZGame
   EngineController::EngineController() :
     _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
         new KeyboardPump()), _mousePump(new MousePump()),
-        _isConnected(false),
+        _curStateInfo(0),_curGameState(0),
         _commandController(new CommandController())
   {
     // TODO Auto-generated constructor stub
@@ -43,6 +44,7 @@ namespace ZGame
   {
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
+    cout << "EngineController destructor" << endl;
 
   }
 
@@ -122,8 +124,6 @@ namespace ZGame
 
     lm->logMessage(Ogre::LML_TRIVIAL,"Starting multiplayer engine!");
  
-    _netClient.initClient();
-
     //let's init the console now.
     lm->logMessage(Ogre::LML_NORMAL,"initializing console.");
     initConsole();
@@ -134,6 +134,7 @@ namespace ZGame
     EngineController::chooseSceneManager()
   {
     bool notFound = true;
+    /*
     SceneManagerEnumerator::MetaDataIterator it = _root->getSceneManagerMetaDataIterator();
     while(it.hasMoreElements())
     {
@@ -145,12 +146,13 @@ namespace ZGame
         notFound = false;
         break;
       }
-    }
+    }*/
+    /*
     if(notFound)
     {
       OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Could not find Paging Landscape plugin. Check if it is in plugin.cfg",
         "chooseSceneManager");
-    }
+    }*/
     _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
     //_scnMgr = _root->createSceneManager("PagingLandScapeSceneManager","ProjectChaos");
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
@@ -208,16 +210,12 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-        //handlePacket();
       }
     catch (Ogre::Exception e)
       {
         throw e;
       }
-
-
     return true;
-
   }
   void
   EngineController::run()
@@ -232,12 +230,18 @@ namespace ZGame
   {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "EngineController.onDestroy()");
-    unloadCurrentState();
-
     try
       {
         _inController->onDestroy();
         _netClient.shutdown();
+        //CLEAR _curStateInfo manaually. THIS clearly is a hack.
+        //The reason being you are using auto_ptr to store the current state information, which you set by 
+        //getting the reference from from GameStateInfoMap;  So when destructing,
+        //the order of destruction (think auto pointer and actual object on the stack) matters. Currently
+        //_curStateInfo is being destructured (it's auto_ptr) after GameStateInfoMap is destryoed. This obviously
+        //is going to crash because it is pointing to the already destructed GameStateInfoMap. STUPID!
+        //Solution: Use shared pointer or ...but whatever you do do not put put a pointer in an auto_ptr that is pointing to
+        //some other crap (setting using & operator.)
       }
     catch (Ogre::Exception e)
       {
@@ -265,11 +269,11 @@ namespace ZGame
       _stillRunning = false;
       unloadCurrentState();
     }
-    else if(event.key == OIS::KC_I)
+    else if(event.key == OIS::KC_C)
     {
       _netClient.connect();
     }
-    else if(event.key == OIS::KC_O)
+    else if(event.key == OIS::KC_V)
     {
       _netClient.disconnect();
     }
@@ -338,7 +342,8 @@ namespace ZGame
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
     if (it != _gameSInfoMap.end())
       {
-        _curStateInfo.reset(&it->second);
+        _curStateInfo = &it->second;
+        //_curStateInfo.reset(&it->second);
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
             _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
@@ -369,7 +374,8 @@ namespace ZGame
               throw(invalid_argument(
                   "Current game state is null when trying to load a new STATELESS current state"));
             unloadCurrentState();
-            _curStateInfo.reset(&it->second);
+            //_curStateInfo.reset(&it->second);
+            _curStateInfo = &it->second;
           }
         else
           {
@@ -433,7 +439,12 @@ namespace ZGame
 
         _curGameState->init(lfcReg, keyReg, mouseReg);
 
-        _netClient.regLfcObs(lfcReg);
+        //We manually register the net client for now. We do this
+        //since we have not implemented Stateful states. The original
+        //idea for Stateful states is so we use Stateful states as
+        //services, services which are used by rest of the system (hence theya are stateful. I.E:
+        //services are stateful objects which exist for the duration of the engine.
+        manuallyRegisterNetClient(lfcReg); 
       
         //inject subject to observers
         lfcReg.injectLfcSubj(lcs);
@@ -445,80 +456,26 @@ namespace ZGame
       }
     logM->logMessage(Ogre::LML_NORMAL,"Realizing current state done");
   }
-
-  void
-    EngineController::connect()
-  {
-    if(_isConnected)
-      return;
-    _isConnected = true;
-    cout << "Trying to connect. " << endl;
-    peer->Connect("127.0.0.1",6666,0,0);
-  }
-
-  void
-    EngineController::disconnect()
-  {
-    if(!_isConnected)
-      return;
-
-    _isConnected =false;
-    cout << "Disconnecting. " << endl;
-    peer->CloseConnection(_serverSysAddress,true,0);
-
-  }
-
-  void
-    EngineController::handlePacket()
-  {
-    unsigned char packetId;
-
-    Packet* packet = peer->Receive();
-
-    if(packet)
-    {
-      packetId = getPacketIdentifer(packet);
-      if(packetId == ID_CONNECTION_REQUEST_ACCEPTED)
-      {
-        _serverSysAddress == packet->systemAddress;
-      }
-      printPacketId(packetId);
-      peer->DeallocatePacket(packet);
-    }
-  }
-
-  unsigned char 
-    EngineController::getPacketIdentifer(Packet* p)
-  {
-    if((unsigned char)p->data[0] == ID_TIMESTAMP)
-      return (unsigned char)p->data[sizeof(unsigned char)+sizeof(unsigned long)];
-    else
-      return (unsigned char)p->data[0];
-  }
-
-   void
-    EngineController::printPacketId(unsigned char id)
-  {
-    using namespace std;
-    switch(id)
-     {
-      case ID_CONNECTION_REQUEST_ACCEPTED:
-        cout << "We have connected!" << endl;
-        break;
-      default:
-        cout << "Got an id: " << id << endl;
-        break;
-    }
-    
-  }
-
+  
+  
+  
+  
    void 
-     EngineController::initConsole()
+   EngineController::initConsole()
    {
      new OgreConsole;
      OgreConsole::getSingleton().init(_root.get());
 
      _commandController->init();
+   }
+
+   void
+   EngineController::manuallyRegisterNetClient(LifeCycleRegister &lfcReg)
+   {
+     LifeCycle::LifeCycleObserver lfcObs;
+     LifeCycle::bindLifeCycleObserver(lfcObs,_netClient);
+     lfcReg.registerLfcObs(lfcObs);
+     LifeCycle::clearLfcObs(lfcObs);
    }
   
 }

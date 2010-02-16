@@ -1,9 +1,9 @@
 /*
- * EngineController.h
- *
- *  Created on: Aug 24, 2008
- *      Author: bey0nd
- */
+* EngineController.h
+*
+*  Created on: Aug 24, 2008
+*      Author: bey0nd
+*/
 
 #ifndef ENGINECONTROLLER_H_
 #define ENGINECONTROLLER_H_
@@ -24,7 +24,7 @@
 #include "MainController.h"
 #include "RakNetworkFactory.h"
 #include "RakPeerInterface.h"
-#include "NetworkClientState.h"
+#include "net/NetworkClientController.h"
 
 namespace ZGame
 {
@@ -37,16 +37,16 @@ namespace ZGame
   class MousePump;
   class CommandController;
   class EngineController : public Ogre::FrameListener,
-                           public MainController
+    public MainController
   {
   public:
     EngineController();
     virtual
-    ~EngineController();
+      ~EngineController();
 
     bool frameStarted(const Ogre::FrameEvent &evt);
 
-	  void transitionState(const std::string key);
+    void transitionState(const std::string key);
     bool onInit();
     void run();
     void onDestroy();
@@ -59,32 +59,33 @@ namespace ZGame
     bool onMouseMove(const OIS::MouseEvent &event);
     bool onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
     bool onMouseDown(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
-    
+
 
     //input observers
     void addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
     //setters getters
     //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
   protected:
-	std::auto_ptr<Ogre::Root> _root;
+    std::auto_ptr<Ogre::Root> _root;
     Ogre::SceneManager* _scnMgr;
     Ogre::RenderWindow* _window;
-	std::auto_ptr<ZGame::EngineView> _engineView;
+    std::auto_ptr<ZGame::EngineView> _engineView;
 
-	//boost::shared_ptr<ZGame::InputController> _inController;
-  std::auto_ptr<ZGame::InputController> _inController;
-	GameStateInfoMap _gameSInfoMap;
+    //boost::shared_ptr<ZGame::InputController> _inController;
+    std::auto_ptr<ZGame::InputController> _inController;
+    GameStateInfoMap _gameSInfoMap;
 
     //Current state
-	std::auto_ptr<GameStateInfo> _curStateInfo;
-	std::auto_ptr<GameState> _curGameState;
+    //std::auto_ptr<GameStateInfo> _curStateInfo;
+    GameStateInfo* _curStateInfo;
+    std::auto_ptr<GameState> _curGameState;
 
     //LifeCycle pump
-	std::auto_ptr<LifeCyclePump> _lfcPump;
-	std::auto_ptr<KeyboardPump> _keyPump;
-	std::auto_ptr<MousePump> _mousePump;
-    
-   
+    std::auto_ptr<LifeCyclePump> _lfcPump;
+    std::auto_ptr<KeyboardPump> _keyPump;
+    std::auto_ptr<MousePump> _mousePump;
+
+
     void loadAssets();
     void chooseSceneManager();
 
@@ -99,26 +100,16 @@ namespace ZGame
 
   private:
 
-    ZGame::Networking::NetworkClientState _netClient;
+    ZGame::Networking::NetworkClientController _netClient;
     auto_ptr<ZGame::CommandController> _commandController;
 
-	  std::string _listenerID;
+    std::string _listenerID;
     bool _stillRunning;
-    std::auto_ptr<RakPeerInterface> peer;
-    bool _isConnected;
-
-    SystemAddress _serverSysAddress;
-
-    void connect();
-    void disconnect();
-
-    void handlePacket(); //initial implementing handle packets.
     
-    unsigned char getPacketIdentifer(Packet* p);
-    void printPacketId(unsigned char id);
     void loadStartStateToCurrentState(const string curKey);
 
-    void initConsole();
+    void initConsole(); //temp method for initialize the console.
+    void manuallyRegisterNetClient(LifeCycleRegister &lfcReg); //temp method for register the net client to the system.
 
   };
 

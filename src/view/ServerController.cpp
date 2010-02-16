@@ -19,13 +19,15 @@ namespace ZGame
   ServerController::onInit()
   {
     using namespace Ogre;
-    _root.reset(new Ogre::Root("plugins.cfg"));
+    _root.reset(new Ogre::Root("plugins.cfg","pchaos_server_display.cfg","Pchaos_server.log"));
     if(_root->showConfigDialog())
     {
       _root->initialise(false);
     }
     else
       return false;
+
+    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
 
     if(!initServer())
