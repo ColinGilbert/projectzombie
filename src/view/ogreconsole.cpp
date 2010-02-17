@@ -91,32 +91,8 @@ void OgreConsole::onKeyPressed(const OIS::KeyEvent &arg){
      if(prompt.length()<1)
        return;
       //split the parameter list
-      //const char *str=prompt.c_str();
      Ogre::StringVector params = Ogre::StringUtil::tokenise(prompt);
-     //vector<String> params = Ogre::StringUtil::tokenise(prompt);
-      //String param="";
-      /*
-      for(size_t c=0;c<prompt.length();c++){
-         if(str[c]==' '){
-            if(param.length())
-            {
-               params.push_back(param);
-            }
-            param="";
-         }
-         else
-            param+=str[c];
-      }
-      if(param.length())
-         params.push_back(param);*/
-
-      //if params length is still zero it means not command where found (i.e. such is the case when we entered a bunch of spaces.)
-      /*
-      if(!params.size())
-      {
-        prompt="";
-        return;
-      }*/
+    
       print(prompt);
       map<String,void(*)(StringVector&)>::iterator i;
       for(i=commands.begin();i!=commands.end();i++){
