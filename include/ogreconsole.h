@@ -32,7 +32,7 @@ namespace ZGame
 
     void onKeyPressed(const OIS::KeyEvent &arg);
 
-    void addCommand(const Ogre::String &command, void (*)(Ogre::StringVector&));
+    void addCommand(const Ogre::String &command, void (*)(const Ogre::StringVector&));
     void removeCommand(const Ogre::String &command);
 
     //log
@@ -49,9 +49,9 @@ namespace ZGame
 
     float            height;
     bool            update_overlay;
-    int               start_line;
+    size_t               start_line;
     std::list<Ogre::String>      lines;
     Ogre::String            prompt;
-    std::map<Ogre::String,void (*)(Ogre::StringVector&)>  commands;
+    std::map<Ogre::String,void (*)(const Ogre::StringVector&)>  commands;
   };
 }

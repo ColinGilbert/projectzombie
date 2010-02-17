@@ -94,7 +94,7 @@ void OgreConsole::onKeyPressed(const OIS::KeyEvent &arg){
      Ogre::StringVector params = Ogre::StringUtil::tokenise(prompt);
     
       print(prompt);
-      map<String,void(*)(StringVector&)>::iterator i;
+      map<String,void(*)(const StringVector&)>::iterator i;
       for(i=commands.begin();i!=commands.end();i++){
          if((*i).first==params[0]){
             if((*i).second)
@@ -152,7 +152,7 @@ bool OgreConsole::frameStarted(const Ogre::FrameEvent &evt){
       }
    }
 
-   textbox->setPosition(0,(height-1)*0.5);
+   textbox->setPosition(0,(height-1)*0.5f);
    rect->setCorners(-1,1+height,1,1-height);
 
    if(update_overlay){
@@ -165,10 +165,10 @@ bool OgreConsole::frameStarted(const Ogre::FrameEvent &evt){
 
       int lcount=0;
       start=lines.begin();
-      for(int c=0;c<start_line;c++)
+      for(size_t c=0;c<start_line;c++)
          start++;
       end=start;
-      for(int c=0;c<CONSOLE_LINE_COUNT;c++){
+      for(size_t c=0;c<CONSOLE_LINE_COUNT;c++){
          if(end==lines.end())
             break;
          end++;
@@ -189,10 +189,10 @@ void OgreConsole::print(const String &text){
    //subdivide it into lines
    const char *str=text.c_str();
    int start=0,count=0;
-   int len=text.length();
+   size_t len=text.length();
    String line;
    line.push_back('>');
-   for(int c=0;c<len;c++){
+   for(size_t c=0;c<len;c++){
       if(str[c]=='\n'||line.length()>=CONSOLE_LINE_LENGTH){
          lines.push_back(line);
          line="";
@@ -217,7 +217,7 @@ bool OgreConsole::frameEnded(const Ogre::FrameEvent &evt){
 void OgreConsole::setVisible(bool visible){
    this->visible=visible;
 }
-void OgreConsole::addCommand(const String &command, void (*func)(StringVector&)){
+void OgreConsole::addCommand(const String &command, void (*func)(const StringVector&)){
    commands[command]=func;
 }
 

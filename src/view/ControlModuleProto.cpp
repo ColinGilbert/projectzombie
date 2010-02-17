@@ -204,7 +204,7 @@ namespace ZGame
     
   }
 
-  bool ControlModuleProto::attachNode(Ogre::StringVector &params)
+  bool ControlModuleProto::attachNode(const Ogre::StringVector &params)
   {
     ostringstream oss;
     

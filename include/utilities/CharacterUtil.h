@@ -22,13 +22,13 @@ namespace ZGame
       void setInput();
 
       //Creates a new character.
-      bool create(Ogre::StringVector &params);
+      bool create(const Ogre::StringVector &params);
       //Utility functions (mainly used by ConsoleCommands
-      bool list(Ogre::StringVector &params);
+      bool list(const Ogre::StringVector &params);
       //Utility function for list meshes
-      bool listMeshes(Ogre::StringVector &params);
+      bool listMeshes(const Ogre::StringVector &params);
       
-      bool listNodes(Ogre::StringVector &params);
+      bool listNodes(const Ogre::StringVector &params);
 
 
     private:
@@ -54,7 +54,7 @@ namespace ZGame
       //void listChar();
       void listAllMeshes();
       void listAllChars();
-      bool createCharFromMesh(Ogre::String &meshName);
+      bool createCharFromMesh(const Ogre::String &meshName);
       //print the usage.
       void printUsage(CHAR_CMDS_ENUM CMD_ENUM);
 

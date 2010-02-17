@@ -29,7 +29,7 @@ namespace ZGame
     bool init();
     void addCommand(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd);
 
-    static void execute(Ogre::StringVector &params);
+    static void execute(const Ogre::StringVector &params);
     //void execute(std::vector<Ogre::String> &params);
 
     static ZGame::CommandController&

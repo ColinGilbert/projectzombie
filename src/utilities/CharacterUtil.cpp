@@ -45,7 +45,7 @@ void CharacterUtil::createCharacters()
 
 }
 
-bool CharacterUtil::list(Ogre::StringVector &params)
+bool CharacterUtil::list(const Ogre::StringVector &params)
 {
   using namespace std;
   if(params.size() == 1)
@@ -66,7 +66,7 @@ bool CharacterUtil::list(Ogre::StringVector &params)
 *This method will list the characters.
 *
 */
-bool CharacterUtil::listMeshes(Ogre::StringVector &params)
+bool CharacterUtil::listMeshes(const Ogre::StringVector &params)
 {
   using namespace std;
   if(params.size() == 1) //command was executed with only command (no parameters beside command.)
@@ -85,7 +85,7 @@ bool CharacterUtil::listMeshes(Ogre::StringVector &params)
 *This method will create the character specified in the params[1].
 *usage:
 */
-bool CharacterUtil::create(Ogre::StringVector &params)
+bool CharacterUtil::create(const Ogre::StringVector &params)
 {
   using namespace std;
   if(params.size() != 2)
@@ -103,7 +103,7 @@ bool CharacterUtil::create(Ogre::StringVector &params)
   return created;
 }
 
-bool CharacterUtil::listNodes(Ogre::StringVector &params)
+bool CharacterUtil::listNodes(const Ogre::StringVector &params)
 {
   using namespace std;
   Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
@@ -281,7 +281,7 @@ void CharacterUtil::listAllMeshes()
   lm->logMessage(Ogre::LML_NORMAL,oss.str());
 }
 
-bool CharacterUtil::createCharFromMesh(Ogre::String &meshName)
+bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
 {
   using namespace std;
   ostringstream oss;

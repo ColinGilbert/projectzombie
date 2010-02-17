@@ -251,7 +251,7 @@ GameMainState::createWorld()
   string name;
   name = "TempGroundPlaneNode";
   SceneNode* texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name,
-  Vector3(0.0f, -1.0f, 0.0f));
+  Vector3(0.0f, 0.0f, 0.0f));
   texNode->attachObject(texEnt);
 
   //texNode->setVisible(true, true);

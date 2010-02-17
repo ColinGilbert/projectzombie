@@ -52,7 +52,7 @@ int CommandController::execute(std::string cmd)
 *This static method is the call back for executing a found command in OgreConsole. We assume that the command has been validated upstream in OgreConsole,
 and thus when calling this params[0] should be the calle.
 */
-void CommandController::execute(Ogre::StringVector &params)
+void CommandController::execute(const Ogre::StringVector &params)
 {
     __cmdMap[params[0]](params);
 }
