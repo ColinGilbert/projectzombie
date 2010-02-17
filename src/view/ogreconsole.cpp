@@ -26,6 +26,7 @@ void OgreConsole::init(Ogre::Root *root){
    if(!root->getSceneManagerIterator().hasMoreElements())
       OGRE_EXCEPT( Exception::ERR_INTERNAL_ERROR, "No scene manager found!", "init" );
 
+   
    this->root=root;
    scene=root->getSceneManagerIterator().getNext();
    root->addFrameListener(this);
@@ -45,24 +46,38 @@ void OgreConsole::init(Ogre::Root *root){
    textbox->setCaption("hello");
    textbox->setMetricsMode(GMM_RELATIVE);
    textbox->setPosition(0,0);
-   textbox->setParameter("font_name","Console");
+   //textbox->setParameter("font_name","Console");
+   textbox->setParameter("font_name","StarWars");
    textbox->setParameter("colour_top","1 1 1");
    textbox->setParameter("colour_bottom","1 1 1");
    textbox->setParameter("char_height","0.03");
    
+   initialized = true;
+
    overlay=OverlayManager::getSingleton().create("Console");   
    overlay->add2D((OverlayContainer*)textbox);
    overlay->show();
    LogManager::getSingleton().getDefaultLog()->addListener(this);
+   
 }
 
 void OgreConsole::shutdown(){
-   if(!initialized)
-      return;
-   delete rect;
-   delete node;
-   delete textbox;
-   delete overlay;
+   //if(!initialized)
+      //return
+  cout << "FUCK. OgreConsole shutdown!." << endl;
+  node->detachAllObjects();
+  cout << "node detachAllObjets();" << endl;
+  scene->getRootSceneNode()->removeChild(node);
+  cout << "remove node from root scene node" << endl;
+
+  overlay->remove2D((OverlayContainer*)textbox);
+
+  OverlayManager::getSingleton().destroyOverlayElement(textbox);
+  OverlayManager::getSingleton().destroy(overlay);
+   //delete rect;
+   //delete node;
+   //delete textbox;
+   //delete overlay;
 }
 void OgreConsole::onKeyPressed(const OIS::KeyEvent &arg){
 
@@ -77,7 +92,7 @@ void OgreConsole::onKeyPressed(const OIS::KeyEvent &arg){
        return;
       //split the parameter list
       const char *str=prompt.c_str();
-      vector<String> params;
+      vector<String> params(50);
       String param="";
       for(size_t c=0;c<prompt.length();c++){
          if(str[c]==' '){

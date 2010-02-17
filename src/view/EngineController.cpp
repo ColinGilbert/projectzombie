@@ -234,6 +234,7 @@ namespace ZGame
       {
         _inController->onDestroy();
         _netClient.shutdown();
+        OgreConsole::getSingleton().shutdown();
         //CLEAR _curStateInfo manaually. THIS clearly is a hack.
         //The reason being you are using auto_ptr to store the current state information, which you set by 
         //getting the reference from from GameStateInfoMap;  So when destructing,
@@ -242,6 +243,8 @@ namespace ZGame
         //is going to crash because it is pointing to the already destructed GameStateInfoMap. STUPID!
         //Solution: Use shared pointer or ...but whatever you do do not put put a pointer in an auto_ptr that is pointing to
         //some other crap (setting using & operator.)
+        //Ogre::Root* root = _root.release();
+        //delete root;
       }
     catch (Ogre::Exception e)
       {
@@ -463,8 +466,12 @@ namespace ZGame
    void 
    EngineController::initConsole()
    {
+     new OgreConsole(); //this is fine we are using Ogre template based singleton implementation.
+     OgreConsole::getSingleton().init(_root.get());
+     /*
      new OgreConsole;
      OgreConsole::getSingleton().init(_root.get());
+     */
 
      _commandController->init();
    }

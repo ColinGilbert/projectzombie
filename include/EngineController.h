@@ -70,7 +70,7 @@ namespace ZGame
     Ogre::SceneManager* _scnMgr;
     Ogre::RenderWindow* _window;
     std::auto_ptr<ZGame::EngineView> _engineView;
-
+    
     //boost::shared_ptr<ZGame::InputController> _inController;
     std::auto_ptr<ZGame::InputController> _inController;
     GameStateInfoMap _gameSInfoMap;
