@@ -49,7 +49,7 @@ namespace ZGame
     onDestroy(){return true;}
 
     
-    bool attachNode(std::vector<Ogre::String> &params);
+    bool attachNode(Ogre::StringVector &params);
 
   protected:
 

@@ -46,8 +46,8 @@ void OgreConsole::init(Ogre::Root *root){
    textbox->setCaption("hello");
    textbox->setMetricsMode(GMM_RELATIVE);
    textbox->setPosition(0,0);
-   //textbox->setParameter("font_name","Console");
-   textbox->setParameter("font_name","StarWars");
+   textbox->setParameter("font_name","Console");
+   //textbox->setParameter("font_name","StarWars");
    textbox->setParameter("colour_top","1 1 1");
    textbox->setParameter("colour_bottom","1 1 1");
    textbox->setParameter("char_height","0.03");
@@ -91,9 +91,11 @@ void OgreConsole::onKeyPressed(const OIS::KeyEvent &arg){
      if(prompt.length()<1)
        return;
       //split the parameter list
-      const char *str=prompt.c_str();
-      vector<String> params(50);
-      String param="";
+      //const char *str=prompt.c_str();
+     Ogre::StringVector params = Ogre::StringUtil::tokenise(prompt);
+     //vector<String> params = Ogre::StringUtil::tokenise(prompt);
+      //String param="";
+      /*
       for(size_t c=0;c<prompt.length();c++){
          if(str[c]==' '){
             if(param.length())
@@ -106,25 +108,27 @@ void OgreConsole::onKeyPressed(const OIS::KeyEvent &arg){
             param+=str[c];
       }
       if(param.length())
-         params.push_back(param);
+         params.push_back(param);*/
 
-      //if params length is still zero it means not command where found (i.e. such as the case when we enter a bunch of spaces.)
+      //if params length is still zero it means not command where found (i.e. such is the case when we entered a bunch of spaces.)
+      /*
       if(!params.size())
       {
         prompt="";
         return;
-      }
+      }*/
       print(prompt);
-      map<String,void(*)(vector<String>&)>::iterator i;
+      map<String,void(*)(StringVector&)>::iterator i;
       for(i=commands.begin();i!=commands.end();i++){
          if((*i).first==params[0]){
             if((*i).second)
-               (*i).second(params);
+              (*i).second(params);
             break;
          }
       }
      
       prompt="";
+      params.clear();
    }
    else if (arg.key == OIS::KC_BACK)
       prompt=prompt.substr(0,prompt.length()-1);
@@ -237,7 +241,7 @@ bool OgreConsole::frameEnded(const Ogre::FrameEvent &evt){
 void OgreConsole::setVisible(bool visible){
    this->visible=visible;
 }
-void OgreConsole::addCommand(const String &command, void (*func)(std::vector<String>&)){
+void OgreConsole::addCommand(const String &command, void (*func)(StringVector&)){
    commands[command]=func;
 }
 

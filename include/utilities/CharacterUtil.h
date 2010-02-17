@@ -22,13 +22,13 @@ namespace ZGame
       void setInput();
 
       //Creates a new character.
-      bool create(std::vector<Ogre::String> &params);
+      bool create(Ogre::StringVector &params);
       //Utility functions (mainly used by ConsoleCommands
-      bool list(std::vector<Ogre::String> &params);
+      bool list(Ogre::StringVector &params);
       //Utility function for list meshes
-      bool listMeshes(std::vector<Ogre::String> &params);
+      bool listMeshes(Ogre::StringVector &params);
       
-      bool listNodes(std::vector<Ogre::String> &params);
+      bool listNodes(Ogre::StringVector &params);
 
 
     private:

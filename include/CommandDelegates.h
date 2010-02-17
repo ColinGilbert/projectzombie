@@ -10,7 +10,7 @@ namespace ZGame
 {
   namespace COMMAND
   {
-    typedef fd::delegate<bool(std::vector<Ogre::String> &params)> ConsoleCommand;
+    typedef fd::delegate<bool(Ogre::StringVector &params)> ConsoleCommand;
   }
 }
 

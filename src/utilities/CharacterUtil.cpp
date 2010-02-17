@@ -45,7 +45,7 @@ void CharacterUtil::createCharacters()
 
 }
 
-bool CharacterUtil::list(std::vector<Ogre::String> &params)
+bool CharacterUtil::list(Ogre::StringVector &params)
 {
   using namespace std;
   if(params.size() == 1)
@@ -66,7 +66,7 @@ bool CharacterUtil::list(std::vector<Ogre::String> &params)
 *This method will list the characters.
 *
 */
-bool CharacterUtil::listMeshes(std::vector<Ogre::String> &params)
+bool CharacterUtil::listMeshes(Ogre::StringVector &params)
 {
   using namespace std;
   if(params.size() == 1) //command was executed with only command (no parameters beside command.)
@@ -85,7 +85,7 @@ bool CharacterUtil::listMeshes(std::vector<Ogre::String> &params)
 *This method will create the character specified in the params[1].
 *usage:
 */
-bool CharacterUtil::create(std::vector<Ogre::String> &params)
+bool CharacterUtil::create(Ogre::StringVector &params)
 {
   using namespace std;
   if(params.size() != 2)
@@ -103,7 +103,7 @@ bool CharacterUtil::create(std::vector<Ogre::String> &params)
   return created;
 }
 
-bool CharacterUtil::listNodes(std::vector<Ogre::String> &params)
+bool CharacterUtil::listNodes(Ogre::StringVector &params)
 {
   using namespace std;
   Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
