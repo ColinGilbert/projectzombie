@@ -3,13 +3,13 @@
 
 namespace ZGame
 {
-  class Command
-  {
-  public:
-    ~Command(){}
-  protected:
-    Command(){}
-  };
+    class Command
+    {
+    public:
+        ~Command(){}
+    protected:
+        Command(){}
+    };
 }
 
 #endif

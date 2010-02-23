@@ -244,11 +244,11 @@ GameMainState::createWorld()
   ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 5000, 5000, 1,
   1, true, 1, 1, 1, Vector3::UNIT_Z);
   //SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-  string planeName = "TempGroundPlaneEntity";
+  Ogre::String planeName = "TempGroundPlaneEntity";
   Entity* texEnt = scnMgr->createEntity(planeName, "TempGroundPlane");
   texEnt->setMaterialName("Examples/OgreLogo");
   lm->logMessage("texEnt material set",Ogre::LML_TRIVIAL);
-  string name;
+  Ogre::String name;
   name = "TempGroundPlaneNode";
   SceneNode* texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name,
   Vector3(0.0f, 0.0f, 0.0f));

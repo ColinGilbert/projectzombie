@@ -44,7 +44,7 @@ ImposterGen::ImposterGen() :
   ss << "IMPOSTER_LIGHT" << _curId;
   _imposterKeys["light"] = ss.str();
   ss.str("");
-  map<string, string>::iterator it;
+  map<Ogre::String, Ogre::String>::iterator it;
   ss << "In ImposterGen::ImposterGen()" << endl;
   ss << "ImposterKeys: " << endl;
   for (it = _imposterKeys.begin(); it != _imposterKeys.end(); ++it)

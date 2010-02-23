@@ -7,7 +7,7 @@
 
 #ifndef GPUENTSCONTROL_H_
 #define GPUENTSCONTROL_H_
-#include <string>
+//#include <string>
 #include <iostream>
 #include <memory>
 #include <Ogre.h>

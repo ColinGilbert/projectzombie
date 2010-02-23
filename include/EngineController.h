@@ -8,7 +8,7 @@
 #ifndef ENGINECONTROLLER_H_
 #define ENGINECONTROLLER_H_
 
-#include <string>
+//#include <string>
 #include <memory>
 #include <vector>
 #include <Ogre.h>
@@ -28,90 +28,90 @@
 
 namespace ZGame
 {
-  class EngineView;
-  class InputController;
-  class GameState;
-  class GameStateInfo;
-  class LifeCyclePump;
-  class KeyboardPump;
-  class MousePump;
-  class CommandController;
-  class EngineController : public Ogre::FrameListener,
-    public MainController
-  {
-  public:
-    EngineController();
-    virtual
-      ~EngineController();
+    class EngineView;
+    class InputController;
+    class GameState;
+    class GameStateInfo;
+    class LifeCyclePump;
+    class KeyboardPump;
+    class MousePump;
+    class CommandController;
+    class EngineController : public Ogre::FrameListener,
+        public MainController
+    {
+    public:
+        EngineController();
+        virtual
+            ~EngineController();
 
-    bool frameStarted(const Ogre::FrameEvent &evt);
+        bool frameStarted(const Ogre::FrameEvent &evt);
 
-    void transitionState(const std::string key);
-    bool onInit();
-    void run();
-    void onDestroy();
+        void transitionState(const Ogre::String key);
+        bool onInit();
+        void run();
+        void onDestroy();
 
-    void injectInputSubject();
+        void injectInputSubject();
 
-    //input events
-    bool onKeyUp(const OIS::KeyEvent &event);
-    bool onKeyDown(const OIS::KeyEvent &evnt);
-    bool onMouseMove(const OIS::MouseEvent &event);
-    bool onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
-    bool onMouseDown(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
-
-
-    //input observers
-    void addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
-    //setters getters
-    //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
-  protected:
-    std::auto_ptr<Ogre::Root> _root;
-    Ogre::SceneManager* _scnMgr;
-    Ogre::RenderWindow* _window;
-    std::auto_ptr<ZGame::EngineView> _engineView;
-    
-    //boost::shared_ptr<ZGame::InputController> _inController;
-    std::auto_ptr<ZGame::InputController> _inController;
-    GameStateInfoMap _gameSInfoMap;
-
-    //Current state
-    //std::auto_ptr<GameStateInfo> _curStateInfo;
-    GameStateInfo* _curStateInfo;
-    std::auto_ptr<GameState> _curGameState;
-
-    //LifeCycle pump
-    std::auto_ptr<LifeCyclePump> _lfcPump;
-    std::auto_ptr<KeyboardPump> _keyPump;
-    std::auto_ptr<MousePump> _mousePump;
+        //input events
+        bool onKeyUp(const OIS::KeyEvent &event);
+        bool onKeyDown(const OIS::KeyEvent &evnt);
+        bool onMouseMove(const OIS::MouseEvent &event);
+        bool onMouseUp(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
+        bool onMouseDown(const OIS::MouseEvent &event,const OIS::MouseButtonID id);
 
 
-    void loadAssets();
-    void chooseSceneManager();
+        //input observers
+        void addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
+        //setters getters
+        //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
+    protected:
+        std::auto_ptr<Ogre::Root> _root;
+        Ogre::SceneManager* _scnMgr;
+        Ogre::RenderWindow* _window;
+        std::auto_ptr<ZGame::EngineView> _engineView;
 
-    void loadStates();
+        //boost::shared_ptr<ZGame::InputController> _inController;
+        std::auto_ptr<ZGame::InputController> _inController;
+        GameStateInfoMap _gameSInfoMap;
 
-    //state handling
-    void loadCurrentState(const string curKey);
-    void unloadCurrentState();
-    void realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
+        //Current state
+        //std::auto_ptr<GameStateInfo> _curStateInfo;
+        GameStateInfo* _curStateInfo;
+        std::auto_ptr<GameState> _curGameState;
 
-    Ogre::Camera* createDefaultCamera();
+        //LifeCycle pump
+        std::auto_ptr<LifeCyclePump> _lfcPump;
+        std::auto_ptr<KeyboardPump> _keyPump;
+        std::auto_ptr<MousePump> _mousePump;
 
-  private:
 
-    ZGame::Networking::NetworkClientController _netClient;
-    auto_ptr<ZGame::CommandController> _commandController;
+        void loadAssets();
+        void chooseSceneManager();
 
-    std::string _listenerID;
-    bool _stillRunning;
-    
-    void loadStartStateToCurrentState(const string curKey);
+        void loadStates();
 
-    void initConsole(); //temp method for initialize the console.
-    void manuallyRegisterNetClient(LifeCycleRegister &lfcReg); //temp method for register the net client to the system.
+        //state handling
+        void loadCurrentState(const Ogre::String curKey);
+        void unloadCurrentState();
+        void realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
 
-  };
+        Ogre::Camera* createDefaultCamera();
+
+    private:
+
+        ZGame::Networking::NetworkClientController _netClient;
+        auto_ptr<ZGame::CommandController> _commandController;
+
+        Ogre::String _listenerID;
+        bool _stillRunning;
+
+        void loadStartStateToCurrentState(const Ogre::String curKey);
+
+        void initConsole(); //temp method for initialize the console.
+        void manuallyRegisterNetClient(LifeCycleRegister &lfcReg); //temp method for register the net client to the system.
+
+    };
 
 }
 

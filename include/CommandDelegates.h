@@ -8,10 +8,10 @@
 
 namespace ZGame
 {
-  namespace COMMAND
-  {
-    typedef fd::delegate<bool(const Ogre::StringVector &params)> ConsoleCommand;
-  }
+    namespace COMMAND
+    {
+        typedef fd::delegate<bool(const Ogre::StringVector &params)> ConsoleCommand;
+    }
 }
 
 #endif

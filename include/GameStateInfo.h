@@ -1,40 +1,42 @@
 /*
- * GameStateInfo.h
- *
- *  Created on: Aug 27, 2008
- *      Author: bey0nd
- */
+* GameStateInfo.h
+*
+*  Created on: Aug 27, 2008
+*      Author: bey0nd
+*/
 
 #ifndef GAMESTATEINFO_H_
 #define GAMESTATEINFO_H_
 
-#include <string>
+//#include <string>
 #include <map>
-
+#include <Ogre.h>
 using namespace std;
+
+
 
 namespace ZGame
 {
-  class GameStateInfo
-  {
-  public:
+    class GameStateInfo
+    {
+    public:
 
-    GameStateInfo();
-    virtual
-    ~GameStateInfo();
+        GameStateInfo();
+        virtual
+            ~GameStateInfo();
 
-    std::string key;
-    std::string gameStateClass;
+        Ogre::String key;
+        Ogre::String gameStateClass;
 
-    //GameState* gameState;
-    enum GameStateType {STATELESS,STATEFUL};
+        //GameState* gameState;
+        enum GameStateType {STATELESS,STATEFUL};
 
-    GameStateType stateType;
+        GameStateType stateType;
 
-  };
+    };
 
-  typedef std::map<std::string, ZGame::GameStateInfo> GameStateInfoMap;
-  typedef GameStateInfoMap::iterator GameStateInfoMapItr;
+    typedef std::map<Ogre::String, ZGame::GameStateInfo> GameStateInfoMap;
+    typedef GameStateInfoMap::iterator GameStateInfoMapItr;
 
 }
 

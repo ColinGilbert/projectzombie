@@ -9,7 +9,7 @@
 #define IMPOSTERGEN_H_
 
 
-#include <string>
+//#include <string>
 #include <vector>
 #include <map>
 #include <Ogre.h>
@@ -60,7 +60,7 @@ namespace ZGame
     static int _id;
     int _curId;
 
-    std::map<std::string,std::string> _imposterKeys;
+    std::map<Ogre::String,Ogre::String> _imposterKeys;
 
     Imposter* _imposter;
 

@@ -125,7 +125,7 @@ void InputController::capture()
       mutableMouseState.Y.abs = 500.0;
 }
 
-void InputController::addKeyListeners(const string& oID,::EVENT::KeyboardEvtObserver keo)
+void InputController::addKeyListeners(const Ogre::String& oID,::EVENT::KeyboardEvtObserver keo)
 {
   if(_keyb)
     {
@@ -135,14 +135,14 @@ void InputController::addKeyListeners(const string& oID,::EVENT::KeyboardEvtObse
     }
 }
 
-void InputController::removeKeyListeners(const string &oID)
+void InputController::removeKeyListeners(const Ogre::String &oID)
 {
   KeyObsIterator cur = _keyObservers.find(oID);
   if(cur != _keyObservers.end())
     _keyObservers.erase(cur);
 }
 
-void InputController::addMouseListeners(const string& oID,::EVENT::MouseEvtObserver meo)
+void InputController::addMouseListeners(const Ogre::String& oID,::EVENT::MouseEvtObserver meo)
 {
   if(_mouse)
     {
@@ -152,7 +152,7 @@ void InputController::addMouseListeners(const string& oID,::EVENT::MouseEvtObser
     }
 }
 
-void InputController::removeMouseListeners(const string& oID)
+void InputController::removeMouseListeners(const Ogre::String& oID)
 {
   MouseObsIterator cur = _mouseObservers.find(oID);
   if(cur != _mouseObservers.end())

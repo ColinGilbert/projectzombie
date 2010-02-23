@@ -71,7 +71,7 @@ void StatesLoader::addSInfo(GameStateInfoMap &stateInfoMap, GameStateInfo &info)
   //else throw exception
 }
 
-void StatesLoader::fillSInfo(GameStateInfo &info,const string key, const string stateClass,GameStateInfo::GameStateType type)
+void StatesLoader::fillSInfo(GameStateInfo &info,const Ogre::String key, const Ogre::String stateClass,GameStateInfo::GameStateType type)
 {
   info.key = key;
   info.gameStateClass  = stateClass;

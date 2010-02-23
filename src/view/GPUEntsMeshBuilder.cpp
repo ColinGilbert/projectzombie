@@ -25,12 +25,12 @@ namespace ZGame
   }
 
   MeshPtr
-  GPUEntsMeshBuilder::build(const string name, GPUEntsGenProps* props)
+      GPUEntsMeshBuilder::build(const Ogre::String name, GPUEntsGenProps* props)
   {
     //LogManager* lm = LogManager::getSingleton().logMessage(LML_TRIVIAL,"In GPUEntsMeshBuilder::build()");
     Real entHeight = props->getEntHeight();
-    Real halfHeight = entHeight * 0.5;
-    const string manName = "TEMPMANUAL";
+    Real halfHeight = entHeight * 0.5f;
+    const Ogre::String manName = "TEMPMANUAL";
     Vector3 min(0.0f - halfHeight, 0.0f - halfHeight, 0.0f);
     Vector3 changeX(entHeight, 0.0f, 0.0f);
     Vector3 changeY(0.0f, entHeight, 0.0f);

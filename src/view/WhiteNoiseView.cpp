@@ -4,7 +4,7 @@
  *  Created on: Oct 4, 2008
  *      Author: bey0nd
  */
-#include <string>
+//#include <string>
 #include <cstdlib>
 using namespace std;
 #include "WhiteNoiseView.h"

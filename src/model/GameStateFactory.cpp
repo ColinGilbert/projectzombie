@@ -22,7 +22,7 @@ GameStateFactory::~GameStateFactory()
   // TODO Auto-generated destructor stub
 }
 
-GameState* GameStateFactory::createGameState(const std::string gameStateClass)
+GameState* GameStateFactory::createGameState(const Ogre::String gameStateClass)
 {
   //We need to change the behavior here to conform more to DRY (do not repeat yourself) principal.
   //I.E we should read some sort of file to enumerate all the game edit states, instead of using

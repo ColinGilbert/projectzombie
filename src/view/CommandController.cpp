@@ -41,7 +41,7 @@ int CommandController::execute(ZGame::Command cmd)
   return 0;
 }
 
-int CommandController::execute(std::string cmd)
+int CommandController::execute(Ogre::String cmd)
 {
   return 0;
 }

@@ -10,7 +10,7 @@
 
 #ifndef GPUENTSGENPROPS_H_
 #define GPUENTSGENPROPS_H_
-#include <string>
+//#include <string>
 #include <memory>
 using namespace std;
 #include <Ogre.h>

@@ -9,7 +9,7 @@
 
 #ifndef GPUENTSVIEW_H_
 #define GPUENTSVIEW_H_
-#include <string>
+//#include <string>
 //using namespace std;
 #include <Ogre.h>
 #include <OgreGpuProgram.h>
@@ -36,9 +36,9 @@ namespace ZGame
     onUpdate(const Ogre::FrameEvent &evt);
   protected:
     GPUEntities* _ents;
-    std::string _meshName;
-    std::string _entsOgrEntName;
-    std::string _entsOgrEntMatName;
+    Ogre::String _meshName;
+    Ogre::String _entsOgrEntName;
+    Ogre::String _entsOgrEntMatName;
     Ogre::Entity* _ogrEnt;
     bool _sceneAlphaBld;
     Ogre::GpuProgramParametersSharedPtr _vertParam;

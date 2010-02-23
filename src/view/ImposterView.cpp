@@ -54,12 +54,12 @@ ImposterView::setupView()
 {
   using namespace Ogre;
   Plane plane(Vector3::UNIT_Z, 0);
-  string name = _TYPENAME + "PLANE";
+  Ogre::String name = _TYPENAME + "PLANE";
   MeshManager::getSingleton().createPlane(name.c_str(),
       ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 1500, 1500, 1,
       1, true, 1, 1, 1, Vector3::UNIT_Y);
   SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-  string planeName = name + "ENTITY";
+  Ogre::String planeName = name + "ENTITY";
   _texEnt = scnMgr->createEntity(planeName, name);
   name.clear();
   name = _TYPENAME + "PLANENODE";

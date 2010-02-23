@@ -1,11 +1,11 @@
 /*
- * EngineController.cpp
- *
- *  Created on: Aug 24, 2008
- *      Author: bey0nd
- */
+* EngineController.cpp
+*
+*  Created on: Aug 24, 2008
+*      Author: bey0nd
+*/
 
-#include <string>
+//#include <string>
 #include <iostream>
 #include <stdexcept>
 using namespace std;
@@ -30,66 +30,66 @@ using namespace std;
 namespace ZGame
 {
 
-  EngineController::EngineController() :
-    _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
-        new KeyboardPump()), _mousePump(new MousePump()),
-        _curStateInfo(0),_curGameState(0),
-        _commandController(new CommandController())
-  {
+    EngineController::EngineController() :
+_stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
+    new KeyboardPump()), _mousePump(new MousePump()),
+    _curStateInfo(0),_curGameState(0),
+    _commandController(new CommandController())
+{
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
-  }
+}
 
-  EngineController::~EngineController()
-  {
+EngineController::~EngineController()
+{
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
     cout << "EngineController destructor" << endl;
 
-  }
+}
 
-  void
-  EngineController::transitionState(const string key)
-  {
+void
+EngineController::transitionState(const Ogre::String key)
+{
     try
-      {
+    {
         loadCurrentState(key);
         realizeCurrentState();
-      }
+    }
     catch (std::invalid_argument e)
-      {
+    {
         std::ostringstream sstream;
         sstream << "Exception: " << e.what() << endl;
         sstream << "Transition state does not exist: " << key << endl;
         sstream << "Transitioning from state: " << _curStateInfo->key << endl;
         Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,
             sstream.str());
-      }
-  }
+    }
+}
 
-  Ogre::Camera*
-  EngineController::createDefaultCamera()
-  {
+Ogre::Camera*
+EngineController::createDefaultCamera()
+{
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setNearClipDistance(0.01f);
     return cam;
-  }
+}
 
-  bool
-  EngineController::onInit()
-  {
+bool
+EngineController::onInit()
+{
     using namespace Ogre;
-     
+
     //_root = new Ogre::Root("plugins.cfg");
     _root.reset(new Ogre::Root("plugins.cfg","plsm2_display.cfg","Pchaos.log"));
     if (_root->showConfigDialog())
-      {
+    {
         _window = _root->initialise(true);
-      }
+    }
     else
-      return false;
+        return false;
 
     loadAssets();
     chooseSceneManager();
@@ -103,8 +103,8 @@ namespace ZGame
 
     _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
 
-     //set logging lvl
-	  Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
+    //set logging lvl
+    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
     //load states
     loadStates();
@@ -119,49 +119,49 @@ namespace ZGame
     _inController->onInit(_window);
     injectInputSubject();
     lm->logMessage(Ogre::LML_TRIVIAL,"Injected input.");
-    
+
     _root->addFrameListener(this);
 
     lm->logMessage(Ogre::LML_TRIVIAL,"Starting multiplayer engine!");
- 
+
     //let's init the console now.
     lm->logMessage(Ogre::LML_NORMAL,"initializing console.");
     initConsole();
     return true;
-  }
+}
 
-  void
-    EngineController::chooseSceneManager()
-  {
+void
+EngineController::chooseSceneManager()
+{
     bool notFound = true;
     /*
     SceneManagerEnumerator::MetaDataIterator it = _root->getSceneManagerMetaDataIterator();
     while(it.hasMoreElements())
     {
-      const SceneManagerMetaData *metaData = it.getNext();
-       if(metaData->sceneTypeMask == ST_EXTERIOR_REAL_FAR &&
-        metaData->worldGeometrySupported == true &&
-        metaData->typeName == "PagingLandScapeSceneManager")
-      {
-        notFound = false;
-        break;
-      }
+    const SceneManagerMetaData *metaData = it.getNext();
+    if(metaData->sceneTypeMask == ST_EXTERIOR_REAL_FAR &&
+    metaData->worldGeometrySupported == true &&
+    metaData->typeName == "PagingLandScapeSceneManager")
+    {
+    notFound = false;
+    break;
+    }
     }*/
     /*
     if(notFound)
     {
-      OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Could not find Paging Landscape plugin. Check if it is in plugin.cfg",
-        "chooseSceneManager");
+    OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Could not find Paging Landscape plugin. Check if it is in plugin.cfg",
+    "chooseSceneManager");
     }*/
     _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
     //_scnMgr = _root->createSceneManager("PagingLandScapeSceneManager","ProjectChaos");
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
     rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
-  }
+}
 
-  void
-  EngineController::injectInputSubject()
-  {
+void
+EngineController::injectInputSubject()
+{
     ZGame::EVENT::KeyboardEvtObserver keyObs;
     keyObs.kde.bind(&ZGame::EngineController::onKeyDown, this);
     keyObs.kue.bind(&ZGame::EngineController::onKeyUp, this);
@@ -171,13 +171,13 @@ namespace ZGame
     mouseObs.mue.bind(&ZGame::EngineController::onMouseUp, this);
     mouseObs.mme.bind(&ZGame::EngineController::onMouseMove, this);
     _inController->addMouseListeners(_listenerID, mouseObs);
-  }
+}
 
-  void
-  EngineController::loadAssets()
-  {
+void
+EngineController::loadAssets()
+{
     Ogre::ConfigFile cf;
-    string resourcePath;
+    Ogre::String resourcePath;
     resourcePath = "";
     cf.load(resourcePath + "resources.cfg");
     //go thourhg all sections & settings in the file
@@ -185,53 +185,53 @@ namespace ZGame
 
     Ogre::String secName, typeName, archName;
     while (seci.hasMoreElements())
-      {
+    {
         secName = seci.peekNextKey();
         Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
         Ogre::ConfigFile::SettingsMultiMap::iterator i;
         for (i = settings->begin(); i != settings->end(); ++i)
-          {
+        {
             typeName = i->first;
             archName = i->second;
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
                 resourcePath + archName, typeName, secName);
-          }
-      }
+        }
+    }
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-    
-  }
 
-  bool
-  EngineController::frameStarted(const Ogre::FrameEvent &evt)
-  {
+}
+
+bool
+EngineController::frameStarted(const Ogre::FrameEvent &evt)
+{
     if (!_stillRunning)
-      return false;
+        return false;
     try
-      {
+    {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-      }
+    }
     catch (Ogre::Exception e)
-      {
+    {
         throw e;
-      }
+    }
     return true;
-  }
-  void
-  EngineController::run()
-  {
+}
+void
+EngineController::run()
+{
     realizeCurrentState();
     _root->startRendering();
     //_root->renderOneFrame();
-  }
+}
 
-  void
-  EngineController::onDestroy()
-  {
+void
+EngineController::onDestroy()
+{
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "EngineController.onDestroy()");
     try
-      {
+    {
         _inController->onDestroy();
         _netClient.shutdown();
         OgreConsole::getSingleton().shutdown();
@@ -245,165 +245,165 @@ namespace ZGame
         //some other crap (setting using & operator.)
         //Ogre::Root* root = _root.release();
         //delete root;
-      }
+    }
     catch (Ogre::Exception e)
-      {
+    {
         cout << "Exeception during shutdown: " << e.what() << endl;
-      }
-  }
+    }
+}
 
-  void
-  EngineController::loadStates()
-  {
+void
+EngineController::loadStates()
+{
     StatesLoader stLoader;
     GameStateInfo startState;
     stLoader.loadStates(_gameSInfoMap, startState);
     cout << "startState.key: " << startState.key << endl;
     loadStartStateToCurrentState(startState.key);
-  }
+}
 
-  
-  bool
-  EngineController::onKeyUp(const OIS::KeyEvent &event)
-  {
+
+bool
+EngineController::onKeyUp(const OIS::KeyEvent &event)
+{
     _keyPump->updateKeyUpObs(event);
     if (event.key == OIS::KC_ESCAPE)
     {
-      _stillRunning = false;
-      unloadCurrentState();
+        _stillRunning = false;
+        unloadCurrentState();
     }
     else if(event.key == OIS::KC_C)
     {
-      _netClient.connect();
+        _netClient.connect();
     }
     else if(event.key == OIS::KC_V)
     {
-      _netClient.disconnect();
+        _netClient.disconnect();
     }
     return true;
-  }
+}
 
-  bool
-  EngineController::onKeyDown(const OIS::KeyEvent &event)
-  {
+bool
+EngineController::onKeyDown(const OIS::KeyEvent &event)
+{
     bool consoleVis = OgreConsole::getSingleton().isVisible();
     //console
     if(event.key == OIS::KC_TAB)
     {
-      if(consoleVis)
-      {
-        //turn off console
-        OgreConsole::getSingleton().setVisible(false);
-      }
-      else
-        OgreConsole::getSingleton().setVisible(true);
+        if(consoleVis)
+        {
+            //turn off console
+            OgreConsole::getSingleton().setVisible(false);
+        }
+        else
+            OgreConsole::getSingleton().setVisible(true);
     }
-    
+
     OgreConsole::getSingleton().onKeyPressed(event);
     if(!consoleVis)
     {
-    _keyPump->updateKeyDownObs(event);
+        _keyPump->updateKeyDownObs(event);
     }
     return true;
-  }
+}
 
-  bool
-  EngineController::onMouseMove(const OIS::MouseEvent &event)
-  {
+bool
+EngineController::onMouseMove(const OIS::MouseEvent &event)
+{
     _mousePump->updateMouseMoveEvt(event);
     return true;
-  }
+}
 
-  bool
-  EngineController::onMouseDown(const OIS::MouseEvent &event,
-      const OIS::MouseButtonID id)
-  {
+bool
+EngineController::onMouseDown(const OIS::MouseEvent &event,
+                              const OIS::MouseButtonID id)
+{
     _mousePump->updateMouseDownEvt(event, id);
     return true;
-  }
+}
 
-  bool
-  EngineController::onMouseUp(const OIS::MouseEvent &event,
-      const OIS::MouseButtonID id)
-  {
+bool
+EngineController::onMouseUp(const OIS::MouseEvent &event,
+                            const OIS::MouseButtonID id)
+{
     _mousePump->updateMouseUpEvt(event, id);
     return true;
-  }
+}
 
-  void
-  EngineController::loadStartStateToCurrentState(const string curKey)
-  {
+void
+EngineController::loadStartStateToCurrentState(const Ogre::String curKey)
+{
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "In loadStartStateToCurrentstate");
 
     for(ZGame::GameStateInfoMapItr it = _gameSInfoMap.begin(); it != _gameSInfoMap.end(); ++it)
     {
-      cout << "info keys,keys: " << it->first << " " <<
-        it->second.key << endl;
+        cout << "info keys,keys: " << it->first << " " <<
+            it->second.key << endl;
     }
 
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
     if (it != _gameSInfoMap.end())
-      {
+    {
         _curStateInfo = &it->second;
         //_curStateInfo.reset(&it->second);
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
-          {
+        {
             _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
             _keyPump->removeAllObs();
             _curGameState.reset(0); //delete current game state
-          }
+        }
         else
-          {
+        {
             //do stateful crap here.
-          }
-      }
+        }
+    }
     else
-      throw(std::invalid_argument("Current State does not exist!"));
+        throw(std::invalid_argument("Current State does not exist!"));
 
-  }
+}
 
-  void
-  EngineController::loadCurrentState(const string curKey)
-  {
+void
+EngineController::loadCurrentState(const Ogre::String curKey)
+{
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "In load current state");
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
     if (it != _gameSInfoMap.end())
-      {
+    {
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
-          {
+        {
             if (_curGameState.get() == 0)
-              throw(invalid_argument(
-                  "Current game state is null when trying to load a new STATELESS current state"));
+                throw(invalid_argument(
+                "Current game state is null when trying to load a new STATELESS current state"));
             unloadCurrentState();
             //_curStateInfo.reset(&it->second);
             _curStateInfo = &it->second;
-          }
+        }
         else
-          {
+        {
             //do stateful crap here.
-          }
-      }
+        }
+    }
     else
-      throw(std::invalid_argument("Current State does not exist!"));
+        throw(std::invalid_argument("Current State does not exist!"));
 
-  }
-  void
-  EngineController::unloadCurrentState()
-  {
+}
+void
+EngineController::unloadCurrentState()
+{
     _lfcPump->updateOnDestroyObs();
     _lfcPump->removeAllObs();
     _keyPump->removeAllObs();
     _mousePump->removeAllObs();
     _curGameState.reset(0);
-  }
-  /**
-   * This class realizes the current state. What it does is load the data pointed to by current state meta data.
-   */
-  void
-  EngineController::realizeCurrentState()
-  {
+}
+/**
+* This class realizes the current state. What it does is load the data pointed to by current state meta data.
+*/
+void
+EngineController::realizeCurrentState()
+{
     using namespace ZGame;
     //attach the observers
     Ogre::LogManager* logM = Ogre::LogManager::getSingletonPtr();
@@ -413,15 +413,15 @@ namespace ZGame
     logM->logMessage(Ogre::LML_NORMAL, "Class: "
         + _curStateInfo->gameStateClass);
     if (_curStateInfo->stateType == GameStateInfo::STATEFUL)
-      {
+    {
         //add to stateful
-      }
+    }
     else
-      {
+    {
         ZGame::EVENT::KeyboardEvtObserver keyObs;
         if (_curGameState.get() != 0)
-          throw(invalid_argument(
-              "Invalid current game state when realizing new state. Current game state is not null!"));
+            throw(invalid_argument(
+            "Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState.reset(ZGame::GameStateFactory::createGameState(
             _curStateInfo->gameStateClass));
 
@@ -448,7 +448,7 @@ namespace ZGame
         //services, services which are used by rest of the system (hence theya are stateful. I.E:
         //services are stateful objects which exist for the duration of the engine.
         manuallyRegisterNetClient(lfcReg); 
-      
+
         //inject subject to observers
         lfcReg.injectLfcSubj(lcs);
         keyReg.injectKeySubj(ks);
@@ -456,33 +456,33 @@ namespace ZGame
         logM->logMessage(Ogre::LML_TRIVIAL, "About to update onInit obs");
         _lfcPump->updateOnItObs(); //pump on init event to observers.
 
-      }
+    }
     logM->logMessage(Ogre::LML_NORMAL,"Realizing current state done");
-  }
-  
-  
-  
-  
-   void 
-   EngineController::initConsole()
-   {
-     new OgreConsole(); //this is fine we are using Ogre template based singleton implementation.
-     OgreConsole::getSingleton().init(_root.get());
-     /*
-     new OgreConsole;
-     OgreConsole::getSingleton().init(_root.get());
-     */
+}
 
-     _commandController->init();
-   }
 
-   void
-   EngineController::manuallyRegisterNetClient(LifeCycleRegister &lfcReg)
-   {
-     LifeCycle::LifeCycleObserver lfcObs;
-     LifeCycle::bindLifeCycleObserver(lfcObs,_netClient);
-     lfcReg.registerLfcObs(lfcObs);
-     LifeCycle::clearLfcObs(lfcObs);
-   }
-  
+
+
+void 
+EngineController::initConsole()
+{
+    new OgreConsole(); //this is fine we are using Ogre template based singleton implementation.
+    OgreConsole::getSingleton().init(_root.get());
+    /*
+    new OgreConsole;
+    OgreConsole::getSingleton().init(_root.get());
+    */
+
+    _commandController->init();
+}
+
+void
+EngineController::manuallyRegisterNetClient(LifeCycleRegister &lfcReg)
+{
+    LifeCycle::LifeCycleObserver lfcObs;
+    LifeCycle::bindLifeCycleObserver(lfcObs,_netClient);
+    lfcReg.registerLfcObs(lfcObs);
+    LifeCycle::clearLfcObs(lfcObs);
+}
+
 }

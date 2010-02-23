@@ -17,7 +17,7 @@ using namespace std;
 using namespace ZGame;
 int Imposter::_id = 0;
 
-Imposter::Imposter(const std::string meshName) : _meshName(meshName),TYPE_NAME("IMPOSTER")
+Imposter::Imposter(const Ogre::String meshName) : _meshName(meshName),TYPE_NAME("IMPOSTER")
 {
   _curId = _id;
   _id++;
@@ -35,7 +35,7 @@ void Imposter::init()
   //setupTextures();
 }
 
-const std::string Imposter::getMeshName()
+const Ogre::String Imposter::getMeshName()
 {
   return _meshName;
 }

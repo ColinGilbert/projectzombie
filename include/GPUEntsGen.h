@@ -54,7 +54,7 @@ namespace ZGame
     loadDirections();
     void
     createDirTexture();
-    const string _gpuEntsName;
+    const Ogre::String _gpuEntsName;
 
     static size_t _uniqueId; //a unqiue id
 
