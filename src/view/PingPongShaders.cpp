@@ -49,7 +49,7 @@ namespace ZGame
     SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
     node->attachObject(_fsQuad.get());
     //Now position the FS quad such that it is 0.5 unit in from of the camera.
-    node->setPosition(0.0f, 0.0f, _camZDepth + 0.5);
+    node->setPosition(0.0f, 0.0f, _camZDepth + 0.5f);
 
     //setup camera
     ostringstream oss;

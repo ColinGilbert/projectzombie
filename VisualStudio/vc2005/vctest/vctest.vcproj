@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -325,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\model\ZNetEntity.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\ZombieDriver.cpp"
 				>
 			</File>
@@ -520,6 +524,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\ZEntity.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\ZNetEntity.h"
 				>
 			</File>
 			<Filter

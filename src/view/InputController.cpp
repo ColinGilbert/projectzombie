@@ -121,8 +121,8 @@ void InputController::capture()
   if(_keyb)_keyb->capture();
   
   OIS::MouseState &mutableMouseState = const_cast<OIS::MouseState &>(_mouse->getMouseState());
-      mutableMouseState.X.abs = 500.0;
-      mutableMouseState.Y.abs = 500.0;
+      mutableMouseState.X.abs = static_cast<int>(500.0);
+      mutableMouseState.Y.abs = static_cast<int>(500.0);
 }
 
 void InputController::addKeyListeners(const Ogre::String& oID,::EVENT::KeyboardEvtObserver keo)

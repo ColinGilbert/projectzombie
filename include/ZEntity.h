@@ -17,18 +17,16 @@ namespace ZGame
     class ZEntity
     {
     public:
-        ZEntity(const Ogre::String entName,const Ogre::String meshName);
+        ZEntity(const Ogre::String &entName,const Ogre::String &meshName);
         ~ZEntity();
 
         const Ogre::String getEntityName() {return _entName;}
         const Ogre::String getMeshName() {return _meshName;}
 
     protected:
-
+    private:
         Ogre::String _entName;
         Ogre::String _meshName;
-
-    private:
 
     };
 }

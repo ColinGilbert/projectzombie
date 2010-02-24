@@ -318,7 +318,7 @@ ImposterGen::setupCam()
   
   Ogre::Light* l = _scnMgr->createLight(_imposterKeys["light"].c_str());
   l->setType(Ogre::Light::LT_DIRECTIONAL);
-  Vector3 dir(0.1, -.25, 1.0);
+  Vector3 dir(0.1f, -.25f, 1.0f);
   dir.normalise();
   l->setDirection(dir);
   l->setDiffuseColour(1.0f, 1.0f, 0.8f);
