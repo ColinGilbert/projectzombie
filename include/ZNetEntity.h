@@ -18,14 +18,14 @@
 using namespace RakNet;
 namespace ZGame
 {
-    class ZNetEntity : public ZEntity, public Replica
+    class ZNetEntity : public Replica
     {
     public:
         /** \brief Constructor for this class which takes in entity and mesh names.
         *
         * The constructor maps directly the entity name and mesh name into Ogre entity and mesh.
         */
-        ZNetEntity(const Ogre::String &entName,const Ogre::String &meshName);
+        ZNetEntity();
         ~ZNetEntity(){}
 
         /** \brief called to send construction */

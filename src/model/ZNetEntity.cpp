@@ -4,8 +4,7 @@
 
 using namespace ZGame;
 
-ZNetEntity::ZNetEntity(const Ogre::String &entName, const Ogre::String &meshName) : 
-ZEntity(entName,meshName)
+ZNetEntity::ZNetEntity()
 {
 }
 
