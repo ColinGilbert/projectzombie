@@ -20,6 +20,7 @@
 
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
+#include "LifeCycleRegister.h"
 #include "GameStateInfo.h"
 #include "MainController.h"
 #include "RakNetworkFactory.h"

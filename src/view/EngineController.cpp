@@ -73,7 +73,7 @@ EngineController::createDefaultCamera()
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
-    cam->setNearClipDistance(0.01f);
+    cam->setNearClipDistance(0.01f); 
     return cam;
 }
 

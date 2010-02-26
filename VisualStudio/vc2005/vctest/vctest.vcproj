@@ -352,6 +352,10 @@
 				Name="net"
 				>
 				<File
+					RelativePath="..\..\..\src\net\NetController.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\net\NetworkClientController.cpp"
 					>
 				</File>
@@ -530,6 +534,10 @@
 				RelativePath="..\..\..\include\ZNetEntity.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\src\net\ZNetEntityTypes.h"
+				>
+			</File>
 			<Filter
 				Name="world"
 				>
@@ -613,6 +621,10 @@
 			<Filter
 				Name="net"
 				>
+				<File
+					RelativePath="..\..\..\include\net\NetController.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\..\include\net\NetworkClientController.h"
 					>
