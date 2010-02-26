@@ -1,9 +1,7 @@
 #include <ctime>
-#include <sstream>
+//#include <sstream>
 
 #include <Ogre.h>
-
-
 
 #include "EngineView.h"
 #include "utilities/CharacterUtil.h"
@@ -111,8 +109,8 @@ bool CharacterUtil::listNodes(const Ogre::StringVector &params)
   //Ogre::SceneNode* root = scnMgr->getRootSceneNode();
 
   Ogre::Node* root = (Ogre::Node*)scnMgr->getRootSceneNode();
-  ostringstream oss;
-  oss << "listnodes utility: " << endl;
+  Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
+  oss << "listnodes utility: \n";
   
   //oss << "Got root: " << root->
 
@@ -122,12 +120,9 @@ bool CharacterUtil::listNodes(const Ogre::StringVector &params)
 
   while(iter.hasMoreElements())
   {
-    oss << "objmap key: " << iter.peekNextKey() << endl;
+    oss << "objmap key: " << iter.peekNextKey() << "\n";
     iter.moveNext();
   }
-
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,oss.str());
-
   return false;
   
 }
@@ -135,34 +130,32 @@ bool CharacterUtil::listNodes(const Ogre::StringVector &params)
 void CharacterUtil::printUsage(CHAR_CMDS_ENUM CMD_ENUM)
 {
   using namespace std;
-  Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-  ostringstream oss;
-  oss << "Usage: " << endl;
+  Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
+  oss << "Usage: " << "\n";
   switch(CMD_ENUM)
   {
   case CharacterUtil::LISTMESH:
-    oss << "charlistmeshes will enumerate and list all character resources." << endl;
-    oss << "charlist [parameters] " << endl;
-    oss << "parameters: " << endl;
-    oss << "-help :- prints usage info. " << endl;
-    oss << endl;
+    oss << "charlistmeshes will enumerate and list all character resources." << "\n";
+    oss << "charlist [parameters] " << "\n";
+    oss << "parameters: " << "\n";
+    oss << "-help :- prints usage info. " << "\n";
+    oss << "\n";
     break;
   case CharacterUtil::CREATE:
-    oss << "charcreate will create a character based on a given mesh name. Use charlist for a list of availible meshes." << endl;
-    oss << "characters will not be created if no skeleton is assoicated with the given mesh." << endl;
-    oss << "charcreate [parameters] mesh_name" << endl;
-    oss << "parameters: " << endl;
-    oss << "mesh_name :- the mesh of the character that you want to create. " << endl;
+    oss << "charcreate will create a character based on a given mesh name. Use charlist for a list of availible meshes." << "\n";
+    oss << "characters will not be created if no skeleton is assoicated with the given mesh." << "\n";
+    oss << "charcreate [parameters] mesh_name" << "\n";
+    oss << "parameters: " << "\n";
+    oss << "mesh_name :- the mesh of the character that you want to create. " << "\n";
     break;
   case CharacterUtil::LIST:
-    oss << "charlist will list characters." << endl;
-    oss << "charlist [parameters] char_name." << endl;
-    oss << "parameters: " << endl;
-    oss << "char_name :- the name of the specific character to list. If none is given then all characters are listed." << endl;
+    oss << "charlist will list characters." << "\n";
+    oss << "charlist [parameters] char_name." << "\n";
+    oss << "parameters: " << "\n";
+    oss << "char_name :- the name of the specific character to list. If none is given then all characters are listed." << "\n";
   default:
     break;
   }
-  lm->logMessage(Ogre::LML_NORMAL,oss.str());
 }
 
 
@@ -171,14 +164,13 @@ void CharacterUtil::printUsage(CHAR_CMDS_ENUM CMD_ENUM)
 void CharacterUtil::listAllChars()
 {
   using namespace std;
-  Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
-  ostringstream oss;
-  oss << "Character Utility character listings: " << endl;
-  oss << "--------------------------------------" << endl;
-  oss << endl;
+  Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
+  oss << "Character Utility character listings: " << "\n";
+  oss << "--------------------------------------" << "\n";
+  oss << "\n";
   if(_charNodes.size() < 1)
   {
-    oss << "No characters were found. " << endl;
+    oss << "No characters were found. " << "\n";
   
   }
   else
@@ -189,66 +181,62 @@ void CharacterUtil::listAllChars()
     for(itr=_charNodes.begin();itr != _charNodes.end(); itr++)
     {
       scnNode = itr->second;
-      oss << "key: " << itr->first << endl;
+      oss << "key: " << itr->first << "\n";
       oss << "name: " << scnNode->getName();
-      oss << "position: " << scnNode->getPosition() << endl;
+      oss << "position: " << scnNode->getPosition() << "\n";
     }
   }
-
-  lm->logMessage(Ogre::LML_NORMAL,oss.str());
-
 }
 
 void CharacterUtil::listAllMeshes()
 {
   using namespace std;
   //print to logger.
-  Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
+  Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
   Ogre::MeshManager* meshMan = Ogre::MeshManager::getSingletonPtr();
-  ostringstream oss;
-  oss << "Character Utility mesh listings: " << endl;
-  oss << "--------------------------------------" << endl;
-  oss << endl;
+  oss << "Character Utility mesh listings: " << "\n";
+  oss << "--------------------------------------" << "\n";
+  oss << "\n";
   //print some resource group
   Ogre::StringVector resGrpList = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
-  oss << "Resource Groups and resources: " << endl;
+  oss << "Resource Groups and resources: " << "\n";
   for(size_t i=0; i < resGrpList.size(); i++)
   {
-    oss << resGrpList[i] << endl;
+    oss << resGrpList[i] << "\n";
   }
 
-  oss << "Resource Group: ZGAME_CHARACTER: " << endl;
+  oss << "Resource Group: ZGAME_CHARACTER: " << "\n";
   Ogre::StringVectorPtr resInGrpList = Ogre::ResourceGroupManager::getSingleton().listResourceNames("ZGAME_CHARACTER");
   for(size_t i=0; i < resInGrpList->size(); i++)
   {
-    oss << "Name: " << resInGrpList->at(i) << endl;
+    oss << "Name: " << resInGrpList->at(i) << "\n";
   }
 
   if(Ogre::ResourceGroupManager::getSingleton().isResourceGroupLoaded("ZGAME_CHARACTER"))
   {
-    oss << "ZGAME_CHARACTER is loaded" << endl;
+    oss << "ZGAME_CHARACTER is loaded" << "\n";
   }
   else
   {
-    oss << "ZGAME_CHARACTER is not loaded" << endl;
+    oss << "ZGAME_CHARACTER is not loaded" << "\n";
   }
   //automatically load in all the meshes from ZGAME_CHARACTER: It is a hack for now. We need some other way of loading these meshes in.
   Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("ZGAME_CHARACTER");
   if(Ogre::ResourceGroupManager::getSingleton().isResourceGroupLoaded("ZGAME_CHARACTER"))
   {
-    oss << "ZGAME_CHARACTER is loaded" << endl;
+    oss << "ZGAME_CHARACTER is loaded" << "\n";
   }
   else
   {
-    oss << "ZGAME_CHARACTER is not loaded" << endl;
+    oss << "ZGAME_CHARACTER is not loaded" << "\n";
   }
 
   resInGrpList = Ogre::ResourceGroupManager::getSingleton().listResourceNames("ZGAME_CHARACTER");
   
   for(size_t i=0; i < resInGrpList->size(); i++)
   {
-    oss << "Adding resource to MeshManager. " << endl;
-    oss << "Name: " << resInGrpList->at(i) << endl;
+    oss << "Adding resource to MeshManager. " << "\n";
+    oss << "Name: " << resInGrpList->at(i) << "\n";
     try
     {
       meshMan->load(resInGrpList->at(i),"ZGAME_CHARACTER");
@@ -260,31 +248,29 @@ void CharacterUtil::listAllMeshes()
     }
     
   }
-  oss << "Currently availible resource in MeshManager: " << endl;
+  oss << "Currently availible resource in MeshManager: " << "\n";
  
   Ogre::ResourceManager::ResourceMapIterator resMapIt = meshMan->getResourceIterator();
   
   while(resMapIt.hasMoreElements())
   {
-    cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
-    cout << "resource map key: " << resMapIt.peekNextKey() << endl;
+    cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << "\n";
+    cout << "resource map key: " << resMapIt.peekNextKey() << "\n";
     Ogre::ResourcePtr res = resMapIt.getNext();
-    oss << "++++++++++++++++++++++++++++++" << endl;
-    oss <<  res->getName()<< endl;
-    oss << "handle: " << res->getHandle() << endl;
-    oss << "isLoaded: " << res->isLoaded() << endl;
-    oss << "group: " << res->getGroup() << endl;
-    oss << "++++++++++++++++++++++++++++++" << endl;
-    oss << endl;
+    oss << "++++++++++++++++++++++++++++++" << "\n";
+    oss <<  res->getName()<< "\n";
+    oss << "handle: " << res->getHandle() << "\n";
+    oss << "isLoaded: " << res->isLoaded() << "\n";
+    oss << "group: " << res->getGroup() << "\n";
+    oss << "++++++++++++++++++++++++++++++" << "\n";
+    oss << "\n";
   }
-
-  lm->logMessage(Ogre::LML_NORMAL,oss.str());
 }
 
 bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
 {
   using namespace std;
-  ostringstream oss;
+  Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
   bool created = true;
   Ogre::MeshManager* meshMan = Ogre::MeshManager::getSingletonPtr();
   //First let's see if the mesh exists.
@@ -296,52 +282,51 @@ bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
     //if(theMesh->hasSkeleton())
     //{
       //Now everything is good to go. Create the scene nodes and attach mesh to it.
-      oss << "Creating character: " << meshName << endl;
+      oss << "Creating character: " << meshName << "\n";
       Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
       Ogre::String nodeName = meshName+"NODE";
       Ogre::String entName = "";
       Ogre::SceneNode* root = scnMgr->getRootSceneNode();
       //Ogre::SceneNode* node = root->createChildSceneNode(nodeName);
       Ogre::SceneNode* node = root->createChildSceneNode();
-      oss << "Created child node in root called: " << node->getName() << endl;
+      oss << "Created child node in root called: " << node->getName() << "\n";
       entName = meshName + node->getName();
       Ogre::Entity* entity = scnMgr->createEntity(entName,meshName);
       //entity->setDisplaySkeleton(true);
-      oss << "Created entity: " << entName << endl;
+      oss << "Created entity: " << entName << "\n";
       //entity->scale(0.0078125,0.0078125,0.0078125);
       node->attachObject(entity);
       //node->setInheritScale(true);
       node->setScale(0.01,0.01,0.01);
       Ogre::Vector3 pos;
       _dist.nextPosition(pos);
-      oss << "Translating to position: " << pos << endl;
+      oss << "Translating to position: " << pos << "\n";
       //node->translate(pos);
 
 
 
       /*     
       _dist.nextPosition(pos);
-      oss << "Translating to position: " << pos << endl;
+      oss << "Translating to position: " << pos << "\n";
       _dist.nextPosition(pos);
-      oss << "Translating to position: " << pos << endl;
+      oss << "Translating to position: " << pos << "\n";
       _dist.nextPosition(pos);
-      oss << "Translating to position: " << pos << endl;
+      oss << "Translating to position: " << pos << "\n";
       */
 
     //}
       /*
     else
     {
-      oss << "No skeleton is associated with the specified mesh, cannot continue!" << endl;
+      oss << "No skeleton is associated with the specified mesh, cannot continue!" << "\n";
       created = false;
     }*/
   /*
   }
   else{
-    oss << "No mesh with the specified name is found within MeshManager, cannot continue!" << endl;
+    oss << "No mesh with the specified name is found within MeshManager, cannot continue!" << "\n";
     created = false;
   }*/
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,oss.str());
   //If not, then return not created.
   return created;
 }

@@ -26,7 +26,6 @@ Imposter::Imposter(const Ogre::String meshName) : _meshName(meshName),TYPE_NAME(
 
 Imposter::~Imposter()
 {
-  std::ostringstream oss;
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Out of Imposter::~Imposter");
 }
 

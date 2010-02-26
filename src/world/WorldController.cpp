@@ -49,8 +49,6 @@ void WorldController::init()
 {
   using namespace std;
 
-  std::ostringstream oss;
-
   CColladaDatabase db;
   Ogre::SceneManager* sceneManager = EngineView::getSingleton().getSceneManager();
   Ogre::LogManager* log = Ogre::LogManager::getSingletonPtr();

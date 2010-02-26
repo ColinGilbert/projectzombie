@@ -44,7 +44,7 @@ EngineController::~EngineController()
 {
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
-    cout << "EngineController destructor" << endl;
+    cout << "EngineController destructor" << "\n";
 
 }
 
@@ -58,12 +58,10 @@ EngineController::transitionState(const Ogre::String key)
     }
     catch (std::invalid_argument e)
     {
-        std::ostringstream sstream;
-        sstream << "Exception: " << e.what() << endl;
-        sstream << "Transition state does not exist: " << key << endl;
-        sstream << "Transitioning from state: " << _curStateInfo->key << endl;
-        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,
-            sstream.str());
+        Ogre::Log::Stream sstream = Ogre::LogManager::getSingleton().stream();
+        sstream << "Exception: " << e.what() << "\n";
+        sstream << "Transition state does not exist: " << key << "\n";
+        sstream << "Transitioning from state: " << _curStateInfo->key << "\n";
     }
 }
 
@@ -248,7 +246,7 @@ EngineController::onDestroy()
     }
     catch (Ogre::Exception e)
     {
-        cout << "Exeception during shutdown: " << e.what() << endl;
+        cout << "Exeception during shutdown: " << e.what() << "\n";
     }
 }
 
@@ -258,7 +256,7 @@ EngineController::loadStates()
     StatesLoader stLoader;
     GameStateInfo startState;
     stLoader.loadStates(_gameSInfoMap, startState);
-    cout << "startState.key: " << startState.key << endl;
+    cout << "startState.key: " << startState.key << "\n";
     loadStartStateToCurrentState(startState.key);
 }
 
@@ -339,7 +337,7 @@ EngineController::loadStartStateToCurrentState(const Ogre::String curKey)
     for(ZGame::GameStateInfoMapItr it = _gameSInfoMap.begin(); it != _gameSInfoMap.end(); ++it)
     {
         cout << "info keys,keys: " << it->first << " " <<
-            it->second.key << endl;
+            it->second.key << "\n";
     }
 
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);

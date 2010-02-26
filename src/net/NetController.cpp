@@ -7,29 +7,8 @@
 using namespace ZGame::Networking;
 using namespace ZGame;
 
-//extern enum ZNetEntityTypes;
-
-ReplicaReturnResult ReplicaConstructor::ReceiveConstruction(RakNet::BitStream* inBitStream, RakNetTime timestamp, NetworkID networkID,
-                NetworkIDObject *existingObject, SystemAddress senderId, ReplicaManager *caller)
-{
-    return REPLICA_PROCESSING_DONE;
-}
-
-ReplicaReturnResult ReplicaReceiver::ReceiveDownloadComplete(RakNet::BitStream* inBitStream, SystemAddress senderId, ReplicaManager* caller)
-{
-    return REPLICA_PROCESSING_DONE;
-}
-
-
-ReplicaReturnResult ReplicaSender::SendDownloadComplete(RakNet::BitStream* outBitStream, RakNetTime currentTime, SystemAddress senderId,
-                ReplicaManager* caller)
-{
-    return REPLICA_PROCESSING_DONE;
-}
-
 NetController::NetController(bool isServer) : _isServer(isServer),
-_rakPeer(RakNetworkFactory::GetRakPeerInterface()), _replicaConstructor(isServer),
-_sendDownloadComplete(isServer),_recieveDownloadComplete(isServer)
+_rakPeer(RakNetworkFactory::GetRakPeerInterface())
 {
 
 }
@@ -52,9 +31,9 @@ bool NetController::onInit()
 
     _replicaManager.SetAutoSerializeInScope(true);
 
-    _replicaManager.SetReceiveConstructionCB(&_replicaConstructor);
+    _replicaManager.SetReceiveConstructionCB(getConstructionCB());
 
-    _replicaManager.SetDownloadCompleteCB(&_sendDownloadComplete,&_recieveDownloadComplete);
+    _replicaManager.SetDownloadCompleteCB(getSetDownloadCompleteCB(),getReceiveDownloadCompleteCB());
 
     //Add the entity types. We use "static" string table here as an efficient lookup table. 2nd parameter is false means it is a static string.
     char typesBuffer1[25]; //Yes, a naked character array. We KNOW (and assume) that the total types of znet entities will be less than 256. Thus we should not over run here.

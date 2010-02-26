@@ -5,7 +5,6 @@
 *      Author: bey0nd
 */
 //#include <string>
-//#include <ostringstream>
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #include <stdexcept>
 #else
@@ -149,14 +148,11 @@ GPUEntsGen::loadPositions()
     Real* pDest = static_cast<Real*> (pixBox.data);
     size_t pitchY = pixBox.rowPitch;
     size_t pitchX = pixBox.slicePitch;
-    ostringstream oss;
-    oss << "rowPitch,slicePitch: " << pitchY << "," << pitchX << endl;
-    lm->logMessage(Ogre::LML_TRIVIAL, oss.str());
-    oss.str("");
+    Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream(Ogre::LML_TRIVIAL);
+    oss << "rowPitch,slicePitch: " << pitchY << "," << pitchX << "\n";
     size_t w = pixBox.getWidth();
     size_t h = pixBox.getHeight();
-    oss << "width,height: " << w << "," << h << endl;
-    lm->logMessage(Ogre::LML_TRIVIAL, oss.str());
+    oss << "width,height: " << w << "," << h << "\n";
     //for each texel in the state texture. ASSUMING FLOAT_RGBA. We need to address this assumption later, so we do NOT ASSUME it.
     for (size_t j = 0; j < w; j++)
     {
