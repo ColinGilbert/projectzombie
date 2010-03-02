@@ -352,11 +352,15 @@
 				Name="net"
 				>
 				<File
+					RelativePath="..\..\..\src\net\NetClientController.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\net\NetController.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\net\NetworkClientController.cpp"
+					RelativePath="..\..\..\src\net\NetServerController.cpp"
 					>
 				</File>
 			</Filter>
@@ -622,11 +626,15 @@
 				Name="net"
 				>
 				<File
+					RelativePath="..\..\..\include\net\NetClientController.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\include\net\NetController.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\include\net\NetworkClientController.h"
+					RelativePath="..\..\..\include\net\NetServerController.h"
 					>
 				</File>
 			</Filter>

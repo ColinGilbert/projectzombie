@@ -25,7 +25,7 @@
 #include "MainController.h"
 #include "RakNetworkFactory.h"
 #include "RakPeerInterface.h"
-#include "net/NetworkClientController.h"
+#include "net/NetClientController.h"
 
 namespace ZGame
 {
@@ -101,7 +101,7 @@ namespace ZGame
 
     private:
 
-        ZGame::Networking::NetworkClientController _netClient;
+        ZGame::Networking::NetClientController _netClient;
         auto_ptr<ZGame::CommandController> _commandController;
 
         Ogre::String _listenerID;

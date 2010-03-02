@@ -1,10 +1,10 @@
-/**
+/** \file This file defines the controller for the server.
 * ServerController.h
-
+*
 * Created on: May 21, 2008
 * Author: bey0nd
-
-* This file defines the controller for the server.
+*
+* 
 *
 *
 **/
@@ -17,9 +17,8 @@
 #include <vector>
 #include <Ogre.h> //Note: We want to use Ogre, such as it's vector etc, but for server there is no need for a screen, just the root will be fine.
 
-#include "RakNetworkFactory.h"
-#include "RakPeerInterface.h"
 #include "MainController.h"
+#include "net/NetServerController.h"
 
 namespace ZGame
 {
@@ -37,12 +36,13 @@ namespace ZGame
 
     private:
         std::auto_ptr<Ogre::Root> _root;
-        std::auto_ptr<RakPeerInterface> peer;
-        bool initServer();
-        bool shutDownServer();
-        bool handlePacket(); //initial implementing handle packets.
+        ZGame::Networking::NetServerController _serverController;
+        //std::auto_ptr<RakPeerInterface> peer;
+        //bool initServer();
+        //bool shutDownServer();
+        //bool handlePacket(); //initial implementing handle packets.
 
-        unsigned char getPacketIdentifer(Packet* p);
+        //unsigned char getPacketIdentifer(Packet* p);
         void printPacketId(unsigned char id);
     };
 }
