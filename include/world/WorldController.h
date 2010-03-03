@@ -19,14 +19,11 @@ namespace ZGame
   namespace World
   {
     
-    class WorldController : public Controller
+    class WorldController
     {
     public:
       WorldController();
       ~WorldController();
-
-      //Virtual method which will handle execuetion of controller commands.
-      virtual int execute(ZGame::Command);
 
       void init();
       void loadWorld(); //temp.

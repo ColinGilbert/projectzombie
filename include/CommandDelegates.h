@@ -11,6 +11,7 @@ namespace ZGame
     namespace COMMAND
     {
         typedef fd::delegate<bool(const Ogre::StringVector &params)> ConsoleCommand;
+        //typedef fd::delegate<int(const Ogre::StringVector &params)> ConsoleCommandIntRt;
     }
 }
 

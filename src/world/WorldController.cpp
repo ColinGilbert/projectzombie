@@ -16,10 +16,6 @@ WorldController::~WorldController()
 {
 }
 
-int WorldController::execute(Command)
-{
-  return 0;
-}
 
 //Life cycle events
 bool WorldController::onInit()
@@ -30,7 +26,7 @@ bool WorldController::onInit()
 bool WorldController::onUpdate(const Ogre::FrameEvent &evt)
 {
   using namespace std;
-  Ogre::Real inc = evt.timeSinceLastFrame*0.8;
+  Ogre::Real inc = evt.timeSinceLastFrame*0.8f;
 
   //_animState->addTime(inc);
   //_animState->setWeight(1.0);

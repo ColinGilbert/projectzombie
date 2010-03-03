@@ -18,14 +18,12 @@ namespace ZGame
 
     class ControlModuleProto;
 
-    class CommandController : public Controller, public Ogre::Singleton<CommandController>
+    class CommandController : public Ogre::Singleton<CommandController>
     {
     public:
         CommandController();
         ~CommandController();
 
-        virtual int execute(ZGame::Command);
-        int execute(Ogre::String cmd);
         bool init();
         void addCommand(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd);
 

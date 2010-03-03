@@ -31,6 +31,12 @@ NetServerController::~NetServerController(void)
 {
 }
 
+int 
+NetServerController::execute(const Ogre::StringVector &params)
+{
+    return 0;
+}
+
 bool
 NetServerController::onInit()
 {

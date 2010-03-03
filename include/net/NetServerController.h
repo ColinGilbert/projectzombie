@@ -44,15 +44,16 @@ namespace ZGame
         };
 
         class NetServerController :
-            public NetController,
-            public Controller
+            public NetController
         {
         public:
             NetServerController(void);
             virtual ~NetServerController(void);
 
             virtual int
-                execute(ZGame::Command) {return 0;}
+                execute(const ZGame::Command &cmd) {return 0;}
+            virtual int
+                execute(const Ogre::StringVector &params);
 
             virtual bool
                 onInit();

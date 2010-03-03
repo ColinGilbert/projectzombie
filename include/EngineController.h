@@ -101,8 +101,8 @@ namespace ZGame
 
     private:
 
-        ZGame::Networking::NetClientController _netClient;
         auto_ptr<ZGame::CommandController> _commandController;
+        auto_ptr<ZGame::Networking::NetClientController> _netClient;
 
         Ogre::String _listenerID;
         bool _stillRunning;

@@ -49,12 +49,15 @@ main(int argc, char** argv)
 
   signal(SIGINT,clean_up_func);
 
+  cout << "About to new EngineController" << endl;
   
 //#if
   if(argc == 1) //run client
     engineControl = new ZGame::EngineController();
   else if(argc > 1) //run server
     engineControl = new ZGame::ServerController();
+
+  cout << "Finished new EngineController" << endl;
   try
     {
       if (!engineControl->onInit())

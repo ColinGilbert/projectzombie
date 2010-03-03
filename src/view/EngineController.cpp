@@ -35,6 +35,7 @@ _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
     new KeyboardPump()), _mousePump(new MousePump()),
     _curStateInfo(0),_curGameState(0),
     _commandController(new CommandController())
+
 {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -79,7 +80,7 @@ bool
 EngineController::onInit()
 {
     using namespace Ogre;
-
+    cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
     _root.reset(new Ogre::Root("plugins.cfg","plsm2_display.cfg","Pchaos.log"));
     if (_root->showConfigDialog())
@@ -125,6 +126,13 @@ EngineController::onInit()
     //let's init the console now.
     lm->logMessage(Ogre::LML_NORMAL,"initializing console.");
     initConsole();
+
+    //Create the NetClient. Note: This is place-holder code until we get the "service" framework. 
+    //Everything that uses CommandController depends on Console being initialized. This is bad, need to fix this ASAP.
+    //The fix should not be that hard, though. (Requires no major refactoring.)
+    _netClient.reset(new ZGame::Networking::NetClientController());
+
+
     return true;
 }
 
@@ -231,7 +239,6 @@ EngineController::onDestroy()
     try
     {
         _inController->onDestroy();
-        _netClient.shutdown();
         OgreConsole::getSingleton().shutdown();
         //CLEAR _curStateInfo manaually. THIS clearly is a hack.
         //The reason being you are using auto_ptr to store the current state information, which you set by 
@@ -269,14 +276,6 @@ EngineController::onKeyUp(const OIS::KeyEvent &event)
     {
         _stillRunning = false;
         unloadCurrentState();
-    }
-    else if(event.key == OIS::KC_C)
-    {
-        _netClient.connect();
-    }
-    else if(event.key == OIS::KC_V)
-    {
-        _netClient.disconnect();
     }
     return true;
 }
@@ -466,19 +465,13 @@ EngineController::initConsole()
 {
     new OgreConsole(); //this is fine we are using Ogre template based singleton implementation.
     OgreConsole::getSingleton().init(_root.get());
-    /*
-    new OgreConsole;
-    OgreConsole::getSingleton().init(_root.get());
-    */
-
-    _commandController->init();
 }
 
 void
 EngineController::manuallyRegisterNetClient(LifeCycleRegister &lfcReg)
 {
     LifeCycle::LifeCycleObserver lfcObs;
-    LifeCycle::bindLifeCycleObserver(lfcObs,_netClient);
+    LifeCycle::bindLifeCycleObserver(lfcObs,*_netClient.get());
     lfcReg.registerLfcObs(lfcObs);
     LifeCycle::clearLfcObs(lfcObs);
 }

@@ -36,18 +36,6 @@ CommandController::~CommandController()
   cout << "In CommandController destructor." << endl;
 }
 
-int CommandController::execute(ZGame::Command cmd)
-{
-  return 0;
-}
-
-int CommandController::execute(Ogre::String cmd)
-{
-  return 0;
-}
-
-
-
 /**
 *This static method is the call back for executing a found command in OgreConsole. We assume that the command has been validated upstream in OgreConsole,
 and thus when calling this params[0] should be the calle.
