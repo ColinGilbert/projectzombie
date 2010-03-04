@@ -6,7 +6,7 @@
 using namespace std;
 #include <boost/random.hpp>
 #include <Ogre.h>
-#include <signal.h>
+//#include <signal.h>
 #include "InputController.h"
 #include "EngineController.h"
 #include "ServerController.h"
@@ -30,12 +30,6 @@ extern "C" {
 ZGame::MainController* engineControl = 0;
 
 
-void clean_up_func(int signum)
-{
-  engineControl->onDestroy();
-  delete engineControl; 
-  exit(0);
-}
 /*
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 INT 
@@ -47,7 +41,7 @@ main(int argc, char** argv)
 {
   using namespace ZGame;
 
-  signal(SIGINT,clean_up_func);
+  //signal(SIGINT,clean_up_func);
 
   cout << "About to new EngineController" << endl;
   
@@ -100,7 +94,7 @@ main(int argc, char** argv)
   
     engineControl->onDestroy();
   
-    cout << "returinging. " << endl;
+    cout << "returning." << endl;
     delete engineControl;
     return 0;
 }

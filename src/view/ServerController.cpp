@@ -1,7 +1,17 @@
 #include <iostream>
+#include <csignal>
 
 #include "ServerController.h"
 #include "MessageIdentifiers.h"
+
+
+bool STILL_RUNNING = true;
+
+//This function is to handle User signal (ctrl x,c in console) 
+void stop_running_signal_handler(int signum)
+{
+    STILL_RUNNING = false;
+}
 
 
 namespace ZGame
@@ -19,6 +29,9 @@ namespace ZGame
         ServerController::onInit()
     {
         using namespace Ogre;
+
+        signal(SIGINT,stop_running_signal_handler); //register for user initiated signal.
+
         _root.reset(new Ogre::Root("plugins.cfg","pchaos_server_display.cfg","Pchaos_server.log"));
         if(_root->showConfigDialog())
         {
@@ -38,7 +51,7 @@ namespace ZGame
         ServerController::run()
     {
         //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In ServerController run.");
-        while(1) //run forever. The program handles system interrupts (ctrl-c in console) for server shutdown event.
+        while(STILL_RUNNING) //run forever. The program handles system interrupts (ctrl-c in console) for server shutdown event.
         {
             _serverController.onUpdate();
         }

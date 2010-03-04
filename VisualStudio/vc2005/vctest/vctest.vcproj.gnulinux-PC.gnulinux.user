@@ -11,7 +11,7 @@
 			<DebugSettings
 				Command="$(TargetPath)"
 				WorkingDirectory="E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia"
-				CommandArguments=""
+				CommandArguments="-server"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
