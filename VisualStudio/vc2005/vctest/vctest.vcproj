@@ -325,10 +325,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\model\ZNetEntity.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\ZombieDriver.cpp"
 				>
 			</File>
@@ -361,6 +357,18 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\net\NetServerController.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\net\ZNetEntity.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="entities"
+				>
+				<File
+					RelativePath="..\..\..\src\entities\PlayerEnt.cpp"
 					>
 				</File>
 			</Filter>
@@ -530,18 +538,6 @@
 				RelativePath="..\..\..\include\WhiteNoiseView.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\include\ZEntity.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\ZNetEntity.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\net\ZNetEntityTypes.h"
-				>
-			</File>
 			<Filter
 				Name="world"
 				>
@@ -602,6 +598,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\include\delegates\EntityDelegates.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\include\EventDelegates.h"
 					>
 				</File>
@@ -635,6 +635,34 @@
 				</File>
 				<File
 					RelativePath="..\..\..\include\net\NetServerController.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\net\ZNetEntity.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\net\ZNetEntityTypes.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="entities"
+				>
+				<File
+					RelativePath="..\..\..\include\entities\EntitiesDefs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\entities\EntityAspects.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\entities\PlayerEnt.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\ZEntity.h"
 					>
 				</File>
 			</Filter>

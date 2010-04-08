@@ -1,11 +1,13 @@
 #include <cstdlib>
 
 #include "net/NetController.h"
-#include "ZNetEntityTypes.h"
+#include "net/ZNetEntityTypes.h"
 
 
 using namespace ZGame::Networking;
 using namespace ZGame;
+
+//NetworkEntitiesManager NetController::netEntManager; //the static variable in NetController class.
 
 NetController::NetController(bool isServer) : _isServer(isServer),
 _rakPeer(RakNetworkFactory::GetRakPeerInterface())
@@ -36,12 +38,29 @@ bool NetController::onInit()
 
     _replicaManager.SetDownloadCompleteCB(getSetDownloadCompleteCB(),getReceiveDownloadCompleteCB());
 
+    //NetworkEntitiesManager* entManager = getNetworkEntitiesManager();
+    //entManager->setNetEntitiesVector(_netEntities);
+    //entManager->setEntitiesVector(_entities);
+
     //Add the entity types. We use "static" string table here as an efficient lookup table. 2nd parameter is false means it is a static string.
-    char typesBuffer1[25]; //Yes, a naked character array. We KNOW (and assume) that the total types of znet entities will be less than 256. Thus we should not over run here.
-    char typesBuffer2[25];
-    RakNet::StringTable::Instance()->AddString(itoa(ZGame::PLAYER_TYPE,typesBuffer1,10),false);
+    //The plan here is to read this from our DB. For now, let's just hard-code the two types: Player and Monster.
+    RakNet::StringTable::Instance()->AddString("PLAYER_TYPE",false);
+    RakNet::StringTable::Instance()->AddString("MONSTER_TYPE",false);
+    /*
+    Ogre::StringStream types;
+    types << ZGame::PLAYER_TYPE << "TYPE";
+    RakNet::StringTable::Instance()->AddString(types.str().c_str(),false);
+    types << "";
+    types << ZGame::MONSTER_TYPE << "TYPE";
+    RakNet::StringTable::Instance()->AddString(types.str().c_str(),false);
+    */
+
+
+
+    
+    //RakNet::StringTable::Instance()->AddString(itoa(ZGame::PLAYER_TYPE,typesBuffer1,10),false);
     //RakNet::StringTable::Instance()->AddString("PLAYER",false);
-    RakNet::StringTable::Instance()->AddString(itoa(ZGame::MONSTER_TYPE,typesBuffer2,10),false);
+    //RakNet::StringTable::Instance()->AddString(itoa(ZGame::MONSTER_TYPE,typesBuffer2,10),false);
     //RakNet::StringTable::Instance()->AddString("MONSTER",false);
 
     cout << "NetController::onInit() finished." << endl;

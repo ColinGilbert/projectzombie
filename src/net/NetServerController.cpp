@@ -1,13 +1,27 @@
 #include <iostream>
 
 #include "net/NetServerController.h"
+#include "entities/PlayerEnt.h"
+#include "DelegatesUtil.h"
+#include "net/ZNetEntity.h"
 
 using namespace ZGame;
 using namespace ZGame::Networking;
 
+NetworkEntitiesManager<SystemAddress> NetServerController::netEntManagerServer; //temporary server-side net entity manager, as a static variable.
+
+/**
+*This is server side call-back method for ReceiveConstruction events. 
+*
+* \note The server side should be careful about what the client wants to construct--for now, the client
+*can construction nothing.
+*
+*/
 ReplicaReturnResult ServerReplicaConstructor::ReceiveConstruction(RakNet::BitStream* inBitStream, RakNetTime timestamp, NetworkID networkID,
                                                                   NetworkIDObject *existingObject, SystemAddress senderId, ReplicaManager *caller)
 {
+    cout << "In ServerReplicaConstructor::ReceiveConstruction." << endl;
+    //The client can construction nothing at this point.
     return REPLICA_PROCESSING_DONE;
 }
 
@@ -113,6 +127,7 @@ NetServerController::handlePacket()
 
         packetId = getPackIdentifer(packet);
         printPacketId(packetId);
+        processPacket(packetId,packet);
         peer->DeallocatePacket(packet);
 
         packet = peer->Receive();
@@ -120,6 +135,82 @@ NetServerController::handlePacket()
     }
 
     return true;
+}
+
+void
+NetServerController::processPacket(unsigned char id,Packet* packet)
+{
+    using namespace std;
+    switch(id)
+    {
+        case ID_NEW_INCOMING_CONNECTION:
+            processNewConnection(packet);
+            break;
+        //handle cases for disconnection.
+        case ID_DISCONNECTION_NOTIFICATION:
+        case ID_CONNECTION_LOST:
+            processDisconnection(packet);
+            break;
+        default:
+            break;
+    }
+}
+/**
+*This method handles the prcoessing of new connections. It will be responsible for creating a new player type.
+*This method will construct the Raknet entity. It will disable server-side specific raknet interface call-backs.
+*
+*\precondition It is assumed Raknet has been setup.
+*\postcondition the composite Entity (ZEntity and ZNetEntity) is created and managed by NetEntityManager.
+*
+* \note: We may need to refactor to use Interfaces instead of Delegate here.
+*
+*/
+void
+NetServerController::processNewConnection(Packet* packet)
+{
+    using namespace Entities;
+    using namespace Networking;
+    cout << "In NetServerController::processNewConnection" << endl;
+    ReplicaManager* replicaManager = getReplicaManager();
+    //Get the GUID.
+    //RakNetGUID myGuid = RakPeer::GetGuidFromSystemAddress(packet->systemAddress);
+    //First, we need to create the Player Entity.
+    PlayerEntity* plyEnt = new PlayerEntity();
+    boost::shared_ptr<ZEntity> plyEntSmart(plyEnt);
+    EntityAspects entAspects;
+    Entities::bindEntityAspects(entAspects,*plyEnt);
+    plyEnt->onInitServer();
+
+    //Create the associated ZNetEntity.
+    boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,entAspects,true));
+    replicaManager->Construct(netEntSmart.get(),false,UNASSIGNED_SYSTEM_ADDRESS,false);
+    //Disable server-side specific interfaces.
+    replicaManager->DisableReplicaInterfaces(netEntSmart.get(), 
+        REPLICA_RECEIVE_DESTRUCTION | REPLICA_RECEIVE_SCOPE_CHANGE);
+
+    //NetworkID netId = netEntSmart->GetNetworkID(); //Gets the ID which (according to the docs) should have been set already. We are the server.
+
+    cout << "SystemAddress mapped to the Net Entity: " << packet->systemAddress.ToString() << endl;
+    //cout << "NetID: systemAddress: " << netId.systemAddress.ToString() 
+        //<< " localSystemAddress: " << netId.localSystemAddress << endl;
+    //Let NetEntityManager manage the entities.
+    netEntManagerServer.addEntity(packet->systemAddress,netEntSmart,plyEntSmart);
+    cout << "New Connection processed." << endl;
+}
+
+/**
+*This method will process disconnection for the client specified in Packet->systemAddress.
+*
+*\param Packet. The given packet which contains the systemAddress of the disconnected client.
+*
+*\precondition It is assumed the the client specified in Packet->systemAddress has ceased communication with the server.
+*\postcondition The disconnection of the client is processed. (All association and references of the server to the client has been cleared.)
+*/
+void
+NetServerController::processDisconnection(Packet* packet)
+{
+    //Ask the Network Entities manager to clear the client with the given SystemAddress.
+    netEntManagerServer.clearEntity(packet->systemAddress);
 }
 
 void
@@ -144,7 +235,7 @@ NetServerController::printPacketId(unsigned char id)
         break;
 
     case ID_NEW_INCOMING_CONNECTION:
-        cout << "A connection is incoming." << endl;
+        cout << "A remote system has successfully connected." << endl;
         break;
 
     case ID_DISCONNECTION_NOTIFICATION:
@@ -179,4 +270,3 @@ NetServerController::getReceiveDownloadCompleteCB()
 {
     return &_recieveDownloadComplete;
 }
-

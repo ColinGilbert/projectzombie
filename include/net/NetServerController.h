@@ -1,8 +1,11 @@
 #ifndef _ZGAME_NETSERVER_CONTROLLER_H
 #define _ZGAME_NETSERVER_CONTROLLER_H
 
+#include <vector>
+
 #include <Ogre.h>
 
+#include "RakNetTypes.h"
 #include "net/NetController.h"
 #include "Controller.h"
 
@@ -10,6 +13,7 @@ namespace ZGame
 {
     namespace Networking
     {
+        class ZNetEntity;
         /** \brief This class handles call back for receive construction calls.
         *
         *This class implements the ReceiveConstructionInterface (see RakNet) for call back handling of ReceiveConstruction calls.
@@ -21,6 +25,7 @@ namespace ZGame
             /** \brief This is the call back method to do the actual construction. */
             ReplicaReturnResult ReceiveConstruction(RakNet::BitStream* inBitStream, RakNetTime timestamp, NetworkID networkID,
                 NetworkIDObject *existingObject, SystemAddress senderId, ReplicaManager *caller);
+        private:
         };
 
          /** \brief This class handles call back for send download complete calls.
@@ -47,6 +52,7 @@ namespace ZGame
             public NetController
         {
         public:
+            static NetworkEntitiesManager<SystemAddress> netEntManagerServer;
             NetServerController(void);
             virtual ~NetServerController(void);
 
@@ -79,7 +85,6 @@ namespace ZGame
             ServerReplicaConstructor _replicaConstructor;
             ServerReplicaSender _sendDownloadComplete;
             ServerReplicaReceiver _recieveDownloadComplete;
-
             bool
                 initServer();
             bool
@@ -87,9 +92,18 @@ namespace ZGame
             bool
                 handlePacket();
 
+            /** \brief This function will print the given packet id.*/
             void
                 printPacketId(unsigned char id);
-
+            /** \brief This functino will process the given packet id.*/
+            void 
+                processPacket(unsigned char id,Packet* packet);
+            /** \brief Helper function that will process a new connection. */
+            void
+                processNewConnection(Packet* packet);
+            /** \brief Helper function that will prcoess a disconnection. */
+            void
+                processDisconnection(Packet* packet);
         };
     }
 }
