@@ -1,17 +1,19 @@
 #include <iostream>
 
+#include <BitStream.h>
 #include "StringTable.h"
 
 #include "net/ZNetEntity.h"
 #include "entities/EntitiesDefs.h"
+#include "net/NetClientController.h"
 
 using namespace ZGame;
 using namespace Networking;
 
 
-ZNetEntity::ZNetEntity(ReplicaManager &replica,Entities::EntityAspects &entityAspects,
+ZNetEntity::ZNetEntity(ReplicaManager &replica,SystemAddress initatorAddress,Entities::EntityAspects &entityAspects,
                        bool isServer) : 
-_replica(replica),
+_replica(replica), _initatorAddress(initatorAddress),
 _entityAspects(entityAspects),
 _isServer(isServer)
 {    
@@ -35,7 +37,7 @@ ZNetEntity::~ZNetEntity()
 *This method is called to tell others sytems to create an instance of this class. 
 *
 *@param currentTime Current time, in milliseconds since Jan 1, 1970.
-*@param systemAddress The Raknet system address of the caller.
+*@param systemAddress The Raknet system address of the participant.
 *@param flags Some sort of flag.
 *@param outBitStream The Raknet out bit stream.
 *@param includeTimeStamp Boolean to determine whether to include timestamp.
@@ -44,12 +46,18 @@ ReplicaReturnResult
 ZNetEntity::SendConstruction(RakNetTime currentTime, SystemAddress systemAddress, unsigned int &flags,
                              RakNet::BitStream* outBitStream, bool*includeTimestamp)
 {
+    using namespace RakNet;
     //RakNet::StringTable::Instance()->EncodeString(_typeStr.c_str(),255,outBitStream);
     Ogre::String typeStr;
     //Call delegate for onSendConstruction.
     _entityAspects.onSendConstruction(typeStr,outBitStream);
     RakNet::StringTable::Instance()->EncodeString(typeStr.c_str(),255,outBitStream);
-    //write the system address.
+    //Write out whether is owner.
+    if(_initatorAddress == systemAddress)
+        outBitStream->Write1();
+    else
+        outBitStream->Write0();
+
     cout << "Sending construction no play." << endl;
     return REPLICA_PROCESSING_DONE;
 }
@@ -70,6 +78,16 @@ ZNetEntity::SendDestruction(RakNet::BitStream *outBitStream, SystemAddress syste
 ReplicaReturnResult
 ZNetEntity::ReceiveDestruction(RakNet::BitStream* inBitStream, SystemAddress systemAddress, RakNetTime timestamp)
 {
+    //Okay, the way we're deleting this object is a bit convoluted. Maybe I"m not understand the code,
+    //There is no ReplicaDesctuctor like there is a ReplicaConstructor. In the example code, he simply deletes an EXTERN variable, which is a pointer to the Replica.
+    //He only has a single Replica for Player, and a Single repliac for Monster. Where we need to have N number of replicas. Another way to do this is to generate an event,
+    //and return. The system will detect this event outside and handle it.
+    cout << "In ZEntity ReceiveDestruction" << endl;
+    if(!_isServer)
+    {
+        NetClientController::netEntManagerClient.clearEntity(this->GetNetworkID());
+    }
+    cout << "Out of ZNetEntity ReceiveDestruction" << endl;
     return REPLICA_PROCESSING_DONE;
 }
 

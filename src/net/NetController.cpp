@@ -31,6 +31,8 @@ bool NetController::onInit()
 
     //We want to auto have new connections to participate in whatever it is that replicaManager is supposed to be doing for us.
     _replicaManager.SetAutoParticipateNewConnections(true);
+    //We want to auto construct to new participants
+    _replicaManager.SetAutoConstructToNewParticipants(true);
 
     _replicaManager.SetAutoSerializeInScope(true);
 

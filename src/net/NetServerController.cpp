@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <BitStream.h>
+
 #include "net/NetServerController.h"
 #include "entities/PlayerEnt.h"
 #include "DelegatesUtil.h"
@@ -180,10 +182,9 @@ NetServerController::processNewConnection(Packet* packet)
     EntityAspects entAspects;
     Entities::bindEntityAspects(entAspects,*plyEnt);
     plyEnt->onInitServer();
-
     //Create the associated ZNetEntity.
-    boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,entAspects,true));
-    replicaManager->Construct(netEntSmart.get(),false,UNASSIGNED_SYSTEM_ADDRESS,false);
+    boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,packet->systemAddress,entAspects,true));
+    replicaManager->Construct(netEntSmart.get(),false,UNASSIGNED_SYSTEM_ADDRESS,true);
     //Disable server-side specific interfaces.
     replicaManager->DisableReplicaInterfaces(netEntSmart.get(), 
         REPLICA_RECEIVE_DESTRUCTION | REPLICA_RECEIVE_SCOPE_CHANGE);

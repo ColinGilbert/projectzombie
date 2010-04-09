@@ -30,7 +30,7 @@ namespace ZGame
             *
             * The constructor maps directly the entity name and mesh name into Ogre entity and mesh.
             */
-            ZNetEntity(ReplicaManager &replica,Entities::EntityAspects &entityAspects, bool isServer);
+            ZNetEntity(ReplicaManager &replica,SystemAddress ownerAddress, Entities::EntityAspects &entityAspects, bool isServer);
             /** \brief Virtual destructor will clean and destroy this ZNetEntity.
             *
             */
@@ -70,10 +70,14 @@ namespace ZGame
             int
                 GetSortPriority(void) const {return 0;}
 
+            /** \brief return whether this object is to be destructed **/
+
 
         protected:
         private:
             ReplicaManager &_replica;
+            /** \brief The owner address of this entity.**/
+            SystemAddress _initatorAddress; 
             Entities::EntityAspects _entityAspects;
             bool _isServer;
             //Ogre::String _typeStr;
