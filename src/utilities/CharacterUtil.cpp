@@ -6,7 +6,9 @@
 #include "EngineView.h"
 #include "utilities/CharacterUtil.h"
 #include "CommandController.h"
+#include "CommandList.h"
 #include "CommandDelegates.h"
+
 
 using namespace ZGame::Util;
 
@@ -20,17 +22,18 @@ _dist(_rng,_xDist,_zDist)
     using namespace ZGame::COMMAND; //namespace for the static const commands. It's for the CHARLIST etc...
   _rng.seed(time(0));
   ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
-  COMMAND::ConsoleCommand cmd;
+  CommandList* cmdList = cmdCtrl->getCommandList();
+  ConsoleCommand cmd;
   cmd.bind(&ZGame::Util::CharacterUtil::list,this);
-  cmdCtrl->addCommand(CHARLIST,cmd);
+  cmdCtrl->addCommand(cmdList->CHARLIST,cmd);
   cmd.bind(&ZGame::Util::CharacterUtil::listMeshes,this);
-  cmdCtrl->addCommand(CHARLISTMESHES,cmd);
+  cmdCtrl->addCommand(cmdList->CHARLISTMESHES,cmd);
   cmd.bind(&ZGame::Util::CharacterUtil::create,this);
-  cmdCtrl->addCommand(CHARCREATE,cmd);
+  cmdCtrl->addCommand(cmdList->CHARCREATE,cmd);
   cmd.bind(&ZGame::Util::CharacterUtil::listNodes,this);
-  cmdCtrl->addCommand(NODELIST,cmd);
+  cmdCtrl->addCommand(cmdList->NODELIST,cmd);
   cmd.bind(&ZGame::Util::CharacterUtil::removeNode,this);
-  cmdCtrl->addCommand(NODEREMOVE,cmd);
+  cmdCtrl->addCommand(cmdList->NODEREMOVE,cmd);
   
  
   

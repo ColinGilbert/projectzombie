@@ -59,7 +59,7 @@ bool NetController::onInit()
 
 
 
-    
+
     //RakNet::StringTable::Instance()->AddString(itoa(ZGame::PLAYER_TYPE,typesBuffer1,10),false);
     //RakNet::StringTable::Instance()->AddString("PLAYER",false);
     //RakNet::StringTable::Instance()->AddString(itoa(ZGame::MONSTER_TYPE,typesBuffer2,10),false);

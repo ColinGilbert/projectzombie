@@ -11,10 +11,9 @@ using namespace ZGame;
 using namespace Networking;
 
 
-ZNetEntity::ZNetEntity(ReplicaManager &replica,SystemAddress initatorAddress,Entities::EntityAspects &entityAspects,
+ZNetEntity::ZNetEntity(ReplicaManager &replica,SystemAddress initatorAddress,
                        bool isServer) : 
 _replica(replica), _initatorAddress(initatorAddress),
-_entityAspects(entityAspects),
 _isServer(isServer)
 {    
 }
@@ -23,7 +22,8 @@ _isServer(isServer)
 *
 *\precondition We assume during server-side and client-side construction of of this object, send deconstruction interface call-backs 
 *has been set with respect to server and client. Meaning, we send out dereplication on the server to clients. While destruction on the client-side
-*no deconstruction events shall be sent. This is due to our design where we disable client-side construction of ZNetEntities.
+*no deconstruction events shall be sent. This is due to our design where we disable client-side construction of ZNetEntities. We ALSO assume that _entityAspects will
+*be valid when we make the delegate call. THIS IMPLIES an ordering to the destruction of the composite Entity.
 *
 */
 ZNetEntity::~ZNetEntity()
@@ -84,6 +84,7 @@ ZNetEntity::ReceiveDestruction(RakNet::BitStream* inBitStream, SystemAddress sys
     //He only has a single Replica for Player, and a Single repliac for Monster. Where we need to have N number of replicas. Another way to do this is to generate an event,
     //and return. The system will detect this event outside and handle it.
     cout << "In ZEntity ReceiveDestruction" << endl;
+    
     if(!_isServer)
     {
         NetClientController::netEntManagerClient.clearEntity(this->GetNetworkID());

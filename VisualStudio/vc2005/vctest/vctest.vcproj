@@ -193,6 +193,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\CommandList.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\testsrc\CommonFixtures.h"
 				>
 			</File>
@@ -384,6 +388,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\CommandController.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\CommandList.h"
 				>
 			</File>
 			<File

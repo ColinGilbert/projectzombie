@@ -10,14 +10,7 @@
 #include "CommandDelegates.h"
 namespace ZGame
 {
-    namespace COMMAND
-    {
-        static const Ogre::String CHARLIST("charlist");
-        static const Ogre::String CHARLISTMESHES("charlistmeshes");
-        static const Ogre::String CHARCREATE("charcreate");
-        static const Ogre::String NODELIST("nodelist");
-        static const Ogre::String NODEREMOVE("removenode");
-    }
+   
     class OgreConsole;
     /*
     namespace Util
@@ -27,6 +20,12 @@ namespace ZGame
 
     //class ControlModuleProto;
 
+    namespace COMMAND
+    {
+        
+        class CommandList;
+    }
+
     class CommandController : public Ogre::Singleton<CommandController>
     {
     public:
@@ -35,6 +34,8 @@ namespace ZGame
 
         bool init();
         void addCommand(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd);
+        
+        COMMAND::CommandList* getCommandList(){ return _commandList;}
 
         static void execute(const Ogre::StringVector &params);
         //void execute(std::vector<Ogre::String> &params);
@@ -47,6 +48,7 @@ namespace ZGame
     protected:
 
     private:
+        COMMAND::CommandList* _commandList;
     };
 }
 

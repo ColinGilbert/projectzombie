@@ -165,6 +165,8 @@ NetServerController::processPacket(unsigned char id,Packet* packet)
 *\postcondition the composite Entity (ZEntity and ZNetEntity) is created and managed by NetEntityManager.
 *
 * \note: We may need to refactor to use Interfaces instead of Delegate here.
+* \note: We may need to refactor so put all the common creation steps for client and server into a static function. And only to the client/server specific things here. However, let's just keep it simple, for now.
+since there isn't much code for this. And we do not expect to duplicate this code everywhere (only in server and client controllers when one creates the composite entities.)
 *
 */
 void
@@ -174,22 +176,29 @@ NetServerController::processNewConnection(Packet* packet)
     using namespace Networking;
     cout << "In NetServerController::processNewConnection" << endl;
     ReplicaManager* replicaManager = getReplicaManager();
-    //Get the GUID.
-    //RakNetGUID myGuid = RakPeer::GetGuidFromSystemAddress(packet->systemAddress);
-    //First, we need to create the Player Entity.
-    PlayerEntity* plyEnt = new PlayerEntity();
-    boost::shared_ptr<ZEntity> plyEntSmart(plyEnt);
-    EntityAspects entAspects;
-    Entities::bindEntityAspectsServer(entAspects,*plyEnt);
-    plyEnt->onInitServer();
-    //Create the associated ZNetEntity.
-    boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,packet->systemAddress,entAspects,true));
-    replicaManager->Construct(netEntSmart.get(),false,UNASSIGNED_SYSTEM_ADDRESS,true);
+    //Create ZNetEntity.
+    boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,packet->systemAddress,true));
     //Disable server-side specific interfaces.
     replicaManager->DisableReplicaInterfaces(netEntSmart.get(), 
         REPLICA_RECEIVE_DESTRUCTION | REPLICA_RECEIVE_SCOPE_CHANGE);
 
-    //NetworkID netId = netEntSmart->GetNetworkID(); //Gets the ID which (according to the docs) should have been set already. We are the server.
+    NetworkID netId = netEntSmart->GetNetworkID(); //Gets the ID which (according to the docs) should have been set already. We are the server.
+
+    //In the future we should these from DB. We create a DB loader, and pass PlayerEntity (which is ZEntity) to it, and it will fill the meta info from DB. ZEntity is a "state."
+    ostringstream oss;
+    oss << "Entity" << netId.localSystemAddress;
+    //we need to create the Player Entity. Note: We use the network ID as a unique entity name.
+    PlayerEntity* plyEnt = new PlayerEntity();
+    plyEnt->setEntityName(oss.str());
+    boost::shared_ptr<ZEntity> plyEntSmart(plyEnt);
+    EntityAspects entAspects;
+    Entities::bindEntityAspectsServer(entAspects,*plyEnt);
+    plyEnt->onInitServer();
+    
+    netEntSmart->setEntityAspects(entAspects); //DO NOT FORGET to set entity aspects before you send construction!!! replica should throw!!!
+
+    //Now the composite entity is considered created, let's send the Construct event. We set broadcast to true to send to everyone.
+    replicaManager->Construct(netEntSmart.get(),false,UNASSIGNED_SYSTEM_ADDRESS,true);
 
     cout << "SystemAddress mapped to the Net Entity: " << packet->systemAddress.ToString() << endl;
     //cout << "NetID: systemAddress: " << netId.systemAddress.ToString() 

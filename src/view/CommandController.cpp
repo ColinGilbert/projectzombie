@@ -3,7 +3,7 @@
 #include "CommandController.h"
 #include "ogreconsole.h"
 #include "CommandDelegates.h"
-
+#include "CommandList.h"
 
 
 #include "ControlModuleProto.h"
@@ -27,13 +27,14 @@ CommandController* CommandController::getSingletonPtr()
 }
 
 
-CommandController::CommandController() 
+CommandController::CommandController() : _commandList(new COMMAND::CommandList())
 {
 }
 
 CommandController::~CommandController()
 {
   cout << "In CommandController destructor." << endl;
+  delete _commandList;
 }
 
 /**

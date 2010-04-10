@@ -1,6 +1,6 @@
 
 #include "CommandController.h"
-
+#include "CommandList.h"
 #include "net\ZNetEntityTypes.h"
 #include "entities\PlayerEnt.h"
 
@@ -34,12 +34,13 @@ bool
 PlayerEntity::onInitClient()
 {
     cout << "In PlayerEntity::onInitClient" << endl;
+    COMMAND::CommandList* cmdList = CommandController::getSingleton().getCommandList();
     //Let's create a character.
     Ogre::StringVector cmd; 
     //const string commands are found in CommandController.
-    cmd.push_back(COMMAND::CHARCREATE);
+    cmd.push_back(cmdList->CHARCREATE);
     cmd.push_back(getMeshName());
-    cmd.push_back(getMeshName()+"NODE"); //the node parameter.
+    cmd.push_back(getEntityName()+getMeshName()+"NODE"); //the node parameter.
     CommandController::getSingleton().executeCmd(cmd);
     return true;
 }
@@ -54,10 +55,11 @@ PlayerEntity::onInitServer()
 bool
 PlayerEntity::onDestroyClient()
 {
+    COMMAND::CommandList* cmdList = CommandController::getSingleton().getCommandList();
     cout << "In PlayerENtity::onDestroyClient()" << endl;
     Ogre::StringVector cmd;
-    cmd.push_back(COMMAND::NODEREMOVE);
-    cmd.push_back(getMeshName()+"NODE");
+    cmd.push_back(cmdList->NODEREMOVE);
+    cmd.push_back(getEntityName()+getMeshName()+"NODE");
     CommandController::getSingleton().executeCmd(cmd);
     return true;
 }

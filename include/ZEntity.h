@@ -20,8 +20,11 @@ namespace ZGame
         ZEntity(const Ogre::String &entName,const Ogre::String &meshName);
         virtual ~ZEntity();
 
+        void setEntityName(const Ogre::String entName) { _entName = entName;}
+        void setMeshName(const Ogre::String meshName) { _meshName = meshName;}
         const Ogre::String getEntityName() {return _entName;}
         const Ogre::String getMeshName() {return _meshName;}
+        
 
     protected:
     private:
