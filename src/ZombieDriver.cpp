@@ -7,10 +7,10 @@ using namespace std;
 #include <boost/random.hpp>
 #include <Ogre.h>
 //#include <signal.h>
-#include "InputController.h"
+//#include "InputController.h"
 #include "EngineController.h"
 #include "ServerController.h"
-#include "GPUEntsDistributor.h"
+//#include "GPUEntsDistributor.h"
 
 /*
  * ZombieDriver.cpp

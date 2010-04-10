@@ -315,7 +315,7 @@ bool CharacterUtil::createCharFromMesh(const Ogre::StringVector &params)
       Ogre::Vector3 pos;
       _dist.nextPosition(pos);
       oss << "Translating to position: " << pos << "\n";
-      //node->translate(pos);
+      node->translate(pos);
 
 
 
