@@ -42,7 +42,35 @@ and thus when calling this params[0] should be the calle.
 */
 void CommandController::execute(const Ogre::StringVector &params)
 {
+    try
+    {
     __cmdMap[params[0]](params);
+    }catch(Ogre::Exception e)
+    {
+        cout << "Caught Ogre exception in CommandController::execute" << endl;
+    }
+    catch(std::exception e)
+    {
+        cout << "Caught exception in CommandController::execute" << endl;
+    }
+}
+
+/**
+*This method will execute the command given in param. It is assumed the first element is the command, followed by N parameters.
+*/
+void 
+CommandController::executeCmd(const Ogre::StringVector &params)
+{
+    try
+    {
+        std::map<Ogre::String,ZGame::COMMAND::ConsoleCommand>::iterator cmdMapIter;
+        cmdMapIter = __cmdMap.find(params[0]);
+        assert(cmdMapIter != __cmdMap.end() && "The command you are trying to execute does not exist in __cmdMap.");
+        __cmdMap[params[0]](params);
+    }catch(std::exception e)
+    {
+        cout << "Exception in CommandController executeCmd: " << e.what() << ". Maybe you forgot to insert the actual command. Please check." << endl;
+    }
 }
 
 /**
@@ -51,24 +79,6 @@ void CommandController::execute(const Ogre::StringVector &params)
 **/
 bool CommandController::init()
 {
-  /*
-  Ogre::String CHARLIST("charlist");
-  Ogre::String CHARLISTMESHES("charlistmeshes");
-  Ogre::String CHARCREATE("charcreate");
-  Ogre::String CHARATTACH("attachcamera");
-
-  //_charUtil.
-  //void (ZGame::Util::CharacterUtil::list)(std::vector<Ogre::String>) memPtr
-  COMMAND::ConsoleCommand cmd;
-  cmd.bind(&ZGame::Util::CharacterUtil::list,_charUtil.get());
-  addCommand(CHARLIST,cmd);
-  cmd.bind(&ZGame::Util::CharacterUtil::listMeshes,_charUtil.get());
-  addCommand(CHARLISTMESHES,cmd);
-  cmd.bind(&ZGame::Util::CharacterUtil::create,_charUtil.get());
-  addCommand(CHARCREATE,cmd);
-  cmd.bind(&ZGame::ControlModuleProto::attachNode,_controlModule);
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"init. command controller");
-  */
   return true;
 }
 

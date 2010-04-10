@@ -13,14 +13,11 @@ using namespace ZGame::Util;
 CharacterUtil::CharacterUtil() :
 _minExt(-10.0f,-1.0f,-1.0f),
 _maxExt(10.0f,1.0f,1.0f),
-_xDist(_minExt.x,_maxExt.x),
-_zDist(_minExt.z,_maxExt.z),
+_xDist(int(_minExt.x),int(_maxExt.x)),
+_zDist(int(_minExt.z),int(_maxExt.z)),
 _dist(_rng,_xDist,_zDist)
 {
-  Ogre::String CHARLIST("charlist");
-  Ogre::String CHARLISTMESHES("charlistmeshes");
-  Ogre::String CHARCREATE("charcreate");
-  Ogre::String NODELIST("nodelist");
+    using namespace ZGame::COMMAND; //namespace for the static const commands. It's for the CHARLIST etc...
   _rng.seed(time(0));
   ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
   COMMAND::ConsoleCommand cmd;
@@ -32,6 +29,11 @@ _dist(_rng,_xDist,_zDist)
   cmdCtrl->addCommand(CHARCREATE,cmd);
   cmd.bind(&ZGame::Util::CharacterUtil::listNodes,this);
   cmdCtrl->addCommand(NODELIST,cmd);
+  cmd.bind(&ZGame::Util::CharacterUtil::removeNode,this);
+  cmdCtrl->addCommand(NODEREMOVE,cmd);
+  
+ 
+  
 }
 
 void CharacterUtil::setInput()
@@ -86,13 +88,13 @@ bool CharacterUtil::listMeshes(const Ogre::StringVector &params)
 bool CharacterUtil::create(const Ogre::StringVector &params)
 {
   using namespace std;
-  if(params.size() != 2)
+  if(params.size() < 2)
   {
     printUsage(CREATE);
     return false;
   }
   //now ready to create.
-  bool created = createCharFromMesh(params[1]);
+  bool created = createCharFromMesh(params);
   if(!created)
   {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,"Something bad happened! charcreate failed!");
@@ -267,12 +269,13 @@ void CharacterUtil::listAllMeshes()
   }
 }
 
-bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
+bool CharacterUtil::createCharFromMesh(const Ogre::StringVector &params)
 {
   using namespace std;
   Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
   bool created = true;
   Ogre::MeshManager* meshMan = Ogre::MeshManager::getSingletonPtr();
+  Ogre::String meshName = params[1];
   //First let's see if the mesh exists.
   /*
   Ogre::MeshPtr theMesh = meshMan->getByName(meshName);
@@ -282,13 +285,21 @@ bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
     //if(theMesh->hasSkeleton())
     //{
       //Now everything is good to go. Create the scene nodes and attach mesh to it.
-      oss << "Creating character: " << meshName << "\n";
+      oss << "Creating character: " << params[1] << "\n";
       Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-      Ogre::String nodeName = meshName+"NODE";
+      Ogre::String nodeName;
+      //Ogre::String nodeName = meshName+"NODE";
       Ogre::String entName = "";
       Ogre::SceneNode* root = scnMgr->getRootSceneNode();
       //Ogre::SceneNode* node = root->createChildSceneNode(nodeName);
-      Ogre::SceneNode* node = root->createChildSceneNode();
+      Ogre::SceneNode* node;
+      if(params.size() == 2) //auto node name.
+        node = root->createChildSceneNode();
+      else if(params.size() == 3)
+      {
+          nodeName = params[2];
+          node = root->createChildSceneNode(nodeName);
+      }
       oss << "Created child node in root called: " << node->getName() << "\n";
       entName = meshName + node->getName();
       Ogre::Entity* entity = scnMgr->createEntity(entName,meshName);
@@ -297,7 +308,7 @@ bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
       //entity->scale(0.0078125,0.0078125,0.0078125);
       node->attachObject(entity);
       //node->setInheritScale(true);
-      node->setScale(0.01,0.01,0.01);
+      node->setScale(0.01f,0.01f,0.01f);
       Ogre::Vector3 pos;
       _dist.nextPosition(pos);
       oss << "Translating to position: " << pos << "\n";
@@ -331,4 +342,44 @@ bool CharacterUtil::createCharFromMesh(const Ogre::String &meshName)
   return created;
 }
 
+
+bool
+CharacterUtil::removeNode(const Ogre::StringVector &params)
+{
+    if(params.size() < 2)
+    {
+        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"Remove command is wrong. (Update this message to be more helpful, please!");
+        return false;
+    }
+    bool nodeRemoved = removeNodeWithName(params[1]);
+    if(!nodeRemoved)
+        Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,"Something bad happened. Node was not removed by NODEREMOVE command.");
+    return nodeRemoved;
+}
+
+bool
+CharacterUtil::removeNodeWithName(const Ogre::String &nodeName)
+{
+    Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
+    oss << "In CharacterUtil::removeNodeWithName" << "\n";
+    bool nodeRemoved = true;
+    Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
+    Ogre::SceneNode* root = scnMgr->getRootSceneNode();
+    Ogre::SceneNode* theNode = static_cast<Ogre::SceneNode*>(root->getChild(nodeName));
+    if(theNode == 0)
+    {
+        oss << "the node you are trying to remove is not there." << "\n";
+        return false;
+    }
+    //Detach all objects and remove them.
+    Ogre::Entity* ent;
+    for(size_t i = 0; i < theNode->numAttachedObjects(); ++i)
+    {
+        ent = static_cast<Ogre::Entity*>(theNode->detachObject(i)); //we have to positive the node only contain entities. That is the assumption right now for testing.
+        scnMgr->destroyEntity(ent);
+    }
+    root->removeAndDestroyChild(theNode->getName());
+    oss << "the node is removed!" << "\n";
+    return nodeRemoved;
+}
 

@@ -14,14 +14,11 @@ namespace ZGame
         typedef fd::delegate<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
         struct EntityAspects
         {
-            //LifeCycleEvent onInitClient;
-            //LifeCycleEvent onInitServer;
-            //LifeCycleEvent onDestroyClient;
-            //LifeCycleEvent onDestroyServer;
+            LifeCycle::LifeCycleEvent onDestroy;
             EntitySendConstruction onSendConstruction;
             EntityUpdateEvent onRead;
             EntityUpdateEvent onWrite;
-            
+
         };
         struct EntityLifeCycleObserver
         {

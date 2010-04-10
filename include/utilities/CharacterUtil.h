@@ -29,6 +29,8 @@ namespace ZGame
             bool listMeshes(const Ogre::StringVector &params);
 
             bool listNodes(const Ogre::StringVector &params);
+            /** \brief This function will remove a given node. */
+            bool removeNode(const Ogre::StringVector &params);
 
 
         private:
@@ -54,11 +56,11 @@ namespace ZGame
             //void listChar();
             void listAllMeshes();
             void listAllChars();
-            bool createCharFromMesh(const Ogre::String &meshName);
+            bool createCharFromMesh(const Ogre::StringVector &params);
             //print the usage.
             void printUsage(CHAR_CMDS_ENUM CMD_ENUM);
 
-
+            bool removeNodeWithName(const Ogre::String &nodeName);
 
         };
     }

@@ -180,7 +180,7 @@ NetServerController::processNewConnection(Packet* packet)
     PlayerEntity* plyEnt = new PlayerEntity();
     boost::shared_ptr<ZEntity> plyEntSmart(plyEnt);
     EntityAspects entAspects;
-    Entities::bindEntityAspects(entAspects,*plyEnt);
+    Entities::bindEntityAspectsServer(entAspects,*plyEnt);
     plyEnt->onInitServer();
     //Create the associated ZNetEntity.
     boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,packet->systemAddress,entAspects,true));

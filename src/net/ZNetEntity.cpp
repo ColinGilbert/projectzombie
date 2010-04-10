@@ -29,6 +29,7 @@ _isServer(isServer)
 ZNetEntity::~ZNetEntity()
 {
     cout << "In ZNetEntity::~ZNetEntity() " << endl;
+    _entityAspects.onDestroy();
     _replica.Destruct(this, UNASSIGNED_SYSTEM_ADDRESS, true);
     _replica.DereferencePointer(this);
 }

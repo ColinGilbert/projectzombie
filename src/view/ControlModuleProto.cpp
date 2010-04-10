@@ -151,13 +151,17 @@ namespace ZGame
 
     bool ControlModuleProto::onMouseMove(const OIS::MouseEvent &evt)
     {
-        //_cam->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)));
-        //_cam->pitch(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.Y.rel)));
+
         if(_lookAtNode)
         {
             //_cameraNode->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)),Ogre::Node::TS_WORLD);
             _cameraNode->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)));
             _cameraNode->pitch(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.Y.rel)));
+        }
+        else
+        {
+            _cam->yaw(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.X.rel)));
+            _cam->pitch(Radian(-Ogre::Math::DegreesToRadians(_rotFactor*evt.state.Y.rel)));
         }
 
 

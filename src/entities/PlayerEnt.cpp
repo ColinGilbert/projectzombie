@@ -1,3 +1,6 @@
+
+#include "CommandController.h"
+
 #include "net\ZNetEntityTypes.h"
 #include "entities\PlayerEnt.h"
 
@@ -8,7 +11,7 @@ using namespace ZGame::Entities;
 *\note for now the typeName is gotten from a static function. This will be changed to from database.
 *
 */
-PlayerEntity::PlayerEntity() : ZEntity("PLAYER_ENTITY","PLAYER_MESH")
+PlayerEntity::PlayerEntity() : ZEntity("PLAYER_ENTITY","ninja.mesh")
 //PlayerEntity::PlayerEntity(ReplicaManager &replica) : ZEntity("PLAYER_ENTITY","PLAYER_MESH"),
 //_replicaManager(replica)
 {
@@ -18,16 +21,51 @@ PlayerEntity::PlayerEntity() : ZEntity("PLAYER_ENTITY","PLAYER_MESH")
     //_typeName = types.str(); 
 }
 
+/**
+*This destroys the player entity.
+*
+*precondition: We assume that the CommandController will handle exceptions thrown by executing the remove node command.
+*/
+PlayerEntity::~PlayerEntity()
+{
+}
+
 bool
 PlayerEntity::onInitClient()
 {
-    //Here we attach 
+    cout << "In PlayerEntity::onInitClient" << endl;
+    //Let's create a character.
+    Ogre::StringVector cmd; 
+    //const string commands are found in CommandController.
+    cmd.push_back(COMMAND::CHARCREATE);
+    cmd.push_back(getMeshName());
+    cmd.push_back(getMeshName()+"NODE"); //the node parameter.
+    CommandController::getSingleton().executeCmd(cmd);
     return true;
 }
 
 bool
 PlayerEntity::onInitServer()
 {
+    cout << "In PlayerEntity::onInitServer" << endl;
+    return true;
+}
+
+bool
+PlayerEntity::onDestroyClient()
+{
+    cout << "In PlayerENtity::onDestroyClient()" << endl;
+    Ogre::StringVector cmd;
+    cmd.push_back(COMMAND::NODEREMOVE);
+    cmd.push_back(getMeshName()+"NODE");
+    CommandController::getSingleton().executeCmd(cmd);
+    return true;
+}
+
+bool
+PlayerEntity::onDestroyServer()
+{
+    cout << "In PlayerEntity::onDestroyServer()" << endl;
     return true;
 }
 

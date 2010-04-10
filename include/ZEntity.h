@@ -18,7 +18,7 @@ namespace ZGame
     {
     public:
         ZEntity(const Ogre::String &entName,const Ogre::String &meshName);
-        ~ZEntity();
+        virtual ~ZEntity();
 
         const Ogre::String getEntityName() {return _entName;}
         const Ogre::String getMeshName() {return _meshName;}
