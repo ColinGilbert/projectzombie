@@ -30,12 +30,10 @@ using namespace std;
 namespace ZGame
 {
 
-    EngineController::EngineController() :
+    EngineController::EngineController() : MainController(),
 _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
     new KeyboardPump()), _mousePump(new MousePump()),
-    _curStateInfo(0),_curGameState(0),
-    _commandController(new CommandController())
-
+    _curStateInfo(0),_curGameState(0)
 {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -234,12 +232,13 @@ EngineController::run()
 void
 EngineController::onDestroy()
 {
+    MainController::onDestroy();
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
         "EngineController.onDestroy()");
     try
     {
         _inController->onDestroy();
-        OgreConsole::getSingleton().shutdown();
+        //CommandController::getSingleton().onDestroy();
         //CLEAR _curStateInfo manaually. THIS clearly is a hack.
         //The reason being you are using auto_ptr to store the current state information, which you set by 
         //getting the reference from from GameStateInfoMap;  So when destructing,
@@ -283,20 +282,24 @@ EngineController::onKeyUp(const OIS::KeyEvent &event)
 bool
 EngineController::onKeyDown(const OIS::KeyEvent &event)
 {
-    bool consoleVis = OgreConsole::getSingleton().isVisible();
+    //We assume here the ogre console exists (has been created and attached to CommandController). This SHOULD be the case for EngineController, because we
+    //created the console in the initialization code in this controller. 
+    OgreConsole* ogreConsole = CommandController::getSingleton().getConsole();
+    bool consoleVis = ogreConsole->isVisible();
     //console
     if(event.key == OIS::KC_TAB)
     {
         if(consoleVis)
         {
             //turn off console
-            OgreConsole::getSingleton().setVisible(false);
+            ogreConsole->setVisible(false);
         }
         else
-            OgreConsole::getSingleton().setVisible(true);
+            ogreConsole->setVisible(true);
     }
 
-    OgreConsole::getSingleton().onKeyPressed(event);
+    ogreConsole->onKeyPressed(event);
+    //OgreConsole::getSingleton().onKeyPressed(event);
     if(!consoleVis)
     {
         _keyPump->updateKeyDownObs(event);
@@ -463,8 +466,9 @@ EngineController::realizeCurrentState()
 void 
 EngineController::initConsole()
 {
-    new OgreConsole(); //this is fine we are using Ogre template based singleton implementation.
-    OgreConsole::getSingleton().init(_root.get());
+    auto_ptr<OgreConsole> console(new OgreConsole());
+    console->init(_root.get());
+    CommandController::getSingleton().attachConsole(console); //CommandConstroller should exist by now. CommandController is created in EngineController (it's a service.)
 }
 
 void

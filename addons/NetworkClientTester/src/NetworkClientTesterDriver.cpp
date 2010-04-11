@@ -22,13 +22,13 @@ using namespace std;
 extern "C" {
 #endif
 
-    ZGame::MainController* engineControl = 0;
+    
 
     int
         main(int argc, char** argv)
     {
         using namespace ZGame;
-
+        ZGame::MainController* engineControl = 0;
         cout << "Starting NetClientTesterController." << endl;
 
         engineControl = new ZGame::NetworkClientTesterController();

@@ -9,7 +9,7 @@
 #define ENGINECONTROLLER_H_
 
 //#include <string>
-#include <memory>
+
 #include <vector>
 #include <Ogre.h>
 #include <fastdelegate/delegate.h>
@@ -36,7 +36,7 @@ namespace ZGame
     class LifeCyclePump;
     class KeyboardPump;
     class MousePump;
-    class CommandController;
+    class CommandController; //This is a service that should exist for all permuation of the Controller.
     class EngineController : public Ogre::FrameListener,
         public MainController
     {
@@ -101,7 +101,7 @@ namespace ZGame
 
     private:
 
-        auto_ptr<ZGame::CommandController> _commandController;
+        
         auto_ptr<ZGame::Networking::NetClientController> _netClient;
 
         Ogre::String _listenerID;

@@ -16,7 +16,7 @@ void stop_running_signal_handler(int signum)
 
 namespace ZGame
 {
-    ServerController::ServerController()
+    ServerController::ServerController() : MainController()
     {
     }
 

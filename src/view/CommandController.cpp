@@ -18,12 +18,12 @@ CommandController* Ogre::Singleton<CommandController>::ms_Singleton = 0;
 
 CommandController& CommandController::getSingleton()
 {
-  return *ms_Singleton;
+    return *ms_Singleton;
 }
 
 CommandController* CommandController::getSingletonPtr()
 {
-  return ms_Singleton;
+    return ms_Singleton;
 }
 
 
@@ -33,8 +33,20 @@ CommandController::CommandController() : _commandList(new COMMAND::CommandList()
 
 CommandController::~CommandController()
 {
-  cout << "In CommandController destructor." << endl;
-  delete _commandList;
+    cout << "In CommandController destructor." << endl;
+    //if(_console.get() != 0)
+        //_console.shutdown();
+    delete _commandList;
+}
+
+/**
+*precondition Ogre must still be valid at this point. What this means is you want to call this during the onDestroy life cycle. Ogre is guranteed to be still valid during that phase.
+*
+*/
+void CommandController::onDestroy()
+{
+    if(_console.get() != 0)
+        _console->shutdown();
 }
 
 /**
@@ -45,7 +57,7 @@ void CommandController::execute(const Ogre::StringVector &params)
 {
     try
     {
-    __cmdMap[params[0]](params);
+        __cmdMap[params[0]](params);
     }catch(Ogre::Exception e)
     {
         cout << "Caught Ogre exception in CommandController::execute" << endl;
@@ -80,14 +92,16 @@ CommandController::executeCmd(const Ogre::StringVector &params)
 **/
 bool CommandController::init()
 {
-  return true;
+    return true;
 }
 
 void CommandController::addCommand(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd)
 {
-  ZGame::OgreConsole* console = ZGame::OgreConsole::getSingletonPtr();
-  __cmdMap[cmdName]=cmd;
-  console->addCommand(cmdName,ZGame::CommandController::execute);
+    //ZGame::OgreConsole* console = ZGame::OgreConsole::getSingletonPtr();
+    __cmdMap[cmdName]=cmd;
+    if(_console.get() == 0) //is console attached?
+        return; //don't need to hook command up to console if it's not there.
+    _console->addCommand(cmdName,ZGame::CommandController::execute);
 }
 
 

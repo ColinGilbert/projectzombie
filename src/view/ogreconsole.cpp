@@ -8,7 +8,7 @@ using std::list;
 using namespace Ogre;
 using namespace ZGame;
 
-template<> OgreConsole *Singleton<OgreConsole>::ms_Singleton=0;
+//template<> OgreConsole *Singleton<OgreConsole>::ms_Singleton=0;
 
 #define CONSOLE_LINE_LENGTH 85
 #define CONSOLE_LINE_COUNT 15

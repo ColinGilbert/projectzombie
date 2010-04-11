@@ -26,6 +26,8 @@ namespace ZGame
         class CommandList;
     }
 
+    class OgreConsole;
+
     class CommandController : public Ogre::Singleton<CommandController>
     {
     public:
@@ -34,6 +36,10 @@ namespace ZGame
 
         bool init();
         void addCommand(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd);
+        void attachConsole(auto_ptr<OgreConsole> theConsole){ _console = theConsole;}
+        void onDestroy();
+
+        OgreConsole* getConsole(){ return _console.get(); } //Precondition: _console must valid!!!
         
         COMMAND::CommandList* getCommandList(){ return _commandList;}
 
@@ -49,6 +55,7 @@ namespace ZGame
 
     private:
         COMMAND::CommandList* _commandList;
+        auto_ptr<OgreConsole> _console;
     };
 }
 

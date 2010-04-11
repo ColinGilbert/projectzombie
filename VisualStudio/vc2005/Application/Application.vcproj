@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="NetworkClientTester"
-	ProjectGUID="{BF5F3A95-40B7-4B43-9AA6-5B323A2F1103}"
-	RootNamespace="NetworkClientTester"
+	Name="Application"
+	ProjectGUID="{B75071BE-7BBB-43DB-9F17-9AB16728DAB8}"
+	RootNamespace="Application"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\prjz\pznew\addons\NetworkClientTester\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;E:\Users\gnulinux\projects\prjz\pznew\src"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,9 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				UseLibraryDependencyInputs="true"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz.lib $(NOINHERIT)"
-				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz_d.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\projectz_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia;E:\Users\gnulinux\projects\ogresrc\build\lib\debug;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
@@ -120,6 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -138,8 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib $(NoInherit)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\projectz.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\build\lib\release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -181,11 +183,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\addons\NetworkClientTester\src\NetworkClientTesterController.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\addons\NetworkClientTester\src\NetworkClientTesterDriver.cpp"
+				RelativePath="..\..\..\src\ZombieDriver.cpp"
 				>
 			</File>
 		</Filter>
@@ -194,10 +192,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\..\addons\NetworkClientTester\include\NetworkClientTesterController.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -205,10 +199,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

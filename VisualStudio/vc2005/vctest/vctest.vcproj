@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="..\..\..\ZombieMedia"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="1"
 			>
 			<Tool
@@ -60,23 +60,11 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				LinkLibraryDependencies="false"
-				UseLibraryDependencyInputs="true"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib $(NOINHERIT)"
-				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\ogresrc\build\lib\debug;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
-				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -88,12 +76,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -101,7 +83,7 @@
 			Name="Release|Win32"
 			OutputDirectory="..\..\..\ZombieMedia\"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
@@ -142,22 +124,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				LinkLibraryDependencies="false"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib $(NOINHERIT)"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\build\lib\release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -167,12 +137,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -326,10 +290,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\model\ZEntity.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\ZombieDriver.cpp"
 				>
 			</File>
 			<Filter
