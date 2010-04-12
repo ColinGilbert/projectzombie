@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="true"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz.lib $(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz_d.lib $(NOINHERIT)"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia;E:\Users\gnulinux\projects\ogresrc\build\lib\debug;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"

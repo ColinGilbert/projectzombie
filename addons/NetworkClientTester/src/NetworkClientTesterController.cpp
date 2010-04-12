@@ -69,7 +69,6 @@ NetworkClientTesterController::run()
     {
         _netClient->onUpdate();
     }
-    _netClient->disconnect();
 }
 
 void
