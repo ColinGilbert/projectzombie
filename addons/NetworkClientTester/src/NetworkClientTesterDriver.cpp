@@ -9,7 +9,7 @@
 using namespace std;
 
 #include <tchar.h>
-#include <boost/thread/thread.hpp>
+
 #include <boost/random.hpp>
 #include <Ogre.h>
 
@@ -97,18 +97,23 @@ extern "C" {
         //CreateProcess(NULL,cmdLine[i],NULL,NULL,FALSE,CREATE_NEW_CONSOLE,NULL,NULL,&startInfoArray[0],&processInfoArray[0]))
         for(int i=0; i<numOfProcess; ++i)
         {
-            if(!CreateProcess(NULL,cmdLine[i],NULL,NULL,FALSE,CREATE_NEW_CONSOLE,NULL,NULL,&startInfoArray[0],&processInfoArray[0]))
+            if(!CreateProcess(NULL,cmdLine[i],NULL,NULL,FALSE,0,NULL,NULL,&startInfoArray[0],&processInfoArray[0]))
             {
                 cout << "CreateProcess failed at process #" << 0 << endl;
                 return 1;
             }
         }
 
+        HANDLE* handles = new HANDLE[numOfProcess];
+
         //Wait for child process to exit.
         for(int i=0; i < numOfProcess; ++i)
         {
-            WaitForSingleObject(processInfoArray[i].hProcess, INFINITE);
+            handles[i] = processInfoArray[i].hProcess;
+            //WaitForSingleObject(processInfoArray[i].hProcess, INFINITE);
         }
+
+        WaitForMultipleObjects(numOfProcess,handles,true,INFINITE); //true is wait for all.
 
         for(int i=0; i < numOfProcess; ++i)
         {
@@ -149,8 +154,6 @@ extern "C" {
         {
             retCode = runChildProcess();
             int waitForInput;
-            cout << "Please press input." << endl;
-            cin >> waitForInput;
         }
 
 

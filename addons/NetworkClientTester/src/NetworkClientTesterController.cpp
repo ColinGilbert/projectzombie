@@ -1,6 +1,10 @@
 #include <iostream>
 #include <csignal>
 using namespace std;
+
+#include <boost/thread/thread.hpp> //for thread sleep
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include "NetworkClientTesterController.h"
 
 using namespace ZGame;
@@ -68,6 +72,9 @@ NetworkClientTesterController::run()
     while(STILL_RUNNING_ME)
     {
         _netClient->onUpdate();
+        //Let's sleep for awhile. Before we don't have other processing going on.
+        using namespace boost::posix_time;
+        boost::thread::yield();
     }
 }
 
