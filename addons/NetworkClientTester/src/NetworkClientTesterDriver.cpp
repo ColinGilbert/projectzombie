@@ -5,7 +5,8 @@
 
 #include <iostream>
 #include <stdexcept>
-
+#include <algorithm>
+#include <csignal>
 using namespace std;
 
 #include <tchar.h>
@@ -29,6 +30,12 @@ extern "C" {
 
 
     static const int numOfProcess = 4; //WE ARE hardcoding this because we are not allocating the process infos on the heap.
+
+
+    void ignore_sigint_handler(int signum)
+    {
+        //ignore.
+    }
 
 
     int runChildProcess()
@@ -67,17 +74,62 @@ extern "C" {
         delete engineControl;
         return 0;
     }
+    int redirectStdout(const HANDLE &childStdOutRd, int processNumber)
+    {
+        for(;;)
+        {
+            DWORD dwAvail = 0;
+            if(!::PeekNamedPipe(childStdOutRd, NULL, 0, NULL, &dwAvail, NULL))
+                break; //error, the child process might ended.
 
+            if(!dwAvail) //no data available, return
+                return 1;
 
+            char szOutput[256];
+            DWORD dwRead = 0;
+            if(!::ReadFile(childStdOutRd, szOutput, std::min((DWORD)255, dwAvail),
+                &dwRead, NULL) || !dwRead)
+                break;
 
+            szOutput[dwRead] = 0; //null termination.
+            cout << "[Process #" << processNumber << "]: " << szOutput;
+        }
+
+    }
     int spawnChildProcesses(DWORD exitCodes[])
     {
+        //Let's register for SIGINT signal. So we can ignore it in the master process.
+        signal(SIGINT,ignore_sigint_handler);
+
         STARTUPINFO startInfoArray[numOfProcess];
         PROCESS_INFORMATION processInfoArray[numOfProcess];
+        HANDLE childStdOutRdArray[numOfProcess];
+        HANDLE childStdOutWrArray[numOfProcess];
+        SECURITY_ATTRIBUTES saAttr;
+
+        saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+        saAttr.bInheritHandle = TRUE;
+        saAttr.lpSecurityDescriptor = NULL;
+        //Initialize the child std out pipe.
+        for(int i=0; i<numOfProcess; ++i)
+        {
+            if(!CreatePipe(&childStdOutRdArray[i], &childStdOutWrArray[i], &saAttr, 0))
+                return 1;//ErrorExit(TEXT("Stdout read CreatePipe"));
+            //Ensure the read handle to the pipe for STDOUT is not inherited.
+            if(!SetHandleInformation(childStdOutRdArray[i], HANDLE_FLAG_INHERIT, 0))
+                return 1;//ErrorExit(TEXT("Stdout SetHandleInformation"));
+        }
+
+        ////////////////Create the child process.///////////////////////
+
         for(int i=0; i<numOfProcess; ++i)
         {
             ZeroMemory(&startInfoArray[i], sizeof(startInfoArray[i]));
+            //Setup the members of STARTUPINFO. This structure specified the STDIN and STDOUT handles for redirection.
             startInfoArray[i].cb = sizeof(startInfoArray[i]);
+            startInfoArray[i].hStdError = childStdOutWrArray[i];
+            startInfoArray[i].hStdOutput = childStdOutWrArray[i];
+            startInfoArray[i].dwFlags |= STARTF_USESTDHANDLES;
             ZeroMemory(&processInfoArray[i], sizeof(processInfoArray[i]));
         }
 
@@ -97,7 +149,7 @@ extern "C" {
         //CreateProcess(NULL,cmdLine[i],NULL,NULL,FALSE,CREATE_NEW_CONSOLE,NULL,NULL,&startInfoArray[0],&processInfoArray[0]))
         for(int i=0; i<numOfProcess; ++i)
         {
-            if(!CreateProcess(NULL,cmdLine[i],NULL,NULL,FALSE,0,NULL,NULL,&startInfoArray[0],&processInfoArray[0]))
+            if(!CreateProcess(NULL,cmdLine[i],NULL,NULL,TRUE,0,NULL,NULL,&startInfoArray[i],&processInfoArray[i]))
             {
                 cout << "CreateProcess failed at process #" << 0 << endl;
                 return 1;
@@ -113,7 +165,21 @@ extern "C" {
             //WaitForSingleObject(processInfoArray[i].hProcess, INFINITE);
         }
 
-        WaitForMultipleObjects(numOfProcess,handles,true,INFINITE); //true is wait for all.
+        //The output pipe look.
+        for(;;)
+        {
+            DWORD dwRc;
+            dwRc = WaitForMultipleObjects(numOfProcess,handles,true,500); //true is wait for all. Wait for 500ms.
+            
+            for(int i=0; i < numOfProcess; ++i)
+            {
+                redirectStdout(childStdOutRdArray[i],i);
+            }
+
+            if(dwRc != WAIT_TIMEOUT) //We only care about continuing the loop if we timed out. Otherwise, this means wait exited other than timing out. So break!
+                break;
+           
+        }
 
         for(int i=0; i < numOfProcess; ++i)
         {
@@ -153,7 +219,6 @@ extern "C" {
         else if (argc > 1)
         {
             retCode = runChildProcess();
-            int waitForInput;
         }
 
 
