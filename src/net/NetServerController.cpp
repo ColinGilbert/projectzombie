@@ -2,6 +2,8 @@
 
 #include <BitStream.h>
 
+using namespace std;
+
 #include "net/NetServerController.h"
 #include "entities/PlayerEnt.h"
 #include "DelegatesUtil.h"

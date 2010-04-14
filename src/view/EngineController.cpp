@@ -167,13 +167,15 @@ void
 EngineController::injectInputSubject()
 {
     ZGame::EVENT::KeyboardEvtObserver keyObs;
-    keyObs.kde.bind(&ZGame::EngineController::onKeyDown, this);
-    keyObs.kue.bind(&ZGame::EngineController::onKeyUp, this);
+    //keyObs.kde.bind(&ZGame::EngineController::onKeyDown, this);
+    keyObs.kde.bind(this,&ZGame::EngineController::onKeyDown);
+    //keyObs.kue.bind(&ZGame::EngineController::onKeyUp, this);
+    keyObs.kue.bind(this,&ZGame::EngineController::onKeyUp);
     _inController->addKeyListeners(_listenerID, keyObs);
     ZGame::EVENT::MouseEvtObserver mouseObs;
-    mouseObs.mde.bind(&ZGame::EngineController::onMouseDown, this);
-    mouseObs.mue.bind(&ZGame::EngineController::onMouseUp, this);
-    mouseObs.mme.bind(&ZGame::EngineController::onMouseMove, this);
+    mouseObs.mde.bind(this,&ZGame::EngineController::onMouseDown);
+    mouseObs.mue.bind(this,&ZGame::EngineController::onMouseUp);
+    mouseObs.mme.bind(this,&ZGame::EngineController::onMouseMove);
     _inController->addMouseListeners(_listenerID, mouseObs);
 }
 
@@ -427,13 +429,13 @@ EngineController::realizeCurrentState()
 
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
-        lcs.bind(&LifeCyclePump::addLifeCycleObserver, _lfcPump.get());
+        lcs.bind(_lfcPump.get(), &LifeCyclePump::addLifeCycleObserver);
         //Keyboard subject
         EVENT::KeyEvtSubject ks; //keyboard subject
-        ks.bind(&KeyboardPump::addKeyboardObserver, _keyPump.get());
+        ks.bind(_keyPump.get(), &KeyboardPump::addKeyboardObserver);
         //Inject Mouse subject
         EVENT::MouseEvtSubject ms;
-        ms.bind(&MousePump::addMouseObserver, _mousePump.get());
+        ms.bind(_mousePump.get(),&MousePump::addMouseObserver);
 
         //Registers for events
         LifeCycleRegister lfcReg;

@@ -1,47 +1,48 @@
 /*
- * ZombieDefs.h
- *
- *  Created on: Aug 24, 2008
- *      Author: bey0nd
- */
+* ZombieDefs.h
+*
+*  Created on: Aug 24, 2008
+*      Author: bey0nd
+*/
 
 #ifndef ZOMBIEDEFS_H_
 #define ZOMBIEDEFS_H_
 
 #define OIS_DYNAMIC_LIB
 #include <OIS/OIS.h>
-#include "fastdelegate/delegate.h"
+#include "fastdelegate/FastDelegate.h"
 
 namespace ZGame
 {
-  namespace EVENT
-  {
-    typedef fd::delegate<bool(const OIS::MouseEvent&)> ZMouseMoveEvt;
-    typedef fd::delegate<bool(const OIS::MouseEvent&,const OIS::MouseButtonID)> ZMouseUpEvt;
-    typedef fd::delegate<bool(const OIS::MouseEvent&,const OIS::MouseButtonID)> ZMouseDownEvt;
-    typedef fd::delegate<bool(const OIS::KeyEvent&)> ZKeyUpEvt;
-    typedef fd::delegate<bool(const OIS::KeyEvent&)> ZKeyDownEvt;
-
-    struct MouseEvtObserver
+    namespace EVENT
     {
-      ZMouseMoveEvt mme;
-      ZMouseUpEvt mue;
-      ZMouseDownEvt mde;
-    };
+        using namespace fastdelegate;
+        typedef FastDelegate<bool(const OIS::MouseEvent&) > ZMouseMoveEvt;
+        typedef FastDelegate<bool(const OIS::MouseEvent&, const OIS::MouseButtonID) > ZMouseUpEvt;
+        typedef FastDelegate<bool(const OIS::MouseEvent&, const OIS::MouseButtonID) > ZMouseDownEvt;
+        typedef FastDelegate<bool(const OIS::KeyEvent&) > ZKeyUpEvt;
+        typedef FastDelegate<bool(const OIS::KeyEvent&) > ZKeyDownEvt;
 
-    struct KeyboardEvtObserver
-    {
-      ZKeyUpEvt kue;
-      ZKeyDownEvt kde;
-    };
+        struct MouseEvtObserver
+        {
+            ZMouseMoveEvt mme;
+            ZMouseUpEvt mue;
+            ZMouseDownEvt mde;
+        };
+
+        struct KeyboardEvtObserver
+        {
+            ZKeyUpEvt kue;
+            ZKeyDownEvt kde;
+        };
 
 
 
-    typedef fd::delegate<void(const KeyboardEvtObserver&)> KeyEvtSubject;
-    typedef fd::delegate<void(const MouseEvtObserver&)> MouseEvtSubject;
-    typedef fd::delegate<void(const KeyEvtSubject&)> KeyEvtSubjectInjector;
+        typedef FastDelegate<void(const KeyboardEvtObserver&) > KeyEvtSubject;
+        typedef FastDelegate<void(const MouseEvtObserver&) > MouseEvtSubject;
+        typedef FastDelegate<void(const KeyEvtSubject&) > KeyEvtSubjectInjector;
 
-  }
+    }
 
 }
 

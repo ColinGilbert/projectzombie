@@ -25,12 +25,12 @@ namespace ZGame
     bool updateMouseDownEvt(const OIS::MouseEvent& evt,const OIS::MouseButtonID bId);
     void removeAllObs();
   protected:
-    typedef vector<ZGame::EVENT::ZMouseMoveEvt>::iterator MoveObsItr;
-    typedef vector<ZGame::EVENT::ZMouseUpEvt>::iterator UpObsItr;
-    typedef vector<ZGame::EVENT::ZMouseDownEvt>::iterator DownObsItr;
-    vector<ZGame::EVENT::ZMouseMoveEvt> _moveObs;
-    vector<ZGame::EVENT::ZMouseUpEvt> _upObs;
-    vector<ZGame::EVENT::ZMouseDownEvt> _downObs;
+      typedef std::vector<ZGame::EVENT::ZMouseMoveEvt>::iterator MoveObsItr;
+      typedef std::vector<ZGame::EVENT::ZMouseUpEvt>::iterator UpObsItr;
+      typedef std::vector<ZGame::EVENT::ZMouseDownEvt>::iterator DownObsItr;
+      std::vector<ZGame::EVENT::ZMouseMoveEvt> _moveObs;
+      std::vector<ZGame::EVENT::ZMouseUpEvt> _upObs;
+      std::vector<ZGame::EVENT::ZMouseDownEvt> _downObs;
 
   };
 

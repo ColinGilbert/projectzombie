@@ -4,13 +4,17 @@
 #include <vector>
 
 #include <Ogre.h>
-#include "fastdelegate/delegate.h"
+#include "fastdelegate/FastDelegate.h"
 
 namespace ZGame
 {
     namespace COMMAND
     {
-        typedef fd::delegate<bool(const Ogre::StringVector &params)> ConsoleCommand;
+        //typedef fastdelegate::FastDelegate1<bool(const Ogre::StringVector &params)> ConsoleCommand;
+        typedef fastdelegate::FastDelegate<bool(const Ogre::StringVector &params) > ConsoleCommand;
+        
+        //typedef fastdelegate::FastDelegate1<bool(const Ogre::StringVector &params) > ConsoleCommand;
+        //typedef fastdelegate::FastDelegate1<const Ogre::StringVector &params, bool> ConsoleCommand;
         //typedef fd::delegate<int(const Ogre::StringVector &params)> ConsoleCommandIntRt;
     }
 }

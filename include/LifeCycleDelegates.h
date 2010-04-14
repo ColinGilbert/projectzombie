@@ -10,15 +10,16 @@
 
 #include <Ogre.h>
 
-#include "fastdelegate/delegate.h"
+#include "fastdelegate/FastDelegate.h"
 
 namespace ZGame
 {
   namespace LifeCycle
     {
+        using namespace fastdelegate;
 
-      typedef fd::delegate<bool(void)> LifeCycleEvent;
-      typedef fd::delegate<bool(const Ogre::FrameEvent &evt)> LifeCycleEvent2;
+      typedef FastDelegate<bool(void) > LifeCycleEvent;
+      typedef FastDelegate<bool(const Ogre::FrameEvent &evt) > LifeCycleEvent2;
 
       struct LifeCycleObserver
             {
@@ -28,8 +29,12 @@ namespace ZGame
               LifeCycleEvent onDestroy;
             };
 
-      typedef fd::delegate<void(LifeCycleObserver)> LifeCycleSubject;
-      typedef fd::delegate<void(LifeCycleSubject&)> LifeCycleSubjectInjector;
+      //typedef FastDelegate<void(LifeCycleObserver) > LifeCycleSubject;
+      //typedef FastDelegate<void(LifeCycleSubject&) > LifeCycleSubjectInjector;
+
+      typedef FastDelegate<void(const LifeCycleObserver&) > LifeCycleSubject;
+      typedef FastDelegate1<LifeCycleSubject& > LifeCycleSubjectInjector;
+
 
 
 

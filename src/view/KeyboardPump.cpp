@@ -21,9 +21,9 @@ KeyboardPump::~KeyboardPump()
 
 void KeyboardPump::addKeyboardObserver(const ZGame::EVENT::KeyboardEvtObserver &obs)
 {
-  if(obs.kde != 0)
+  if(obs.kde)
     _onKeyDownObs.push_back(obs.kde);
-  if(obs.kde != 0)
+  if(obs.kde)
     _onKeyUpObs.push_back(obs.kue);
 }
 

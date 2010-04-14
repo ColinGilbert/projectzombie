@@ -4,6 +4,7 @@
 #include <memory>
 #include <Ogre.h>
 #include <string>
+
 #include "Command.h"
 #include "EngineView.h"
 #include "Controller.h"
@@ -11,7 +12,7 @@
 namespace ZGame
 {
    
-    class OgreConsole;
+    class OgreConsole; 
     /*
     namespace Util
     {
@@ -21,8 +22,7 @@ namespace ZGame
     //class ControlModuleProto;
 
     namespace COMMAND
-    {
-        
+    {       
         class CommandList;
     }
 
@@ -36,10 +36,10 @@ namespace ZGame
 
         bool init();
         void addCommand(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd);
-        void attachConsole(auto_ptr<OgreConsole> theConsole){ _console = theConsole;}
+        void attachConsole(std::auto_ptr<OgreConsole> theConsole);
         void onDestroy();
 
-        OgreConsole* getConsole(){ return _console.get(); } //Precondition: _console must valid!!!
+        OgreConsole* getConsole(); //Precondition: _console must valid!!!
         
         COMMAND::CommandList* getCommandList(){ return _commandList;}
 
@@ -55,7 +55,8 @@ namespace ZGame
 
     private:
         COMMAND::CommandList* _commandList;
-        auto_ptr<OgreConsole> _console;
+        std::auto_ptr<OgreConsole> _console;
+        //OgreConsole* _console; //we're going to use an naked pointer here.
     };
 }
 

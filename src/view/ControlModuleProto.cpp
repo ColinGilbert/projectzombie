@@ -36,7 +36,8 @@ namespace ZGame
         Ogre::String CAMERAATTACH("camera_attach");
         ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
         COMMAND::ConsoleCommand cmd;
-        cmd.bind(&ZGame::ControlModuleProto::attachNode,this);
+        //cmd.bind(this,&ZGame::ControlModuleProto::attachNode);
+        cmd.bind(this,&ZGame::ControlModuleProto::attachNode);
         cmdCtrl->addCommand(CAMERAATTACH,cmd);
         _transMode[forw]=false;
         _transMode[backw]=false;

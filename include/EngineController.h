@@ -12,7 +12,6 @@
 
 #include <vector>
 #include <Ogre.h>
-#include <fastdelegate/delegate.h>
 #include <OIS/OIS.h>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/xtime.hpp>

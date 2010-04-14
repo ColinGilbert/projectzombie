@@ -29,10 +29,10 @@ namespace ZGame
   protected:
       MainController():_commandController(new CommandController())
       {
-          cout << "In MainController default constructor" << endl;
+          std::cout << "In MainController default constructor" << std::endl;
       }
 
-      auto_ptr<ZGame::CommandController> _commandController;
+      std::auto_ptr<ZGame::CommandController> _commandController;
 
   };
 }

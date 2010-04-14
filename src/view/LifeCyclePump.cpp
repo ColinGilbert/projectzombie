@@ -24,11 +24,11 @@ void
 LifeCyclePump::addLifeCycleObserver(
     const ZGame::LifeCycle::LifeCycleObserver &obs)
 {
-  if (obs.onInit != 0)
+  if (obs.onInit)
     _onInitObs.push_back(obs.onInit);
-  if (obs.onUpdate != 0)
+  if (obs.onUpdate)
     _onUpdateObs.push_back(obs.onUpdate);
-  if (obs.onDestroy != 0)
+  if (obs.onDestroy)
     _onDestroyObs.push_back(obs.onDestroy);
 }
 

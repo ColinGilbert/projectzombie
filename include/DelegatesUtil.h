@@ -25,9 +25,9 @@ namespace ZGame
         static void bindLifeCycleObserver(LifeCycleObserver &lfcObs,
             T& binder)
         {
-            lfcObs.onInit.bind(&T::onInit,&binder);
-            lfcObs.onUpdate.bind(&T::onUpdate,&binder);
-            lfcObs.onDestroy.bind(&T::onDestroy,&binder);
+            lfcObs.onInit.bind(&binder,&T::onInit);
+            lfcObs.onUpdate.bind(&binder,&T::onUpdate);
+            lfcObs.onDestroy.bind(&binder,&T::onDestroy);
         }
     }
     namespace Entities
@@ -36,21 +36,21 @@ namespace ZGame
         static void bindEntityLifeCycleObserver(EntityLifeCycleObserver &lfcObs,
             T& binder)
         {
-            lfcObs.onInit.bind(&T::onInit,&binder);
-            lfcObs.onUpdate.bind(&T::onUpdate,&binder);
-            lfcObs.onDestroy.bind(&T::onDestroy,&binder)
+            lfcObs.onInit.bind(&binder,&T::onInit);
+            lfcObs.onUpdate.bind(&binder,&T::onUpdate);
+            lfcObs.onDestroy.bind(&binder,&T::onDestroy)
         }
 
         template<typename T>
         static void bindEntityAspects(EntityAspects &aspects, T& binder, bool isServer)
         {
             if(isServer)
-                aspects.onDestroy.bind(&T::onDestroyServer,&binder);
+                aspects.onDestroy.bind(&binder,&T::onDestroyServer);
             else
-                aspects.onDestroy.bind(&T::onDestroyClient,&binder);
-            aspects.onSendConstruction.bind(&T::onSendConstruction,&binder);
-            aspects.onRead.bind(&T::onRead,&binder);
-            aspects.onWrite.bind(&T::onWrite,&binder);
+                aspects.onDestroy.bind(&binder,&T::onDestroyClient);
+            aspects.onSendConstruction.bind(&binder,&T::onSendConstruction);
+            aspects.onRead.bind(&binder,&T::onRead);
+            aspects.onWrite.bind(&binder,&T::onWrite);
         }
     }
     namespace EVENT
@@ -59,8 +59,8 @@ namespace ZGame
         static void bindKeyObserver(KeyboardEvtObserver &keyObs,
             T& binder)
         {
-            keyObs.kde.bind(&T::onKeyDown,&binder);
-            keyObs.kue.bind(&T::onKeyUp,&binder);
+            keyObs.kde.bind(&binder,&T::onKeyDown);
+            keyObs.kue.bind(&binder,&T::onKeyUp);
         }
         static void clearKeyObs(EVENT::KeyboardEvtObserver &keyObs)
         {
@@ -71,9 +71,9 @@ namespace ZGame
         static void bindMouseObserver(MouseEvtObserver &mouseObs,
             T& binder)
         {
-            mouseObs.mde.bind(&T::onMouseDown,&binder);
-            mouseObs.mme.bind(&T::onMouseMove,&binder);
-            mouseObs.mue.bind(&T::onMouseUp,&binder);
+            mouseObs.mde.bind(&binder,&T::onMouseDown);
+            mouseObs.mme.bind(&binder,&T::onMouseMove);
+            mouseObs.mue.bind(&binder,&T::onMouseUp);
         }
         static void clearMouseObs(EVENT::MouseEvtObserver &mouseObs)
         {

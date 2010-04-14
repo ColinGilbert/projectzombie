@@ -72,10 +72,10 @@ namespace ZGame
         OIS::Mouse *_mouse;
         OIS::Keyboard *_keyb;
 
-        vector<bool> _keyStates;
+        std::vector<bool> _keyStates;
 
-        typedef map<Ogre::String, ZGame::EVENT::KeyboardEvtObserver> KeyObsType;
-        typedef map<Ogre::String, ZGame::EVENT::MouseEvtObserver> MouseObsType;
+        typedef std::map<Ogre::String, ZGame::EVENT::KeyboardEvtObserver> KeyObsType;
+        typedef std::map<Ogre::String, ZGame::EVENT::MouseEvtObserver> MouseObsType;
         typedef KeyObsType::iterator KeyObsIterator;
         typedef MouseObsType::iterator MouseObsIterator;
         KeyObsType _keyObservers;

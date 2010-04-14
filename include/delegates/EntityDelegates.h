@@ -10,8 +10,10 @@ namespace ZGame
 {
     namespace Entities
     {
-        typedef fd::delegate<bool(Ogre::Vector3 &pos, Ogre::Quaternion &orient) > EntityUpdateEvent;
-        typedef fd::delegate<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
+        //typedef FastDelegate2<bool(Ogre::Vector3 &pos, Ogre::Quaternion &orient) > EntityUpdateEvent;
+        typedef fastdelegate::FastDelegate<bool(Ogre::Vector3 &pos, Ogre::Quaternion &orient) > EntityUpdateEvent;
+        //typedef FastDelegate2<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
+        typedef fastdelegate::FastDelegate<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
         struct EntityAspects
         {
             LifeCycle::LifeCycleEvent onDestroy;

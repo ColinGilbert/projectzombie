@@ -22,11 +22,11 @@ namespace ZGame
   }
   void MousePump::addMouseObserver(const ZGame::EVENT::MouseEvtObserver &obs)
   {
-    if(obs.mde !=0)
+    if(obs.mde)
       _downObs.push_back(obs.mde);
-    if(obs.mue !=0)
+    if(obs.mue)
       _upObs.push_back(obs.mue);
-    if(obs.mme !=0)
+    if(obs.mme)
       _moveObs.push_back(obs.mme);
   }
   bool MousePump::updateMouseDownEvt(const OIS::MouseEvent &evt, const OIS::MouseButtonID bId)

@@ -39,6 +39,20 @@ CommandController::~CommandController()
     delete _commandList;
 }
 
+void 
+CommandController::attachConsole(std::auto_ptr<OgreConsole> theConsole)
+{
+    _console = theConsole;
+}
+
+OgreConsole* 
+CommandController::getConsole()
+{ 
+    return _console.get(); 
+}
+
+
+
 /**
 *precondition Ogre must still be valid at this point. What this means is you want to call this during the onDestroy life cycle. Ogre is guranteed to be still valid during that phase.
 *
