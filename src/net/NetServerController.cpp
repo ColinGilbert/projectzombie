@@ -174,35 +174,30 @@ NetServerController::processNewConnection(Packet* packet)
 {
     using namespace Entities;
     using namespace Networking;
+    bool isServer = true;
     cout << "In NetServerController::processNewConnection" << endl;
+    
     ReplicaManager* replicaManager = getReplicaManager();
-    //Create ZNetEntity.
-    boost::shared_ptr<ZNetEntity> netEntSmart(new ZNetEntity(*replicaManager,packet->systemAddress,true));
+
+    /////////////CREATE COMPOSITE SERVER PLAYER_TYPE///////////////
+    boost::shared_ptr<ZNetEntity> netEntSmart;
+    boost::shared_ptr<ZEntity> plyEntSmart;
+    PlayerEntity* nakedEntPtr = 0;
+
+    //server-side composite entity construction. Since we are on the server, we don't need to pass NetworkID (see below.) true is server.
+    //Note: Need to pass in NetworkIDManager for server because GetNetworkID will crash. Unless you call replicaManager->DisableReplicaInterface first.
+    constructCompositeZNetEntity(plyEntSmart, netEntSmart, nakedEntPtr, replicaManager, packet->systemAddress, 0, isServer);
+
+    ////////////Replica manager server/client construction.//////////////////////////////
     //Disable server-side specific interfaces.
     replicaManager->DisableReplicaInterfaces(netEntSmart.get(), 
-        REPLICA_RECEIVE_DESTRUCTION | REPLICA_RECEIVE_SCOPE_CHANGE);
-
-    NetworkID netId = netEntSmart->GetNetworkID(); //Gets the ID which (according to the docs) should have been set already. We are the server.
-
-    //In the future we should these from DB. We create a DB loader, and pass PlayerEntity (which is ZEntity) to it, and it will fill the meta info from DB. ZEntity is a "state."
-    ostringstream oss;
-    oss << "Entity" << netId.localSystemAddress;
-    //we need to create the Player Entity. Note: We use the network ID as a unique entity name.
-    PlayerEntity* plyEnt = new PlayerEntity();
-    plyEnt->setEntityName(oss.str());
-    boost::shared_ptr<ZEntity> plyEntSmart(plyEnt);
-    EntityAspects entAspects;
-    Entities::bindEntityAspectsServer(entAspects,*plyEnt);
-    plyEnt->onInitServer();
+                    REPLICA_RECEIVE_DESTRUCTION | REPLICA_RECEIVE_SCOPE_CHANGE);
     
-    netEntSmart->setEntityAspects(entAspects); //DO NOT FORGET to set entity aspects before you send construction!!! replica should throw!!!
-
     //Now the composite entity is considered created, let's send the Construct event. We set broadcast to true to send to everyone.
     replicaManager->Construct(netEntSmart.get(),false,UNASSIGNED_SYSTEM_ADDRESS,true);
 
+    ////////////Entity management.//////////////////////////
     cout << "SystemAddress mapped to the Net Entity: " << packet->systemAddress.ToString() << endl;
-    //cout << "NetID: systemAddress: " << netId.systemAddress.ToString() 
-        //<< " localSystemAddress: " << netId.localSystemAddress << endl;
     //Let NetEntityManager manage the entities.
     netEntManagerServer.addEntity(packet->systemAddress,netEntSmart,plyEntSmart);
     cout << "New Connection processed." << endl;

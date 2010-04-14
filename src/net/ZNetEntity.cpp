@@ -11,6 +11,8 @@ using namespace ZGame;
 using namespace Networking;
 
 
+
+
 ZNetEntity::ZNetEntity(ReplicaManager &replica,SystemAddress initatorAddress,
                        bool isServer) : 
 _replica(replica), _initatorAddress(initatorAddress),
@@ -84,7 +86,7 @@ ZNetEntity::ReceiveDestruction(RakNet::BitStream* inBitStream, SystemAddress sys
     //He only has a single Replica for Player, and a Single repliac for Monster. Where we need to have N number of replicas. Another way to do this is to generate an event,
     //and return. The system will detect this event outside and handle it.
     cout << "In ZEntity ReceiveDestruction" << endl;
-    
+
     if(!_isServer)
     {
         NetClientController::netEntManagerClient.clearEntity(this->GetNetworkID());

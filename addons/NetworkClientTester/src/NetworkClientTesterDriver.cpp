@@ -170,7 +170,7 @@ extern "C" {
         {
             DWORD dwRc;
             dwRc = WaitForMultipleObjects(numOfProcess,handles,true,500); //true is wait for all. Wait for 500ms.
-            
+
             for(int i=0; i < numOfProcess; ++i)
             {
                 redirectStdout(childStdOutRdArray[i],i);
@@ -178,7 +178,7 @@ extern "C" {
 
             if(dwRc != WAIT_TIMEOUT) //We only care about continuing the loop if we timed out. Otherwise, this means wait exited other than timing out. So break!
                 break;
-           
+
         }
 
         for(int i=0; i < numOfProcess; ++i)

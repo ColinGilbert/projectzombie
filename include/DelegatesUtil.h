@@ -40,18 +40,14 @@ namespace ZGame
             lfcObs.onUpdate.bind(&T::onUpdate,&binder);
             lfcObs.onDestroy.bind(&T::onDestroy,&binder)
         }
+
         template<typename T>
-        static void bindEntityAspectsClient(EntityAspects &aspects, T& binder)
+        static void bindEntityAspects(EntityAspects &aspects, T& binder, bool isServer)
         {
-            aspects.onDestroy.bind(&T::onDestroyClient,&binder);
-            aspects.onSendConstruction.bind(&T::onSendConstruction,&binder);
-            aspects.onRead.bind(&T::onRead,&binder);
-            aspects.onWrite.bind(&T::onWrite,&binder);
-        }
-        template<typename T>
-        static void bindEntityAspectsServer(EntityAspects &aspects, T& binder)
-        {
-            aspects.onDestroy.bind(&T::onDestroyServer,&binder);
+            if(isServer)
+                aspects.onDestroy.bind(&T::onDestroyServer,&binder);
+            else
+                aspects.onDestroy.bind(&T::onDestroyClient,&binder);
             aspects.onSendConstruction.bind(&T::onSendConstruction,&binder);
             aspects.onRead.bind(&T::onRead,&binder);
             aspects.onWrite.bind(&T::onWrite,&binder);

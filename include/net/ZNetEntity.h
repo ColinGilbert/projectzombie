@@ -9,13 +9,15 @@
 
 #include <Ogre.h>
 
-#include "RakNetTypes.h"
-#include "PacketPriority.h"
-#include "ReplicaEnums.h"
-#include "Replica.h"
-#include "ReplicaManager.h"
+#include <RakNetTypes.h>
+#include <PacketPriority.h>
+#include <ReplicaEnums.h>
+#include <Replica.h>
+#include <ReplicaManager.h>
+
 #include "ZEntity.h"
 #include "delegates/EntityDelegates.h"
+#include "DelegatesUtil.h"
 
 using namespace RakNet;
 namespace ZGame
@@ -25,7 +27,7 @@ namespace ZGame
         class ZNetEntity : public Replica
         {
         public:
-            
+
             /** \brief Constructor for this class which takes in entity and mesh names.
             *
             * The constructor maps directly the entity name and mesh name into Ogre entity and mesh.
@@ -84,6 +86,61 @@ namespace ZGame
             bool _isServer;
             //Ogre::String _typeStr;
         };
+
+
+        //static methods.
+        /*\brief This templated static method will construct the composite ZNetEntity given EntityClass.
+        *
+        *\precondition: We expect EntityClass dervies from ZEntity, and thus we will not do any type checking here.
+        *\postcondition: the composite entity is created.
+        *\note: For server you need to pass in the NetworkIDManager. It seems that if you call GetNetworkID() before calling construction (or DisableInterface) of replica it will crash.
+        */
+        ///////////template methods//////////////////
+        template<typename EntityClass>
+        void
+            constructCompositeZNetEntity(boost::shared_ptr<ZEntity> &entityShrPtr, boost::shared_ptr<ZNetEntity> &znetEntityShrPtr,EntityClass* entPtr,
+            ReplicaManager* replicaManager, SystemAddress creatorAddress, NetworkID* netId,
+            bool isServer)
+        {
+            cout << "In ZNetEntity construct composite ZNetEntity." << endl;
+
+            //create ZNetEntity.
+            entPtr = new EntityClass();
+            znetEntityShrPtr.reset(new ZNetEntity(*replicaManager, creatorAddress, isServer));
+            entityShrPtr.reset(static_cast<ZEntity*>(entPtr));
+
+
+            if(isServer)
+            {
+                //Note: We need to call this in order to get around a bug in Raknet (crashes if we don't call.) If we manually set the NetworkIDManager right after creating the replica, it will work.
+                //Instead, let's just call disable replica interface. One can call this function elsewhere after the composite object has been created. It won't affect anything.
+                replicaManager->DisableReplicaInterfaces(znetEntityShrPtr.get(), 
+                    REPLICA_RECEIVE_DESTRUCTION | REPLICA_RECEIVE_SCOPE_CHANGE); 
+                NetworkID nid;
+                nid = znetEntityShrPtr->GetNetworkID();
+                ostringstream oss;
+                oss << "Entity" << nid.localSystemAddress;
+                entPtr->setEntityName(oss.str());
+            }
+            else
+            {
+                znetEntityShrPtr->SetNetworkID(*netId);
+                ostringstream oss;
+                oss << "Entity" << netId->localSystemAddress;
+                entPtr->setEntityName(oss.str());
+
+            }
+
+
+            //////////////We need to setup server/client specific entity aspects.//////////////////
+            Entities::EntityAspects entAspects;
+            Entities::bindEntityAspects(entAspects,*entPtr,isServer);
+            if(isServer)
+                entPtr->onInitServer();
+            else
+                entPtr->onInitClient();
+            znetEntityShrPtr->setEntityAspects(entAspects); //DO NOT forget to set, else exception will be thrown.
+        }
     }
 }
 
