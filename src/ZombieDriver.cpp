@@ -12,6 +12,8 @@ using namespace std;
 #include "ServerController.h"
 //#include "GPUEntsDistributor.h"
 
+
+
 /*
  * ZombieDriver.cpp
  *
@@ -29,6 +31,8 @@ extern "C" {
 
 ZGame::MainController* engineControl = 0;
 
+//template class NetworkEntitiesManager<NetworkID>;
+//template class NetworkEntitiesManager<SystemAddress>;
 
 /*
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

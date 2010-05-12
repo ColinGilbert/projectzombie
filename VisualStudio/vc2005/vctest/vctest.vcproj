@@ -153,14 +153,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\src\view\CommandController.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\CommandList.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\testsrc\CommonFixtures.h"
 				>
 			</File>
@@ -288,10 +280,6 @@
 				RelativePath="..\..\..\src\view\WhiteNoiseView.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\src\model\ZEntity.cpp"
-				>
-			</File>
 			<Filter
 				Name="world"
 				>
@@ -335,6 +323,46 @@
 					RelativePath="..\..\..\src\entities\PlayerEnt.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\src\model\ZEntity.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="opensteer"
+				>
+				<File
+					RelativePath="..\..\..\src\opensteer\Pathway.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\opensteer\PlugIn.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\opensteer\SimpleVehicle.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\opensteer\Vec3.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="command"
+				>
+				<File
+					RelativePath="..\..\..\src\model\Command.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\view\CommandController.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\model\CommandList.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -342,18 +370,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\..\include\Command.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\CommandController.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\CommandList.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\..\include\fastdelegate\config.hpp"
 				>
@@ -526,31 +542,11 @@
 				Name="fastdelegates"
 				>
 				<File
-					RelativePath="..\..\..\include\fastdelegate\allocator.hpp"
+					RelativePath="..\..\..\include\fastdelegate\FastDelegate.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\include\fastdelegate\bindtmpl.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\include\fastdelegate\delegate.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\include\fastdelegate\delegatetmpl.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\include\fastdelegate\delegatetmpl.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\include\fastdelegate\get_pointer.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\include\fastdelegate\make_delegatetmpl.hpp"
+					RelativePath="..\..\..\include\fastdelegate\FastDelegateBind.h"
 					>
 				</File>
 			</Filter>
@@ -626,11 +622,87 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\include\entities\NetworkEntitiesManager.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\include\entities\PlayerEnt.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\..\include\ZEntity.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="opensteer"
+				>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\AbstractVehicle.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Annotation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Draw.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\LocalSpace.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\lq.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Obstacle.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Pathway.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\PlugIn.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Proximity.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\SimpleVehicle.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\SteerLibrary.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Utilities.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\OpenSteer\Vec3.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="command"
+				>
+				<File
+					RelativePath="..\..\..\include\command\Command.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\CommandController.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\command\CommandList.h"
 					>
 				</File>
 			</Filter>

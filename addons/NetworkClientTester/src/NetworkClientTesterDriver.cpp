@@ -95,6 +95,8 @@ extern "C" {
             cout << "[Process #" << processNumber << "]: " << szOutput;
         }
 
+        return 0;
+
     }
     int spawnChildProcesses(DWORD exitCodes[])
     {

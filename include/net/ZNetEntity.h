@@ -98,10 +98,11 @@ namespace ZGame
         ///////////template methods//////////////////
         template<typename EntityClass>
         void
-            constructCompositeZNetEntity(boost::shared_ptr<ZEntity> &entityShrPtr, boost::shared_ptr<ZNetEntity> &znetEntityShrPtr,EntityClass* entPtr,
+            constructCompositeZNetEntity(boost::shared_ptr<Entities::ZEntity> &entityShrPtr, boost::shared_ptr<ZNetEntity> &znetEntityShrPtr,EntityClass* entPtr,
             ReplicaManager* replicaManager, SystemAddress creatorAddress, NetworkID* netId,
             bool isServer)
         {
+            using namespace Entities;
             cout << "In ZNetEntity construct composite ZNetEntity." << endl;
 
             //create ZNetEntity.
@@ -124,6 +125,7 @@ namespace ZGame
             }
             else
             {
+                replicaManager->DisableReplicaInterfaces(znetEntityShrPtr.get(), REPLICA_SEND_CONSTRUCTION | REPLICA_SEND_DESTRUCTION | REPLICA_SEND_SCOPE_CHANGE);
                 znetEntityShrPtr->SetNetworkID(*netId);
                 ostringstream oss;
                 oss << "Entity" << netId->localSystemAddress;

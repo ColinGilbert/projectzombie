@@ -1,7 +1,7 @@
 #ifndef _ZGAME_CONTROLLER_H
 #define _ZGAME_CONTROLLER_H
 
-#include "Command.h"
+#include "command/Command.h"
 
 namespace ZGame
 {
@@ -9,8 +9,8 @@ namespace ZGame
   {
   public:
     ~Controller(){}
-    virtual int execute(const ZGame::Command&) = 0; //pure virtual
-    virtual int blah(const ZGame::Command&) = 0;//Do not need these.
+    //virtual int execute(const ZGame::Command&) = 0; //pure virtual
+    //virtual int blah(const ZGame::Command&) = 0;//Do not need these.
   protected:
     Controller(){}
   };

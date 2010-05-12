@@ -17,7 +17,10 @@ namespace ZGame
   class ImposterGen;
   class Imposter;
   class ImposterView;
+  namespace Entities
+  {
   class ZEntity;
+  }
 
   namespace LifeCycle
   {
@@ -52,7 +55,7 @@ namespace ZGame
     Imposter* _fuckPoster;
     std::auto_ptr<ImposterView> _imposterView;
     Ogre::Real _dz;
-    ZEntity* _ent;
+    Entities::ZEntity* _ent;
   };
 }
 

@@ -6,7 +6,7 @@
 #include "EngineView.h"
 #include "utilities/CharacterUtil.h"
 #include "CommandController.h"
-#include "CommandList.h"
+#include "command/CommandList.h"
 #include "CommandDelegates.h"
 
 
@@ -19,24 +19,30 @@ _xDist(int(_minExt.x),int(_maxExt.x)),
 _zDist(int(_minExt.z),int(_maxExt.z)),
 _dist(_rng,_xDist,_zDist)
 {
-    using namespace ZGame::COMMAND; //namespace for the static const commands. It's for the CHARLIST etc...
+    //using namespace ZGame::COMMAND; //namespace for the static const commands. It's for the CHARLIST etc...
+    using COMMAND::CommandList;
+    using COMMAND::ConsoleCommand;
     _rng.seed(time(0));
-    ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
-    CommandList* cmdList = cmdCtrl->getCommandList();
+    ZGame::CommandController &cmdCtrl = ZGame::CommandController::getSingleton();
+    //CommandList* cmdList = cmdCtrl->getCommandList();
+    //COMMAND::StringCommand strCmd = CommandList::CHARLIST;
     ConsoleCommand cmd;
-    cmd.bind(this,&ZGame::Util::CharacterUtil::list);
-    cmdCtrl->addCommand(cmdList->CHARLIST,cmd);
-    cmd.bind(this,&ZGame::Util::CharacterUtil::listMeshes);
-    cmdCtrl->addCommand(cmdList->CHARLISTMESHES,cmd);
-    cmd.bind(this,&ZGame::Util::CharacterUtil::create);
-    cmdCtrl->addCommand(cmdList->CHARCREATE,cmd);
+    //Add Character list command.
+    cmd.bind(this, &ZGame::Util::CharacterUtil::list);
+    cmdCtrl.addCommand(CommandList::CHARLIST, cmd.GetMemento());
+    //Add character list meshes command.
+    cmd.bind(this, &ZGame::Util::CharacterUtil::listMeshes);
+    cmdCtrl.addCommand(CommandList::CHARLISTMESHES, cmd.GetMemento());
+
+    //Add CHARCREATE command.
+    cmd.bind(this, &ZGame::Util::CharacterUtil::create);
+    cmdCtrl.addCommand(CommandList::CHARCREATE, cmd.GetMemento());
+   
     cmd.bind(this,&ZGame::Util::CharacterUtil::listNodes);
-    cmdCtrl->addCommand(cmdList->NODELIST,cmd);
+    cmdCtrl.addCommand(CommandList::NODELIST, cmd.GetMemento());
+    
     cmd.bind(this,&ZGame::Util::CharacterUtil::removeNode);
-    cmdCtrl->addCommand(cmdList->NODEREMOVE,cmd);
-
-
-
+    cmdCtrl.addCommand(CommandList::NODEREMOVE, cmd.GetMemento());
 }
 
 void CharacterUtil::setInput()
@@ -302,6 +308,10 @@ bool CharacterUtil::createCharFromMesh(const Ogre::StringVector &params)
     {
         nodeName = params[2];
         node = root->createChildSceneNode(nodeName);
+    }
+    else
+    {
+        assert(0 && "CharacterUtil create character from mesh failed invarience."); 
     }
     oss << "Created child node in root called: " << node->getName() << "\n";
     entName = meshName + node->getName();

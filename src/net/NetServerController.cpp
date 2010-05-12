@@ -12,6 +12,9 @@ using namespace std;
 using namespace ZGame;
 using namespace ZGame::Networking;
 
+//tempalte declares.
+//template class NetworkEntitiesManager<SystemAddress>;
+
 NetworkEntitiesManager<SystemAddress> NetServerController::netEntManagerServer; //temporary server-side net entity manager, as a static variable.
 
 /**

@@ -13,6 +13,7 @@
 #include "EngineView.h"
 #include "CommandDelegates.h"
 #include "CommandController.h"
+#include "command/CommandList.h"
 
 
 namespace ZGame
@@ -30,15 +31,16 @@ namespace ZGame
     {
         // TODO Auto-generated constructor stub
 
+        using COMMAND::CommandList;
         _cameraNode = EngineView::getSingleton().getSceneManager()->createSceneNode("CAMERA_NODE");
         _cameraNode->attachObject(_cam);
 
-        Ogre::String CAMERAATTACH("camera_attach");
+        //Ogre::String CAMERAATTACH("camera_attach");
         ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
         COMMAND::ConsoleCommand cmd;
         //cmd.bind(this,&ZGame::ControlModuleProto::attachNode);
         cmd.bind(this,&ZGame::ControlModuleProto::attachNode);
-        cmdCtrl->addCommand(CAMERAATTACH,cmd);
+        cmdCtrl->addCommand(CommandList::CAMERA_ATTACH,cmd.GetMemento());
         _transMode[forw]=false;
         _transMode[backw]=false;
         _transMode[left]=false;

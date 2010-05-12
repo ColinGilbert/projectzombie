@@ -8,6 +8,7 @@
 #include "RakNetTypes.h"
 #include "net/NetController.h"
 #include "Controller.h"
+#include "entities/NetworkEntitiesManager.h"
 
 namespace ZGame
 {
@@ -56,8 +57,8 @@ namespace ZGame
             NetServerController(void);
             virtual ~NetServerController(void);
 
-            virtual int
-                execute(const ZGame::Command &cmd) {return 0;}
+            //virtual int
+              //  execute(const ZGame::Command &cmd) {return 0;}
             virtual int
                 execute(const Ogre::StringVector &params);
 

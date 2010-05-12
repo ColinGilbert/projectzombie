@@ -12,26 +12,32 @@
 
 //using namespace std;
 #include <Ogre.h>
+
+#include <OpenSteer/SimpleVehicle.h>
+
 namespace ZGame
 {
-    class ZEntity
+    namespace Entities
     {
-    public:
-        ZEntity(const Ogre::String &entName,const Ogre::String &meshName);
-        virtual ~ZEntity();
+        class ZEntity //: public SimpleVehicle
+        {
+        public:
+            ZEntity(const Ogre::String &entName,const Ogre::String &meshName);
+            virtual ~ZEntity();
 
-        void setEntityName(const Ogre::String entName) { _entName = entName;}
-        void setMeshName(const Ogre::String meshName) { _meshName = meshName;}
-        const Ogre::String getEntityName() {return _entName;}
-        const Ogre::String getMeshName() {return _meshName;}
-        
+            void setEntityName(const Ogre::String entName);
+            void setMeshName(const Ogre::String meshName);
+            const Ogre::String getEntityName();
+            const Ogre::String getMeshName();
 
-    protected:
-    private:
-        Ogre::String _entName;
-        Ogre::String _meshName;
 
-    };
+        protected:
+        private:
+            Ogre::String _entName;
+            Ogre::String _meshName;
+
+        };
+    }
 }
 
 #endif /* ZENTITY_H_ */

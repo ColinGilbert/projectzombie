@@ -17,7 +17,7 @@ using namespace Ogre;
 using namespace ZGame;
 
 GameEditView::GameEditView() :
-  _imposter(0), _imposterView(0), _dz(1.0),_ent(new ZEntity("ZombieEntity","RZR-002.mesh"))
+_imposter(0), _imposterView(0), _dz(1.0),_ent(new Entities::ZEntity("ZombieEntity","RZR-002.mesh"))
 {
 
 }

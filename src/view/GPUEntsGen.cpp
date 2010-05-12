@@ -27,7 +27,7 @@ using namespace Ogre;
 
 size_t GPUEntsGen::_uniqueId = 0;
 
-GPUEntsGen::GPUEntsGen(const boost::shared_ptr<ZEntity> &ent, auto_ptr<
+GPUEntsGen::GPUEntsGen(const boost::shared_ptr<Entities::ZEntity> &ent, auto_ptr<
                        GPUEntsGenProps> props) :
 _output(0), _ent(ent), _props(props), _gpuEntsName("gpuEnts")
 {

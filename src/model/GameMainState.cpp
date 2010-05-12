@@ -154,7 +154,7 @@ GameMainState::createGPUEntities()
   LogManager* lm = LogManager::getSingletonPtr();
   lm->logMessage(LML_NORMAL, "GameMainState::createGPUEntities");
   //note: we are using shared_ptr here is because later we will have an entity resource manager.
-  boost::shared_ptr<ZEntity> zent(new ZEntity("ZombieEntity", //"robot.mesh"));
+  boost::shared_ptr<Entities::ZEntity> zent(new Entities::ZEntity("ZombieEntity", //"robot.mesh"));
     "RZR-002.mesh"));
   //"athene.mesh"));
   int texW = 64;
