@@ -32,14 +32,7 @@ PlayerEntity::~PlayerEntity()
 bool
 PlayerEntity::onInitClient()
 {
-    using COMMAND::StringCommand;
-    cout << "In PlayerEntity::onInitClient" << endl;
-    //Let's create a character.
-    StringCommand charCreate(CommandList::CHARCREATE);
-    //push the parameters.
-    charCreate.push_back(getMeshName());
-    charCreate.push_back(getEntityName()+getMeshName()+"NODE");
-    CommandController::getSingleton().executeCmd(charCreate);
+    
     return true;
 }
 
@@ -53,10 +46,6 @@ PlayerEntity::onInitServer()
 bool
 PlayerEntity::onDestroyClient()
 {
-    cout << "In PlayerENtity::onDestroyClient()" << endl;
-    COMMAND::StringCommand nodeRemove(CommandList::NODEREMOVE);
-    nodeRemove.push_back(getEntityName()+getMeshName()+"NODE");
-    CommandController::getSingleton().executeCmd(nodeRemove);
     return true;
 }
 

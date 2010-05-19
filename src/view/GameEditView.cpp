@@ -12,7 +12,7 @@
 #include "ImposterView.h"
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
-#include "ZEntity.h"
+#include "entities/ZEntity.h"
 using namespace Ogre;
 using namespace ZGame;
 
@@ -41,17 +41,11 @@ GameEditView::onInit()
 
   std::auto_ptr<ImposterGen> imposterGen(new ImposterGen());
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Creating Imposter");
-  _imposter = new Imposter(_ent->getMeshName());
+  _imposter = new Imposter(_ent->getResource());
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"Finished creating imposter");
   _imposter->init();
-    if(_imposter == 0)
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"!!!!!!!!!!!!!imp is fucking null! after init");
   imposterGen->setInput(_imposter);
-   if(_imposter == 0)
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"!!!!!!!!!!!!!imp is fucking null! after setinput");
   imposterGen->build();
-  if(_imposter == 0)
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"imp is fucking null! after build");
   _imposterView.reset(new ImposterView());
   _imposterView->setInput(_imposter);
   imposterGen.reset(0); //we done with generator

@@ -13,7 +13,7 @@ using namespace std;
 #include "GPUEntsGenProps.h"
 #include "GPUEntsView.h"
 #include "GPUEntsGen.h"
-#include "ZEntity.h"
+#include "entities/ZEntity.h"
 #include "EngineView.h"
 #include "DelegatesUtil.h"
 #include "EventDelegates.h"
@@ -117,7 +117,7 @@ GameMainState::onInit()
   //createGPUEntities();
   Ogre::LogManager::getSingleton().logMessage("Done creating GPU entities");
   createWorld();
-  _worldController->init();
+  //_worldController->init();
   Ogre::LogManager::getSingleton().logMessage("Done creating world");
   return true;
 }

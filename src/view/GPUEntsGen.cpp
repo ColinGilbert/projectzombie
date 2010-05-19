@@ -15,7 +15,7 @@ using namespace std;
 #include <boost/random.hpp>
 #include <OgreBitwise.h>
 #include "GPUEntsGen.h"
-#include "ZEntity.h"
+#include "entities/ZEntity.h"
 #include "GPUEntities.h"
 #include "Imposter.h"
 #include "ImposterGen.h"
@@ -117,7 +117,7 @@ GPUEntsGen::genImposters()
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
         "In GPUEntsGen::genImposters");
-    Imposter imposter(_ent->getMeshName());
+    Imposter imposter(_ent->getResource());
     imposter.init();
     ImposterGen impGen;
     impGen.setInput(&imposter);

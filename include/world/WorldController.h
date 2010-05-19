@@ -25,7 +25,7 @@ namespace ZGame
       WorldController();
       ~WorldController();
 
-      void init();
+      
       void loadWorld(); //temp.
 
       //implements the LifeCycleEvents
@@ -38,6 +38,8 @@ namespace ZGame
 
       Ogre::Entity* _bobEnt;
       Ogre::AnimationState* _animState;
+
+      void init();
 
     };
   }

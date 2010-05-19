@@ -10,6 +10,7 @@ using namespace ZGame::World;
 WorldController::WorldController() :
 _bobEnt(0), _animState(0)
 {
+    init();
 }
 
 WorldController::~WorldController()
@@ -40,7 +41,12 @@ bool WorldController::onDestroy()
   return true;
 }
 
-
+/**
+*This method will initialize the world controller.
+*
+*\note We're putting some world load stuff in the init function because we're testing. When we get to implementing this fully we nee to have people call
+*the controller method to accomplish loading the world. ie. to do the world controller thing.
+*/
 void WorldController::init()
 {
   using namespace std;

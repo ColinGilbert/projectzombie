@@ -19,6 +19,8 @@ namespace ZGame
         /**
         *This Initial implementation of NetworkEntitiesManager.
         *
+        * \note There is no need to store ZNetEntity as Raknet already stores those.
+        *
         */
         template<typename T>
         class NetworkEntitiesManager

@@ -320,11 +320,27 @@
 				Name="entities"
 				>
 				<File
+					RelativePath="..\..\..\src\entities\EntitiesManager.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\entities\PlayerEnt.cpp"
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\entities\RenderEntitiesManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\entities\ZEntitiesResource.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\model\ZEntity.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\entities\ZEntityBuilder.cpp"
 					>
 				</File>
 			</Filter>
@@ -618,6 +634,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\include\entities\EntitiesManager.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\include\entities\EntityAspects.h"
 					>
 				</File>
@@ -630,7 +650,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\include\ZEntity.h"
+					RelativePath="..\..\..\src\entities\RenderEntitiesManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\entities\ZEntity.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\entities\ZEntityBuilder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\entities\ZEntityResource.h"
 					>
 				</File>
 			</Filter>

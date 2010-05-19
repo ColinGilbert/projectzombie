@@ -17,6 +17,12 @@ using namespace std;
 
 namespace ZGame
 {
+    namespace Entities
+    {
+        class ZEntityResource;
+    }
+
+    using Entities::ZEntityResource;
 
     class Imposter
     {
@@ -25,17 +31,18 @@ namespace ZGame
         static const size_t SEGTHETA = 16;
         static const size_t SEGPHI = 16;
 
-        Imposter(const Ogre::String meshName);
+
+        Imposter(const ZEntityResource* const resource);
         ~Imposter();
 
-        const Ogre::String getMeshName();
+        const Ogre::String getMeshName() const;
         Ogre::TexturePtr getTextures();//{return _texture;}
 
         void init();
 
-        int getWidth();
-        int getHeight();
-        int getDim();
+        int getWidth() const;
+        int getHeight() const ;
+        int getDim() const;
 
 
     protected:

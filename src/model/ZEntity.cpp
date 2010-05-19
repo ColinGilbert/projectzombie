@@ -5,12 +5,21 @@
 *      Author: bey0nd
 */
 
-#include "ZEntity.h"
+#include <iostream>
+
+#include "entities/ZEntity.h"
+
+#include "CommandController.h"
+#include "command/CommandList.h"
 
 //using namespace ZGame;
-using ZGame::Entities::ZEntity;
+using namespace ZGame::Entities;
 
-ZEntity::ZEntity(const Ogre::String &entName,const Ogre::String &meshName) : _entName(entName), _meshName(meshName)
+ZEntity::ZEntity(const Ogre::String &entName, const Ogre::String &meshName) : _entName(entName), _resource(meshName)
+{
+}
+
+ZEntity::ZEntity(const Ogre::String &entName, const ZEntityResource &res) : _entName(entName), _resource(res)
 {
 }
 
@@ -24,20 +33,15 @@ ZEntity::setEntityName(const Ogre::String entName)
 { 
     _entName = entName;
 }
-void 
-ZEntity::setMeshName(const Ogre::String meshName)
-{ 
-    _meshName = meshName;
-}
+
 const Ogre::String 
 ZEntity::getEntityName() 
 {
     return _entName;
 }
-const Ogre::String 
-ZEntity::getMeshName() 
+
+void
+ZEntity::createEntity()
 {
-    return _meshName;
+    
 }
-
-

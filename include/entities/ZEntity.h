@@ -31,13 +31,12 @@ namespace ZGame
             virtual ~ZEntity();
 
             void setEntityName(const Ogre::String entName);
-            const Ogre::String getEntityName() const;
+            const Ogre::String getEntityName();
 
-            const ZEntityResource* const getResource()
+            const ZEntityResource* const getResource() const
             {
                 return &_resource;
             }
-
 
 
 

@@ -8,6 +8,7 @@ using namespace std;
 #include "entities/PlayerEnt.h"
 #include "DelegatesUtil.h"
 #include "net/ZNetEntity.h"
+#include "entities/EntitiesManager.h"
 
 using namespace ZGame;
 using namespace ZGame::Networking;

@@ -14,10 +14,12 @@
 using namespace std;
 #include "Imposter.h"
 #include "EngineView.h"
+#include "entities/ZEntityResource.h"
+
 using namespace ZGame;
 int Imposter::_id = 0;
 
-Imposter::Imposter(const Ogre::String meshName) : _meshName(meshName),TYPE_NAME("IMPOSTER")
+Imposter::Imposter(const ZEntityResource* const resource) : _meshName(resource->getResourceName()),TYPE_NAME("IMPOSTER")
 {
   _curId = _id;
   _id++;
@@ -34,27 +36,32 @@ void Imposter::init()
   //setupTextures();
 }
 
-const Ogre::String Imposter::getMeshName()
+const Ogre::String 
+Imposter::getMeshName() const
 {
   return _meshName;
 }
 
-Ogre::TexturePtr Imposter::getTextures()
+Ogre::TexturePtr 
+Imposter::getTextures() 
 {
   return _texture;
 }
 
-int Imposter::getWidth()
+int 
+Imposter::getWidth() const
 {
   return SEGTHETA*TEXDIM;
 }
 
-int Imposter::getHeight()
+int 
+Imposter::getHeight() const
 {
   return SEGPHI*TEXDIM;
 }
 
-int Imposter::getDim()
+int 
+Imposter::getDim() const
 {
   return TEXDIM;
 }
