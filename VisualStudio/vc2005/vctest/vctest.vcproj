@@ -383,6 +383,10 @@
 					RelativePath="..\..\..\src\command\CreateEntCmd.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\src\command\ServicesManager.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -743,6 +747,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\include\command\CreateEntCmd.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\command\ServicesManager.h"
 					>
 				</File>
 			</Filter>

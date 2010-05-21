@@ -19,6 +19,7 @@ namespace ZGame
         {
         public:
             static const COMMAND_KEY KEY;
+            CreateEntCmd() : Command(KEY) {}
             CreateEntCmd(const COMMAND_KEY &key, int numOfParams=1);
             virtual 
                 ~CreateEntCmd(void);
