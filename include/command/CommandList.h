@@ -2,6 +2,8 @@
 #define _ZGAME_COMMAND_LIST_H
 
 //#include <Ogre.h>
+#include <map>
+using std::map;
 
 #include "CommandController.h"
 
@@ -15,12 +17,13 @@ namespace ZGame
     namespace COMMAND
     {
         //class Command;
-        
+
         class CommandList
         {
         public:
             friend class ZGame::CommandController;
 
+            
             static const COMMAND::COMMAND_KEY CHARLIST;
             static const COMMAND::COMMAND_KEY CHARLISTMESHES;
             static const COMMAND::COMMAND_KEY CHARCREATE;
@@ -30,8 +33,9 @@ namespace ZGame
             static const COMMAND::COMMAND_KEY CAMERA_ATTACH;
             static const COMMAND::COMMAND_KEY CLIENT_CONNECT;
             static const COMMAND::COMMAND_KEY CLIENT_DISCONNECT;
+            //static const COMMAND::COMMAND_KEY CREATE_RENDER_ENT;
             //static const Ogre::String NODETEST;
-         
+            
             /*
             static const COMMAND::StringCommand CHARLIST;
             static const COMMAND::StringCommand CHARLISTMESHES;
@@ -50,7 +54,6 @@ namespace ZGame
                 command.setCommandMemento(delegate.GetMemento());
                 return command;
             }
-
 
         protected:
             CommandList(){}

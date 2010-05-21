@@ -6,9 +6,14 @@
 *
 */
 
+#include <vector>
+#include <map>
+#include <utility>
+
 #include <Ogre.h>
 
 #include "fastdelegate/FastDelegate.h"
+
 //#include "command/CommandList.h"
 //#include "CommandController.h"
 
@@ -31,6 +36,9 @@ namespace ZGame
         {
         public:
             Command(){}
+            Command(const COMMAND_KEY &key): _key(key)
+            {
+            }
             virtual ~Command(){}
             void setCommandMemento(fastdelegate::DelegateMemento memento)
             {
@@ -64,20 +72,11 @@ namespace ZGame
                 return &_memento;
             }
 
-            
 
-        protected:
-            
-            
-            Command(Ogre::String key): _key(key)
-            {
-            }
 
-            
+        protected:     
 
-            
-            
-       
+
         private:
             friend class ZGame::CommandController;
             Ogre::String _key;
@@ -85,10 +84,10 @@ namespace ZGame
             /*
             virtual fastdelegate::DelegateMemento execute(const Ogre::StringVector &params)
             { 
-                fastdelegate::DelegateMemento nullMemento;
-                return nullMemento;
+            fastdelegate::DelegateMemento nullMemento;
+            return nullMemento;
             }*/
-            
+
             //virtual fastdelegate
         };
 
@@ -100,11 +99,11 @@ namespace ZGame
         class StringCommand : public Command //wrapper to the old console command
         {
         public:
-            
-            StringCommand() : Command(){}
-            StringCommand(Ogre::String key, int numOfParams=1);
 
-             /** \brief Execute this command with an Command as it's input interface. (See class invariants for description of input interface.)*/
+            StringCommand() : Command(){}
+            StringCommand(const COMMAND_KEY &key, int numOfParams=1);
+
+            /** \brief Execute this command with an Command as it's input interface. (See class invariants for description of input interface.)*/
             virtual fastdelegate::DelegateMemento
                 execute(const Command &cmd);
 
@@ -114,18 +113,13 @@ namespace ZGame
             {
                 assert(!_params.empty() && "Class invarience failed! Trying to push_back a parameter on an empty parameter vector. There should be at least the key in this vector!");
                 //if(_params.empty())
-                   // setKey(param);
+                // setKey(param);
                 _params.push_back(param);
-            }
-
-           
+            }           
             const Ogre::StringVector& getParams() const
             {
                 return _params;
             }
-
-           
-
             /**
             *This method will set the parameters by deep copy. 
             *
@@ -139,18 +133,30 @@ namespace ZGame
                 _params = params;
                 setKey(_params[0]); //params[0] is ALWAYS assumed to the key!
             }
-
         protected:
-            
-            
         private:
             Ogre::StringVector _params;
-
-            
-            //virtual fastdelegate::DelegateMemento 
-              //  execute(const Ogre::StringVector &params);
         };
+        using std::map;
+        using std::pair;
+        using std::make_pair;
+        /**
+        *This class defines a Command to allow for both pushing String and Memento parameters.
+        */
+        class StrAndMementoCmd : public StringCommand
+        {
+        public:
+            //CreateRenderEntCmd(){}
+            StrAndMementoCmd(const COMMAND::COMMAND_KEY &key, int numOfParams=1);
 
+            virtual fastdelegate::DelegateMemento
+                execute(const Command &cmd) = 0;
+            
+        protected:
+            
+        private:
+            
+        };   
     }
 }
 

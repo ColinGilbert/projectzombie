@@ -30,9 +30,10 @@ namespace ZGame
             typedef vector<ZEntity> ZENTITY_VEC;
             typedef ZENTITY_VEC::iterator ZENT_ITER;
 
-            ZENTITY _zEntsVec;
+            ZENTITY_VEC _zEntsVec;
         };
 
+        using ZGame::Networking::ZNetEntity;
         //static methods.
         /*\brief This templated static method will construct the composite ZNetEntity given EntityClass.
         *

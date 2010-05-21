@@ -8,8 +8,7 @@ bool
 EntitiesBuilder::build(ZEntity* zEnt, const EntityUpateEvent &readEvent)
 {
     assert(zEnt != 0 && "ZEntity is null!");
-    //We want to build the ZEntity. This means we need to use message to call the various systems to inform them about this.
-    //Build the character creation command.
+    //We want to build the ZEntity. We sent a create character command. 
     using std::cout;
     using std::endl;
     using COMMAND::StringCommand;

@@ -6,7 +6,7 @@
 
 #include <Ogre.h>
 
-#include "ZEntity.h"
+#include "entities/ZEntity.h"
 #include "ReplicaManager.h"
 #include "net/ZNetEntityTypes.h"
 

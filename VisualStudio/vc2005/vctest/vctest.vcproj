@@ -368,15 +368,19 @@
 				Name="command"
 				>
 				<File
-					RelativePath="..\..\..\src\model\Command.cpp"
+					RelativePath="..\..\..\src\command\Command.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\view\CommandController.cpp"
+					RelativePath="..\..\..\src\command\CommandController.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\model\CommandList.cpp"
+					RelativePath="..\..\..\src\command\CommandList.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\command\CreateEntCmd.cpp"
 					>
 				</File>
 			</Filter>
@@ -650,7 +654,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\entities\RenderEntitiesManager.h"
+					RelativePath="..\..\..\include\entities\RenderEntitiesManager.h"
 					>
 				</File>
 				<File
@@ -735,6 +739,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\include\command\CommandList.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\command\CreateEntCmd.h"
 					>
 				</File>
 			</Filter>

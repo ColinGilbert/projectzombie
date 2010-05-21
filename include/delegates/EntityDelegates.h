@@ -6,14 +6,17 @@
 #include "Replica.h"
 #include "ReplicaManager.h"
 
+using fastdelegate::FastDelegate;
+
 namespace ZGame
 {
     namespace Entities
     {
-        //typedef FastDelegate2<bool(Ogre::Vector3 &pos, Ogre::Quaternion &orient) > EntityUpdateEvent;
-        typedef fastdelegate::FastDelegate<bool(Ogre::Vector3 &pos, Ogre::Quaternion &orient) > EntityUpdateEvent;
+        class ZEntityResource;
+        typedef FastDelegate<bool(Ogre::Vector3 &pos, Ogre::Quaternion &orient) > EntityUpdateEvent;
         //typedef FastDelegate2<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
-        typedef fastdelegate::FastDelegate<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
+        typedef FastDelegate<bool(Ogre::String &typeStr, RakNet::BitStream* outBitStream) > EntitySendConstruction;
+        typedef FastDelegate<bool(const ZEntityResource* const res, const EntityUpdateEvent* const read) > CreateRenderEntDlg; 
         struct EntityAspects
         {
             LifeCycle::LifeCycleEvent onDestroy;

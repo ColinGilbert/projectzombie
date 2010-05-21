@@ -34,9 +34,10 @@ _dist(_rng,_xDist,_zDist)
     cmd.bind(this, &ZGame::Util::CharacterUtil::listMeshes);
     cmdCtrl.addCommand(CommandList::CHARLISTMESHES, cmd.GetMemento());
 
-    //Add CHARCREATE command.
+    /*Add CHARCREATE command.
     cmd.bind(this, &ZGame::Util::CharacterUtil::create);
     cmdCtrl.addCommand(CommandList::CHARCREATE, cmd.GetMemento());
+    */
    
     cmd.bind(this,&ZGame::Util::CharacterUtil::listNodes);
     cmdCtrl.addCommand(CommandList::NODELIST, cmd.GetMemento());

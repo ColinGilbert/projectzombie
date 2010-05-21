@@ -12,6 +12,7 @@ namespace ZGame
         class ZEntityResource
         {
         public:
+            ZEntityResource(){}
             ZEntityResource(const Ogre::String &resName);
             virtual ~ZEntityResource();
            
