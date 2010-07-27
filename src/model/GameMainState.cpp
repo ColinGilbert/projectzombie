@@ -26,10 +26,14 @@ using namespace std;
 #include "world/WorldController.h"
 #include "CommandController.h"
 #include "utilities/CharacterUtil.h"
+#include "entities/EntitiesManager.h"
+#include "entities/RenderEntitiesManager.h"
+#include "entities/ZEntityBuilder.h"
 
 using namespace Ogre;
 using namespace ZGame;
-
+using Entities::EntitiesManager;
+using Entities::RenderEntitiesManager;
 
 GameMainState::GameMainState() :
 GameState(), _gpuEntsView(new GPUEntsView()), _cam(0), _dz(1.5f), _forward(
@@ -37,7 +41,9 @@ GameState(), _gpuEntsView(new GPUEntsView()), _cam(0), _dz(1.5f), _forward(
   new ControlModuleProto()), _whtNoiseView(new WhiteNoiseView()),
   _gpuEntsControl(new GPUEntsControl()),
   _worldController(new World::WorldController()),
-  _charUtil(new Util::CharacterUtil())
+  _charUtil(new Util::CharacterUtil()),
+  _entMgr(0), //Do not initialize them here as services are not up yet when we are creating the GameMainState. This needs to change. i.e: we need to create game main state after ogre initializes.
+  _rdrEntMgr(0)
 {
 
 }
@@ -54,6 +60,7 @@ GameMainState::~GameMainState()
 void
 GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 { 
+  
   //this
   LifeCycle::LifeCycleObserver lfcObs;
   LifeCycle::bindLifeCycleObserver(lfcObs,*this);
@@ -84,8 +91,8 @@ GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 
 /**
 *This class will register keyboard observers for later injection into keyboard subjects.
-*
 **/
+
 void
 GameMainState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
@@ -109,16 +116,23 @@ GameMainState::regMouseObsForInjection(MouseEventRegister &mouseReg)
   EVENT::clearMouseObs(mouseObs);
 }
 
+
 bool
 GameMainState::onInit()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
     "In GameMainState onInit");
+  _entMgr.reset(new Entities::EntitiesManager());
+  _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
   //createGPUEntities();
-  Ogre::LogManager::getSingleton().logMessage("Done creating GPU entities");
+  //Ogre::LogManager::getSingleton().logMessage("Done creating GPU entities");
   createWorld();
   //_worldController->init();
   Ogre::LogManager::getSingleton().logMessage("Done creating world");
+
+  createCharacters();
+  Ogre::LogManager::getSingleton().logMessage("Done creating characters.");
+
   return true;
 }
 
@@ -180,6 +194,11 @@ GameMainState::createGPUEntities()
 void
 GameMainState::createCharacters()
 {
+    using Entities::EntitiesBuilder;
+    int numOfEntities = 64;
+
+    EntitiesBuilder::build(_entMgr.get(), numOfEntities);
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "ZEntityBuilder::build finished.");
 }
 
 void
@@ -189,6 +208,7 @@ GameMainState::createWorld()
   lm->logMessage(Ogre::LML_TRIVIAL,"In GameMainState::createWorld");
   SceneManager *scnMgr = EngineView::getSingleton().getSceneManager();
   //scnMgr->setWorldGeometry(Ogre::String("paginglandscape2.cfg"));
+  scnMgr->setWorldGeometry("terrain.cfg");
   //Set ambient light
   scnMgr->setAmbientLight(ColourValue(0.7f,0.7f,0.7f));
 
@@ -220,16 +240,15 @@ GameMainState::createWorld()
   //LightBoard->setDimensions(10.0f, 10.0f);
   LightBoard->setColour(ColourValue(1.0f, 1.0f, 0.2f, 1.0f));
 
-  scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+  scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
   scnMgr->setShadowColour(Ogre::ColourValue(0.5,0.5,0.5));
-  scnMgr->setShadowFarDistance(60);
+  scnMgr->setShadowFarDistance(5000);
   scnMgr->setShadowTextureSettings(512,2);
 
   Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
   Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(1);
 
-
-
+  //_worldController->onInit();
 
 
   //createCharacters();
@@ -237,7 +256,7 @@ GameMainState::createWorld()
 
   
   //_cam = EngineView::getSingleton().getCurrentCamera();
-  
+  /*
   Plane plane(Vector3::UNIT_Y, 0);
   //ground testing plane
   MeshManager::getSingleton().createPlane("TempGroundPlane",
@@ -257,8 +276,7 @@ GameMainState::createWorld()
   //texNode->setVisible(true, true);
   texNode->setPosition(Vector3(0.0f,-5.2f,0.0f));
   texNode->yaw(Radian(Math::DegreesToRadians(90.0f)));
-  
-  
+  */
 
   lm->logMessage(Ogre::LML_TRIVIAL,"Out of GameMainState::createWorld");
 }

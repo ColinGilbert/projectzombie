@@ -5,6 +5,7 @@
 #include <memory>
 #include <Ogre.h>
 
+#include "entities/EntitiesManager.h"
 #include "delegates/EntityDelegates.h"
 
 namespace ZGame
@@ -16,16 +17,15 @@ namespace ZGame
         class EntitiesBuilder
         {
         public:
-            /** \brief This method will build the ZEntity. 
-            *
-            * \note The read event here will eventually turn into delegate which will read from the lock-free message queue.
+            EntitiesBuilder(){}
+            virtual ~EntitiesBuilder(){}
+            /** \brief This method will build ZEntities through the Command and Control system.
             */
-            static bool build(ZEntity* zEnt, const EntityUpdateEvent &readEvent);
+            static bool build(EntitiesManager* mgr, int numOfEnts);
             /** \brief This method will un-build the ZEntity. */
             static bool unbuild(ZEntity* zEnt);
         protected:
-            EntitiesBuilder(){}
-            virtual ~EntitiesBuilder(){}
+
         };
     }
 }

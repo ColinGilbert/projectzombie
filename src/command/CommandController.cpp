@@ -4,8 +4,8 @@
 #include "ogreconsole.h"
 #include "CommandDelegates.h"
 #include "command/CommandList.h"
-
-
+#include "command/ServicesManager.h"
+using ZGame::COMMAND::ServicesManager;
 #include "ControlModuleProto.h"
 
 
@@ -29,17 +29,16 @@ CommandController* CommandController::getSingletonPtr()
 }
 
 
-CommandController::CommandController() //: _commandList(new COMMAND::CommandList())
+CommandController::CommandController() : _svcManager(new ServicesManager())
 {
 }
 
 CommandController::~CommandController()
 {
     cout << "In CommandController destructor." << endl;
-    //if(_console.get() != 0)
-        //_console.shutdown();
-    //delete _commandList;
+    delete _svcManager;
 }
+
 
 void 
 CommandController::attachConsole(std::auto_ptr<OgreConsole> theConsole)
@@ -132,7 +131,7 @@ void CommandController::addCommand(const COMMAND_KEY &key, const DelegateMemento
     //create the string command.
     using COMMAND::StringCommand;
     using COMMAND::CommandList;
-    StringCommand *strCmd = new StringCommand(key);
+    StringCommand *strCmd = new ZGame::COMMAND::StringCommand(key);
     strCmd->setCommandMemento(memento);
     addCommand(shared_ptr<Command>(strCmd));
 }

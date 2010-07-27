@@ -218,6 +218,12 @@ def PlotResultsFlow(results, onSurf = False):
         return mlab.flow(results['sU'], results['sV'], w, seed_resolution=100,
                   seed_scale=1.0)
 
+
+
+
+    
+    
+
 def GetObsPMap(obsFileName='testcitymap_new.png'):
     
     obsGray = scipy.misc.pilutil.imread('data/'+obsFileName, flatten=True)

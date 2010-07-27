@@ -15,6 +15,7 @@
 
 #include <OpenSteer/SimpleVehicle.h>
 
+#include "EntitiesDefs.h"
 #include "entities/ZEntityResource.h"
 
 
@@ -23,30 +24,41 @@ namespace ZGame
     namespace Entities
     {
         using OpenSteer::SimpleVehicle;
-        class ZEntity : public SimpleVehicle
+        class ZEntity //: public SimpleVehicle
         {
         public:
-            ZEntity(const Ogre::String &entName, const Ogre::String &meshName);
-            ZEntity(const Ogre::String &entName, const ZEntityResource &res);
+            ZEntity(const ZENT_KEY &key, const Ogre::String &meshName);
+            ZEntity(const ZEntityResource &res);
             virtual ~ZEntity();
 
-            void setEntityName(const Ogre::String entName);
-            const Ogre::String getEntityName();
+            //void setEntityName(const Ogre::String &entName);
+            const ZENT_KEY getEntityName() const;
 
-            const ZEntityResource* const getResource() const
+            ZEntityResource const* const getResource() const
             {
                 return &_resource;
             }
-
-
+            /** \brief This function is called on read events. */
+            bool
+                onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient);
+            /** \brief This function is called on Write events. */
+            bool
+                onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient);
+            const Ogre::Vector3& getPosition() const
+            {
+                return _worldPos;
+            }
+            const Ogre::Quaternion& getOrientation() const
+            {
+                return _worldOrient;
+            }
 
         protected:
         private:
-            Ogre::String _entName;
+            ZENT_KEY _entKey;
             ZEntityResource _resource;
-
-            void createEntity();
-
+            Ogre::Vector3 _worldPos;
+            Ogre::Quaternion _worldOrient;
         };
     }
 }

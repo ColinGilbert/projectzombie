@@ -26,7 +26,7 @@ class Console(ogre.FrameListener):
         else:
             return
         self.parent = parent
-        self.toQueue = self.parent.toQueue
+        self.cmdQueue = parent.cmdQueue
         
         self.currentInputHistory = 0
         self.inputHistory = []
@@ -36,7 +36,7 @@ class Console(ogre.FrameListener):
         self.multiLineInput = False
  
         self.interpreter = code.InteractiveConsole({'console':self})
-        self.interpreter.locals["write"] = self.toQueue
+        self.interpreter.locals["cmd"] = self.cmdQueue
  
         self.keyBinds = {
             OIS.KC_RETURN: self._runPromptText,
@@ -64,6 +64,10 @@ class Console(ogre.FrameListener):
         self.textpanel.getMaterial().setSceneBlending(ogre.SBT_TRANSPARENT_ALPHA)
         self.ipshell = IPShellEmbed()
  
+    def updateThrust(self, val):
+        m = ["thrust", val]
+        self.cmdQueue.put(m)
+    
     def addLocals(self, localsDict):
         for var in localsDict:
             self.interpreter.locals[var] = localsDict[var]
@@ -147,7 +151,7 @@ class Console(ogre.FrameListener):
         if not self.visible:
             if evt.key == OIS.KC_GRAVE:
                 self.show()
-                self.ipshell()
+                #self.ipshell()
             return
         elif self.visible:
             if evt.key == OIS.KC_GRAVE:

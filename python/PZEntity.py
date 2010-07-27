@@ -12,10 +12,21 @@ class Entity():
         self._worldPos = worldPos
         self._worldOrient = o
         self._goal = Vector3(0,0,0)
-        self._climb = True
-        self._curPot = 5000000 #used during descending phase
-        self._exitDescent = False
+        self._oldContour = Vector3(0, 0 , 0)
+        self.CLIMB = 0
+        self.DESCEND = 1
+        self.EXIT_DESCEND = 2
+        self.AT_GOAL = 3
+        self.mode = self.CLIMB
+        self.fluxPot = 0.0
+        #self._climb = True
+        #self._curPot = 5000000 #used during descending phase
+        self._climbCell = ogre.Vector2(0, 0)
+        #self._exitDescent = False
+        self._thrust = ogre.Math.RangeRandom(10.0, 15.0) #This is in watts.
         self.V = Vector3(0.0, 0.0, 0.0)
+        
+    
 
     def setWorldPos(self, pos):
         self._worldPos = pos

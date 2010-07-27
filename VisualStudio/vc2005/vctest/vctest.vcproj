@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\ZombieMedia"
+			OutputDirectory="..\..\..\ZombieMedia\debug"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;&quot;C:\Program Files\boost\boost_1_38\&quot;"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\software\raknetnew\Source;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include&quot;;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;&quot;C:\Program Files\boost\boost_1_38\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,6 +62,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
+				AdditionalLibraryDirectories="&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\debug&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Debug&quot;;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -81,7 +82,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\..\ZombieMedia\"
+			OutputDirectory="..\..\..\ZombieMedia\release"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
@@ -106,7 +107,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
+				AdditionalIncludeDirectories="$(ATISTREAMSDKROOT)\include;E:\Users\gnulinux\projects\software\raknetnew\Source;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include&quot;;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;&quot;C:\Program Files\boost\boost_1_38\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -285,6 +286,10 @@
 				>
 				<File
 					RelativePath="..\..\..\src\world\WorldController.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\world\WorldScale.cpp"
 					>
 				</File>
 			</Filter>
@@ -551,6 +556,10 @@
 				>
 				<File
 					RelativePath="..\..\..\include\world\WorldController.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\world\WorldScale.h"
 					>
 				</File>
 			</Filter>

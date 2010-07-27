@@ -11,6 +11,7 @@
 #include "EngineView.h"
 #include "Controller.h"
 #include "CommandDelegates.h"
+
 namespace ZGame
 {
    
@@ -21,6 +22,7 @@ namespace ZGame
     {       
         class CommandList;
         typedef Ogre::String COMMAND_KEY;
+        class ServicesManager;
     }
 
     using COMMAND::CommandList;
@@ -71,6 +73,7 @@ namespace ZGame
         std::auto_ptr<OgreConsole> _console;
         //OgreConsole* _console; //we're going to use an naked pointer here.
         //Command addCommandFactory(const COMMAND_TYPE &type);
+        COMMAND::ServicesManager* _svcManager; //Naked pointer here is fine because it's private and we're going to remember to delete it.
         
     };
 }

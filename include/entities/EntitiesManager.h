@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "entities/ZEntity.h"
+#include "entities/EntitiesDefs.h"
 #include "net/ZNetEntity.h"
 
 using std::vector;
@@ -13,7 +13,7 @@ namespace ZGame
 
     namespace Entities
     {
-
+        class ZEntity;
         /** This class defines an Entities Manager. It will be responsible for manage (creation,deleation) of ZEntities.*/
         class EntitiesManager
         {
@@ -21,16 +21,26 @@ namespace ZGame
             EntitiesManager();
             virtual ~EntitiesManager();
             /** \brief This method will create an ZEntity in the system.*/
-            void createZEntity();
+            ZEntity* createZEntity();
             /** \brief This method will remove an ZEntity from the system.*/
             void removeZEntity();
 
+            EntitiesManager* getManager() 
+            {
+                return this;
+            }
+
+            ZENTITY_VEC* getEntities()
+            {
+                return &_zEntsVec;
+            }
+
         protected:
         private:
-            typedef vector<ZEntity> ZENTITY_VEC;
-            typedef ZENTITY_VEC::iterator ZENT_ITER;
-
+            static int _KEY;
             ZENTITY_VEC _zEntsVec;
+
+            void _getNewKey(Entities::ZENT_KEY &key);
         };
 
         using ZGame::Networking::ZNetEntity;
@@ -48,6 +58,7 @@ namespace ZGame
             ReplicaManager* replicaManager, SystemAddress creatorAddress, NetworkID* netId,
             bool isServer)
         {
+            /*
             using namespace Entities;
             cout << "In ZNetEntity construct composite ZNetEntity." << endl;
 
@@ -86,6 +97,7 @@ namespace ZGame
             else
                 entPtr->onInitClient();
             znetEntityShrPtr->setEntityAspects(entAspects); //DO NOT forget to set, else exception will be thrown.
+            */
         }
     }
 }

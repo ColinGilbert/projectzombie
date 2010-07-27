@@ -2,12 +2,16 @@
 #define _ZGAME_ENTITIES_DEFS_H
 
 
-
+#include <Ogre.h>
 
 namespace ZGame
 {
     namespace Entities
     {
+        class ZEntity;
+        typedef std::vector<ZEntity*> ZENTITY_VEC; //We are storing pointers in collection because this is private. We will delete them proper in the destructor.
+        typedef ZENTITY_VEC::iterator ZENT_ITER;
+        typedef Ogre::String ZENT_KEY;
         enum ZNET_ENTITY_TYPES
         {
             ZNET_ENTITY_TYPES_BEGIN,

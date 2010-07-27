@@ -39,12 +39,7 @@ namespace ZGame
             /** \brief This function is called during send construction to remote systems.*/
             bool
                 onSendConstruction(Ogre::String &typeStr, RakNet::BitStream* outBitStream);
-            /** \brief This function is called on read events. */
-            bool
-                onRead(Ogre::Vector3 &pos, Ogre::Quaternion &orient);
-            /** \brief This function is called on Write events. */
-            bool
-                onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient);
+            
 
         private:
             //ReplicaManager _replicaManager;

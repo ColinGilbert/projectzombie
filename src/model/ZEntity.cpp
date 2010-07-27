@@ -15,11 +15,13 @@
 //using namespace ZGame;
 using namespace ZGame::Entities;
 
-ZEntity::ZEntity(const Ogre::String &entName, const Ogre::String &meshName) : _entName(entName), _resource(meshName)
+ZEntity::ZEntity(const ZENT_KEY &key, const Ogre::String &meshName) 
+: _entKey(key), _resource(key, meshName), _worldPos(Ogre::Vector3(0, 0, 0)), _worldOrient(Ogre::Quaternion())
 {
 }
 
-ZEntity::ZEntity(const Ogre::String &entName, const ZEntityResource &res) : _entName(entName), _resource(res)
+ZEntity::ZEntity(const ZEntityResource &res) 
+: _entKey(res.getKey()), _resource(res)
 {
 }
 
@@ -27,21 +29,39 @@ ZEntity::~ZEntity()
 {
 
 }
-
+/*
 void 
 ZEntity::setEntityName(const Ogre::String entName) 
 { 
     _entName = entName;
+}*/
+
+const ZENT_KEY 
+ZEntity::getEntityName() const
+{
+    return _entKey;
 }
 
-const Ogre::String 
-ZEntity::getEntityName() 
+/**
+*This function is called for on read events--meaning, that 
+*
+*/
+bool
+ZEntity::onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient)
 {
-    return _entName;
+    _worldPos = pos;   
+    _worldOrient = orient;
+    return true;
 }
 
-void
-ZEntity::createEntity()
+/**
+*This function is called for on write events--meaning,
+*
+*/
+bool
+ZEntity::onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient) 
 {
-    
+    pos = _worldPos;
+    orient = _worldOrient;
+    return true;
 }

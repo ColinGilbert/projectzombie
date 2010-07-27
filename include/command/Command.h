@@ -7,6 +7,8 @@
 */
 
 #include <vector>
+#include <deque>
+
 #include <map>
 #include <utility>
 
@@ -40,47 +42,71 @@ namespace ZGame
             {
             }
             virtual ~Command(){}
-            void setCommandMemento(fastdelegate::DelegateMemento memento)
+            void 
+                setCommandMemento(fastdelegate::DelegateMemento memento)
             {
-                _memento = memento;
+                _mementos.push_back(memento);
             }
 
-            void setKey(const Ogre::String key)
+            void 
+                setKey(const Ogre::String key)
             {
                 assert(!key.empty() && "KEY IS NULL!");
                 _key = key;
             }
 
-            const Ogre::String 
+            const 
+                Ogre::String 
                 getKey() const
             {
                 assert(!_key.empty() && "KEY IS NULL!"); //assert class invariant.
                 return _key; 
             }
 
-            virtual fastdelegate::DelegateMemento 
+            virtual 
+                fastdelegate::DelegateMemento 
                 execute(const Command &cmd)
             {
                 fastdelegate::DelegateMemento nullMemento;
                 return nullMemento;
             }
 
-            const fastdelegate::DelegateMemento* 
+            
+        protected:
+            const 
+                fastdelegate::DelegateMemento* 
                 getCommandMemento() const
             {
-                assert(!_memento.empty() && "Class invariant invalidated. You cannot get a null Command Memento.");
-                return &_memento;
+                assert(_mementos.size() > 0 && "Class invariant invalidated. You cannot get a null Command Memento!");
+                //#MEMENTO_ITER front = _mementos.front();
+                
+                return &_mementos.front();
             }
-
-
+            /**
+            *This method allows child classes to define logic for returning command mementos other than the top. This is used for children class that wants to define behavior for
+            *allowing for mapping of multiple Mementos. 
+            *
+            */
+            virtual const 
+                fastdelegate::DelegateMemento*
+                getCommandMemento(size_t index) const
+            {
+                return getCommandMemento();
+            }
+            
+            typedef std::deque<fastdelegate::DelegateMemento> MEMENTO_DEQUE;
+            typedef std::deque<fastdelegate::DelegateMemento>::iterator MEMENTO_ITER;
+            Ogre::String _key;
+            MEMENTO_DEQUE _mementos;
 
         protected:     
 
 
         private:
             friend class ZGame::CommandController;
-            Ogre::String _key;
-            fastdelegate::DelegateMemento _memento;
+            
+            //fastdelegate::DelegateMemento _memento;
+            
             /*
             virtual fastdelegate::DelegateMemento execute(const Ogre::StringVector &params)
             { 

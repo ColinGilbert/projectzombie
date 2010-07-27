@@ -24,11 +24,9 @@ class EntityManager():
         #self._entList = []
         #self._rdrEntManager = renderEntityManager
         #self._pff = 
-        self._pff = PFieldPathFinder(scaleDict)
-        self._pff.loadMaps("testcitymap3_new.png")
-        
-    def update(self, sw, dt):
-        self._pff.updateEnts(self._entArray)
+        self.scaleDict = scaleDict
+    def update(self, sw, dt, thrustOffset):
+        self._pff.updateEnts(self._entArray, self._bulletMgr.bulletEnts, thrustOffset)
         #self._rdrEntManager.updateEnts(self._entList, dt) 
     def update2(self, dt):
         self._pff.updateEnts(self._entArray)
@@ -46,6 +44,12 @@ class EntityManager():
         for ent, copy in zip(self._entArray, self._entCopy):
             ent[0]._worldPos = copy[0]
             ent[0]._worldOrient = copy[1]
+    
+    def loadMap(self):
+        self._pff = PFieldPathFinder(self.scaleDict)
+        self._pff.loadMaps("city3_obs.png")
+        #self._pff.loadMaps("cityblockterrain_new_obs.png")
+        self._pff.initEnts(self._entArray)
             
     def createEntities(self, pos, orient, resource="ninja.mesh"):
         numOfEnts = pos[0].shape[0]
@@ -57,7 +61,9 @@ class EntityManager():
             self._entArray[i] = Entity(resource, i, worldPos = wp, o=og)
             self._entCopy.append((wp, og))
         #self._rdrEntManager.createEntities(self._entArray)    
-            
+    
+    def setBulletManager(self, bulletManager):        
+            self._bulletMgr = bulletManager
             
     def createEntity(self,resource="ninja.mesh"):
         

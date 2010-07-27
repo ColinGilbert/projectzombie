@@ -3,53 +3,55 @@ import scipy
 from scipy import ndimage
 from scipy import misc
 import mahotas
+import functools
+import math
+import struct as st
+#from enthought.mayavi import mlab
 
 TOLERANCE = 0.0001
-
+TRANSLATE_UP = 0
+OPPU_SCALE = 240.0
+OPPB_SCALE = 360.0
+PCLIFF_SCALE = -60.0
 """
 This function will return a tuple of OPPBase potential functions.
 """
 def OPPUPotential():
     def OPPUP1(d, D):
-        scale = 240.0
+        #scale = 240.0 +
         if d < TOLERANCE:
             return 180
         else:
-            return scale/d*(D-2)
+            return (OPPU_SCALE + TRANSLATE_UP)/d*(D-2)
     def OPPUP2(d, D):
-        scale = 240.0
         if d < TOLERANCE:
             return 80
         else:
-            return scale
+            return OPPU_SCALE + TRANSLATE_UP
     def OPPUP3(d, D):
-        scale = 240.0
         scale2 = 0.24
         if d < TOLERANCE:
             return 90
         else:
-            return scale-scale2*(d-D)
+            return OPPU_SCALE+TRANSLATE_UP-scale2*(d-D)
     return (OPPUP1, OPPUP2, OPPUP3)
 
 def OPPBPotential():
     def OPPBP1(d, D):
-        scale = 360.0
         if d < TOLERANCE:
             return 0
         else:
-            return scale/(D-2)*d
+            return (OPPB_SCALE + TRANSLATE_UP)/(D-2)*d
     def OPPBP2(d, D):
-        scale = 360.0
         if d < TOLERANCE:
             return 0
         else:
-            return scale
+            return OPPB_SCALE + TRANSLATE_UP
     def OPPBP3(d, D):
-        scale = 360.0
         if d < TOLERANCE:
             return 0
         else:
-            return scale-(d-D)*0.32
+            return OPPB_SCALE + TRANSLATE_UP -(d-D)*0.32
     return (OPPBP1, OPPBP2, OPPBP3)
 
 class Entity():
@@ -79,14 +81,15 @@ def WriteDistanceMap(dist,filename):
 This function computes the potential for Cliffs.
 """
 def PCliff(d, params):
-    scale = -80.0
-    if d > 1.0 - TOLERANCE and d < 2.0 + TOLERANCE:
-        y = -80.0
-    if d > TOLERANCE:
-        y = scale/(d**2)
-    else:
-        y = scale
+    #print "PCliff called shift is: ", shift
+    #scale = -180.0
+    #if d > 1.0 - TOLERANCE and d < 4.0 + TOLERANCE:
+     #   y = -80.0
+    #else: 
+    y = (PCLIFF_SCALE + TRANSLATE_UP)/(d**params)
     return y
+
+
 
 """
 This function determines if something is in range, given the parameters.
@@ -138,7 +141,7 @@ the obstacles. It is assumed that obstacles has a value of greater than
 """
 def GetDistanceMapObstacles(gray):
     return ndimage.distance_transform_edt(gray < 1)
-    #return ndimage.distance_transform_cdt(gray < 1)
+    #return ndimage.distance_transform_cdt(gray < 1,"cityblock")
 """
 This function will get distance map for units, given Units, A base Image, and a UnitDesc structure. The unit description structure is a tuple containing
 the height and width of the unit on the given map. 
@@ -150,7 +153,7 @@ def GetDistanceMapUnits(Units, RowsCols, UnitDesc=(1,1)):
             for j in range(0,UnitDesc[1]): #width
                 Y[c[0]+i, c[1]+j] = 1
     return ndimage.distance_transform_edt(Y < 1)
-    #return ndimage.distance_transform_cdt(Y < 1)
+    #return ndimage.distance_transform_cdt(Y < 1, "cityblock")
 
 def greaterThan(dSqr, value):
     return dSqr > value
@@ -162,6 +165,104 @@ def Cross(u, v):
     c = np.cross(z, [u, v])
     return (c[0], c[1])
 
+def cleanUp(map, cleanZeros = False):
+    map[np.isinf(map)] = 0
+    map[np.isnan(map)] = 0
+    if cleanZeros:
+        for i in range(0, map.shape[0]):
+            for j in range(0, map.shape[1]):
+                if map[i,j] == 0 and (i == 0 or i > map.shape[0]):
+                    map[i,j] = map[i+1,j]                
+    return map
+
+
+def test(fileName="city3_obs.png",scale=False):
+    
+    print "Computing PMaps:"
+    obsPMapShift = GetObsPMap(fileName, shift=2.0, scale=scale)
+    #obsPMap = GetObsPMap(fileName, shift=2)
+    imgShape = obsPMapShift.shape
+    print "obsPMap shape: ",imgShape
+    print "COmputing gradient maps:"
+    obsGradMapShift = np.gradient(obsPMapShift)
+    #obsGradMapShiftU = obsPMapShift[0]
+    #obsGradMapShiftV = obsPMapShift[1]
+    obsGradMapShiftU = cleanUp(obsGradMapShift[0], cleanZeros=True)
+    obsGradMapShiftV = cleanUp(obsGradMapShift[1], cleanZeros=True)
+    print "Computing contour maps"
+    #(cx, cy) = GetContourMap((obsGradMapShiftU, obsGradMapShiftV))
+    #()
+    #cx = cleanUp(cx)
+    #cy = cleanUp(cy)
+    print "computing combined map"
+    multi = 1
+    if scale:
+       multi = 2 
+       #308,0,303
+    goal = (303*multi, 308*multi)
+    goalPMap = GetUnitPMap([goal], imgSize = imgShape)
+    combinePMap = obsPMapShift + goalPMap
+    cGradMap = np.gradient(combinePMap)
+    combinePMapU = cGradMap[0]
+    combinePMapV = cGradMap[1]
+    #combinePMapU = cleanUp(cGradMap[0])
+    #combinePMapV = cleanUp(cGradMap[1])
+    
+    (cx, cy) = GetContourMap((combinePMapU, combinePMapV))
+    #()
+    cx = cleanUp(cx)
+    cy = cleanUp(cy)
+    
+    #combinePMapU = cGradMap[0]
+    #combinePMapV = cGradMap[1]
+    return {"obsGradMapShiftU":obsGradMapShiftU, "obsGradMapShiftV":obsGradMapShiftV,
+            "cx":cx, "cy":cy,
+            "combinePMap":combinePMap,
+            "combineGradMapU":combinePMapU,
+            "combineGradMapV":combinePMapV}
+
+def writeDataFiles(fileName = "data/testdata.zdt"):
+    
+    results = test()
+    gradU = results["combineGradMapU"]
+    gradV = results["combineGradMapV"]
+    cu = results["cx"]
+    cv = results["cy"]
+    file = open(fileName,"wb")
+    #write the header. The header consists of:
+    #A unsigned int denoting a file code.
+    #Followed by the shape of the number arrays, in both U and V. Since right now we assume the shapes are the same, we only
+    #output a single shape for all num arrays which we output. 
+    #Note: alternatively we can specify number of bytes instead of number of items.
+    code = 420
+    str = st.pack("L", code)
+    file.write(str)
+    print "writing file code..."
+    shapeU = gradU.shape[0]
+    shapeV = gradU.shape[1]
+    str = st.pack("LL", shapeU, shapeV)
+    print "Writing shape U,V"
+    file.write(str)
+    #Next we simply output (project) the num arrays into a 1D array. Since the shape U,V are given, one can re-project this 1D array
+    #back into it's original dimensions.
+    print "writing gradU"
+    writeNumArray(file, gradU)
+    print "writing gradV"
+    writeNumArray(file, gradV)
+    print "Writing cu"
+    writeNumArray(file, cu)
+    print "Writing cv"
+    writeNumArray(file, cv)
+    file.close()
+    print "Finished writing file."
+def writeNumArray(file, numArray):
+    """We assume here that numArray is 2D."""
+    for row in numArray:
+        for col in row:
+            str = st.pack("f", float(col)) #pack as float 
+            file.write(str)
+                
+    
 def GetContourMap(grads):
     x = np.empty(grads[0].shape)
     y = np.empty(grads[1].shape)
@@ -169,9 +270,24 @@ def GetContourMap(grads):
         tempU = []
         tempV = []
         for eU, eV in zip(rowU, rowV ):
-            (u, v) = Cross(eU, eV)
+            
+            dotU = eU*eU
+            dotV = eV*eV
+            #if dotU < 0.0001 and dotV < 0.0001:
+                #tempU.append(0.0) #pick arbitrary direction to get out of this craziness
+                #tempV.append(0.0)
+            #else:
+            norm = np.sqrt(dotU+dotV)
+            (u, v) = Cross(eU/norm, eV/norm)
+            if math.isnan(u) or math.isnan(v):
+                u = 0.0
+                v = 0.0
             tempU.append(u)
             tempV.append(v)
+        
+            
+            
+            
         x[i] = tempU
         y[i] = tempV
     return (x, y)    
@@ -216,11 +332,16 @@ def OperateOnResults(results, level=2.0, downScale=0.05, upScale=20.0,
 
 
 
-def GetObsPMap(obsFileName='testcitymap_new.png'):
+def GetObsPMap(obsFileName='testcitymap_new.png', shift=2, scale=False):
     
-    obsGray = scipy.misc.pilutil.imread('data/'+obsFileName, flatten=True)
+    if (scale):
+        obsGray = scipy.misc.pilutil.imresize(scipy.misc.pilutil.imread('data/'+obsFileName, flatten=True),
+                                          (1026, 1026))
+    else:
+        obsGray = scipy.misc.pilutil.imread('data/'+obsFileName, flatten=True)
     obsDMap = GetDistanceMapObstacles(obsGray)
-    obsPMap = GetPotentialMap(obsDMap, PCliff, 0)
+    #cliff = functools.partial(PCliff, shift)
+    obsPMap = GetPotentialMap(obsDMap, PCliff, shift)
     return obsPMap
 def GetBasePMap(pos,imgSize=(512, 512),sz=(10, 10)):
     baseDMap = GetDistanceMapUnits(pos, imgSize, sz)

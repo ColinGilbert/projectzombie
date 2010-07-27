@@ -10,7 +10,7 @@ using namespace ZGame::World;
 WorldController::WorldController() :
 _bobEnt(0), _animState(0)
 {
-    init();
+    //init();
 }
 
 WorldController::~WorldController()
@@ -21,6 +21,7 @@ WorldController::~WorldController()
 //Life cycle events
 bool WorldController::onInit()
 {
+  init();
   return true;
 }
 
@@ -67,9 +68,9 @@ void WorldController::init()
   sg->setRegionDimensions(Ogre::Vector3(200,200,200));
   sg->setOrigin(Ogre::Vector3(-200/2,0,-200/2));
 
-  sg->addEntity(cityEnt,Ogre::Vector3::ZERO,Ogre::Quaternion::IDENTITY,Ogre::Vector3(10.0f,10.0f,10.0f));
+  sg->addEntity(cityEnt,Ogre::Vector3::ZERO,Ogre::Quaternion::IDENTITY,Ogre::Vector3(100.0f,100.0f,100.0f));
 
-  sg->build();
+  //sg->build();
 
 
   

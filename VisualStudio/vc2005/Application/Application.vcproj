@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\ZombieMedia"
+			OutputDirectory="..\..\..\ZombieMedia\debug"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include&quot;;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz_d.lib $(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OgrePaging_d.lib OgreProperty_d.lib OgreRTShaderSystem_d.lib OgreTerrain_d.lib OIS_d.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz_d.lib $(NOINHERIT)"
 				OutputFile="$(OutDir)\projectz_d.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia;E:\Users\gnulinux\projects\ogresrc\build\lib\debug;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
+				AdditionalLibraryDirectories="&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\debug&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Debug&quot;;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -96,7 +96,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\..\ZombieMedia\release"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -119,7 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\build\include;E:\Users\gnulinux\projects\ogresrc\OgreMain\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
+				AdditionalIncludeDirectories="E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include&quot;;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -138,10 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain_D.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz.lib $(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OgreMain.lib OIS.lib boost_thread-vc80-mt-1_38.lib RakNetDLL.lib cologre.lib projectz.lib $(NOINHERIT)"
 				OutputFile="$(OutDir)\projectz.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_38\lib&quot;;E:\Users\gnulinux\projects\ogresrc\build\lib\release;E:\Users\gnulinux\projects\ogresrc\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
+				AdditionalLibraryDirectories="E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\release;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\release&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Release&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

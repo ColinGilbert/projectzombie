@@ -69,25 +69,7 @@ PlayerEntity::onSendConstruction(Ogre::String &typeStr, RakNet::BitStream* outBi
     typeStr = "PLAYER_TYPE"; //This temporary hard-coded type value. In the future will come from database.
     return true;
 }
-/**
-*This function is called for on read events--meaning, that 
-*
-*/
-bool
-PlayerEntity::onRead(Ogre::Vector3 &pos, Ogre::Quaternion &orient)
-{
-    return true;
-}
 
-/**
-*This function is called for on write events--meaning,
-*
-*/
-bool
-PlayerEntity::onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient)
-{
-    return true;
-}
 
 
 

@@ -101,7 +101,7 @@ EngineController::onInit()
     _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
 
     //set logging lvl
-    Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
+    //Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
 
     //load states
     loadStates();
@@ -157,7 +157,8 @@ EngineController::chooseSceneManager()
     OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Could not find Paging Landscape plugin. Check if it is in plugin.cfg",
     "chooseSceneManager");
     }*/
-    _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
+    //_scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
+    _scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "ProjectChaos");
     //_scnMgr = _root->createSceneManager("PagingLandScapeSceneManager","ProjectChaos");
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
     rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);

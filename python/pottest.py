@@ -6,10 +6,8 @@
 import ogre.renderer.OGRE as ogre
 import ogre.io.OIS as OIS
 import SampleFramework as sf
-from multiprocessing import Process, Queue
 import time
-
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Pipe, Event, JoinableQueue
 from PZEntity import Entity
 from PZEntityManager import EntityManager as PZEntityManager
 from PZRenderEntityManager import RenderEntityManager
@@ -26,7 +24,8 @@ import sys
 class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
     """A FrameListener class that handles basic user input."""
  
-    def __init__(self, renderWindow, camera, sceneManager, console, aiProc = 0,fromQueue=0, toQueue=0, entMgr=0, numToGen=256, multi=0):
+    def __init__(self, renderWindow, camera, sceneManager, console, aiProc = 0,
+                 pipe = 0, cmdQueue = 0, events=0, entMgr=0, numToGen=256, multi=0):
         # Subclass any Python-Ogre class and you must call its constructor.
         sf.FrameListener.__init__(self, renderWindow, camera)
         OIS.KeyListener.__init__(self)
@@ -47,8 +46,9 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
         self.threadStarted = False
         #self.timeScale = 0/1000.0
         self.timer = ogre.Timer()
-        self.fromQueue = fromQueue
-        self.toQueue = toQueue
+        self.cmdQueue = cmdQueue
+        self.pipe = pipe
+        self.events = events
         self.entMgr = entMgr
         self.aiProc = aiProc
         self.numToGen = numToGen
@@ -66,8 +66,9 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
         scale = self.SCALE_DICT['nUnitsToOneMeter']
         #create the entity managers
         self._rdrEntManager = RenderEntityManager(self.sceneManager, 
-                                                  read = self.fromQueue,
-                                                  write = self.toQueue)
+                                                  pipe=self.pipe,
+                                                  cmdQueue=self.cmdQueue,
+                                                  numToGen=self.numToGen)
         self._rdrEntManager.setScaleDict(self.SCALE_DICT)
         print "Creating random entities:"
         #values all expressed as meters.
@@ -79,14 +80,12 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
             #$time.sleep(1.0)
             #self.thread.start()
             #self.threadStarted = True
-            self.createRandomEntities(0,self.numToGen,xlo=10*scale,xhi=500*scale,zlo=10*scale,zhi=20*scale)
             print "AI thread started."
             self.aiProc.start()
+            self.createRandomEntities(0,self.numToGen,xlo=10*scale,xhi=500*scale,zlo=10*scale,zhi=20*scale)
             print "Waiting On AI thread."
-            finished = self.fromQueue.get(True, 1000000)
-            
-            #time.sleep(5.0) #wait for to warm up
-            
+            events["AIEndInit"].wait()
+            print "Waiting done!"
         else:
             self._entManager = PZEntityManager(self.SCALE_DICT)
             self._entManager._rdrEntManager = self._rdrEntManager
@@ -105,8 +104,9 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
             randY = np.random.randint(ylo,yhi,numToGen)
             randZ = np.random.randint(zlo,zhi,numToGen) 
             entMgr.createEntities([randX, randY, randZ], orient=o)
-        
-        self._rdrEntManager.createEntities(numToGen,orient=o)
+            self._rdrEntManager.createEntities(numToGen, orient=o, multiCreate = self.threadOn, numOfWeapons=50)
+        else:
+            self._rdrEntManager.createEntities(numToGen,orient=o, multiCreate = self.threadOn, numOfWeapons=50)
         #self._entManager.createEntities([randX,randY,randZ], orient=o)
         
         #for i,j,k in zip(randX,randY,randZ):
@@ -144,6 +144,7 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
         
     
     def frameStarted(self, frameEvent):
+        
         if(self.renderWindow.isClosed()):
             return False
  
@@ -174,7 +175,7 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
         
         #update the entities
         if(self.threadOn):
-            self._rdrEntManager.update()
+            self._rdrEntManager.update(elapsedTimeMills)
         else:
             self._entManager.update2(elapsedTimeMills)
         """
@@ -194,6 +195,16 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
          
         return self.keepRendering
     
+    def fireWeapon(self):
+        print "WEAPON FIRING!"
+        pos = self.camera.getRealPosition()
+        #orient = self.camera.getRealOrientation()
+        orient = self.camera.getDerivedOrientation()
+        #orient = self.camera.getDerivedDirection()
+        p = (pos.x, pos.y, pos.z)
+        o = (orient.w, orient.x, orient.y, orient.z)
+        self.cmdQueue.put_nowait(["fireWeapon",p, o])
+    
     def keyPressed(self, evt):
         if evt.key == OIS.KC_ESCAPE:
             self.keepRendering = False
@@ -207,6 +218,9 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
             self.direction.x = -self.move
         if evt.key == OIS.KC_D:
             self.direction.x = self.move
+        
+        if evt.key == OIS.KC_SPACE:
+            self.fireWeapon()
             
         self.console.keyPressed(evt)
         
@@ -289,20 +303,22 @@ class TutorialFrameListener(sf.FrameListener, OIS.KeyListener):
         # Rotate the camera.
         ms = self.Mouse.getMouseState()
         if ms.buttonDown(OIS.MB_Right):
-            self.camNode.yaw(ogre.Degree(-self.rotate
+            self.camera.yaw(ogre.Degree(-self.rotate
                 * ms.X.rel).valueRadians())
             #self.camNode.getChild(0).pitch(ogre.Degree(-self.rotate
                 #* ms.Y.rel).valueRadians())
-            self.camNode.pitch(ogre.Degree(-self.rotate
+            self.camera.pitch(ogre.Degree(-self.rotate
                 * ms.Y.rel).valueRadians())
  
 class TutorialApplication(sf.Application):
     """Application class."""
     
-    def __init__(self,aiProc=0,fromQueue=0, toQueue=0, entMgr=0,numToGen=256, multi=0):
+    def __init__(self,aiProc=0, pipe=0, cmdQueue=0, entMgr=0,numToGen=256, multi=0,
+                 events=0):
         sf.Application.__init__(self)
-        self.fromQueue = fromQueue
-        self.toQueue = toQueue
+        self.pipe = pipe
+        self.cmdQueue = cmdQueue
+        self.events = events
         self.entMgr = entMgr
         self.aiProc = aiProc
         self.numToGen = numToGen
@@ -313,28 +329,26 @@ class TutorialApplication(sf.Application):
     
     def _createScene(self):
         self.console = Console(self.root,self)
-        #self.console.addLocals(self.toQueue)
-        
-        
+        #scene manager
         sceneManager = self.sceneManager
         sceneManager.ambientLight = 0.25, 0.25, 0.25
         
         sceneManager.setWorldGeometry('terrain.cfg')
+        sceneManager.setShadowUseInfiniteFarPlane(True)
+        #animation
+        ogre.Animation.setDefaultInterpolationMode(ogre.Animation.IM_SPLINE)
         
-        
-        
-
- 
-        ent = sceneManager.createEntity("Ninja", "ninja.mesh")
-        node = sceneManager.getRootSceneNode().createChildSceneNode("NinjaNode")
-        #node.attachObject(ent)
- 
+        #lights
         light = sceneManager.createLight("Light1")
-        light.type = ogre.Light.LT_POINT
-        light.position = 250, 150, 250
+        #light.type = ogre.Light.LT_DIRECTIONAL
+        dir = ogre.Vector3(1.0, -1.0, 0.2)
+        dir.normalise()
+        light.type = ogre.Light.LT_DIRECTIONAL
+        #light.position = 250, 1000, 0
+        light.direction = dir
         light.diffuseColour = 1, 1, 1
         light.specularColour = 1, 1, 1
- 
+        light.setCastShadows(True)
         # create the first camera node/pitch node
         node = sceneManager.getRootSceneNode().createChildSceneNode("CamNode1",
             (-400, 200, 400))
@@ -346,11 +360,20 @@ class TutorialApplication(sf.Application):
         node = sceneManager.getRootSceneNode().createChildSceneNode("CamNode2",
             (0, 200, 400))
         node.createChildSceneNode("PitchNode2")
+        sceneManager.setShadowTechnique(ogre.SHADOWTYPE_TEXTURE_ADDITIVE)
+        sceneManager.setShadowFarDistance(8000.0)
+        materialManager = ogre.MaterialManager.getSingleton()
+        #materialManager.getByName("TronNormalMap").setReceiveShadows(False)
+        
+        cm = ogre.CompositorManager.getSingleton()
+        cm.addCompositor(self.viewport, "Bloom")
+        #cm.addCompositor(self.viewport, "HDR")
+        #cm.addCompositor(self.viewport, "Gaussian Blur")
+        #cm.addCompositor(self.viewport, "HDR")
+        cm.setCompositorEnabled(self.viewport, "Bloom", True)
+        #cm.setCompositorEnabled(self.viewport, "HDR", True) 
         
         
-        
-    
-            
     def _createCamera(self):
         self.camera = self.sceneManager.createCamera("PlayerCam")
         self.camera.nearClipDistance = 5
@@ -361,11 +384,13 @@ class TutorialApplication(sf.Application):
             self.sceneManager,
             self.console,
             aiProc = self.aiProc,
-            fromQueue = self.fromQueue,
-            toQueue = self.toQueue,
+            cmdQueue = self.cmdQueue,
+            pipe = self.pipe,
+            events = self.events,
             numToGen = self.numToGen,
             multi=self.multi)
         self.frameListener.initEntities()
+        
         self.root.addFrameListener(self.frameListener)
         
         self.frameListener.showDebugOverlay(False)
@@ -376,18 +401,25 @@ class TutorialApplication(sf.Application):
 #@staticmethod
 if __name__ == '__main__':
     try:
-        numToGen = 1024
+        numToGen = 256
         multi = True
-        fromQueue = Queue()
-        toQueue = Queue()
+        pipe = Pipe()
+        cmdQueue = JoinableQueue()
+        events = {"AIEndInit":Event(),
+                  "AIEndProc":Event(), 
+                  "AICtrl":Event()}
         fileName = ""
         aiProc = 0
         if(multi):
-            aiProc = Process(target=AIProc.run,args=(fromQueue,numToGen,toQueue))
+            aiProc = Process(target=AIProc.run,args=(pipe[0],cmdQueue,numToGen,events))
             aiProc._daemonic = True
         
-        ta = TutorialApplication(aiProc, fromQueue=fromQueue, numToGen=numToGen, multi=multi, toQueue = toQueue)
+        ta = TutorialApplication(aiProc=aiProc, pipe=pipe[1], numToGen=numToGen, multi=multi, events=events, cmdQueue=cmdQueue)
         ta.go()
+        #inform of process to clean up.
+        m=["QUIT"]
+        cmdQueue.put(m) 
+        #events["AIEndProc"].wait()
         print "finished go"
         ta.console.parent = 0
         print "delete go"

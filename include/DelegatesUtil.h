@@ -15,19 +15,24 @@ namespace ZGame
 {
     namespace LifeCycle
     {
+        static const unsigned int LFC_ON_DESTROY = 0x01;
+        static const unsigned int LFC_ON_INIT = 0x02;
+        static const unsigned int LFC_ON_UPDATE = 0x04;
+        
         static void clearLfcObs(LifeCycleObserver& lfcObs)
         {
             lfcObs.onDestroy.clear();
             lfcObs.onInit.clear();
             lfcObs.onUpdate.clear();
         }
+        
         template<typename T>
         static void bindLifeCycleObserver(LifeCycleObserver &lfcObs,
-            T& binder)
+            T& binder, unsigned eventMask = LFC_ON_DESTROY | LFC_ON_INIT | LFC_ON_UPDATE)
         {
-            lfcObs.onInit.bind(&binder,&T::onInit);
-            lfcObs.onUpdate.bind(&binder,&T::onUpdate);
-            lfcObs.onDestroy.bind(&binder,&T::onDestroy);
+            eventMask & LifeCycle::LFC_ON_INIT ? lfcObs.onInit.bind(&binder,&T::onInit) : lfcObs.onInit.clear(); 
+            eventMask & LFC_ON_UPDATE ? lfcObs.onUpdate.bind(&binder,&T::onUpdate) : lfcObs.onUpdate.clear();
+            eventMask & LFC_ON_DESTROY ? lfcObs.onDestroy.bind(&binder,&T::onDestroy) : lfcObs.onDestroy.clear();
         }
     }
     namespace Entities

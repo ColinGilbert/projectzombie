@@ -9,9 +9,6 @@ using namespace ZGame::COMMAND;
 
 ServicesManager::ServicesManager()
 {
-    //Add the CreateEntCmd to CommandController.
-    shared_ptr<CreateEntCmd> createEntCmd(new CreateEntCmd());
-    ZGame::CommandController::getSingleton().addCommand(createEntCmd);
 }
 
 ServicesManager::~ServicesManager()

@@ -196,6 +196,11 @@ namespace ZGame
             _cameraNode->setPosition(Ogre::Vector3::ZERO);
             _cameraNode->translate(_cameraNode->getLocalAxes(),Ogre::Vector3(0.0,0.0,_camLocalZOffset));
         }
+        else
+        {
+            _cam->moveRelative(_transVector);
+
+        }
         return true;
     }
 
