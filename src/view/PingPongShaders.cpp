@@ -56,7 +56,7 @@ namespace ZGame
         oss << _pingPongName << "CAM" << _curId << endl;
         Camera* cam = scnMgr->createCamera(oss.str());
         assert(_input->getHeight() != 0 && "In PingPongShader::setup, inputHeight is 0");
-        cam->setAspectRatio(_input->getWidth() / _input->getHeight());
+        cam->setAspectRatio((Real)_input->getWidth() / _input->getHeight());
         cam->setNearClipDistance(_NEARPLANE);
         cam->setFarClipDistance(_FARPLANE);
         cam->setPosition(_camCoords);

@@ -56,6 +56,11 @@ CreateEntCmd::execute(const Command &cmd)
         //Call other commands relating to Entity creation.
     }
 
+    //Finally, convert the ZEntities into buffer format. 
+    cout << "Converting ZEntities to buffers. " << endl;
+    entMgr->zEntitiesToBuffer();
+    entMgr->clearZEntities();
+
     return NULL_MEMENTO;
 }
 

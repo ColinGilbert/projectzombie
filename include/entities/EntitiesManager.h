@@ -2,7 +2,7 @@
 #define _ZENTITIES_MANAGER_H
 
 #include <vector>
-
+#include <ogre.h>
 #include "entities/EntitiesDefs.h"
 #include "net/ZNetEntity.h"
 
@@ -14,6 +14,17 @@ namespace ZGame
     namespace Entities
     {
         class ZEntity;
+        /**
+        *This structure is used to represent ZEntities in the form of buffers. ZEntities as buffers is more succinct as a form for efficient processing.
+        */
+        struct ZEntityBuffers
+        {
+            ZEntityBuffers() : numOfEnts(0), worldPos(0), worldOrient(0){}
+            size_t numOfEnts;
+            Ogre::Real* worldPos;
+            Ogre::Real* worldOrient;
+            Ogre::uchar* mode;
+        };
         /** This class defines an Entities Manager. It will be responsible for manage (creation,deleation) of ZEntities.*/
         class EntitiesManager
         {
@@ -21,9 +32,17 @@ namespace ZGame
             EntitiesManager();
             virtual ~EntitiesManager();
             /** \brief This method will create an ZEntity in the system.*/
-            ZEntity* createZEntity();
+            ZEntity* 
+                createZEntity();
             /** \brief This method will remove an ZEntity from the system.*/
-            void removeZEntity();
+            void 
+                removeZEntity();
+            /** \brief This method will clear all ZEntities from the system.**/
+            void 
+                clearZEntities();
+            /** \brief This method will convert the ZEntities into buffer representation.**/
+            void 
+                zEntitiesToBuffer();
 
             EntitiesManager* getManager() 
             {
@@ -39,6 +58,8 @@ namespace ZGame
         private:
             static int _KEY;
             ZENTITY_VEC _zEntsVec;
+            Ogre::Real* reals;
+            ZEntityBuffers _ents;
 
             void _getNewKey(Entities::ZENT_KEY &key);
         };

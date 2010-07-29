@@ -1,8 +1,8 @@
 #ifndef _ZGAME_CMDCONTROLLER_H
 #define _ZGAME_CMDCONTROLLER_H
 
-#include <boost\shared_ptr.hpp>
-
+//#include <boost\shared_ptr.hpp>
+#include <memory>
 #include <Ogre.h>
 #include <string>
 
@@ -31,10 +31,11 @@ namespace ZGame
     using COMMAND::COMMAND_KEY;
     using fastdelegate::DelegateMemento;
     using ZGame::COMMAND::Command;
-    using boost::shared_ptr;
+    using std::tr1::shared_ptr;
     class CommandController : public Ogre::Singleton<CommandController>
     {
     public:
+
         CommandController();
         ~CommandController();
 

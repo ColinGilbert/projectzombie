@@ -1,6 +1,7 @@
 #include <iostream>
 
 using std::ostringstream;
+using std::cout;
 using std::endl;
 
 #include "entities/EntitiesManager.h"
@@ -9,6 +10,8 @@ using std::endl;
 #include "CommandController.h"
 #include "command/CreateEntCmd.h"
 #include "delegates/EntityDelegates.h"
+
+using namespace Ogre;
 
 using namespace ZGame::Entities;
 
@@ -28,12 +31,52 @@ EntitiesManager::EntitiesManager()
 
 EntitiesManager::~EntitiesManager()
 {
+    clearZEntities(); //just to be safe.
+}
+
+void 
+EntitiesManager::clearZEntities()
+{
     //Remove the entities.
     for(ZENT_ITER it=_zEntsVec.begin(); it!=_zEntsVec.end(); ++it)
     {
         delete(*it);
     }
+
+    _zEntsVec.clear();
 }
+
+/**
+*This method will convert the zEntities in this manager into ZEntitiBuffers form.
+*
+**/
+void
+EntitiesManager::zEntitiesToBuffer()
+{
+    size_t vecDim = 4;
+    //Allocate the buffers for N number of elements.
+    _ents.numOfEnts = _zEntsVec.size();
+    cout << "Allocating buffer for ZEntities to Buffer conversion." << endl;
+    _ents.worldPos = new Real[_ents.numOfEnts*vecDim]; //4D vector per entity.
+    _ents.worldOrient = new Real[_ents.numOfEnts*vecDim]; //4D quaternion per entity.
+    _ents.mode = new uchar[_ents.numOfEnts]; //byte mod variable per entity.
+    //Iterate through ZEntities and copy the data over for reach ZEntity
+    size_t entIdx = 0;
+    for(ZENT_ITER it=_zEntsVec.begin(); it!=_zEntsVec.end(); ++it)
+    {
+        const Vector3& pos = (*it)->getPosition();
+        const Quaternion& orient = (*it)->getOrientation();
+
+        _ents.worldPos[entIdx*vecDim] = pos.x; _ents.worldPos[entIdx*vecDim+1] = pos.y; _ents.worldPos[entIdx*vecDim+2] = pos.z; _ents.worldPos[entIdx*vecDim+3] = 0.0f;
+        _ents.worldOrient[entIdx*vecDim] = orient.w; _ents.worldOrient[entIdx*vecDim+1] = orient.x; _ents.worldOrient[entIdx*vecDim+2] = orient.y; _ents.worldOrient[entIdx*vecDim+3] = orient.z;
+        _ents.mode[entIdx] = (uchar)(0);
+        entIdx++;
+    }
+
+}
+
+
+
 /**
 *This method will create a ZEntity and add it to the manager for mangement. The build phase is seperated from the creation phase. This way, you can load all the entities before thread creation; so to
 *reuse the Ogre resource system as much as possible. 

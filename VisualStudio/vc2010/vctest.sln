@@ -1,22 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projectz", "vctest\vctest.vcproj", "{190852A1-E385-4C7F-9792-3DFD6AC69173}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projectz", "vctest\vctest.vcxproj", "{190852A1-E385-4C7F-9792-3DFD6AC69173}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkClientTester", "NetworkClientTester\NetworkClientTester.vcproj", "{BF5F3A95-40B7-4B43-9AA6-5B323A2F1103}"
-	ProjectSection(ProjectDependencies) = postProject
-		{190852A1-E385-4C7F-9792-3DFD6AC69173} = {190852A1-E385-4C7F-9792-3DFD6AC69173}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkClientTester", "NetworkClientTester\NetworkClientTester.vcxproj", "{BF5F3A95-40B7-4B43-9AA6-5B323A2F1103}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application", "Application\Application.vcproj", "{B75071BE-7BBB-43DB-9F17-9AB16728DAB8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{190852A1-E385-4C7F-9792-3DFD6AC69173} = {190852A1-E385-4C7F-9792-3DFD6AC69173}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application", "Application\Application.vcxproj", "{B75071BE-7BBB-43DB-9F17-9AB16728DAB8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCL", "TestCL\TestCL.vcproj", "{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{190852A1-E385-4C7F-9792-3DFD6AC69173} = {190852A1-E385-4C7F-9792-3DFD6AC69173}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCL", "TestCL\TestCL.vcxproj", "{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,7 +26,6 @@ Global
 		{B75071BE-7BBB-43DB-9F17-9AB16728DAB8}.Release|Win32.ActiveCfg = Release|Win32
 		{B75071BE-7BBB-43DB-9F17-9AB16728DAB8}.Release|Win32.Build.0 = Release|Win32
 		{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}.Debug|Win32.Build.0 = Debug|Win32
 		{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}.Release|Win32.ActiveCfg = Release|Win32
 		{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

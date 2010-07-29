@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 using namespace std;
-#include <boost/random.hpp>
+//#include <boost/random.hpp>
 #include <Ogre.h>
 //#include <signal.h>
 //#include "InputController.h"

@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\..\ZombieMedia\$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -45,6 +45,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				BufferSecurityCheck="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -61,9 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OpenCL.lib projectz.lib $(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OpenCL.lib OgreMain_D.lib projectz_d.lib $(NOINHERIT)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ATISTREAMSDKROOT)\lib\x86\;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\release;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\release&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Release&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
+				AdditionalLibraryDirectories="&quot;$(ATISTREAMSDKROOT)\lib\x86\&quot;;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\debug;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\debug&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Debug&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -95,7 +96,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\..\ZombieMedia\$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -121,6 +122,7 @@
 				AdditionalIncludeDirectories="$(ATISTREAMSDKROOT)\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include&quot;;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -137,9 +139,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OpenCL.lib projectz.lib $(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib ws2_32.lib kernel32.lib OpenCL.lib OgreMain.lib projectz.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(ATISTREAMSDKROOT)\lib\x86\;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\release;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\release&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Release&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
+				AdditionalLibraryDirectories="&quot;$(ATISTREAMSDKROOT)\lib\x86\&quot;;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\release;&quot;C:\Program Files\boost\boost_1_38\lib&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\release&quot;;&quot;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Release&quot;;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

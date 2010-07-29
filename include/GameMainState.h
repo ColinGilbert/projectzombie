@@ -9,12 +9,14 @@
 #define GAMEMAINSTATE_H_
 
 #include <memory>
+using std::tr1::shared_ptr;
 //#include <string>
 using namespace std;
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include <boost/shared_ptr.hpp>
-using namespace boost;
+//#include <boost/shared_ptr.hpp>
+//using namespace boost;
+
 #include "GameState.h"
 
 namespace ZGame
