@@ -40,7 +40,6 @@ namespace ZGame
         ~CommandController();
 
         bool init();
-        //void addCommandX(Ogre::String cmdName, COMMAND::ConsoleCommand &cmd);
         void addCommand(shared_ptr<Command> cmd);
         /** \brief This method is used to add a String command. It is used for String Command only. This is done to minimize coupling.*/
         void addCommand(const COMMAND_KEY &key, const DelegateMemento &memento);
@@ -50,16 +49,9 @@ namespace ZGame
 
         OgreConsole* getConsole(); //Precondition: _console must valid!!!
         
-        //const CommandList* getCommandList(){ return _commandList;}
-
-        /** \brief This method is called from OgreConsole to directly execute a command from the console.*/
-        //static void execute(const Ogre::StringVector &params); 
-        //void execute(std::vector<Ogre::String> &params);
-        //void executeCmd(const Ogre::StringVector &params);
         /** \brief This method is called by anyone to execute a Command object.**/
         fastdelegate::DelegateMemento 
             executeCmd(const Command &cmd);
-
         static ZGame::CommandController&
             getSingleton();
         static ZGame::CommandController*

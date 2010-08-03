@@ -29,11 +29,13 @@ using namespace std;
 #include "entities/EntitiesManager.h"
 #include "entities/RenderEntitiesManager.h"
 #include "entities/ZEntityBuilder.h"
+#include "ZCL/ZCLController.h"
 
 using namespace Ogre;
 using namespace ZGame;
 using Entities::EntitiesManager;
 using Entities::RenderEntitiesManager;
+using ZCL::ZCLController;
 
 GameMainState::GameMainState() :
 GameState(), _gpuEntsView(new GPUEntsView()), _cam(0), _dz(1.5f), _forward(
@@ -43,7 +45,8 @@ GameState(), _gpuEntsView(new GPUEntsView()), _cam(0), _dz(1.5f), _forward(
   _worldController(new World::WorldController()),
   _charUtil(new Util::CharacterUtil()),
   _entMgr(0), //Do not initialize them here as services are not up yet when we are creating the GameMainState. This needs to change. i.e: we need to create game main state after ogre initializes.
-  _rdrEntMgr(0)
+  _rdrEntMgr(0),
+  _zclCtrl(new ZCLController())
 {
 
 }
@@ -55,7 +58,10 @@ GameMainState::~GameMainState()
 /**
 *This class will register LifeCycle observers (to be later injected into LifeCycle subjects: The Subject Observer pattern.)
 *
-*
+*\note Notice we are selectively masking the life cycle functions. When this project started we had some sort of dependency injection thing in mind,
+but alas that was a stupid idea because we don't really need that. We can manually do it ourselves. This means that there is not any concept of ordering in 
+life-cycle pumps, since dependency injection is not implemented. This works fine for now for mostly we just need a global pump to pump update events to 
+people. Initializing is not really needed. OnDestruction events are still useful. Safe-to-say we must think about dependencies. 
 **/
 void
 GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
@@ -65,28 +71,18 @@ GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
   LifeCycle::LifeCycleObserver lfcObs;
   LifeCycle::bindLifeCycleObserver(lfcObs,*this);
   lfcReg.registerLfcObs(lfcObs);
-  LifeCycle::clearLfcObs(lfcObs);
-
+  
+  //OpenCLController
+  LifeCycle::bindLifeCycleObserver(lfcObs,*_zclCtrl,
+      LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
   //world controller
-  LifeCycle::bindLifeCycleObserver(lfcObs,*_worldController);
+  LifeCycle::bindLifeCycleObserver(lfcObs,*_worldController,
+      LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
   lfcReg.registerLfcObs(lfcObs);
-  LifeCycle::clearLfcObs(lfcObs);
-
+  
   //control module
   LifeCycle::bindLifeCycleObserver(lfcObs,*_controlMod);
   lfcReg.registerLfcObs(lfcObs);
-  LifeCycle::clearLfcObs(lfcObs);
-
-
-  //register objects that belongs in this state
-  //addLfcObsInjector(_gpuEntsView);
-  //register control module
-  //addLfcObsInjector(_controlMod);
-  //register white noise
-  //addLfcObsInjector(_whtNoiseView);
-  //register GPUEntsControl
-  //addLfcObsInjector(_gpuEntsControl);
-
 }
 
 /**
@@ -116,23 +112,31 @@ GameMainState::regMouseObsForInjection(MouseEventRegister &mouseReg)
   EVENT::clearMouseObs(mouseObs);
 }
 
-
+/**
+*This method will initialize the GameMainState object. This method is called during the initialization phase of the life-cycle. There is an odering
+*dependency for initialization of the GameMainState object, and as such we must pay heed to the ordering of object initialization. We tried to keep 
+*the different modules orthgonal whenever possible. 
+*
+**/
 bool
 GameMainState::onInit()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
     "In GameMainState onInit");
+  //Setup the entities manager.
   _entMgr.reset(new Entities::EntitiesManager());
   _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
-  //createGPUEntities();
-  //Ogre::LogManager::getSingleton().logMessage("Done creating GPU entities");
-  createWorld();
-  //_worldController->init();
+  
+  _worldController->onInit();
+  createWorld(); //NOTE: All of this should be MOVED to _worldController.
   Ogre::LogManager::getSingleton().logMessage("Done creating world");
 
   createCharacters();
   Ogre::LogManager::getSingleton().logMessage("Done creating characters.");
-
+  //We need to initialize OpenCL after creating the world and entities, as OpenCL requires both entities and world map data to function.
+  _zclCtrl->init("../scripts/testkernels.cl", _entMgr->getEntBuffers(), _worldController->getWorldMap());
+  Ogre::LogManager::getSingleton().logMessage("Done initializing OpenCL.");
+  
   return true;
 }
 
@@ -247,36 +251,6 @@ GameMainState::createWorld()
 
   Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
   Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(1);
-
-  //_worldController->onInit();
-
-
-  //createCharacters();
-
-
-  
-  //_cam = EngineView::getSingleton().getCurrentCamera();
-  /*
-  Plane plane(Vector3::UNIT_Y, 0);
-  //ground testing plane
-  MeshManager::getSingleton().createPlane("TempGroundPlane",
-  ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 5000, 5000, 1,
-  1, true, 1, 1, 1, Vector3::UNIT_Z);
-  //SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-  Ogre::String planeName = "TempGroundPlaneEntity";
-  Entity* texEnt = scnMgr->createEntity(planeName, "TempGroundPlane");
-  texEnt->setMaterialName("Examples/OgreLogo");
-  lm->logMessage("texEnt material set",Ogre::LML_TRIVIAL);
-  Ogre::String name;
-  name = "TempGroundPlaneNode";
-  SceneNode* texNode = scnMgr->getRootSceneNode()->createChildSceneNode(name,
-  Vector3(0.0f, 0.0f, 0.0f));
-  texNode->attachObject(texEnt);
-
-  //texNode->setVisible(true, true);
-  texNode->setPosition(Vector3(0.0f,-5.2f,0.0f));
-  texNode->yaw(Radian(Math::DegreesToRadians(90.0f)));
-  */
 
   lm->logMessage(Ogre::LML_TRIVIAL,"Out of GameMainState::createWorld");
 }

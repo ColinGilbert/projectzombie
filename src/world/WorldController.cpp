@@ -1,14 +1,17 @@
 #include <sstream>
 #include <iostream>
 
+using std::cout; using std::endl;
+
 #include "world/WorldController.h"
 //#include "cologre.h"
 #include "EngineView.h"
+#include "world/WorldMap.h"
 using namespace ZGame;
 using namespace ZGame::World;
 
 WorldController::WorldController() :
-_bobEnt(0), _animState(0)
+_bobEnt(0), _animState(0), _worldMap(0)
 {
     //init();
 }
@@ -39,6 +42,9 @@ bool WorldController::onUpdate(const Ogre::FrameEvent &evt)
 
 bool WorldController::onDestroy()
 {
+    cout << "WorldController::onDestroy called." << endl;
+    cout << "Deleting WorldMap." << endl;
+    delete _worldMap;
     return true;
 }
 
@@ -50,8 +56,8 @@ bool WorldController::onDestroy()
 */
 void WorldController::init()
 {
+    loadWorld();
     //disable collada ogre support because we need to compile it's dependencies using VS 2010. Will do that later.
-    using namespace std;
     /*
     CColladaDatabase db;
     Ogre::SceneManager* sceneManager = EngineView::getSingleton().getSceneManager();
@@ -135,4 +141,6 @@ void WorldController::init()
 
 void WorldController::loadWorld()
 {
+    _worldMap = new WorldMap();
+    _worldMap->load(); //We should implement load from configuration file.
 }

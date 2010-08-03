@@ -24,7 +24,7 @@ namespace ZGame
     ~LifeCycleRegister();
 
     void injectLfcSubj(const LifeCycle::LifeCycleSubject &subj);
-    void registerLfcObs(const LifeCycle::LifeCycleObserver& obs); //helper function to do the actual registration.
+    void registerLfcObs(LifeCycle::LifeCycleObserver& obs); //helper function to do the actual registration.
 
   protected:
 

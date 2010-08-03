@@ -41,6 +41,7 @@ _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(
 
 EngineController::~EngineController()
 {
+    onDestroy();
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
     cout << "EngineController destructor" << "\n";

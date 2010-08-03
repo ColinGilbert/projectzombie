@@ -32,6 +32,7 @@ EntitiesManager::EntitiesManager()
 EntitiesManager::~EntitiesManager()
 {
     clearZEntities(); //just to be safe.
+    _ents.clear();
 }
 
 void 
@@ -56,6 +57,7 @@ EntitiesManager::zEntitiesToBuffer()
     size_t vecDim = 4;
     //Allocate the buffers for N number of elements.
     _ents.numOfEnts = _zEntsVec.size();
+    _ents.COMPONENT_DIM = vecDim;
     cout << "Allocating buffer for ZEntities to Buffer conversion." << endl;
     _ents.worldPos = new Real[_ents.numOfEnts*vecDim]; //4D vector per entity.
     _ents.worldOrient = new Real[_ents.numOfEnts*vecDim]; //4D quaternion per entity.

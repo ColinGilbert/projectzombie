@@ -10,12 +10,10 @@
 
 #include <memory>
 using std::tr1::shared_ptr;
-//#include <string>
 using namespace std;
 #include <Ogre.h>
 #include <OIS/OIS.h>
 //#include <boost/shared_ptr.hpp>
-//using namespace boost;
 
 #include "GameState.h"
 
@@ -29,7 +27,10 @@ namespace ZGame
     class ControlModuleProto;
     class WhiteNoiseView;
     class GPUEntsControl;
-    
+    namespace ZCL
+    {
+        class ZCLController; 
+    }
     namespace World
     {
         class WorldController;
@@ -90,6 +91,7 @@ namespace ZGame
         auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
         auto_ptr<Entities::EntitiesManager> _entMgr;
         auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
+        auto_ptr<ZCL::ZCLController> _zclCtrl;
 
     };
 }

@@ -7,9 +7,10 @@
 #include "command/ServicesManager.h"
 using ZGame::COMMAND::ServicesManager;
 #include "ControlModuleProto.h"
-
+#include "command/CmdException.h"
 
 using namespace ZGame;
+using COMMAND::CmdException;
 
 //std::map<Ogre::String,ZGame::COMMAND::ConsoleCommand> __cmdMap;
 
@@ -52,8 +53,6 @@ CommandController::getConsole()
     return _console.get(); 
 }
 
-
-
 /**
 *precondition Ogre must still be valid at this point. What this means is you want to call this during the onDestroy life cycle. Ogre is guranteed to be still valid during that phase.
 *
@@ -64,25 +63,6 @@ void CommandController::onDestroy()
         _console->shutdown();
 }
 
-/**
-*This static method is the call back for executing a found command in OgreConsole. We assume that the command has been validated upstream in OgreConsole,
-and thus when calling this params[0] should be the calle.
-
-void CommandController::execute(const Ogre::StringVector &params)
-{
-    try
-    {
-        __cmdMap[params[0]].execute(params);
-    }catch(Ogre::Exception e)
-    {
-        cout << "Caught Ogre exception in CommandController::execute" << endl;
-    }
-    catch(std::exception e)
-    {
-        cout << "Caught exception in CommandController::execute" << endl;
-    }
-}
-*/
 /**
 *This method will execute the command object.
 */
@@ -96,12 +76,17 @@ CommandController::executeCmd(const COMMAND::Command &cmd)
         //std::map<Ogre::String,ZGame::COMMAND::ConsoleCommand>::iterator cmdMapIter;
         MAP_ITER cmdMapIter;
         cmdMapIter = __cmdMap.find(cmd.getKey());
-        assert(cmdMapIter != __cmdMap.end() && "The command you are trying to execute does not exist in __cmdMap.");
+        if(cmdMapIter == __cmdMap.end())
+            throw CmdException("The command you are trying to execute does not exist in __cmdMap. Key: "+cmd.getKey());
+        //assert(cmdMapIter != __cmdMap.end() && "The command you are trying to execute does not exist in __cmdMap.");
         __cmdMap[cmd.getKey()]->execute(cmd);
-        //Command* command = static_cast<Command*>(&__cmdMap[cmd.getKey()]);
-        //command->execute(cmd);
-        //__cmdMap[cmd.getKey()].execute(cmd);
-    }catch(std::exception e)
+    
+    }
+    catch(CmdException e)
+    {
+        throw e;
+    }
+    catch(std::exception e)
     {
         cout << "Exception in CommandController executeCmd: " << e.what() << ". Maybe you forgot to insert the actual command. Please check." << endl;
     }

@@ -9,40 +9,40 @@
 *
 **/
 
-namespace Ogre
-{
-  class SceneManager;
-}
-
 namespace ZGame
 {
-  namespace World
-  {
-    
-    class WorldController
+    namespace World
     {
-    public:
-      WorldController();
-      ~WorldController();
+        class WorldMap;
+        class WorldController
+        {
+        public:
+            WorldController();
+            ~WorldController();
 
-      
-      void loadWorld(); //temp.
+            void loadWorld(); //temp.
 
-      //implements the LifeCycleEvents
-      bool onInit();
-      bool onUpdate(const Ogre::FrameEvent &evt);
-      bool onDestroy();  
+            //implements the LifeCycleEvents
+            bool onInit();
+            bool onUpdate(const Ogre::FrameEvent &evt);
+            bool onDestroy();
 
-    protected:
-    private:
+            /** \brief This method will return a world map. \note Do not call while WorldController has not be initialized.**/
+            WorldMap* getWorldMap()
+            {
+                assert(_worldMap && "Class invariance failed. Trying to get a null WorldMap from WorldController.");
+                return _worldMap;
+            }
 
-      Ogre::Entity* _bobEnt;
-      Ogre::AnimationState* _animState;
-
-      void init();
-
-    };
-  }
+        protected:
+            WorldMap* _worldMap;
+        private:
+            void init();
+        private:
+            Ogre::Entity* _bobEnt;
+            Ogre::AnimationState* _animState;
+        };
+    }
 }
 
 

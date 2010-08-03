@@ -12,7 +12,6 @@ namespace ZGame
     {
         //typedef fastdelegate::FastDelegate1<bool(const Ogre::StringVector &params)> ConsoleCommand;
         typedef fastdelegate::FastDelegate<bool(const Ogre::StringVector &params) > ConsoleCommand;
-        
         //typedef fastdelegate::FastDelegate1<bool(const Ogre::StringVector &params) > ConsoleCommand;
         //typedef fastdelegate::FastDelegate1<const Ogre::StringVector &params, bool> ConsoleCommand;
         //typedef fd::delegate<int(const Ogre::StringVector &params)> ConsoleCommandIntRt;

@@ -21,9 +21,17 @@ namespace ZGame
         {
             ZEntityBuffers() : numOfEnts(0), worldPos(0), worldOrient(0){}
             size_t numOfEnts;
+            size_t COMPONENT_DIM;
             Ogre::Real* worldPos;
             Ogre::Real* worldOrient;
             Ogre::uchar* mode;
+            void clear()
+            {
+                delete [] worldPos;
+                delete [] worldOrient;
+                delete [] mode;
+                numOfEnts = 0;
+            }
         };
         /** This class defines an Entities Manager. It will be responsible for manage (creation,deleation) of ZEntities.*/
         class EntitiesManager
@@ -43,6 +51,11 @@ namespace ZGame
             /** \brief This method will convert the ZEntities into buffer representation.**/
             void 
                 zEntitiesToBuffer();
+
+            ZEntityBuffers* getEntBuffers()
+            {
+                return &_ents;
+            }
 
             EntitiesManager* getManager() 
             {

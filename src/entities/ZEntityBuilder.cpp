@@ -18,7 +18,8 @@ extern ZGame::World::WorldScale WSCALE;
 
 
 /**
-*This method will build specified number of entities.
+*This method will build specified number of entities. The user has the option to specify whether to use the command and control system to generate a system
+*wide command which correspond to the operation of building entities (e.g. generate RenderEntities.)
 *
 *
 *
@@ -54,22 +55,6 @@ EntitiesBuilder::build(EntitiesManager* entMgr, int numOfEnts)
     CreateEntCmd createCmd;
     cout << "Calling executeCmd: " << endl;
     CommandController::getSingleton().executeCmd(createCmd);
-
-
-
-    /*
-    assert(zEnt != 0 && "ZEntity is null!");
-    //We want to build the ZEntity. We sent a create character command. 
-    using std::cout;
-    using std::endl;
-    using COMMAND::CreateEntCmd;
-
-    CreateEntCmd createEnt;
-    createEnt.setResource(*zEnt->getResource());
-    createEnt.setUpdateEvent(readEvent);
-    
-    ZGame::CommandController::getSingleton().executeCmd(createEnt);
-    */
     return true;
 }
 

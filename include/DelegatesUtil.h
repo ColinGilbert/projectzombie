@@ -7,7 +7,6 @@
 
 #ifndef LIFECYCLEDELEGATESUTIL_H_
 #define LIFECYCLEDELEGATESUTIL_H_
-
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
 #include "delegates/EntityDelegates.h"

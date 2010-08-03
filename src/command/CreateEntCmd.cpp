@@ -1,6 +1,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+#include "command/CmdException.h"
 #include "command/CreateEntCmd.h"
 #include "CommandController.h"
 #include "entities/RenderEntitiesManager.h"
@@ -10,6 +11,7 @@ using std::endl;
 
 using namespace ZGame::COMMAND;
 using namespace ZGame;
+using COMMAND::CmdException;
 
 const COMMAND_KEY CreateEntCmd::KEY("createentcmd");
 const COMMAND_KEY CreateRenderEntCmd::KEY("createrendercmd");
@@ -42,20 +44,25 @@ CreateEntCmd::execute(const Command &cmd)
     EntitiesManager* entMgr = getEntitiesManager();
     ZENTITY_VEC* ents = entMgr->getEntities();
     cout << "Entity vector in entity manager size is: " << ents->size() << endl;
-    //const ZEntityResource* const res = cmdPtr->getResource();
-    //const EntityUpdateEvent* const update = cmdPtr->getUpdateEvent();
-
+    
+    try
+    {
     CreateRenderEntCmd crtRdrCmd;
     //We iterate through the entities and pass each entity to the create render entity command.
     for(ZENTITY_VEC::iterator iter = ents->begin(); iter != ents->end(); ++iter)
-    {
-        
+    {      
         CreateRenderEntCmd crtRdrCmd(*iter);
         //Call CreateRenderEntity
         CommandController::getSingleton().executeCmd(crtRdrCmd);
         //Call other commands relating to Entity creation.
     }
-
+    }catch(CmdException e)
+    {
+        std::string error("There was an exception during CreateRenderEntCmd");
+        error += e.what();
+        //For this command missing this command is pretty severe, we should throw it.
+        throw CmdException(error);
+    }
     //Finally, convert the ZEntities into buffer format. 
     cout << "Converting ZEntities to buffers. " << endl;
     entMgr->zEntitiesToBuffer();
