@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1EB3272D-E0F7-41A9-BC3E-067EAEEA534D}</ProjectGuid>
+    <RootNamespace>TestCL</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\ZombieMedia\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\ZombieMedia\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ATISTREAMSDKROOT)\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;C:\Boost\include\boost-1_38;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Winmm.lib;ws2_32.lib;kernel32.lib;OpenCL.lib;OgreMain_D.lib;projectz_d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ATISTREAMSDKROOT)\lib\x86\;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\debug;C:\Program Files\boost\boost_1_38\lib;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\debug;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Debug;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib;C:\Boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ATISTREAMSDKROOT)\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;C:\Program Files\boost\boost_1_38;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Winmm.lib;ws2_32.lib;kernel32.lib;OpenCL.lib;projectz.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ATISTREAMSDKROOT)\lib\x86\;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\release;C:\Program Files\boost\boost_1_38\lib;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\release;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\samples\TestCL\src\TestCLDriver.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vctest\vctest.vcxproj">
+      <Project>{190852a1-e385-4c7f-9792-3dfd6ac69173}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
