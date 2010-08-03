@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>projectz</ProjectName>
+    <ProjectGuid>{190852A1-E385-4C7F-9792-3DFD6AC69173}</ProjectGuid>
+    <RootNamespace>vctest</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\ZombieMedia\debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\ZombieMedia\release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ATISTREAMSDKROOT)\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include;E:\Users\gnulinux\projects\prjz\pznew\include;C:\Boost\include\boost-1_38;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)_d.lib</OutputFile>
+      <AdditionalLibraryDirectories>E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\debug;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Debug;E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia;C:\Program Files\boost\boost_1_38\lib;E:\Users\gnulinux\projects\software\raknetnew\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ATISTREAMSDKROOT)\include;E:\Users\gnulinux\projects\software\raknetnew\Source;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\OgreMain\include;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\include;E:\Users\gnulinux\projects\prjz\pznew\include;E:\Users\gnulinux\projects\software\cologre\include;E:\Users\gnulinux\projects\software\cologre\external\include;C:\Program Files\boost\boost_1_38\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalLibraryDirectories>E:\Users\gnulinux\projects\prjz\pznew\ZombieMedia\release;C:\Program Files\boost\boost_1_38\lib\;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\build\lib\release;E:\Users\gnulinux\projects\ogresrc\ogre_src_v1-7-1\Dependencies\lib\Release;E:\Users\gnulinux\projects\software\raknetnew\Lib;E:\Users\gnulinux\projects\software\cologre\lib;E:\Users\gnulinux\projects\software\cologre\external\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\command\CmdException.h" />
+    <ClInclude Include="..\..\..\include\utilities\cl.hpp" />
+    <ClInclude Include="..\..\..\include\ZException.h" />
+    <ClInclude Include="..\..\..\src\testsrc\CommonFixtures.h" />
+    <ClInclude Include="..\..\..\include\fastdelegate\config.hpp" />
+    <ClInclude Include="..\..\..\include\Controller.h" />
+    <ClInclude Include="..\..\..\include\ControlModuleProto.h" />
+    <ClInclude Include="..\..\..\include\EngineController.h" />
+    <ClInclude Include="..\..\..\include\EngineView.h" />
+    <ClInclude Include="..\..\..\include\GameEditState.h" />
+    <ClInclude Include="..\..\..\include\GameEditView.h" />
+    <ClInclude Include="..\..\..\include\GameMainMenuState.h" />
+    <ClInclude Include="..\..\..\include\GameMainState.h" />
+    <ClInclude Include="..\..\..\include\GameState.h" />
+    <ClInclude Include="..\..\..\include\GameStateFactory.h" />
+    <ClInclude Include="..\..\..\include\GameStateInfo.h" />
+    <ClInclude Include="..\..\..\include\GPUEntities.h" />
+    <ClInclude Include="..\..\..\include\GPUEntsControl.h" />
+    <ClInclude Include="..\..\..\include\GPUEntsDistributor.h" />
+    <ClInclude Include="..\..\..\include\GPUEntsGen.h" />
+    <ClInclude Include="..\..\..\include\GPUEntsGenProps.h" />
+    <ClInclude Include="..\..\..\include\GPUEntsMeshBuilder.h" />
+    <ClInclude Include="..\..\..\include\GPUEntsView.h" />
+    <ClInclude Include="..\..\..\include\Imposter.h" />
+    <ClInclude Include="..\..\..\include\ImposterGen.h" />
+    <ClInclude Include="..\..\..\include\ImposterView.h" />
+    <ClInclude Include="..\..\..\include\InputController.h" />
+    <ClInclude Include="..\..\..\include\KeyboardPump.h" />
+    <ClInclude Include="..\..\..\include\LifeCyclePump.h" />
+    <ClInclude Include="..\..\..\include\MainController.h" />
+    <ClInclude Include="..\..\..\include\MessageIdentifiers.h" />
+    <ClInclude Include="..\..\..\include\MousePump.h" />
+    <ClInclude Include="..\..\..\include\ogreconsole.h" />
+    <ClInclude Include="..\..\..\include\PacketPriority.h" />
+    <ClInclude Include="..\..\..\include\PingPongShaders.h" />
+    <ClInclude Include="..\..\..\include\RakNetDefines.h" />
+    <ClInclude Include="..\..\..\include\RakNetTypes.h" />
+    <ClInclude Include="..\..\..\include\RakNetworkFactory.h" />
+    <ClInclude Include="..\..\..\include\RakPeerInterface.h" />
+    <ClInclude Include="..\..\..\include\ServerController.h" />
+    <ClInclude Include="..\..\..\include\StatesLoader.h" />
+    <ClInclude Include="..\..\..\include\WhiteNoiseView.h" />
+    <ClInclude Include="..\..\..\include\world\WorldController.h" />
+    <ClInclude Include="..\..\..\include\world\WorldMap.h" />
+    <ClInclude Include="..\..\..\include\world\WorldScale.h" />
+    <ClInclude Include="BufferWrapper.h" />
+    <ClInclude Include="..\..\..\include\utilities\CharacterUtil.h" />
+    <ClInclude Include="..\..\..\include\fastdelegate\FastDelegate.h" />
+    <ClInclude Include="..\..\..\include\fastdelegate\FastDelegateBind.h" />
+    <ClInclude Include="..\..\..\include\CommandDelegates.h" />
+    <ClInclude Include="..\..\..\include\DelegatesUtil.h" />
+    <ClInclude Include="..\..\..\include\delegates\EntityDelegates.h" />
+    <ClInclude Include="..\..\..\include\EventDelegates.h" />
+    <ClInclude Include="..\..\..\include\KeyEventRegister.h" />
+    <ClInclude Include="..\..\..\include\LifeCycleDelegates.h" />
+    <ClInclude Include="..\..\..\include\LifeCycleRegister.h" />
+    <ClInclude Include="..\..\..\include\MouseEventRegister.h" />
+    <ClInclude Include="..\..\..\include\net\NetClientController.h" />
+    <ClInclude Include="..\..\..\include\net\NetController.h" />
+    <ClInclude Include="..\..\..\include\net\NetServerController.h" />
+    <ClInclude Include="..\..\..\include\net\ZNetEntity.h" />
+    <ClInclude Include="..\..\..\include\net\ZNetEntityTypes.h" />
+    <ClInclude Include="..\..\..\include\entities\EntitiesDefs.h" />
+    <ClInclude Include="..\..\..\include\entities\EntitiesManager.h" />
+    <ClInclude Include="..\..\..\include\entities\EntityAspects.h" />
+    <ClInclude Include="..\..\..\include\entities\NetworkEntitiesManager.h" />
+    <ClInclude Include="..\..\..\include\entities\PlayerEnt.h" />
+    <ClInclude Include="..\..\..\include\entities\RenderEntitiesManager.h" />
+    <ClInclude Include="..\..\..\include\entities\ZEntity.h" />
+    <ClInclude Include="..\..\..\include\entities\ZEntityBuilder.h" />
+    <ClInclude Include="..\..\..\include\entities\ZEntityResource.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\AbstractVehicle.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Annotation.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Draw.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\LocalSpace.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\lq.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Obstacle.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Pathway.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\PlugIn.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Proximity.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\SimpleVehicle.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\SteerLibrary.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Utilities.h" />
+    <ClInclude Include="..\..\..\include\OpenSteer\Vec3.h" />
+    <ClInclude Include="..\..\..\include\command\Command.h" />
+    <ClInclude Include="..\..\..\include\CommandController.h" />
+    <ClInclude Include="..\..\..\include\command\CommandList.h" />
+    <ClInclude Include="..\..\..\include\command\CreateEntCmd.h" />
+    <ClInclude Include="..\..\..\include\command\ServicesManager.h" />
+    <ClInclude Include="..\..\..\include\ZCL\ZCLController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\view\ControlModuleProto.cpp" />
+    <ClCompile Include="..\..\..\src\view\EngineController.cpp" />
+    <ClCompile Include="..\..\..\src\view\EngineView.cpp" />
+    <ClCompile Include="..\..\..\src\model\GameEditState.cpp" />
+    <ClCompile Include="..\..\..\src\view\GameEditView.cpp" />
+    <ClCompile Include="..\..\..\src\model\GameMainMenuState.cpp" />
+    <ClCompile Include="..\..\..\src\model\GameMainState.cpp" />
+    <ClCompile Include="..\..\..\src\model\GameState.cpp" />
+    <ClCompile Include="..\..\..\src\model\GameStateFactory.cpp" />
+    <ClCompile Include="..\..\..\src\model\GameStateInfo.cpp" />
+    <ClCompile Include="..\..\..\src\model\GPUEntities.cpp" />
+    <ClCompile Include="..\..\..\src\view\GPUEntsControl.cpp" />
+    <ClCompile Include="..\..\..\src\view\GPUEntsGen.cpp" />
+    <ClCompile Include="..\..\..\src\model\GPUEntsGenProps.cpp" />
+    <ClCompile Include="..\..\..\src\view\GPUEntsMeshBuilder.cpp" />
+    <ClCompile Include="..\..\..\src\view\GPUEntsView.cpp" />
+    <ClCompile Include="..\..\..\src\model\Imposter.cpp" />
+    <ClCompile Include="..\..\..\src\view\ImposterGen.cpp" />
+    <ClCompile Include="..\..\..\src\view\ImposterView.cpp" />
+    <ClCompile Include="..\..\..\src\view\InputController.cpp" />
+    <ClCompile Include="..\..\..\src\view\KeyboardPump.cpp" />
+    <ClCompile Include="..\..\..\src\view\KeyEventRegister.cpp" />
+    <ClCompile Include="..\..\..\src\view\LifeCyclePump.cpp" />
+    <ClCompile Include="..\..\..\src\view\LifeCycleRegister.cpp" />
+    <ClCompile Include="..\..\..\src\view\MouseEventRegister.cpp" />
+    <ClCompile Include="..\..\..\src\view\MousePump.cpp" />
+    <ClCompile Include="..\..\..\src\view\ogreconsole.cpp" />
+    <ClCompile Include="..\..\..\src\view\PingPongShaders.cpp" />
+    <ClCompile Include="..\..\..\src\view\ServerController.cpp" />
+    <ClCompile Include="..\..\..\src\model\StatesLoader.cpp" />
+    <ClCompile Include="..\..\..\src\view\WhiteNoiseView.cpp" />
+    <ClCompile Include="..\..\..\src\world\WorldController.cpp" />
+    <ClCompile Include="..\..\..\src\world\WorldMap.cpp" />
+    <ClCompile Include="..\..\..\src\world\WorldScale.cpp" />
+    <ClCompile Include="..\..\..\src\utilities\CharacterUtil.cpp" />
+    <ClCompile Include="..\..\..\src\net\NetClientController.cpp" />
+    <ClCompile Include="..\..\..\src\net\NetController.cpp" />
+    <ClCompile Include="..\..\..\src\net\NetServerController.cpp" />
+    <ClCompile Include="..\..\..\src\net\ZNetEntity.cpp" />
+    <ClCompile Include="..\..\..\src\entities\EntitiesManager.cpp" />
+    <ClCompile Include="..\..\..\src\entities\PlayerEnt.cpp" />
+    <ClCompile Include="..\..\..\src\entities\RenderEntitiesManager.cpp" />
+    <ClCompile Include="..\..\..\src\entities\ZEntitiesResource.cpp" />
+    <ClCompile Include="..\..\..\src\model\ZEntity.cpp" />
+    <ClCompile Include="..\..\..\src\entities\ZEntityBuilder.cpp" />
+    <ClCompile Include="..\..\..\src\opensteer\Pathway.cpp" />
+    <ClCompile Include="..\..\..\src\opensteer\PlugIn.cpp" />
+    <ClCompile Include="..\..\..\src\opensteer\SimpleVehicle.cpp" />
+    <ClCompile Include="..\..\..\src\opensteer\Vec3.cpp" />
+    <ClCompile Include="..\..\..\src\command\Command.cpp" />
+    <ClCompile Include="..\..\..\src\command\CommandController.cpp" />
+    <ClCompile Include="..\..\..\src\command\CommandList.cpp" />
+    <ClCompile Include="..\..\..\src\command\CreateEntCmd.cpp" />
+    <ClCompile Include="..\..\..\src\command\ServicesManager.cpp" />
+    <ClCompile Include="..\..\..\src\ZCL\ZCLController.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
