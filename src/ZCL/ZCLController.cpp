@@ -255,13 +255,13 @@ void
     //Set up constant input buffers.
     _mapShape = worldMap->getShape();
     cout << "World map shape: (" << _mapShape[0] << ", " << _mapShape[1] << ")" << endl;
-    _mapBufLen = _mapShape[0] * _mapShape[1] * worldMap->_COMPONENT_DIM; //Because we have a U,V shaped map, with N dimensions per element.
+    _mapBufLen = _mapShape[0] * _mapShape[1] * worldMap->_COMPONENT_DIM * sizeof(Real); //Because we have a U,V shaped map, with N dimensions per element. Len is in bytes.
     //Load up gradient and contour buffers.
     cout << "Loading map OpenCL buffers." << endl;
     _gradMap = worldMap->getGradientMap(); 
     _contourMap = worldMap->getContourMap();
     _gradCL = cl::Buffer(_context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        _mapBufLen, _gradMap, &err);
+        _mapBufLen, _gradMap, &err); //Real buffer length is in bytes.
     _chkErr(err, "Buffer::Buffer(): gradient read-only buffer.");
     _contourCL = cl::Buffer(_context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         _mapBufLen, _contourMap, &err);
@@ -274,7 +274,7 @@ void
     _entsOrientBuf = entsBuf->worldOrient;
     _entsModeBuf = entsBuf->mode;
 
-    size_t bufferLen = _entsDim * _numOfEnts; //We have numOfEnts entities with a _entsDim dimensional vector per entity.
+    size_t bufferLen = _entsDim * _numOfEnts * sizeof(Real); //We have numOfEnts entities with a _entsDim dimensional vector per entity.
     _entsBufLen = bufferLen;
     //Initialize the OpenCL buffers by using host memory ptr.
     //Position
@@ -286,15 +286,9 @@ void
         _entsOrientBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities orientation buffer.");
     //Mode buffer
-    _entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR, 1 * _numOfEnts,
+    _entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR, _numOfEnts * sizeof(Real),
         _entsModeBuf, &err);
-    _chkErr(err, "Buffer::Buffer(): entities mode buffer.");
-
-    /*
-    _outCL = cl::Buffer(_context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, 
-        _hw.length()+1, _hwBuffer, &err);
-    */
-    
+    _chkErr(err, "Buffer::Buffer(): entities mode buffer."); 
 }
 
 void
