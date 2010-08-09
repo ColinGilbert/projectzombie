@@ -49,6 +49,7 @@ EntitiesBuilder::build(EntitiesManager* entMgr, int numOfEnts)
         //cout << "Create ent #: " << i << endl;
         ZEntity* ent = entMgr->createZEntity();
         dist.nextPosition(pos);
+        pos.y = Ogre::Math::RangeRandom(250.0f, 450.0f);
         ent->onRead(pos, orient);
     }
     

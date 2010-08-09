@@ -143,6 +143,11 @@ GameMainState::onInit()
 bool
 GameMainState::onUpdate(const Ogre::FrameEvent &evt)
 {
+    _zclCtrl->onUpdate(evt);
+    const float* posBuf = 0;
+    const float* orientBuf = 0;
+    _zclCtrl->getBuffers(posBuf, orientBuf);
+    _rdrEntMgr->updateRenderEntities(posBuf, orientBuf);
   return true;
 }
 
@@ -151,6 +156,7 @@ GameMainState::onDestroy()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
     "In GameMainState::noDestroy()");
+  _zclCtrl->printKernelTime();
   return true;
 }
 
@@ -199,7 +205,7 @@ void
 GameMainState::createCharacters()
 {
     using Entities::EntitiesBuilder;
-    int numOfEntities = 64;
+    int numOfEntities = 4096;
 
     EntitiesBuilder::build(_entMgr.get(), numOfEntities);
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "ZEntityBuilder::build finished.");
@@ -244,11 +250,12 @@ GameMainState::createWorld()
   //LightBoard->setDimensions(10.0f, 10.0f);
   LightBoard->setColour(ColourValue(1.0f, 1.0f, 0.2f, 1.0f));
 
-  scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+  //scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
+  scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
   scnMgr->setShadowColour(Ogre::ColourValue(0.5,0.5,0.5));
-  scnMgr->setShadowFarDistance(5000);
+  scnMgr->setShadowFarDistance(100);
   scnMgr->setShadowTextureSettings(512,2);
-
+  
   Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
   Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(1);
 

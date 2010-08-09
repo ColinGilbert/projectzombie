@@ -61,17 +61,20 @@ EntitiesManager::zEntitiesToBuffer()
     cout << "Allocating buffer for ZEntities to Buffer conversion." << endl;
     _ents.worldPos = new Real[_ents.numOfEnts*vecDim]; //4D vector per entity.
     _ents.worldOrient = new Real[_ents.numOfEnts*vecDim]; //4D quaternion per entity.
+    _ents.velocity = new Real[_ents.numOfEnts*vecDim]; //4D vector of velocity per entity.
     _ents.mode = new uchar[_ents.numOfEnts]; //byte mod variable per entity.
     //Iterate through ZEntities and copy the data over for reach ZEntity
     size_t entIdx = 0;
+    const Vector3 initVel; //initial velocity is zero.
     for(ZENT_ITER it=_zEntsVec.begin(); it!=_zEntsVec.end(); ++it)
     {
         const Vector3& pos = (*it)->getPosition();
         const Quaternion& orient = (*it)->getOrientation();
 
-        _ents.worldPos[entIdx*vecDim] = pos.x; _ents.worldPos[entIdx*vecDim+1] = pos.y; _ents.worldPos[entIdx*vecDim+2] = pos.z; _ents.worldPos[entIdx*vecDim+3] = 0.0f;
+        _ents.worldPos[entIdx*vecDim] = pos.x; _ents.worldPos[entIdx*vecDim+1] = pos.y; _ents.worldPos[entIdx*vecDim+2] = pos.z; _ents.worldPos[entIdx*vecDim+3] = 1.0f;
         _ents.worldOrient[entIdx*vecDim] = orient.w; _ents.worldOrient[entIdx*vecDim+1] = orient.x; _ents.worldOrient[entIdx*vecDim+2] = orient.y; _ents.worldOrient[entIdx*vecDim+3] = orient.z;
-        _ents.mode[entIdx] = (uchar)(0);
+        _ents.velocity[entIdx*vecDim] = initVel.x; _ents.velocity[entIdx*vecDim+1] = initVel.y; _ents.velocity[entIdx*vecDim+2] = initVel.z; _ents.velocity[entIdx*vecDim+3] = 0.0f;
+        _ents.mode[entIdx] = (uchar)(1);
         entIdx++;
     }
 

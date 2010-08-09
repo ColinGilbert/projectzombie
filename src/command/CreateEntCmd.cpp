@@ -17,7 +17,7 @@ const COMMAND_KEY CreateEntCmd::KEY("createentcmd");
 const COMMAND_KEY CreateRenderEntCmd::KEY("createrendercmd");
 
 CreateEntCmd::CreateEntCmd(const COMMAND_KEY &key, int numOfParams)
-: Command(key)
+    : Command(key)
 {
 }
 
@@ -31,7 +31,7 @@ void CreateEntCmd::setEntitiesManager(Entities::EntitiesManager* entMgr)
 }
 
 DelegateMemento
-CreateEntCmd::execute(const Command &cmd)
+    CreateEntCmd::execute(const Command &cmd)
 {
     cout << "In CreateEntCmd::execute" << endl;
     using ZGame::Entities::EntitiesManager;
@@ -39,23 +39,19 @@ CreateEntCmd::execute(const Command &cmd)
     using Entities::ZENT_ITER;
 
     DelegateMemento NULL_MEMENTO;
-    
+
     const CreateEntCmd* cmdPtr = static_cast<const CreateEntCmd*>(&cmd);
     EntitiesManager* entMgr = getEntitiesManager();
     ZENTITY_VEC* ents = entMgr->getEntities();
     cout << "Entity vector in entity manager size is: " << ents->size() << endl;
-    
+
     try
     {
-    CreateRenderEntCmd crtRdrCmd;
-    //We iterate through the entities and pass each entity to the create render entity command.
-    for(ZENTITY_VEC::iterator iter = ents->begin(); iter != ents->end(); ++iter)
-    {      
-        CreateRenderEntCmd crtRdrCmd(*iter);
+        
+        CreateRenderEntCmd crtRdrCmd(ents->begin(), ents->end(), ents->size());
         //Call CreateRenderEntity
         CommandController::getSingleton().executeCmd(crtRdrCmd);
         //Call other commands relating to Entity creation.
-    }
     }catch(CmdException e)
     {
         std::string error("There was an exception during CreateRenderEntCmd");
@@ -78,11 +74,13 @@ CreateEntCmd::execute(const Command &cmd)
 
 CreateRenderEntCmd::CreateRenderEntCmd(const CreateEntCmd &createEntCmd) : CreateEntCmd(CreateRenderEntCmd::KEY)
 {
-    setResource(*createEntCmd.getResource());
-    setUpdateEvent(*createEntCmd.getUpdateEvent());
+setResource(*createEntCmd.getResource());
+setUpdateEvent(*createEntCmd.getUpdateEvent());
 }
 **/
-CreateRenderEntCmd::CreateRenderEntCmd(Entities::ZEntity const* ent) : Command(CreateRenderEntCmd::KEY), _ent(ent)
+CreateRenderEntCmd::CreateRenderEntCmd(ZENTITY_VEC::const_iterator begin,
+    ZENTITY_VEC::const_iterator end, size_t numOfEnts) : Command(CreateRenderEntCmd::KEY), _begin(begin), _end(end),
+    _numOfEnts(numOfEnts)
 {
 
     //setResource(ent.getResource());
@@ -98,7 +96,7 @@ void CreateRenderEntCmd::setRenderEntitiesManager(Entities::RenderEntitiesManage
 *
 */
 DelegateMemento
-CreateRenderEntCmd::execute(const Command &cmd)
+    CreateRenderEntCmd::execute(const Command &cmd)
 {
     //using Entities::GetRenderEntitiesManager;
     using Entities::RenderEntitiesManager;
@@ -109,17 +107,7 @@ CreateRenderEntCmd::execute(const Command &cmd)
     //getRdrMgr.SetMemento(*getCommandMemento());
     RenderEntitiesManager* rdrEntMgr = getRenderEntitiesManager();
 
-    rdrEntMgr->createRenderEntity(cmdPtr->getZEntity());
-
-    //const ZEntityResource* const res = cmdPtr->getResource();
-    //const EntityUpdateEvent* const updateEvt = cmdPtr->getUpdateEvent();
-    //Get the parameters.
-    //CreateRenderEntDlg rdrDlg;
-    //rdrDlg.SetMemento(*getCommandMemento(_CREATE_RENDER_ENT_IDX));
-    //rdrDlg(res, updateEvt);
-    //rdrDlg.SetMemento(*getCommandMemento(_GET_RENDER_ENT_PROPS));
-    //rdrDlg();
-
+    rdrEntMgr->createRenderEntities(cmdPtr->begin(), cmdPtr->end(), cmdPtr->getNumOfEntsToCreate());
     return NULL_MEMENTO;
 }
 
@@ -127,6 +115,6 @@ CreateRenderEntCmd::execute(const Command &cmd)
 void
 CreateRenderEntCmd::setRenderEntityManager(const Entities::RenderEntitiesManager *entMgr)
 {
-    _entMgr = entMgr;
+_entMgr = entMgr;
 }
 */

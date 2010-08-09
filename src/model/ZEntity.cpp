@@ -59,7 +59,7 @@ ZEntity::onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient)
 *
 */
 bool
-ZEntity::onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient) 
+ZEntity::onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient) const
 {
     pos = _worldPos;
     orient = _worldOrient;

@@ -43,7 +43,7 @@ namespace ZGame
                 onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient);
             /** \brief This function is called on Write events. */
             bool
-                onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient);
+                onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient) const; 
             const Ogre::Vector3& getPosition() const
             {
                 return _worldPos;

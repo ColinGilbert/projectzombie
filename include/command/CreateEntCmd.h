@@ -7,6 +7,7 @@
 #include "entities/EntitiesDefs.h"
 using ZGame::Entities::ZEntityResource;
 using ZGame::Entities::EntityUpdateEvent;
+using ZGame::Entities::ZENTITY_VEC;
 
 namespace ZGame
 {
@@ -74,8 +75,8 @@ namespace ZGame
             static const COMMAND_KEY KEY;
             CreateRenderEntCmd() : Command(KEY) {}
             CreateRenderEntCmd(const CreateEntCmd &createEntCmd);
-            CreateRenderEntCmd(Entities::ZEntity const* ent);
-
+            //CreateRenderEntCmd(Entities::ZEntity const* ent);
+            CreateRenderEntCmd(ZENTITY_VEC::const_iterator begin, ZENTITY_VEC::const_iterator end, size_t numOfEnts);
             //CreateRenderEntCmd(const COMMAND::COMMAND_KEY &key, int numOfParams=1);
             virtual DelegateMemento
                 execute(const Command &cmd);
@@ -85,9 +86,21 @@ namespace ZGame
             {
                 return _rdrEntMgr;
             }
-            Entities::ZEntity const* getZEntity() const
+           
+
+            size_t getNumOfEntsToCreate() const
             {
-                return _ent;
+                return _numOfEnts;
+            }
+
+            ZENTITY_VEC::const_iterator begin() const
+            {
+                return _begin;
+            }
+
+            ZENTITY_VEC::const_iterator end() const
+            {
+                return _end;
             }
 
         protected:
@@ -102,7 +115,10 @@ namespace ZGame
             }**/
         private:
             Entities::RenderEntitiesManager* _rdrEntMgr;
-            Entities::ZEntity const* _ent;
+            ZENTITY_VEC::const_iterator _begin;
+            ZENTITY_VEC::const_iterator _end;
+            size_t _numOfEnts;
+            //Entities::ZEntity const* _ent;
         };
     }
 }

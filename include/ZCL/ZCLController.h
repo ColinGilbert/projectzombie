@@ -7,6 +7,7 @@
 #include <string>
 #include <Ogre.h>
 #include "utilities/cl.hpp"
+#include "utilities/Timer.h"
 
 namespace ZGame
 {
@@ -36,6 +37,14 @@ namespace ZGame
             bool onUpdate();
             bool onInit(void){ return true;}
             bool onDestroy(void){ return true;}
+            void printKernelTime();
+            /** \brief This method will get the position and orientation buffers.**/
+            void getBuffers(const float* &posBuf, const float* &orientBuf)
+            {
+                //NOTE!!! We assume that both buffers are valid when you call this method.
+                posBuf = _entsPosBuf;
+                orientBuf = _entsOrientBuf;
+            }
 
         private:
             /** \brief This helper method will initialize the OpenCL context.*/
@@ -47,6 +56,11 @@ namespace ZGame
             /** \brief Utility function to convert a text file to string. Take directly from AMD convolution OpenCL example.**/
             /** \brief This utility method will output device information. */
             void printDeviceInfo(std::vector<cl::Device> &devs);
+            /** \brief This method will enqueue kernels to the command queue.*/
+            void enqueueKernel(bool blocking);
+            /** \brief This method will read back the buffers.**/
+            //void readBackBuffers();
+            
             std::string
                 FileToString(const std::string fileName);
             inline void
@@ -69,6 +83,7 @@ namespace ZGame
             std::vector<cl::Kernel> _kernel;
             cl::Buffer _entsPosCL;
             cl::Buffer _entsOrientCL;
+            cl::Buffer _entsVelCL;
             cl::Buffer _entsModeCL;
             cl::Buffer _gradCL;
             cl::Buffer _contourCL;
@@ -77,12 +92,18 @@ namespace ZGame
             size_t _entsBufLen;
             Ogre::Real* _entsPosBuf;
             Ogre::Real* _entsOrientBuf;
+            Ogre::Real* _entsVelBuf;
             Ogre::uchar* _entsModeBuf;
             std::vector<size_t> _mapShape;
             size_t _mapBufLen;
             Ogre::Real* _gradMap;
             Ogre::Real* _contourMap;
-            
+            size_t _iterations; //number of iterations to run kernel.
+            double _deviceKernelTime; //variable to track performance time for device kernels.
+            CPerfCounter _counter; //performance counter.
+            size_t _argI;
+            bool _useGPU;
+            size_t _iterCount;
                     
         };
     }

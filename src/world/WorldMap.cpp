@@ -61,14 +61,16 @@ void
             _grad = new Real[numOfElements*_COMPONENT_DIM]; //So we have a ShapeU by ShapeV 4 element image. Four elements is because we want to utilize 4 wide vectorization in SSE. 
             Real* curPtr = reinterpret_cast<Real*>(++zdtF); //skip the header to get to data.
             Real* mapPtr = _grad;
-            loadMap(mapPtr, curPtr, numOfElements, _COMPONENT_DIM);
+            curPtr = loadMap(mapPtr, curPtr, numOfElements, _COMPONENT_DIM, false);
             cout << "Gradient Map read." << endl;
             //Read in contour map.
             _contour = new Real[numOfElements*_COMPONENT_DIM];
             mapPtr = _contour;
             cout << "Reading in contour map." << endl;
-            loadMap(mapPtr, curPtr, numOfElements, _COMPONENT_DIM);
+            loadMap(mapPtr, curPtr, numOfElements, _COMPONENT_DIM, false);
             cout << "Contour map read." << endl;
+            file.close();//+		curPtr	0x0a64004c	float *
+
         }
         else
         {
@@ -88,17 +90,31 @@ void
     _buffer = 0;
 }
 
-void WorldMap::loadMap(Real* mapPtr, Real* inPtr, size_t numOfElements, size_t dim)
+Real* WorldMap::loadMap(Real* mapPtr, Real* inPtr, size_t numOfElements, size_t dim, bool swtch)
 {
-    for(size_t u=0; u < numOfElements; ++u)
+    float u, v;
+    for(size_t i=0; i < numOfElements; ++i)
     {
-        mapPtr[0] = *inPtr;
-        mapPtr[1] = *++inPtr; ++inPtr;
+        u = *inPtr;
+        v = *++inPtr; ++inPtr;
+        
+        if(swtch)
+        {
+            float tmp = u;
+            u = v;
+            v = tmp;
+        }
+        mapPtr[0] = v; //x is v. 
+        mapPtr[1] = 0.0f; //y is 0.0
+        mapPtr[2] = u; //u is z
+        mapPtr[3] = 0.0f;
+        /**
         //cout << "grad[0],grad[1]: " << _grad[0] << ", " << _grad[1] << endl;
         for(size_t i = 2; i < dim; ++i)
         {
             mapPtr[i] = 0.0f;
-        }
+        }**/
         mapPtr += dim; //advance gradient map pointer by number of components.
     }
+    return inPtr;
 }

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <cstdio>
 
 using std::ifstream;
 using std::string;
@@ -10,17 +11,23 @@ using std::endl;
 using std::cin;
 using std::cerr;
 
+
+#define MAX_OBJ_PER_BATCH 4
+
 #include "ZCL/ZCLController.h"
 #include "entities/EntitiesManager.h"
 #include "world/WorldMap.h"
+#include "world/WorldScale.h"
 
 using ZGame::Entities::ZEntityBuffers;
 using ZGame::World::WorldMap;
 
 using namespace ZGame::ZCL;
 
+extern ZGame::World::WorldScale WSCALE;
+
 ZCLController::ZCLController() : _entsDim(0), _numOfEnts(0), _entsBufLen(0), _entsPosBuf(0), _entsOrientBuf(0), _entsModeBuf(0),
-    _mapBufLen(0), _gradMap(0), _contourMap(0)
+    _mapBufLen(0), _gradMap(0), _contourMap(0), _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(false), _iterCount(0)
 {
 }
 
@@ -119,37 +126,58 @@ void
     cl_context_properties cprops[3] = { CL_CONTEXT_PLATFORM, (cl_context_properties)targetPlatform(), 0};
 
     //We're going to check out GPU devices.
-
-    _context = cl::Context(CL_DEVICE_TYPE_GPU, cprops, 0, 0, &err);
+    size_t dId = 0;
+    if(_useGPU)
+    {
+        _context = cl::Context(CL_DEVICE_TYPE_GPU, cprops, 0, 0, &err);  
+        dId = 1;
+    }
+    else
+    {
+        _context = cl::Context(CL_DEVICE_TYPE_CPU, cprops, 0, 0, &err);
+        dId = 0;
+    }
     _chkErr(err, "Context::Context() for GPU devices.");
     _devices = _context.getInfo<CL_CONTEXT_DEVICES>();
     printDeviceInfo(_devices);
+    
+    /*
     _devices.clear(); //be sure to clear devices here. Note: We are doing this so we can get a look at GPU. We shouldn't be doing it this way normally.
 
     cout << "Creating OpenCL CPU context." << endl;
-    _context = cl::Context(CL_DEVICE_TYPE_CPU, cprops, 0, 0, &err);
-    _chkErr(err, "Context::Context() for CPU devices.");
 
-    _devices = _context.getInfo<CL_CONTEXT_DEVICES>();
+
     if(_devices.size() < 1)
-        throw (std::exception("ZCLController::init() failed: no devices found!"));
+    throw (std::exception("ZCLController::init() failed: no devices found!"));
     cout << "Number of devices in system: " << _devices.size() << endl;
 
     printDeviceInfo(_devices); //output CPU devices.
-
+    */
     cout << "Loading Kernels." << endl;
     string sourceStr = FileToString(configName);
     cl::Program::Sources sources(1, std::make_pair(sourceStr.c_str(), sourceStr.length()));
     _program = cl::Program(_context, sources);
     err = _program.build(_devices,"");
-    _chkErr(err, "Program::build");
+    //_chkErr(err, "Program::build");
+    try
+    {
+        _chkErr(err, "Program::Build");
+    }catch(std::exception e)
+    {
+        //query build info.
+        std::string buildLog = _program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(_devices[dId]);
+        cout << "Build Log: " << endl;
+        cout << buildLog << endl;
+        throw e;
+    }
+
     cl::Kernel kernel = cl::Kernel(_program, "updateEnt", &err);
     _chkErr(err, "Kernel::Kernel");
     _kernel.push_back(kernel);
 
 
     cout << "Creating command queue" << endl;
-    _queue = cl::CommandQueue(_context, _devices[0]);
+    _queue = cl::CommandQueue(_context, _devices[dId]);
 }
 
 void
@@ -265,28 +293,32 @@ void
     _chkErr(err, "Buffer::Buffer(): gradient read-only buffer.");
     _contourCL = cl::Buffer(_context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         _mapBufLen, _contourMap, &err);
-        
+
     //Setup entities buffers.
     cout << "Loading entities OpenCL buffers." << endl;
     _entsDim = entsBuf->COMPONENT_DIM;
     _numOfEnts = entsBuf->numOfEnts;
     _entsPosBuf = entsBuf->worldPos;
     _entsOrientBuf = entsBuf->worldOrient;
+    _entsVelBuf = entsBuf->velocity;
     _entsModeBuf = entsBuf->mode;
 
     size_t bufferLen = _entsDim * _numOfEnts * sizeof(Real); //We have numOfEnts entities with a _entsDim dimensional vector per entity.
     _entsBufLen = bufferLen;
     //Initialize the OpenCL buffers by using host memory ptr.
     //Position
-    _entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR, bufferLen, 
-            _entsPosBuf, &err);
+    _entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE , bufferLen, 
+        _entsPosBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities position buffer.");
     //Orientation
-    _entsOrientCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR, bufferLen,
+    _entsOrientCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
         _entsOrientBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities orientation buffer.");
+    //Velocity
+    _entsVelCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
+        _entsVelBuf, &err);
     //Mode buffer
-    _entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR, _numOfEnts * sizeof(Real),
+    _entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char),
         _entsModeBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities mode buffer."); 
 }
@@ -295,15 +327,28 @@ void
     ZCLController::initArgs()
 {
     cl_int err;
-    err =  _kernel[0].setArg(0, _gradCL); //gradIn
+    size_t i = 0;
+    err =  _kernel[0].setArg(_argI++, _gradCL); //gradIn
     _chkErr(err, "Kernel::setArg()");
-    err = _kernel[0].setArg(1, _contourCL); //contourIn
+    err = _kernel[0].setArg(_argI++, _contourCL); //contourIn
     _chkErr(err, "Kernel::setArg()");
-    err = _kernel[0].setArg(2, _entsPosCL); //entsPos
+    err = _kernel[0].setArg(_argI++, _entsPosCL); //entsPos
     _chkErr(err, "Kernel::setArg()");
-    err = _kernel[0].setArg(3, _entsOrientCL);
-    _chkErr(err, "Kernel:;setArg()");
-    err = _kernel[0].setArg(4, _entsModeCL);
+    err = _kernel[0].setArg(_argI++, _entsOrientCL);
+    _chkErr(err, "Kernel::setArg()");
+    err = _kernel[0].setArg(_argI++, _entsVelCL); //velocity
+    _chkErr(err, "Kernel::setArg() velocity buffer");
+    err = _kernel[0].setArg(_argI++, _entsModeCL);
+    _chkErr(err, "Kernel::setArg()");
+    err = _kernel[0].setArg(_argI++, _numOfEnts);
+    _chkErr(err, "Kernel::setArg()");
+    err = _kernel[0].setArg(_argI++, _mapShape[0]); //Where _mapShapep[0] specifies U, or number of rows.
+    _chkErr(err, "Kernel::setArg()");
+    err = _kernel[0].setArg(_argI++, _mapShape[1]); //Where _mapShape[1] specifies V, or number of columns.
+    _chkErr(err, "Kernel::setArg()");
+    err = _kernel[0].setArg(_argI++, WSCALE.unitsPerMeter);
+    _chkErr(err, "Kernel::setArg() units per meter");
+    err = _kernel[0].setArg(_argI, 0.0f); //initialize dt.
 }
 
 
@@ -314,27 +359,55 @@ bool
     ZCLController::onUpdate(const Ogre::FrameEvent &evt)
 {
 
+    _counter.Reset();
+    _counter.Start();
+    //for(size_t i = 0; i < _iterations; ++i)
+    //{
+    _kernel[0].setArg(_argI, evt.timeSinceLastFrame); //update dt.
+    enqueueKernel(false); //run the kernels
+    //}
+    if(_useGPU)
+    {
+        //read back the buffer. Going to be slow.
+        _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
+        _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
+    }
+    _queue.finish();
+
+    _counter.Stop();
+    
+    _deviceKernelTime = _counter.GetElapsedTime();// / double(_iterations);
+
     return true;
+}
+
+void ZCLController::enqueueKernel(bool block=false)
+{
+    cl::Event e;
+    _queue.enqueueNDRangeKernel(_kernel[0], cl::NullRange, cl::NDRange(_numOfEnts), cl::NullRange, 0, &e);
+    if(block)
+        e.wait();
 }
 
 bool
     ZCLController::onUpdate()
 {
-    /*
-    //Let's enqueue the our kernel.
-    cl_int err;
-    cl::Event event;
-    err = _queue.enqueueNDRangeKernel(_kernel[0], 
-        cl::NullRange,
-        cl::NDRange(_hw.length()+1),
-        cl::NDRange(1, 1),
-        0,
-        &event);
-    event.wait(); //block
-    err = _queue.enqueueReadBuffer(_outCL,
-        CL_TRUE, 0, _hw.length()+1, _hwBuffer);
-    _chkErr(err, "CommandQueue::enqueueReadBuffer()");
-    cout << _hwBuffer << endl;
-    */
+    const float dt = 0.016f; //test dt. 
+    _counter.Reset();
+    _counter.Start();
+    for(size_t i = 0; i < _iterations; ++i)
+    {
+        _kernel[0].setArg(_argI, dt); //update dt.
+        enqueueKernel(false); //run the kernels
+    }
+    _queue.finish();
+    _counter.Stop();
+    _deviceKernelTime = _counter.GetElapsedTime() / double(_iterations);
     return true;
+}
+
+void ZCLController::printKernelTime()
+{
+
+    cout << "Average Time: " << _deviceKernelTime << endl;
 }

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <ogre.h>
+//#include "utilities/cl.hpp"
 #include "entities/EntitiesDefs.h"
 #include "net/ZNetEntity.h"
 
@@ -24,6 +25,8 @@ namespace ZGame
             size_t COMPONENT_DIM;
             Ogre::Real* worldPos;
             Ogre::Real* worldOrient;
+            Ogre::Real* velocity;
+
             Ogre::uchar* mode;
             void clear()
             {
@@ -51,6 +54,7 @@ namespace ZGame
             /** \brief This method will convert the ZEntities into buffer representation.**/
             void 
                 zEntitiesToBuffer();
+            
 
             ZEntityBuffers* getEntBuffers()
             {

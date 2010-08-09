@@ -45,8 +45,8 @@ namespace ZGame
             }
         protected:
         private:
-            /** A helper function that will load the data from input pointer into mapPtr.**/
-            void loadMap(Ogre::Real* mapPtr, Ogre::Real* inPtr, size_t numOfElements, size_t dim); 
+            /** \brief A helper function that will load the data from input pointer into mapPtr.**/
+            Ogre::Real* loadMap(Ogre::Real* mapPtr, Ogre::Real* inPtr, size_t numOfElements, size_t dim, bool swtch); 
         private:
             struct ZDT_HEADER
             {

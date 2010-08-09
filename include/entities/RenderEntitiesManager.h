@@ -9,8 +9,10 @@
 using std::vector;
 
 #include <Ogre.h>
-
+#include "entities/EntitiesDefs.h"
 #include "delegates/EntityDelegates.h"
+
+using ZGame::Entities::ZENTITY_VEC;
 namespace ZGame
 {
 
@@ -41,6 +43,12 @@ namespace ZGame
             */
             bool
                 createRenderEntity(ZEntity const* ent);
+            /** \begin This method shall create a bunch of render entities, with the numbers of entities to create implicilty known from the iterators.**/
+            bool
+                createRenderEntities(ZENTITY_VEC::const_iterator begin, ZENTITY_VEC::const_iterator end, size_t numOfEnts);
+            /** \brief This method will update the render entities with the passed in buffers.**/
+            void
+                updateRenderEntities(const float* posBuf, const float* orientBuf);
         protected:
         private:
             //typedef vector<Ogre::SceneNode*> ENT_NODES_VEC;
@@ -51,7 +59,7 @@ namespace ZGame
             //ENT_NODES_VEC _entNodes;
             Ogre::SceneNode* _entNodesRoot;
             Ogre::SceneManager* _scnMgr;
-
+            std::vector<Ogre::InstancedGeometry*> _renderInstances;
 
         };
     }
