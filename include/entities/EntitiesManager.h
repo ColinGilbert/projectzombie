@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <ogre.h>
+#include <boost/shared_ptr.hpp>
 //#include "utilities/cl.hpp"
 #include "entities/EntitiesDefs.h"
 #include "net/ZNetEntity.h"

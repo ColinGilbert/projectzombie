@@ -48,7 +48,7 @@ namespace ZGame
                 createRenderEntities(ZENTITY_VEC::const_iterator begin, ZENTITY_VEC::const_iterator end, size_t numOfEnts);
             /** \brief This method will update the render entities with the passed in buffers.**/
             void
-                updateRenderEntities(const float* posBuf, const float* orientBuf);
+                updateRenderEntities(const float* posBuf, const float* orientBuf, const float* velocityBuf, const float &dt);
         protected:
         private:
             //typedef vector<Ogre::SceneNode*> ENT_NODES_VEC;
@@ -60,6 +60,7 @@ namespace ZGame
             Ogre::SceneNode* _entNodesRoot;
             Ogre::SceneManager* _scnMgr;
             std::vector<Ogre::InstancedGeometry*> _renderInstances;
+            Ogre::vector<Ogre::AnimationState*>::type _animations;
 
         };
     }

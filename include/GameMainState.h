@@ -72,9 +72,9 @@ namespace ZGame
         shared_ptr<GPUEntsControl> _gpuEntsControl;
 
         void createGPUEntities();
-        void createWorld(); //create the world that the game resides in.
         void createCharacters();
-
+        /** \brief This method will initialize the graphical state, before any sub-module graphical state initialization.**/
+        void initGraphicalState();
         
         virtual void
             regLfcObsForInjection(LifeCycleRegister &lfcReg);

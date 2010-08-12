@@ -2,6 +2,8 @@
 #define _WORLDCONTROLLER_H
 
 #include <Ogre.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
 #include "Controller.h"
 
 /**
@@ -20,7 +22,7 @@ namespace ZGame
             WorldController();
             ~WorldController();
 
-            void loadWorld(); //temp.
+            
 
             //implements the LifeCycleEvents
             bool onInit();
@@ -35,12 +37,21 @@ namespace ZGame
             }
 
         protected:
-            WorldMap* _worldMap;
+            
         private:
             void init();
+            void loadWorldMap();
+            void loadTerrain();
+            void loadSkyMap();
+            void _configTerrainDefaults(Ogre::Light* light);
+            void _defineTerrain(long x, long y);
+            void _initBlendMaps(Ogre::Terrain* terrain);
         private:
-            Ogre::Entity* _bobEnt;
-            Ogre::AnimationState* _animState;
+            WorldMap* _worldMap;
+            Ogre::SceneManager* _scnMgr;
+            Ogre::TerrainGlobalOptions* _terrainGlobals;
+            Ogre::TerrainGroup* _terrainGroup;
+            bool _terrainsImported;
         };
     }
 }

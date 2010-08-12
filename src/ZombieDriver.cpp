@@ -13,7 +13,7 @@ using namespace std;
 #include "ServerController.h"
 //#include "GPUEntsDistributor.h"
 
-
+#define CROWD 1
 
 /*
 * ZombieDriver.cpp

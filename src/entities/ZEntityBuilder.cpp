@@ -42,14 +42,15 @@ EntitiesBuilder::build(EntitiesManager* entMgr, int numOfEnts)
     boost::uniform_int<> zDist(static_cast<int>(min.z), static_cast<int>(max.z));
     GPUEntsDistributor<boost::minstd_rand, boost::uniform_int<> > dist(rng, xDist, zDist);
     Vector3 pos; 
-    Quaternion orient; //identity orientation.
+    //Quaternion orient(Ogre::Radian(Ogre::Math::PI), Ogre::Vector3::UNIT_Y); //identity orientation.
+    Quaternion orient;
     cout << "Creating " << numOfEnts << " number of entities." << endl;
     for(int i=0; i<numOfEnts; ++i)
     {
         //cout << "Create ent #: " << i << endl;
         ZEntity* ent = entMgr->createZEntity();
         dist.nextPosition(pos);
-        pos.y = Ogre::Math::RangeRandom(250.0f, 450.0f);
+        //pos.y = Ogre::Math::RangeRandom(250.0f, 450.0f);
         ent->onRead(pos, orient);
     }
     

@@ -1,11 +1,17 @@
 #include <OgreRoot.h>
 #include "entities/InstancedRdrEntitiesBuilder.h"
 
+//#define CROWD 1
+//#define INSTANCING 1
+
+
 using namespace Ogre;
 using namespace ZGame::Entities;
-
+#ifdef CROWD
+const size_t InstancedRdrEntitiesBuilder::MAX_PER_BATCH = 4;
+#else 
 const size_t InstancedRdrEntitiesBuilder::MAX_PER_BATCH = 80;
-
+#endif
 InstancedRdrEntitiesBuilder::InstancedRdrEntitiesBuilder(SceneManager* scnMgr) : _scnMgr(scnMgr)
 {
 }
@@ -17,8 +23,9 @@ InstancedRdrEntitiesBuilder::~InstancedRdrEntitiesBuilder()
 void
     InstancedRdrEntitiesBuilder::build(size_t numOfMeshes, std::vector<Ogre::InstancedGeometry*> &renderInstance, std::string meshName)
 {
-    size_t numRendered = 0;
+
     size_t objectCount = numOfMeshes;
+    size_t numRendered = 1;
     _chkVertexProgram();
 
     while(objectCount > MAX_PER_BATCH)
@@ -37,15 +44,14 @@ void
     std::vector<Vector3*> posMat;
     posMat.resize(numRendered);
     posMat.reserve(numRendered);
-    for(size_t i=0; i < numRendered; ++i)
-    {
-        posMat[i] = new Vector3[numOfMeshes];
-    }
 
-    Entity* ent = _scnMgr->createEntity(meshName+"ent", meshName+".mesh");
+    Entity* ent = _scnMgr->createEntity(meshName, meshName+".mesh");
 
-    InstancedGeometry* batch = new InstancedGeometry(_scnMgr, meshName + "s");
-    batch->setCastShadows(false);
+    //InstancedGeometry* batch = new InstancedGeometry(_scnMgr, meshName + "s");
+    InstancedGeometry* batch = _scnMgr->createInstancedGeometry(meshName + "s");
+    //ent->setMaterialName("Ogre/DepthShadowmap/Receiver/Robot");
+    batch->setCastShadows(true);
+    
 
     batch->setBatchInstanceDimensions(Vector3(100000, 100000, 100000));
     const size_t batchSize = (numOfMeshes > MAX_PER_BATCH) ? MAX_PER_BATCH : numOfMeshes;
@@ -53,9 +59,11 @@ void
 
     for(size_t i = 0; i < batchSize; ++i)
     {
+        //batch->add
         batch->addEntity(ent, Vector3::ZERO);
     }
     batch->setOrigin(Vector3::ZERO);
+    
     batch->build();
 
     //Add the batch instances. We are going to set the actual positions for batch instances elsewhere.
@@ -65,7 +73,7 @@ void
     }
     batch->setVisible(true);
     renderInstance.push_back(batch);
-    
+
     //destroy the entity. We no longer need it. It's been "instanced" or cloned now.
     //_scnMgr->destroyEntity(ent);
 }
@@ -116,9 +124,14 @@ Ogre::String
         {
 
             Pass * const p = pIt.getNext();
+#ifdef CROWD
+            p->setVertexProgram("Crowd", true);
+            p->setShadowCasterVertexProgram("CrowdShadowCaster");
+#else
             p->setVertexProgram("Instancing", false);
             p->setShadowCasterVertexProgram("InstancingShadowCaster");
-
+#endif
+            //p->getVertexProgramParameters("");
 
         }
     }

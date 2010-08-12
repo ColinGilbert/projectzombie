@@ -54,7 +54,7 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, float* mode,
 {
   //Do physics update using RK2.
   
-  float TC = 200.0f; //thrust
+  //float TC = 200.0f; //thrust
   float4 TDir = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 VNew = (float4)(0.0f, 0.0f, 10.0f, 0.0f);
   //float4 SNew = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
@@ -66,10 +66,18 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, float* mode,
   float4 k1 = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 k2 = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 entZAxis = (float4)(0.0f, 0.0f, 1.0f, 0.0f);
+  float4 oldVel;
   ZAxisOfMatrixFromQuaternion(orient, &entZAxis); //Get the ZAxis from orientation quaternion.
+  
+  oldVel = *velocity;
   if(impulse)
-    TC = 800.0f;
-  TDir = entZAxis*TC;
+    {
+      
+      *velocity = 800.0f;
+    }
+  
+  TDir = entZAxis * (*velocity).x;  
+  *velocity = oldVel;
   F = TDir - (*velocity * c);
   A = F * (1.0f / mass);
   k1 = A * dt;
@@ -83,7 +91,7 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, float* mode,
   //const float dtt = 0.16f;
   *pos = *pos + TDir * dt;
   //*pos = *pos + VNew * dt;
-  *velocity = VNew;
+  //*velocity = VNew;
   
   
   //Output

@@ -39,11 +39,12 @@ namespace ZGame
             bool onDestroy(void){ return true;}
             void printKernelTime();
             /** \brief This method will get the position and orientation buffers.**/
-            void getBuffers(const float* &posBuf, const float* &orientBuf)
+            void getBuffers(const float* &posBuf, const float* &orientBuf, const float* &velocityBuf)
             {
                 //NOTE!!! We assume that both buffers are valid when you call this method.
                 posBuf = _entsPosBuf;
                 orientBuf = _entsOrientBuf;
+                velocityBuf = _entsVelBuf;
             }
 
         private:
@@ -98,12 +99,14 @@ namespace ZGame
             size_t _mapBufLen;
             Ogre::Real* _gradMap;
             Ogre::Real* _contourMap;
+            
             size_t _iterations; //number of iterations to run kernel.
             double _deviceKernelTime; //variable to track performance time for device kernels.
             CPerfCounter _counter; //performance counter.
             size_t _argI;
             bool _useGPU;
             size_t _iterCount;
+            long _loopI;
                     
         };
     }

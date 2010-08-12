@@ -127,8 +127,8 @@ GameMainState::onInit()
   _entMgr.reset(new Entities::EntitiesManager());
   _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
   
+  initGraphicalState();
   _worldController->onInit();
-  createWorld(); //NOTE: All of this should be MOVED to _worldController.
   Ogre::LogManager::getSingleton().logMessage("Done creating world");
 
   createCharacters();
@@ -146,8 +146,9 @@ GameMainState::onUpdate(const Ogre::FrameEvent &evt)
     _zclCtrl->onUpdate(evt);
     const float* posBuf = 0;
     const float* orientBuf = 0;
-    _zclCtrl->getBuffers(posBuf, orientBuf);
-    _rdrEntMgr->updateRenderEntities(posBuf, orientBuf);
+    const float* velocityBuf = 0;
+    _zclCtrl->getBuffers(posBuf, orientBuf, velocityBuf);
+    _rdrEntMgr->updateRenderEntities(posBuf, orientBuf, velocityBuf, evt.timeSinceLastFrame);
   return true;
 }
 
@@ -183,7 +184,7 @@ GameMainState::createGPUEntities()
   //"athene.mesh"));
   int texW = 64;
   int texH = 64;
-  Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entities
+  Real minX, maxX, minZ, maxZ; //the space into which we want to distribute the GPU entitise
   minX = -2000.0f;
   maxX = 2000.0f;
   minZ = -500.0;
@@ -205,59 +206,36 @@ void
 GameMainState::createCharacters()
 {
     using Entities::EntitiesBuilder;
-    int numOfEntities = 4096;
+    //int numOfEntities = 64;
+    int numOfEntities = 4800;
 
     EntitiesBuilder::build(_entMgr.get(), numOfEntities);
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "ZEntityBuilder::build finished.");
 }
 
 void
-GameMainState::createWorld()
+GameMainState::initGraphicalState()
 {
   Ogre::LogManager *lm = Ogre::LogManager::getSingletonPtr();
   lm->logMessage(Ogre::LML_TRIVIAL,"In GameMainState::createWorld");
   SceneManager *scnMgr = EngineView::getSingleton().getSceneManager();
-  //scnMgr->setWorldGeometry(Ogre::String("paginglandscape2.cfg"));
-  scnMgr->setWorldGeometry("terrain.cfg");
-  //Set ambient light
-  scnMgr->setAmbientLight(ColourValue(0.7f,0.7f,0.7f));
+  //scnMgr->setShadowTextureSelfShadow(true);
+  //scnMgr->setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
+  //scnMgr->setShadowTextureReceiverMaterial("Ogre/DepthShadowmap/Receiver/Float");
+  //scnMgr->setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
+  //scnMgr->setShadowCasterRenderBackFaces(false);
+  
 
-  Vector3 LightPos(0.0f, 10.0f, 20.0f);
-  Ogre::Light *mLight;
-  Ogre::SceneNode *mLightNode;
-
-  mLight = scnMgr->createLight("MainLight");
-
-  mLight->setPosition(LightPos);
-
-  mLight->setDiffuseColour(0.93f, 0.93f, 0.93f);
-  mLight->setAttenuation(10000.0f, 1.0f, 1.0f, 0.0f);
-
-  mLight->setType (Light::LT_DIRECTIONAL);
-  mLight->setDirection (Vector3( -1, -1, 0 ));
-
-  SceneNode *BaseNode = scnMgr->getRootSceneNode()->createChildSceneNode ("LightHandler");
-  BaseNode->setPosition (-3500.0f, 0.0f, -2600.0f);
-  mLightNode = BaseNode->createChildSceneNode ("LightHandlerSon");
-  mLightNode->setPosition (0.0f, 15000.0f, 0.0f);
-  mLightNode->attachObject (mLight);
-
-  BillboardSet* LightSet = scnMgr->createBillboardSet("RedYellowLights");
-  LightSet->setMaterialName("Examples/Flare");
-  mLightNode->attachObject(LightSet);
-
-  Billboard* LightBoard = LightSet->createBillboard(LightPos);
-  //LightBoard->setDimensions(10.0f, 10.0f);
-  LightBoard->setColour(ColourValue(1.0f, 1.0f, 0.2f, 1.0f));
-
-  //scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
-  scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
+  scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
+  //scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
+  //scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+  //scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
   scnMgr->setShadowColour(Ogre::ColourValue(0.5,0.5,0.5));
-  scnMgr->setShadowFarDistance(100);
+  scnMgr->setShadowFarDistance(10000);
   scnMgr->setShadowTextureSettings(512,2);
   
   Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
-  Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(1);
+  Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(7);
 
   lm->logMessage(Ogre::LML_TRIVIAL,"Out of GameMainState::createWorld");
 }

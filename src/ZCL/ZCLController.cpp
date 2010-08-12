@@ -12,7 +12,7 @@ using std::cin;
 using std::cerr;
 
 
-#define MAX_OBJ_PER_BATCH 4
+//#define MAX_OBJ_PER_BATCH 4
 
 #include "ZCL/ZCLController.h"
 #include "entities/EntitiesManager.h"
@@ -27,7 +27,7 @@ using namespace ZGame::ZCL;
 extern ZGame::World::WorldScale WSCALE;
 
 ZCLController::ZCLController() : _entsDim(0), _numOfEnts(0), _entsBufLen(0), _entsPosBuf(0), _entsOrientBuf(0), _entsModeBuf(0),
-    _mapBufLen(0), _gradMap(0), _contourMap(0), _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(false), _iterCount(0)
+    _mapBufLen(0), _gradMap(0), _contourMap(0), _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(false), _iterCount(0),_loopI(0)
 {
 }
 
@@ -376,8 +376,10 @@ bool
 
     _counter.Stop();
     
-    _deviceKernelTime = _counter.GetElapsedTime();// / double(_iterations);
 
+
+    _deviceKernelTime = (_counter.GetElapsedTime() + _deviceKernelTime) / ++_loopI;// / double(_iterations);
+    
     return true;
 }
 

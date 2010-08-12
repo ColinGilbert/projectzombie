@@ -1,5 +1,6 @@
 #include <iostream>
 
+//#define CROWD 1
 using std::cout;
 using std::endl;
 
@@ -39,8 +40,15 @@ bool
 {
     using Entities::InstancedRdrEntitiesBuilder;
     InstancedRdrEntitiesBuilder builder(_scnMgr);
-    builder.build(numOfEnts, _renderInstances, "razor");
+    std::string meshName = "Barrel";
+#ifdef CROWD
+    meshName = "robot";
+#endif
+
+    builder.build(numOfEnts, _renderInstances, meshName);
+
     InstancedGeometry* batch = _renderInstances[0];
+
     InstancedGeometry::BatchInstanceIterator regIt = batch->getBatchInstanceIterator();
     size_t k = 0;
     ZENTITY_VEC::const_iterator iter = begin;
@@ -52,20 +60,38 @@ bool
         InstancedGeometry::BatchInstance::InstancedObjectIterator bit = r->getObjectIterator();
         int j = 0;
         Vector3 pos; Quaternion orient;
+
         while(bit.hasMoreElements())
         {
             InstancedGeometry::InstancedObject* obj = bit.getNext();
             (*iter)->onWrite(pos, orient);
             obj->setPosition(pos);
             obj->setOrientation(orient);
+#ifdef CROWD
+            obj->setScale(Ogre::Vector3(2.0f, 2.0f, 2.0f));
+            AnimationState* anim = obj->getAnimationState("Walk");
+            if(anim)
+            {
+                _animations.push_back(anim);
+                anim->setTimePosition(Ogre::Math::RangeRandom(0.0f, 30.0f));
+                anim->setEnabled(true);
+            }
+#else
+            obj->setScale(Ogre::Vector3(10.0f, 25.0f, 10.0f));
+#endif
+
             ++j;
             iter++;
-            
+            k++;
+            //cout << "Number of InstancedObject: " << k << endl;
+
+
         }
-        k++;
+
     }
     if(iter != end)
         OGRE_EXCEPT(Exception::ERR_INVALID_STATE,"There are more zEntities than there are instanced geometries.", "RenderEntities::createRenderEntities");
+
     return true;
 }
 
@@ -102,7 +128,8 @@ bool
 }
 
 void
-    RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* orientBuf)
+    RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* orientBuf, const float* velocityBuf, 
+    const float &dt)
 {
     //Get all the node child;
     size_t numOfEnts = 0;
@@ -113,7 +140,13 @@ void
 
     size_t idx = 0;
     const size_t DIM = 4;
-
+    const Ogre::Quaternion initialOrient(Ogre::Radian(Ogre::Degree(-90.0f).valueRadians()), Ogre::Vector3::UNIT_Y);
+#ifdef CROWD
+    Ogre::vector<AnimationState*>::type::iterator it;
+    it=_animations.begin();
+    
+#endif
+    //const Ogre::Quaternion initialOrient;
     while(iter.hasMoreElements())
     {
         InstancedGeometry::BatchInstance* r = iter.getNext();
@@ -124,11 +157,18 @@ void
             InstancedGeometry::InstancedObject* obj = bit.getNext();
             const Vector3 pos(posBuf[idx], posBuf[idx+1], posBuf[idx+2]);
             obj->setPosition(pos);
-            const Quaternion quat(orientBuf[idx], orientBuf[idx+1], orientBuf[idx+2], orientBuf[idx+3]);
+            Quaternion quat(orientBuf[idx], orientBuf[idx+1], orientBuf[idx+2], orientBuf[idx+3]);
+            quat = quat * initialOrient;
             obj->setOrientation(quat);
+#ifdef CROWD
+            
+            (*it)->addTime(dt*velocityBuf[idx]);
+            it++;
+#endif
             idx += DIM; //advance by dimension.
         }
     }
+
     //cout << "NumOfEnts in updateRenderEntities: " << numOfEnts << endl;
 }
 
