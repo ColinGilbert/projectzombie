@@ -2,7 +2,7 @@
 #define _ZENTITIES_MANAGER_H
 
 #include <vector>
-#include <ogre.h>
+#include <Ogre.h>
 #include <boost/shared_ptr.hpp>
 //#include "utilities/cl.hpp"
 #include "entities/EntitiesDefs.h"

@@ -3,7 +3,7 @@
 #include <string>
 using std::string;
 #include <vector>
-#include <ogre.h>
+#include <Ogre.h>
 
 //using Ogre::Vector2;
 //using Ogre::Real;
