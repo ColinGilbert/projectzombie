@@ -58,7 +58,7 @@ string
             f.seekg(0, ifstream::beg);
 
             str = new char[size+1];
-            if (!str) throw(&std::exception("Could not allocate memory"));
+            if (!str) throw(Exception("Could not allocate memory"));
 
             f.read(str, fileSize);
             f.close();

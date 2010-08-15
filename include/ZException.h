@@ -10,14 +10,17 @@ namespace ZGame
     class Exception : public std::exception
     {
     public:
-        Exception(std::string str) : std::exception(str.c_str())
+        Exception(std::string str) : std::exception(), _msg(str)
         {
+            
         }
         Exception(std::exception except) : std::exception(except)
         {
         }
         virtual ~Exception(){}
+        const char* what() const {return _msg.c_str();}
     protected:
     private:
+        std::string _msg;
     };
 }

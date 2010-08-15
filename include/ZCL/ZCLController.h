@@ -6,6 +6,11 @@
 #include <vector>
 #include <string>
 #include <Ogre.h>
+
+#include "ZException.h"
+
+using ZGame::Exception;
+
 #include "utilities/cl.hpp"
 #include "utilities/Timer.h"
 
@@ -72,7 +77,7 @@ namespace ZGame
                     std::stringstream except;
                     except << "ERROR: " << name << " (" << err << ")";
                     //std::cerr << "ERROR: " << name << " (" << err << ")" << std::endl;
-                    throw(std::exception(except.str().c_str()));
+                    throw(Exception(except.str().c_str()));
                 }
             }
             
