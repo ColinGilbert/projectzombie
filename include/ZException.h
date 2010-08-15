@@ -10,7 +10,7 @@ namespace ZGame
     class Exception : public std::exception
     {
     public:
-        Exception(std::string str) : std::exception(), _msg(str)
+        Exception(std::string str) :_msg(str)
         {
             
         }
