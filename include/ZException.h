@@ -17,8 +17,8 @@ namespace ZGame
         Exception(std::exception except) : std::exception(except)
         {
         }
-        virtual ~Exception(){}
-        const char* what() const {return _msg.c_str();}
+        virtual ~Exception() throw() {} 
+        const char* what() const throw() {return _msg.c_str();} 
     protected:
     private:
         std::string _msg;
