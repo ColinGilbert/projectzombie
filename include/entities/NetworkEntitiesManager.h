@@ -26,19 +26,19 @@ namespace ZGame
         class NetworkEntitiesManager
         {
         public:
-            NetworkEntitiesManager(){}
-            virtual ~NetworkEntitiesManager(){}
+	  NetworkEntitiesManager();
+	  virtual ~NetworkEntitiesManager();
 
             void
                 addEntity(T key, boost::shared_ptr<ZNetEntity> &znetEntSmart,
                 boost::shared_ptr<ZEntity> &zEntSmart)
             {
-                ZENTITY_MAP::iterator curZEntIter;
+                ZENTITY_ITER curZEntIter;
                 curZEntIter = _entities.find(key);
                 assert(curZEntIter == _entities.end() && "Logical Assert Failed: Unique key violation failed in Net Entitiy Manager."); //assert that we are in fact inserting a new NetworkID key into the system.
                 _entities[key] = zEntSmart;
 
-                NET_ENTITY_MAP::iterator curNetEntIter;
+                NET_ENTITY_ITER curNetEntIter;
                 curNetEntIter = _netEntities.find(key);
                 assert(curNetEntIter == _netEntities.end() && "Logical Assert Failed: Unique key violation failed in Net Entitiy Manager.");
                 _netEntities[key] = znetEntSmart;
@@ -65,9 +65,12 @@ namespace ZGame
 
         private:
             typedef std::map<T, boost::shared_ptr<ZNetEntity> > NET_ENTITY_MAP;
-            typedef std::map<T, boost::shared_ptr<Entities::ZEntity> > ZENTITY_MAP;
+            typedef typename NET_ENTITY_MAP::iterator NET_ENTITY_ITER;
+	    typedef std::map<T, boost::shared_ptr<Entities::ZEntity> > ZENTITY_MAP;
+	    typedef typename ZENTITY_MAP::iterator ZENTITY_ITER;
 
             NET_ENTITY_MAP _netEntities;
+
             ZENTITY_MAP _entities;
         };
     }

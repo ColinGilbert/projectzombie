@@ -69,22 +69,12 @@ string
             return s;
         }
     }
-    catch(std::string msg)
+    catch(std::exception except)
     {
-        cerr << "Exception caught in FileToString(): " << msg << endl;
         if(f.is_open())
             f.close();
-    }
-    catch(...)
-    {
-        cerr << "Exception caught in FileToString()" << endl;
-        if(f.is_open())
-            f.close();
-    }
-    string errorMsg = "FileToString()::Error: Unable to open file "
-        + fileName;
-    std::exception except(errorMsg.c_str());
-    throw(except);
+	throw except;
+    } 
 }
 
 /**
@@ -119,7 +109,7 @@ void
 
     cl::Platform::get(&allPlatforms);
     if(!(allPlatforms.size() > 0))
-        throw (std::exception("ZCLController::init() failed: No platforms found!"));
+        throw (Exception("ZCLController::init() failed: No platforms found!"));
     targetPlatform = allPlatforms[0];
 
     cout << "Creating OpenCL GPU context." << endl;

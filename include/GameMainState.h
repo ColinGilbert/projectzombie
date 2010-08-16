@@ -8,10 +8,17 @@
 #ifndef GAMEMAINSTATE_H_
 #define GAMEMAINSTATE_H_
 
-#include <memory>
-using std::tr1::shared_ptr;
-using namespace std;
 #include <Ogre.h>
+
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <memory>
+#else
+#include <tr1/memory>
+#endif
+
+
+using namespace std;
 #include <OIS/OIS.h>
 //#include <boost/shared_ptr.hpp>
 
@@ -44,7 +51,7 @@ namespace ZGame
         class EntitiesManager;
         class RenderEntitiesManager;
     }
-
+    using std::tr1::shared_ptr;
     class GameMainState : public ZGame::GameState
     {
     public:

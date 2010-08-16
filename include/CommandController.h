@@ -2,11 +2,21 @@
 #define _ZGAME_CMDCONTROLLER_H
 
 //#include <boost\shared_ptr.hpp>
-#include <memory>
+
+
 #include <Ogre.h>
+
 #include <string>
 
-#include "fastdelegate/fastdelegate.h"
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#include <memory>
+#else
+#include <tr1/memory>
+#endif
+
+
+
+#include "fastdelegate/FastDelegate.h"
 #include "command/Command.h"
 #include "EngineView.h"
 #include "Controller.h"

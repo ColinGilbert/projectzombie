@@ -31,12 +31,13 @@ namespace ZGame
             EntityUpdateEvent onWrite;
 
         };
+	/**
         struct EntityLifeCycleObserver
         {
             LifeCycle::LifeCycleEvent onInit;
             LifeCycle::LifeCycleEvent onRead;
             LifeCycle::LifeCycleEvent onDestroy;
-        };
+	    };**/
     }
 }
 

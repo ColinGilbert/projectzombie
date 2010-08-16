@@ -1,4 +1,24 @@
 """
 This is the SConscript file which will build the files in the sub dir.
 """
+#Get the files for projectz lib
+files = []
+#manually build the files. I now we can automate this. but that invovles more coding than I care for right now.
+files.append(File(Glob('command/*.cpp')))
+files.append(File(Glob('entities/*.cpp')))
+files.append(File(Glob('model/*.cpp')))
+files.append(File(Glob('net/*.cpp')))
+#disable opensteer. We're not using it. And it doesn't compile on Linux g++ 4.4
+#files.append(File(Glob('opensteer/*.cpp')))
+files.append(File(Glob('utilities/*.cpp')))
+files.append(File(Glob('view/*.cpp')))
+files.append(File(Glob('ZCL/*.cpp')))
+
+Import('env')
+
+
+projectZ = env.Library('projectz', files)
+
+Default(projectZ)
+
 

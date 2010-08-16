@@ -13,7 +13,7 @@
 //using namespace std;
 #include <Ogre.h>
 
-#include <OpenSteer/SimpleVehicle.h>
+//#include <OpenSteer/SimpleVehicle.h>
 
 #include "EntitiesDefs.h"
 #include "entities/ZEntityResource.h"
@@ -23,7 +23,7 @@ namespace ZGame
 {
     namespace Entities
     {
-        using OpenSteer::SimpleVehicle;
+      //using OpenSteer::SimpleVehicle;
         class ZEntity //: public SimpleVehicle
         {
         public:

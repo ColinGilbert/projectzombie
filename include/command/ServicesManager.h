@@ -22,9 +22,10 @@ namespace ZGame
         {
         public:
             friend class CommandController;
-        protected:
-            ServicesManager();
+	    ServicesManager();
             ~ServicesManager();
+        protected:
+            
         private:          
         };
     }

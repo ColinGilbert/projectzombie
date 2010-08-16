@@ -6,23 +6,42 @@ get something working on Linux.
 
 import os
 
-#platform = ARGUMENTS.get('OS', Platform())
+HOME = os.environ['HOME']
+print "Home is: ", HOME
 
-print "Platform is: %s", "$PLATFORM"
-
-OGRE_PATH = "$HOME/projects/ogre_new/ogre_src_v1-7-1/"
+#OGRE_PATH = HOME+"projects/ogre_new/ogre_src_v1-7-1/"
 #directories
-OGRE_INCLUDE = OGRE_PATH + "OgreMain/include/" #note, manually entering directory names for now. 
-includes = OGRE_INCLUDE + " /usr/include/" #/usr/include is for boost and stuff. you have all that.
-libpath = OGRE_PATH + "build/lib /usr/lib/ /usr/local/lib/"
-libs = "OgreMain OIS projectz" 
+#OGRE_INCLUDE = OGRE_PATH + "OgreMain/include/ "+OGRE_PATH+" #note, manually entering directory names for now. 
 
-env = Environment(INCDIR = Split(includes),
-                  LIBDIR = Split(libpath),
-                  CPPPATH = Split(includes),
-                  LIBPATH = Split(libpath),
-                  LIBS = Split(libs))
+PRJZ_HOME = HOME+"/projects/prjz_new/projectzombie/"
+OGRE_INCLUDE = "/usr/local/include/OGRE/ /usr/local/include/OGRE/Terrain/"
+RAKNET_HOME = HOME+"/software/raknet_new/"
+RAKNET_PATH = RAKNET_HOME
+includes = OGRE_INCLUDE + " /usr/include/ /usr/local/include/ "+PRJZ_HOME+"include/" + " /usr/include/CL/ "+RAKNET_HOME+"Source"
+OGRE_LIB = "/usr/local/lib/OGRE/"
+libpath = OGRE_LIB + " /usr/lib/ /usr/local/lib/ "+RAKNET_PATH+"Lib/GNU-Linux-x86/" 
+libs = "OgreMain OIS RakNetDLL OpenCL projectz libRakNetDynamic" 
 
-Export('env')
+print "Split includes: ", Split(includes)
+
+env = Environment()
+env.Decider('MD5-timestamp')
+env.Append( INCDIR = Split(includes))
+env.Append( LIBDIR = Split(libpath))
+env.Append( CPPPATH = Split(includes))
+env.Append( LIBPATH = Split(libpath))
+env.Append( LIBS = Split(libs))
+env.Append( CPPFLAGS = ['-o2'])
 
 
+print "CCCOM is: ", env['CCCOM']
+print "CXXCOM ", env['CXXCOM']
+print "CC is:", env.subst('$CC')
+print "CPPPATH:", env.subst('$CPPPATH')
+print "CPPFLAGS: ", env.subst('$CCFLAGS')
+print "chaning CXXCOM "
+env['CXXCOM'] = "$CXX $_CCCOMCOM -o $TARGET -c $CXXFLAGS $CCFLAGS $SOURCES"
+
+
+env.SConscript('src/SConscript', exports='env', variant_dir='build/', src_dir='src/', duplicate=0)
+#env.SConscript('src/SConscript', exports='env')

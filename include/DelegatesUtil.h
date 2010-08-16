@@ -36,6 +36,7 @@ namespace ZGame
     }
     namespace Entities
     {
+      /**
         template<typename T>
         static void bindEntityLifeCycleObserver(EntityLifeCycleObserver &lfcObs,
             T& binder)
@@ -44,7 +45,7 @@ namespace ZGame
             lfcObs.onUpdate.bind(&binder,&T::onUpdate);
             lfcObs.onDestroy.bind(&binder,&T::onDestroy)
         }
-
+      **/
         template<typename T>
         static void bindEntityAspects(EntityAspects &aspects, T& binder, bool isServer)
         {

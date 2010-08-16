@@ -16,7 +16,7 @@ namespace ZGame
             {
             }
 
-            virtual ~CmdException(){}
+	  virtual ~CmdException() throw(){}
         };
     }
 }
