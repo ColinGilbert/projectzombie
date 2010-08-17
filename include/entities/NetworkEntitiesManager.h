@@ -26,8 +26,8 @@ namespace ZGame
         class NetworkEntitiesManager
         {
         public:
-	  NetworkEntitiesManager();
-	  virtual ~NetworkEntitiesManager();
+	  NetworkEntitiesManager(){}
+	  virtual ~NetworkEntitiesManager(){}
 
             void
                 addEntity(T key, boost::shared_ptr<ZNetEntity> &znetEntSmart,

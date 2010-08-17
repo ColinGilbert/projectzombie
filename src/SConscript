@@ -13,12 +13,20 @@ files.append(File(Glob('net/*.cpp')))
 files.append(File(Glob('utilities/*.cpp')))
 files.append(File(Glob('view/*.cpp')))
 files.append(File(Glob('ZCL/*.cpp')))
-
+files.append(File(Glob('world/*.cpp')))
 Import('env')
 
 
 projectZ = env.Library('projectz', files)
+#Let's build OpenCL testCLDriver
+raknet_path = env["RAKNET_PATH"]
+print "Raknet_path: ", raknet_path
+raknetStatic = File(raknet_path+"build/libRakNet.a")
+#env.Append(LIBPATH = ".")
+env.Append(LIBS = [projectZ, raknetStatic])
 
-Default(projectZ)
+testCLDriver = env.Program('TestCLDriver.cpp')
+zombieDriver = env.Program('ZombieDriver.cpp')
+#Default(projectZ)
 
 

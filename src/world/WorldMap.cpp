@@ -1,9 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <stdexcept>
+#include <ZException.h>
+using ZGame::Exception;
 using std::cout;
 using std::endl;
-using std::exception;
+
 using std::ifstream;
 using std::ios;
 #include "world/WorldMap.h"
@@ -75,9 +76,9 @@ void
         else
         {
             cout << "File was not opened somehow!" << endl;
-            throw exception("Exception when trying to open WorldMap file");
+            throw Exception("Exception when trying to open WorldMap file");
         }
-    }catch(exception e)
+    }catch(std::exception e)
     {
         delete [] _buffer;
         _buffer = 0;
