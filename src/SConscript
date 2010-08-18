@@ -27,10 +27,6 @@ env.Append(LIBS = [projectZ, raknetStatic])
 
 testCLDriver = env.Program('TestCLDriver.cpp')
 zombieDriver = env.Program('ZombieDriver.cpp')
+#Default(projectZ)
 
-#Copy the files
-#env.Command("ZombieMedia/release/"+testCLDriver, [], Copy("$TARGET", testCLDriver))
-#env.Command("ZombieMedia/release/"+zombieDriver, [], Copy("$TARGET", zombieDriver))
-env.Install("../ZombieMedia/release/", testCLDriver)
-env.Install("../ZombieMedia/release/", zombieDriver)
 
