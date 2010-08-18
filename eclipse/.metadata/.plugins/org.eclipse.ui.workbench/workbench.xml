@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbench progressCount="17" version="2.0">
+<workbenchAdvisor/>
+<window height="771" maximized="true" width="1020" x="2" y="24">
+<fastViewData fastViewLocation="1024"/>
+<perspectiveBar>
+<itemSize x="160"/>
+</perspectiveBar>
+<coolbarLayout locked="0">
+<coolItem id="group.file" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="154" y="34"/>
+<coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.cdt.ui.CElementCreationActionSet" itemType="typeToolBarContribution" x="148" y="34"/>
+<coolItem id="org.eclipse.cdt.ui.buildConfigActionSet" itemType="typeToolBarContribution" x="82" y="34"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="116" y="34"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="100" y="34"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="116" y="34"/>
+<coolItem id="group.nav" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="172" y="34"/>
+<coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.cdt.ui.editor.CEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="group.help" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
+</coolbarLayout>
+<page aggregateWorkingSetId="Aggregate for window 1282028416412" focus="true" label="Workspace - C/C++">
+<editors>
+<editorArea activeWorkbook="org.eclipse.ui.internal.EditorStack@497598">
+<info part="DefaultEditorWorkbook">
+<folder appearance="1" expanded="2">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.ui.internal.EditorStack@497598" ratio="0.3873874" ratioLeft="344" ratioRight="544" relationship="4" relative="DefaultEditorWorkbook">
+<folder appearance="1" expanded="2">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+</editorArea>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="CommandController.h" partName="CommandController.h" path="/home/beyzend/projects/prjz_new/projectzombie/include/CommandController.h" title="CommandController.h" tooltip="eclipseproject/include/CommandController.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/eclipseproject/include/CommandController.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="376" selectionTopPixel="0"/>
+</editor>
+<editor focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="EngineController.h" partName="EngineController.h" path="/home/beyzend/projects/prjz_new/projectzombie/include/EngineController.h" title="EngineController.h" tooltip="eclipseproject/include/EngineController.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/eclipseproject/include/EngineController.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3252" selectionTopPixel="2082"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ExampleFrameListener.h" partName="ExampleFrameListener.h" title="ExampleFrameListener.h" tooltip="/home/beyzend/projects/ogre_new/ogre_src_v1-7-1/Samples/Common/include/ExampleFrameListener.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/beyzend/projects/ogre_new/ogre_src_v1-7-1/Samples/Common/include/ExampleFrameListener.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="1700" selectionOffset="2088" selectionTopPixel="1347"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="EngineController.cpp" partName="EngineController.cpp" path="/home/beyzend/projects/prjz_new/projectzombie/src/view/EngineController.cpp" title="EngineController.cpp" tooltip="eclipseproject/src/view/EngineController.cpp" workbook="org.eclipse.ui.internal.EditorStack@497598">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/eclipseproject/src/view/EngineController.cpp"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2604" selectionTopPixel="1593"/>
+</editor>
+</editors>
+<views>
+<view id="org.eclipse.ui.navigator.ProjectExplorer" partName="Project Explorer">
+<viewState CommonNavigator.LINKING_ENABLED="0" CommonNavigator.LINKING_ENABLED.delayed="0" org.eclipse.cdt.ui.cview.groupincludes="false" org.eclipse.cdt.ui.cview.groupmacros="false" org.eclipse.cdt.ui.editor.CUChildren="true" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0"/>
+</view>
+<view id="org.eclipse.ui.views.PropertySheet" partName="Properties">
+<viewState/>
+</view>
+<view id="org.eclipse.cdt.make.ui.views.MakeView" partName="Make Target"/>
+<view id="org.eclipse.ui.views.ProblemView" partName="Problems">
+<viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
+<expanded>
+<category IMemento.internal.id="Warnings (1 item)"/>
+<category IMemento.internal.id="Errors"/>
+</expanded>
+<columnWidths org.eclipse.ui.ide.locationField="73" org.eclipse.ui.ide.markerType="977" org.eclipse.ui.ide.pathField="143" org.eclipse.ui.ide.resourceField="108" org.eclipse.ui.ide.severityAndDescriptionField="350"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.locationField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.markerType"/>
+</viewState>
+</view>
+<view id="org.eclipse.ui.console.ConsoleView" partName="Console">
+<viewState/>
+</view>
+<view id="org.eclipse.mylyn.tasks.ui.views.tasks" partName="Task List"/>
+<view id="org.eclipse.ui.views.TaskList" partName="Tasks"/>
+<view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
+<viewState/>
+</view>
+</views>
+<perspectives activePart="org.eclipse.cdt.ui.editor.CEditor" activePerspective="org.eclipse.cdt.ui.CPerspective">
+<perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
+<descriptor class="org.eclipse.cdt.internal.ui.CPerspectiveFactory" id="org.eclipse.cdt.ui.CPerspective" label="C/C++"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.context.ui.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.doc.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.tasks.ui.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.annotationNavigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.keyBindings"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.openFiles"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.SearchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.CElementCreationActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.make.ui.makeTargetActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.buildConfigActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.NavigationActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.OpenActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.CodingActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.presentation"/>
+<show_view_action id="org.eclipse.ui.console.ConsoleView"/>
+<show_view_action id="org.eclipse.search.ui.views.SearchView"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="org.eclipse.cdt.ui.CView"/>
+<show_view_action id="org.eclipse.ui.views.ResourceNavigator"/>
+<show_view_action id="org.eclipse.ui.views.PropertySheet"/>
+<show_view_action id="org.eclipse.ui.views.TaskList"/>
+<show_view_action id="org.eclipse.cdt.make.ui.views.MakeView"/>
+<show_view_action id="org.eclipse.ui.navigator.ProjectExplorer"/>
+<show_view_action id="org.eclipse.cdt.ui.includeBrowser"/>
+<show_view_action id="org.eclipse.mylyn.tasks.ui.views.tasks"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.ConvertToMakeWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewMakeFromExisting"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewCWizard1"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewCWizard2"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewSourceFolderCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewFolderCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewSourceFileCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewHeaderFileCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewFileCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewClassCreationWizard"/>
+<new_wizard_action id="org.eclipse.mylyn.tasks.ui.wizards.new.repository.task"/>
+<perspective_action id="org.eclipse.debug.ui.DebugPerspective"/>
+<perspective_action id="org.eclipse.team.ui.TeamSynchronizingPerspective"/>
+<hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
+<view id="org.eclipse.ui.navigator.ProjectExplorer"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<view id="org.eclipse.cdt.make.ui.views.MakeView"/>
+<view id="org.eclipse.mylyn.tasks.ui.views.tasks"/>
+<fastViewBars>
+<fastViewBar fastViewLocation="1024" id="bottom" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
+<fastViews>
+<view id="org.eclipse.ui.views.ProblemView" ratio="0.3"/>
+<view id="org.eclipse.ui.views.TaskList" ratio="0.3"/>
+<view id="org.eclipse.ui.console.ConsoleView" ratio="0.2996633"/>
+<view id="org.eclipse.ui.views.PropertySheet" ratio="0.3"/>
+</fastViews>
+</fastViewBar>
+</fastViewBars>
+<layout>
+<mainWindow>
+<info folder="true" part="topLeft">
+<folder activePageID="org.eclipse.ui.navigator.ProjectExplorer" appearance="2" expanded="2">
+<page content="org.eclipse.ui.navigator.ProjectExplorer" label="Project Explorer"/>
+<page content="org.eclipse.cdt.ui.CView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.views.ResourceNavigator" label="LabelNotFound"/>
+<page content="org.eclipse.ui.views.BookmarkView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@1767553" ratio="0.7495049" ratioLeft="757" ratioRight="253" relationship="2" relative="topLeft">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
+<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" ratio="0.24950495" ratioLeft="252" ratioRight="758" relationship="2" relative="topLeft"/>
+<info folder="true" part="bottom" ratio="0.7117117" ratioLeft="632" ratioRight="256" relationship="4" relative="org.eclipse.ui.editorss">
+<folder appearance="2" expanded="0">
+<page content="org.eclipse.ui.views.ProblemView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.views.TaskList" label="LabelNotFound"/>
+<page content="org.eclipse.ui.console.ConsoleView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.views.PropertySheet" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info folder="true" part="topRight" ratio="0.640266" ratioLeft="1059" ratioRight="595" relationship="2" relative="org.eclipse.ui.editorss">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
+<page content="org.eclipse.cdt.make.ui.views.MakeView" label="Make Target"/>
+<page content="org.eclipse.mylyn.tasks.ui.views.tasks" label="Task List"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+</perspectives>
+<workingSets/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/eclipseproject/include/CommandController.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/eclipseproject/include/EngineController.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/eclipseproject/src/view/EngineController.cpp"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/home/beyzend/projects/ogre_new/ogre_src_v1-7-1/Samples/Common/include/ExampleFrameListener.h"/>
+</editors>
+<item historyLabel="CommandController.h" index="0">
+<position info="not_deleted" x="376" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="2406" y="5"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5860" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5899" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5932" y="6"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="1908" y="5"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="3252" y="4"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5932" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="3252" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="2457" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2065" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2105" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="2927" y="0"/>
+</item>
+<item historyLabel="ExampleFrameListener.h" index="3">
+<position info="not_deleted" x="2088" y="1700"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2912" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="2927" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2527" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="3258" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2527" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5932" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="4255" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="1942" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="4158" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="4157" y="25"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="9441" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="1943" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="9441" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5910" y="0"/>
+</item>
+<item historyLabel="EngineController.h" index="1">
+<position info="not_deleted" x="3252" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="5208" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="883" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2591" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="3054" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2638" y="0"/>
+</item>
+<item historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2901" y="0"/>
+</item>
+<item active="true" historyLabel="EngineController.cpp" index="2">
+<position info="not_deleted" x="2997" y="0"/>
+</item>
+</navigationHistory>
+<input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
+</page>
+<workbenchWindowAdvisor/>
+<actionBarAdvisor/>
+<trimLayout>
+<trimArea IMemento.internal.id="128">
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
+</trimArea>
+<trimArea IMemento.internal.id="1024">
+<trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
+<trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.intro.impl.presentations.IntroLaunchBar"/>
+<trimItem IMemento.internal.id="bottom"/>
+</trimArea>
+</trimLayout>
+</window>
+<mruList>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ExampleFrameListener.h" tooltip="/home/beyzend/projects/ogre_new/ogre_src_v1-7-1/Samples/Common/include/ExampleFrameListener.h">
+<persistable uri="file:/home/beyzend/projects/ogre_new/ogre_src_v1-7-1/Samples/Common/include/ExampleFrameListener.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="EngineController.cpp" tooltip="eclipseproject/src/view/EngineController.cpp">
+<persistable path="/eclipseproject/src/view/EngineController.cpp"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="EngineController.h" tooltip="eclipseproject/include/EngineController.h">
+<persistable path="/eclipseproject/include/EngineController.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="CommandController.h" tooltip="eclipseproject/include/CommandController.h">
+<persistable path="/eclipseproject/include/CommandController.h"/>
+</file>
+</mruList>
+</workbench>

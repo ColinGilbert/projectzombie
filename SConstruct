@@ -33,7 +33,7 @@ env.Append( LIBDIR = Split(libpath))
 env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
-env.Append( CPPFLAGS = ['-o2'])
+env.Append( CPPFLAGS = ['-o3 -Os'])
 
 
 print "CCCOM is: ", env['CCCOM']
