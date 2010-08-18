@@ -8,11 +8,6 @@ import os
 
 HOME = os.environ['HOME']
 ATISTREAMSDKROOT = os.environ['ATISTREAMSDKROOT']
-print "Home is: ", HOME
-print "ATISTREAMSDKROOT: ", ATISTREAMSDKROOT
-#OGRE_PATH = HOME+"projects/ogre_new/ogre_src_v1-7-1/"
-#directories
-#OGRE_INCLUDE = OGRE_PATH + "OgreMain/include/ "+OGRE_PATH+" #note, manually entering directory names for now. 
 
 PRJZ_HOME = HOME+"/projects/prjz_new/projectzombie/"
 OGRE_INCLUDE = "/usr/local/include/OGRE/ /usr/local/include/OGRE/Terrain/"
@@ -22,7 +17,6 @@ includes = OGRE_INCLUDE + " /usr/include/ /usr/local/include/ "+ATISTREAMSDKROOT
 OGRE_LIB = "/usr/local/lib/OGRE/"
 libpath = OGRE_LIB + " /usr/lib/ /usr/local/lib/ "+ATISTREAMSDKROOT+"/lib/x86/" 
 libs = "OgreMain OgreTerrain OgrePaging OgreRTShaderSystem OIS OpenCL" 
-print "Split includes: ", Split(includes)
 
 env = Environment()
 
@@ -34,18 +28,8 @@ env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
 env.Append( CPPFLAGS = ['-o2'])
-
-
-print "CCCOM is: ", env['CCCOM']
-print "CXXCOM ", env['CXXCOM']
-print "CC is:", env.subst('$CC')
-print "_CCCOMCOM", env['_CCCOMCOM']
-print "CPPPATH:", env.subst('$CPPPATH')
-print "CPPFLAGS: ", env.subst('$CCFLAGS')
-print "chaning CXXCOM "
 env['CXXCOM'] = "$CXX $_CCCOMCOM -o $TARGET -c $CXXFLAGS $CCFLAGS $SOURCES"
 
 
 
 env.SConscript('src/SConscript', exports='env', variant_dir='build/', src_dir='src/', duplicate=0)
-#env.SConscript('src/SConscript', exports='env')
