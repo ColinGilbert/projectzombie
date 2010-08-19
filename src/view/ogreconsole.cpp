@@ -49,8 +49,8 @@ void OgreConsole::init(Ogre::Root *root){
     textbox->setCaption("hello");
     textbox->setMetricsMode(GMM_RELATIVE);
     textbox->setPosition(0,0);
-    textbox->setParameter("font_name","Console");
-    //textbox->setParameter("font_name","StarWars");
+    //textbox->setParameter("font_name","bluehigh.ttf");
+    textbox->setParameter("font_name","StarWars");
     textbox->setParameter("colour_top","1 1 1");
     textbox->setParameter("colour_bottom","1 1 1");
     textbox->setParameter("char_height","0.03");

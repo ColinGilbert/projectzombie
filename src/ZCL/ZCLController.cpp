@@ -27,7 +27,7 @@ using namespace ZGame::ZCL;
 extern ZGame::World::WorldScale WSCALE;
 
 ZCLController::ZCLController() : _entsDim(0), _numOfEnts(0), _entsBufLen(0), _entsPosBuf(0), _entsOrientBuf(0), _entsModeBuf(0),
-    _mapBufLen(0), _gradMap(0), _contourMap(0), _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(false), _iterCount(0),_loopI(0)
+    _mapBufLen(0), _gradMap(0), _contourMap(0), _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(true), _iterCount(0),_loopI(0)
 {
 }
 
@@ -120,7 +120,7 @@ void
     if(_useGPU)
     {
         _context = cl::Context(CL_DEVICE_TYPE_GPU, cprops, 0, 0, &err);  
-        dId = 1;
+        dId = 0;
     }
     else
     {
@@ -361,6 +361,7 @@ bool
         //read back the buffer. Going to be slow.
         _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
         _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
+	_queue.enqueueReadBuffer(_entsVelCL, true, 0, _entsBufLen, _entsVelBuf);
     }
     _queue.finish();
 

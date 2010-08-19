@@ -7,8 +7,8 @@ get something working on Linux.
 import os
 
 HOME = os.environ['HOME']
-ATISTREAMSDKROOT = os.environ['ATISTREAMSDKROOT']
-
+#ATISTREAMSDKROOT = os.environ['ATISTREAMSDKROOT']
+ATISTREAMSDKROOT = HOME
 PRJZ_HOME = HOME+"/projects/prjz_new/projectzombie/"
 OGRE_INCLUDE = "/usr/local/include/OGRE/ /usr/local/include/OGRE/Terrain/"
 RAKNET_HOME = HOME+"/software/raknet_new/"
