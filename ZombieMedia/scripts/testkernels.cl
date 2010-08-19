@@ -45,7 +45,7 @@ ZAxisOfMatrixFromQuaternion(float4* quat, float4* zaxis )
  *\Note: One must flip the quaternion from x,y,z,w to w,x,y,z when writing out, as the host program expects it in that format.
  */
 void 
-UpdateEntity(float4* pos, float4* orient, float4* velocity, float* mode, 
+UpdateEntity(float4* pos, float4* orient, float4* velocity, int* mode,
 	     __global float* entsPosPtr, __global float* entsOrientPtr, __global float* entsVelPtr,
 	     __global uchar* entsModePtr, size_t offset,
 	     const float scale, //This is unit per meter scale.
@@ -56,51 +56,45 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, float* mode,
   
   //float TC = 200.0f; //thrust
   float4 TDir = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  float4 VNew = (float4)(0.0f, 0.0f, 10.0f, 0.0f);
-  //float4 SNew = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 F = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 A = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  float c = 0.3f; //velocity damping term.
-  float mass = 7.4051f / scale;
-  //float mass = 1.0f;
+  const float c = 1.0f; //velocity damping term.
+  //const float mass = 7.4051f / scale;
+  const float mass = 1.0f;
   float4 k1 = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 k2 = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 entZAxis = (float4)(0.0f, 0.0f, 1.0f, 0.0f);
-  float4 oldVel;
+  const float oldThrust = (*velocity).w;
+  (*velocity).w = 0.0f;
+  float thrust = oldThrust;
   ZAxisOfMatrixFromQuaternion(orient, &entZAxis); //Get the ZAxis from orientation quaternion.
   
-  oldVel = *velocity;
+
   if(impulse)
     {
-      
-      *velocity = 800.0f;
+      thrust = 800.0f;
     }
   
-  TDir = entZAxis * (*velocity).x;  
-  *velocity = oldVel;
+  TDir = entZAxis * thrust;
+
   F = TDir - (*velocity * c);
   A = F * (1.0f / mass);
   k1 = A * dt;
 
-  F = (TDir - ((*velocity + k1) * c));
+  F = TDir - ((*velocity + k1) * c);
   A = F * (1.0f / mass);
   k2 = A * dt;
 
-  VNew = *velocity + (k1 + k2) / 2.0f;
-  
-  //const float dtt = 0.16f;
-  *pos = *pos + TDir * dt;
-  //*pos = *pos + VNew * dt;
-  //*velocity = VNew;
-  
-  
+  *velocity = (*velocity) + (k1 + k2) / 2.0f;
+  *pos = *pos + *velocity * dt;
+
   //Output
-  (*pos).w = *mode;
+  (*pos).w = convert_float(*mode);
+  (*velocity).w = oldThrust; //restore thrust.
   vstore4(*pos, offset, entsPosPtr);
   (*orient).xyzw = (*orient).wxyz; //flip to the format expected by host program.
   vstore4(*orient, offset, entsOrientPtr);
   vstore4(*velocity, offset, entsVelPtr);
-  //entsModePtr[offset] = *mode;
 }
 
 __kernel void 
@@ -117,22 +111,21 @@ updateEnt(__constant float* gradIn,
 	  const float dt //delta time in seconds
 	  )
 {
-  const float CLIMB = 1.0f;
-  const float DESCEND = 2.0f;
-  const float EXIT_DESCEND = 3.0f;
+  const int CLIMB = 1.0f;
+  const int DESCEND = 2.0f;
+  const int EXIT_DESCEND = 3.0f;
   int4 targetCell; 
   float4 dir;
   float4 gradAtCell;
   float dpp;
   float4 YAXIS = (float4)(0.0f, 1.0f, 0.0f, 1.0f);
   const float DPPCMP1 = -0.0001f;
-  const float DPPCMP2 = 0.0f;
   bool impulse = false;
   //Get the operating id for the entity that we are going to work with.
   size_t tid = get_global_id(0); //We have four floats per entities.
   
   float4 worldPos = vload4(tid, entsPos);
-  float mode = worldPos.w;
+  int mode = convert_int(worldPos.w);
   //mode = DESCEND;
   
   float4 worldOrient = vload4(tid, entsOrient); 
