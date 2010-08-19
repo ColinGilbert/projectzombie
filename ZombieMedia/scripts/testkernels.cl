@@ -1,4 +1,4 @@
-#pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
+//#pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 
 /**
  *This function will convert the given quaternion to a quaternion represented
@@ -58,9 +58,10 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, int* mode,
   float4 TDir = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 F = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 A = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  const float c = 1.0f; //velocity damping term.
-  //const float mass = 7.4051f / scale;
+  const float c = 0.9f; //velocity damping term.
+  //const float mass = 1.0f / scale;
   const float mass = 1.0f;
+  //const float c = 1.0f;
   float4 k1 = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 k2 = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   float4 entZAxis = (float4)(0.0f, 0.0f, 1.0f, 0.0f);
@@ -68,16 +69,17 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, int* mode,
   (*velocity).w = 0.0f;
   float thrust = oldThrust;
   ZAxisOfMatrixFromQuaternion(orient, &entZAxis); //Get the ZAxis from orientation quaternion.
-  
+  const float4 gravity = (float4)(0.0f, -9.8f, 0.0f, 0.0f) / scale;
 
   if(impulse)
     {
-      thrust = 800.0f;
+      thrust = 350.0f;
     }
   
   TDir = entZAxis * thrust;
 
   F = TDir - (*velocity * c);
+  F = F + gravity;
   A = F * (1.0f / mass);
   k1 = A * dt;
 
@@ -87,6 +89,7 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, int* mode,
 
   *velocity = (*velocity) + (k1 + k2) / 2.0f;
   *pos = *pos + *velocity * dt;
+  //*pos = *pos + TDir * dt;
 
   //Output
   (*pos).w = convert_float(*mode);

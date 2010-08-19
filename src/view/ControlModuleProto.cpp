@@ -21,7 +21,7 @@ namespace ZGame
     using namespace std;
     using namespace Ogre;
 
-    ControlModuleProto::ControlModuleProto() :_transVector(Ogre::Vector3::ZERO),_dTrans(0.01f),_transFactor(0.05f),_rotYaw(0.0f),
+    ControlModuleProto::ControlModuleProto() :_transVector(800.0f, 0.0f, 800.0f),_dTrans(800.0f),_transFactor(10.0),_rotYaw(0.0f),
         _rotPitch(0.0f),_rotFactor(0.07f),
         _cam(EngineView::getSingleton().getCurrentCamera()),
         _lookAtNode(0),
@@ -64,12 +64,10 @@ namespace ZGame
         if(evt.key == OIS::KC_W)
         {
             _transVector.z -= _dTrans;
-            toggleMode(forw);
         }
         else if(evt.key == OIS::KC_S)
         {
             _transVector.z += _dTrans;
-            toggleMode(backw);
         }
         else if(evt.key == OIS::KC_Q)
         {
@@ -112,32 +110,26 @@ namespace ZGame
         if(evt.key == OIS::KC_W)
         {
             _transVector.z = 0;
-            toggleMode(forw);
         }
         else if(evt.key == OIS::KC_S)
         {
             _transVector.z = 0;
-            toggleMode(backw);
         }
         else if(evt.key == OIS::KC_A)
         {
             _transVector.x = 0;
-            toggleMode(left);
         }
         else if(evt.key == OIS::KC_D)
         {
             _transVector.x = 0;
-            toggleMode(right);
         }
         else if(evt.key == OIS::KC_UP)
         {
             _transVector.y = 0;
-            toggleMode(up);
         }
         else if(evt.key == OIS::KC_DOWN)
         {
             _transVector.y = 0;
-            toggleMode(down);
         }
         else if(evt.key == OIS::KC_L)
         {
@@ -198,7 +190,7 @@ namespace ZGame
         }
         else
         {
-            _cam->moveRelative(_transVector);
+            _cam->moveRelative(_transVector*evt.timeSinceLastEvent);
 
         }
         return true;

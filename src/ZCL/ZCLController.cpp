@@ -120,7 +120,7 @@ void
     if(_useGPU)
     {
         _context = cl::Context(CL_DEVICE_TYPE_GPU, cprops, 0, 0, &err);  
-        dId = 0;
+        dId = 1;
     }
     else
     {
@@ -131,18 +131,6 @@ void
     _devices = _context.getInfo<CL_CONTEXT_DEVICES>();
     printDeviceInfo(_devices);
     
-    /*
-    _devices.clear(); //be sure to clear devices here. Note: We are doing this so we can get a look at GPU. We shouldn't be doing it this way normally.
-
-    cout << "Creating OpenCL CPU context." << endl;
-
-
-    if(_devices.size() < 1)
-    throw (std::exception("ZCLController::init() failed: no devices found!"));
-    cout << "Number of devices in system: " << _devices.size() << endl;
-
-    printDeviceInfo(_devices); //output CPU devices.
-    */
     cout << "Loading Kernels." << endl;
     string sourceStr = FileToString(configName);
     cl::Program::Sources sources(1, std::make_pair(sourceStr.c_str(), sourceStr.length()));
@@ -152,6 +140,10 @@ void
     try
     {
         _chkErr(err, "Program::Build");
+        //query build info.
+        std::string buildLog = _program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(_devices[dId]);
+        cout << "Build Log: " << endl;
+        cout << buildLog << endl;
     }catch(std::exception e)
     {
         //query build info.
@@ -297,18 +289,22 @@ void
     _entsBufLen = bufferLen;
     //Initialize the OpenCL buffers by using host memory ptr.
     //Position
-    _entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE , bufferLen, 
+    //_entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE , bufferLen,
+    _entsPosCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE , bufferLen,
         _entsPosBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities position buffer.");
     //Orientation
-    _entsOrientCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
+    //_entsOrientCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
+    _entsOrientCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
         _entsOrientBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities orientation buffer.");
     //Velocity
-    _entsVelCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
+    //_entsVelCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
+    _entsVelCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
         _entsVelBuf, &err);
     //Mode buffer
-    _entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char),
+    //_entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char),
+    _entsModeCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char),
         _entsModeBuf, &err);
     _chkErr(err, "Buffer::Buffer(): entities mode buffer."); 
 }
