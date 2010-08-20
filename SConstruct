@@ -13,9 +13,11 @@ PRJZ_HOME = HOME+"/projects/prjz_new/projectzombie/"
 OGRE_INCLUDE = "/usr/local/include/OGRE/ /usr/local/include/OGRE/Terrain/"
 RAKNET_HOME = HOME+"/software/raknet_new/"
 RAKNET_PATH = RAKNET_HOME
-includes = OGRE_INCLUDE + " /usr/include/ /usr/local/include/ "+ATISTREAMSDKROOT+"/include/ "+PRJZ_HOME+"include/" + " /usr/include/CL/ "+RAKNET_HOME+"Source"
+includes = OGRE_INCLUDE + " /usr/include/ /usr/local/include/ "+ATISTREAMSDKROOT+"/include/ "+PRJZ_HOME+"include/ "+RAKNET_HOME+"Source"
 OGRE_LIB = "/usr/local/lib/OGRE/"
-libpath = OGRE_LIB + " /usr/lib/ /usr/local/lib/ "+ATISTREAMSDKROOT+"/lib/x86/" 
+#libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/lib/ /usr/local/lib/ "
+libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/local/lib/ "
+
 libs = "OgreMain OgreTerrain OgrePaging OgreRTShaderSystem OIS OpenCL" 
 
 env = Environment()

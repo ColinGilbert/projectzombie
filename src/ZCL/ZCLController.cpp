@@ -110,7 +110,24 @@ void
     cl::Platform::get(&allPlatforms);
     if(!(allPlatforms.size() > 0))
         throw (Exception("ZCLController::init() failed: No platforms found!"));
-    targetPlatform = allPlatforms[0];
+    int platformIdx = 0;
+    std::string platformVendor;
+    cout << "number of platforms: " << allPlatforms.size() << endl;
+    for(int i=0; i < allPlatforms.size(); i++)
+      {
+	allPlatforms[i].getInfo((cl_platform_info)CL_PLATFORM_VENDOR, 
+				&platformVendor);
+	if(platformVendor.compare("Advanced Micro Devices, Inc.") == 0 && !_useGPU)
+	  {
+	    platformIdx = i;
+	  }
+	else
+	  platformIdx = i;
+      }
+    allPlatforms[platformIdx].getInfo((cl_platform_info)CL_PLATFORM_VENDOR, 
+			     &platformVendor);
+    cout << "Using platform vendor: " << platformVendor << endl;
+    targetPlatform = allPlatforms[platformIdx];
 
     cout << "Creating OpenCL GPU context." << endl;
     cl_context_properties cprops[3] = { CL_CONTEXT_PLATFORM, (cl_context_properties)targetPlatform(), 0};
@@ -120,7 +137,7 @@ void
     if(_useGPU)
     {
         _context = cl::Context(CL_DEVICE_TYPE_GPU, cprops, 0, 0, &err);  
-        dId = 1;
+        dId = 0;
     }
     else
     {
@@ -352,13 +369,13 @@ bool
     _kernel[0].setArg(_argI, evt.timeSinceLastFrame); //update dt.
     enqueueKernel(false); //run the kernels
     //}
-    if(_useGPU)
-    {
+    //if(_useGPU)
+    //{
         //read back the buffer. Going to be slow.
         _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
         _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
 	_queue.enqueueReadBuffer(_entsVelCL, true, 0, _entsBufLen, _entsVelBuf);
-    }
+	//}
     _queue.finish();
 
     _counter.Stop();

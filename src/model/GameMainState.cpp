@@ -206,7 +206,7 @@ void
 GameMainState::createCharacters()
 {
     using Entities::EntitiesBuilder;
-    //int numOfEntities = 64;
+    //int numOfEntities = 80;
     int numOfEntities = 4800;
 
     EntitiesBuilder::build(_entMgr.get(), numOfEntities);
