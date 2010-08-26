@@ -71,7 +71,8 @@ int main(int argc, char** argv)
         cout << "Command Controller started." << endl;
         try
         {
-            EntitiesBuilder::build(entMgr, numOfEnts);
+            EntitiesBuilder builder;
+            builder.build(entMgr);
         }catch(CmdException e)
         {
             cout << "Command Exception caught. Ignoring it: " << e.what() << endl; //we can ignore CmdExceptions. Since not all commands are implemented in this tester.
@@ -84,7 +85,7 @@ int main(int argc, char** argv)
         cout << "World map loaded!" << endl;
 
         ZCLController ctrl;
-        ctrl.init("../scripts/testkernels.cl", entMgr->getEntBuffers(), worldMap);
+        ctrl.init("../scripts/testkernels.cl");
         cout << "Running kernel" << endl;
         ctrl.onUpdate();
         //cout << "Print time: " << endl;
@@ -92,8 +93,6 @@ int main(int argc, char** argv)
         //cout << "Finished running kernel" << endl;
 
         //Test freeing memeory.
-
-
     }catch(std::exception &e)
     {
         cout << "exception caught: " << e.what() << endl;

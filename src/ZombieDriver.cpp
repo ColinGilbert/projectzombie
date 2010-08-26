@@ -51,7 +51,6 @@ extern "C" {
         //signal(SIGINT,clean_up_func);
 
         cout << "About to new EngineController" << endl;
-
         //#if
         if(argc == 1) //run client
             engineControl = new ZGame::EngineController();
@@ -91,6 +90,7 @@ extern "C" {
         }
 
         delete engineControl;
+        cout << "Project Zombie done." << endl;
         return 0;
     }
 #ifdef __cplusplus

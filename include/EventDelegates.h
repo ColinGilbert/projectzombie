@@ -18,16 +18,16 @@ namespace ZGame
     {
         using namespace fastdelegate;
         typedef FastDelegate<bool(const OIS::MouseEvent&) > ZMouseMoveEvt;
-        typedef FastDelegate<bool(const OIS::MouseEvent&, const OIS::MouseButtonID) > ZMouseUpEvt;
-        typedef FastDelegate<bool(const OIS::MouseEvent&, const OIS::MouseButtonID) > ZMouseDownEvt;
+        typedef FastDelegate<bool(const OIS::MouseEvent&, const OIS::MouseButtonID) > ZMouseEvt;
+        //typedef FastDelegate<bool(const OIS::MouseEvent&, const OIS::MouseButtonID) > ZMouseDownEvt;
         typedef FastDelegate<bool(const OIS::KeyEvent&) > ZKeyUpEvt;
         typedef FastDelegate<bool(const OIS::KeyEvent&) > ZKeyDownEvt;
 
         struct MouseEvtObserver
         {
             ZMouseMoveEvt mme;
-            ZMouseUpEvt mue;
-            ZMouseDownEvt mde;
+            ZMouseEvt mue;
+            ZMouseEvt mde;
         };
 
         struct KeyboardEvtObserver

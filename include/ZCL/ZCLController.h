@@ -37,7 +37,8 @@ namespace ZGame
             virtual ~ZCLController();
             /** \brief This method will initialize the OpenCL controller.**/
             void
-                init(std::string configName, Entities::ZEntityBuffers* entBufs, World::WorldMap* worldMap);
+                init(std::string configName);
+            void prepare(Entities::ZEntityBuffers* entBufs, World::WorldMap* worldMap);
             bool onUpdate(const Ogre::FrameEvent &evt);
             bool onUpdate();
             bool onInit(void){ return true;}
@@ -51,6 +52,7 @@ namespace ZGame
                 orientBuf = _entsOrientBuf;
                 velocityBuf = _entsVelBuf;
             }
+
 
         private:
             /** \brief This helper method will initialize the OpenCL context.*/

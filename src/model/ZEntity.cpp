@@ -47,10 +47,11 @@ ZEntity::getEntityName() const
 *
 */
 bool
-ZEntity::onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient)
+ZEntity::onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient, const Ogre::Vector3 goal)
 {
     _worldPos = pos;   
     _worldOrient = orient;
+    _goal = goal;
     return true;
 }
 
@@ -58,6 +59,15 @@ ZEntity::onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient)
 *This function is called for on write events--meaning,
 *
 */
+bool
+ZEntity::onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient, Ogre::Vector3 &goal) const
+{
+    pos = _worldPos;
+    orient = _worldOrient;
+    goal = _goal;
+    return true;
+}
+
 bool
 ZEntity::onWrite(Ogre::Vector3 &pos, Ogre::Quaternion &orient) const
 {

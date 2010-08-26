@@ -340,6 +340,7 @@ namespace ZGame
         {
             cout << "In NetClientController::removeAllEntities" << endl;
             NetClientController::netEntManagerClient.clearAll();
+            cout << "Done NetClientController::removeAllEntities" << endl;
         }
 
 

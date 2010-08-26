@@ -75,7 +75,7 @@ void
     renderInstance.push_back(batch);
 
     //destroy the entity. We no longer need it. It's been "instanced" or cloned now.
-    //_scnMgr->destroyEntity(ent);
+    _scnMgr->destroyEntity(ent);
 }
 
 /**

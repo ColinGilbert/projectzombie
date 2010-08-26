@@ -49,6 +49,8 @@ namespace ZGame
             /** \brief This method will update the render entities with the passed in buffers.**/
             void
                 updateRenderEntities(const float* posBuf, const float* orientBuf, const float* velocityBuf, const float &dt);
+            void
+              resetRenderEntities();
         protected:
         private:
             //typedef vector<Ogre::SceneNode*> ENT_NODES_VEC;

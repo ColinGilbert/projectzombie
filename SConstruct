@@ -13,7 +13,7 @@ PRJZ_HOME = HOME+"/projects/prjz_new/projectzombie/"
 OGRE_INCLUDE = "/usr/local/include/OGRE/ /usr/local/include/OGRE/Terrain/"
 RAKNET_HOME = HOME+"/software/raknet_new/"
 RAKNET_PATH = RAKNET_HOME
-includes = OGRE_INCLUDE + " /usr/include/ /usr/local/include/ "+ATISTREAMSDKROOT+"/include/ "+PRJZ_HOME+"include/ "+RAKNET_HOME+"Source"
+includes = OGRE_INCLUDE + " /usr/include/ /usr/include/c++/4.4/ /usr/local/include/ "+ATISTREAMSDKROOT+"/include/ "+PRJZ_HOME+"include/ "+RAKNET_HOME+"Source"
 OGRE_LIB = "/usr/local/lib/OGRE/"
 #libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/lib/ /usr/local/lib/ "
 libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/local/lib/ "
@@ -29,7 +29,8 @@ env.Append( LIBDIR = Split(libpath))
 env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
-env.Append( CPPFLAGS = ['-o2'])
+env.Append( CPPFLAGS = ['-g'])
+#env.Append( CPPFLAGS = ['-o2 -Wall'])
 env['CXXCOM'] = "$CXX $_CCCOMCOM -o $TARGET -c $CXXFLAGS $CCFLAGS $SOURCES"
 
 

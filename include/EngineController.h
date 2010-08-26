@@ -13,6 +13,8 @@
 #include <vector>
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include <SdkTrays.h>
+
 #include <boost/thread/thread.hpp>
 #include <boost/thread/xtime.hpp>
 #include <boost/shared_ptr.hpp>
@@ -36,7 +38,10 @@ namespace ZGame
   class KeyboardPump;
   class MousePump;
   class CommandController; //This is a service that should exist for all permuation of the Controller.
-  class EngineController : public Ogre::FrameListener, public MainController
+
+
+
+  class EngineController : public Ogre::FrameListener, public MainController, public OgreBites::SdkTrayListener
   {
   public:
     EngineController();
@@ -98,7 +103,7 @@ namespace ZGame
     std::auto_ptr<MousePump> _mousePump;
 
     void
-    loadAssets();
+    loadAssets(Ogre::String filename);
     void
     chooseSceneManager();
 
@@ -119,6 +124,7 @@ namespace ZGame
   private:
 
     auto_ptr<ZGame::Networking::NetClientController> _netClient;
+    auto_ptr<OgreBites::SdkTrayManager> _sdkTrayMgr;
 
     Ogre::String _listenerID;
     bool _stillRunning;
@@ -133,6 +139,10 @@ namespace ZGame
 
     void
     updateStats();
+
+    void
+    loadSdkTrays();
+
 
     int _statsClockVariable;
 

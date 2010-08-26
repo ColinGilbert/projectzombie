@@ -34,6 +34,7 @@ namespace ZGame
     class ControlModuleProto;
     class WhiteNoiseView;
     class GPUEntsControl;
+    class ZWorkspace;
     namespace ZCL
     {
         class ZCLController; 
@@ -50,6 +51,7 @@ namespace ZGame
     {
         class EntitiesManager;
         class RenderEntitiesManager;
+        class EntitiesView;
     }
     using std::tr1::shared_ptr;
     class GameMainState : public ZGame::GameState
@@ -63,6 +65,10 @@ namespace ZGame
         bool onInit();
         bool onDestroy();
 
+        //Mouse events
+        bool onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+        bool onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+        bool onMouseMove(const OIS::MouseEvent &evt);
         //key events
         bool onKeyDown(const OIS::KeyEvent &evt);
         bool onKeyUp(const OIS::KeyEvent &evt);
@@ -89,9 +95,7 @@ namespace ZGame
             regKeyObsForInjection(KeyEventRegister &keyReg);
         virtual void
             regMouseObsForInjection(MouseEventRegister &mouseReg);
-        
-
-
+    private:
     private:
         auto_ptr<ZGame::World::WorldController> _worldController;
         //Utilities for call back execution of commands
@@ -99,6 +103,10 @@ namespace ZGame
         auto_ptr<Entities::EntitiesManager> _entMgr;
         auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
         auto_ptr<ZCL::ZCLController> _zclCtrl;
+        auto_ptr<Entities::EntitiesView> _entsView;
+        auto_ptr<ZWorkspace> _workspace;
+        //Graphics stuff.
+
 
     };
 }

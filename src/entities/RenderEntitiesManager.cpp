@@ -35,6 +35,18 @@ RenderEntitiesManager::~RenderEntitiesManager()
 {
 }
 
+void
+RenderEntitiesManager::resetRenderEntities()
+{
+  for(int i=0; i < _renderInstances.size(); ++i)
+    {
+      _scnMgr->destroyInstancedGeometry(_renderInstances[i]);
+      //_renderInstances[i] = 0;
+    }
+
+  _renderInstances.clear();
+}
+
 bool
     RenderEntitiesManager::createRenderEntities(ZENTITY_VEC::const_iterator begin, ZENTITY_VEC::const_iterator end, size_t numOfEnts)
 {

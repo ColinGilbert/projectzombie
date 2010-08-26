@@ -86,11 +86,7 @@ CommandController::executeCmd(const COMMAND::Command &cmd)
     {
         throw e;
     }
-    catch(std::exception e)
-    {
-        cout << "Exception in CommandController executeCmd: " << e.what() << ". Maybe you forgot to insert the actual command. Please check." << endl;
-        throw e;
-    }
+
     return NULL_MEMENTO;
 }
 

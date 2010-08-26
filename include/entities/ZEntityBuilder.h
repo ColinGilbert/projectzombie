@@ -21,10 +21,12 @@ namespace ZGame
             virtual ~EntitiesBuilder(){}
             /** \brief This method will build ZEntities through the Command and Control system.
             */
-            static bool build(EntitiesManager* mgr, int numOfEnts);
+            bool build(EntitiesManager* mgr);
             /** \brief This method will un-build the ZEntity. */
-            static bool unbuild(ZEntity* zEnt);
+            bool unbuild(ZEntity* zEnt);
         protected:
+        private:
+
 
         };
     }

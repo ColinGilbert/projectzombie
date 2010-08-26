@@ -14,14 +14,23 @@
 #define GAMESTATE_H_
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
+//
+
 using namespace std;
+
+namespace OgreBites
+{
+  class SdkTrayManager;
+}
 
 namespace ZGame
 {
   class LifeCycleRegister;
   class KeyEventRegister;
   class MouseEventRegister;
+  class GraphicsController;
+
   class GameState
   {
   public:
@@ -29,7 +38,7 @@ namespace ZGame
     ~GameState();
     void
     init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
-        MouseEventRegister &mouseReg);
+        MouseEventRegister &mouseReg, OgreBites::SdkTrayManager* tray);
   protected:
 
     GameState(); //protected constructor
@@ -45,6 +54,23 @@ namespace ZGame
     regMouseObsForInjection(MouseEventRegister &mouseReg)
     {
     }
+
+    GraphicsController*
+    getGraphicsController()
+    {
+      return _gfxCtrl.get();
+    }
+
+    OgreBites::SdkTrayManager*
+    getSdkTray()
+    {
+      return _tray;
+    }
+
+  private:
+    auto_ptr<GraphicsController> _gfxCtrl;
+    OgreBites::SdkTrayManager* _tray;
+
   };
 
 }

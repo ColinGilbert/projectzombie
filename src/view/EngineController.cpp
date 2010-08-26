@@ -33,7 +33,8 @@ namespace ZGame
   EngineController::EngineController() :
     MainController(), _stillRunning(true), _lfcPump(new LifeCyclePump()),
         _keyPump(new KeyboardPump()), _mousePump(new MousePump()),
-        _curStateInfo(0), _curGameState(0), _statsClockVariable(0)
+        _curStateInfo(0), _curGameState(0), _statsClockVariable(0),
+        _sdkTrayMgr(0)
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -105,35 +106,21 @@ namespace ZGame
             cout << batches << ": " << StringConverter::toString(stats.batchCount) << endl;
           }
         _statsClockVariable++;
-        /*
-        guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
-        guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
-        guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
-            + " " + StringConverter::toString(stats.bestFrameTime) + " ms");
-        guiWorst->setCaption(worstFps + StringConverter::toString(
-            stats.worstFPS) + " " + StringConverter::toString(
-            stats.worstFrameTime) + " ms");
-
-        OverlayElement* guiTris =
-            OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
-        guiTris->setCaption(tris + StringConverter::toString(
-            stats.triangleCount));
-
-        OverlayElement* guiBatches =
-            OverlayManager::getSingleton().getOverlayElement("Core/NumBatches");
-        guiBatches->setCaption(batches + StringConverter::toString(
-            stats.batchCount));
-
-        OverlayElement* guiDbg =
-            OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
-        //guiDbg->setCaption(mDebugText);
-         * */
-
-      }
+           }
     catch (...)
       { /* ignore */
       }
 
+  }
+
+  void
+  EngineController::loadSdkTrays()
+  {
+    using namespace Ogre;
+    using namespace OgreBites;
+    //bootstrap Sdk resources.
+    loadAssets("bootstrap.cfg");
+    _sdkTrayMgr.reset(new SdkTrayManager("ZombieTray", _window, _inController->getMouse(), 0));
   }
 
   bool
@@ -151,7 +138,7 @@ namespace ZGame
     else
       return false;
 
-    loadAssets();
+
     chooseSceneManager();
 
     Ogre::Camera* cam = createDefaultCamera();
@@ -163,11 +150,16 @@ namespace ZGame
 
     _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
 
-    Ogre::CompositorManager::getSingleton().addCompositor(vp, "Bloom");
 
-    //set logging lvl
-    //Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
+    //input
+    _inController.reset(new InputController());
+    _inController->onInit(_window);
+    injectInputSubject();
 
+    loadSdkTrays();
+    //turn off loading bar
+    _sdkTrayMgr->showLoadingBar();
+    loadAssets("resources.cfg");
     //load states
     loadStates();
 
@@ -175,10 +167,8 @@ namespace ZGame
 
     lm->logMessage(Ogre::LML_TRIVIAL, "States finished loading");
 
-    //input
-    _inController.reset(new InputController());
-    _inController->onInit(_window);
-    injectInputSubject();
+
+
     lm->logMessage(Ogre::LML_TRIVIAL, "Injected input.");
 
     _root->addFrameListener(this);
@@ -193,15 +183,14 @@ namespace ZGame
     _debugOverlay = OverlayManager::getSingleton().getByName(
         "Core/DebugOverlay");
 
-    //_debugOverlay->show();
-
-    //Ogre::Overlay* overlay = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-    //overlay->show();
-
     //Create the NetClient. Note: This is place-holder code until we get the "service" framework.
     //Everything that uses CommandController depends on Console being initialized. This is bad, need to fix this ASAP.
     //The fix should not be that hard, though. (Requires no major refactoring.)
     _netClient.reset(new ZGame::Networking::NetClientController());
+
+    _sdkTrayMgr->hideLoadingBar();
+
+
 
     return true;
   }
@@ -210,29 +199,7 @@ namespace ZGame
   EngineController::chooseSceneManager()
   {
     bool notFound = true;
-    /*
-     SceneManagerEnumerator::MetaDataIterator it = _root->getSceneManagerMetaDataIterator();
-     while(it.hasMoreElements())
-     {
-     const SceneManagerMetaData *metaData = it.getNext();
-     if(metaData->sceneTypeMask == ST_EXTERIOR_REAL_FAR &&
-     metaData->worldGeometrySupported == true &&
-     metaData->typeName == "PagingLandScapeSceneManager")
-     {
-     notFound = false;
-     break;
-     }
-     }*/
-    /*
-     if(notFound)
-     {
-     OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Could not find Paging Landscape plugin. Check if it is in plugin.cfg",
-     "chooseSceneManager");
-     }*/
     _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
-    //_scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "ProjectChaos");
-    //_scnMgr->setWorldGeometry("terrain.cfg");
-    //_scnMgr = _root->createSceneManager("PagingLandScapeSceneManager","ProjectChaos");
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
     rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
 
@@ -242,9 +209,7 @@ namespace ZGame
   EngineController::injectInputSubject()
   {
     ZGame::EVENT::KeyboardEvtObserver keyObs;
-    //keyObs.kde.bind(&ZGame::EngineController::onKeyDown, this);
     keyObs.kde.bind(this, &ZGame::EngineController::onKeyDown);
-    //keyObs.kue.bind(&ZGame::EngineController::onKeyUp, this);
     keyObs.kue.bind(this, &ZGame::EngineController::onKeyUp);
     _inController->addKeyListeners(_listenerID, keyObs);
     ZGame::EVENT::MouseEvtObserver mouseObs;
@@ -254,13 +219,13 @@ namespace ZGame
     _inController->addMouseListeners(_listenerID, mouseObs);
   }
 
+
   void
-  EngineController::loadAssets()
+  EngineController::loadAssets(Ogre::String filename)
   {
     Ogre::ConfigFile cf;
-    Ogre::String resourcePath;
-    resourcePath = "";
-    cf.load(resourcePath + "resources.cfg");
+    cf.load(filename);
+    Ogre::String resourcePath("");
     //go thourhg all sections & settings in the file
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 
@@ -291,7 +256,7 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-        updateStats();
+        //updateStats();
       }
     catch (Ogre::Exception e)
       {
@@ -299,23 +264,7 @@ namespace ZGame
       }
     return true;
   }
-  /*
-   bool
-   EngineController::frameStarted(const Ogre::FrameEvent &evt)
-   {
-   if (!_stillRunning)
-   return false;
-   try
-   {
-   _inController->run();
-   _lfcPump->updateOnUpdateObs(evt);
-   }
-   catch (Ogre::Exception e)
-   {
-   throw e;
-   }
-   return true;
-   }*/
+
   void
   EngineController::run()
   {
@@ -333,17 +282,8 @@ namespace ZGame
     try
       {
         _inController->onDestroy();
-        //CommandController::getSingleton().onDestroy();
-        //CLEAR _curStateInfo manaually. THIS clearly is a hack.
-        //The reason being you are using auto_ptr to store the current state information, which you set by
-        //getting the reference from from GameStateInfoMap;  So when destructing,
-        //the order of destruction (think auto pointer and actual object on the stack) matters. Currently
-        //_curStateInfo is being destructured (it's auto_ptr) after GameStateInfoMap is destryoed. This obviously
-        //is going to crash because it is pointing to the already destructed GameStateInfoMap. STUPID!
-        //Solution: Use shared pointer or ...but whatever you do do not put put a pointer in an auto_ptr that is pointing to
-        //some other crap (setting using & operator.)
-        //Ogre::Root* root = _root.release();
-        //delete root;
+        unloadCurrentState();
+
       }
     catch (Ogre::Exception e)
       {
@@ -368,7 +308,7 @@ namespace ZGame
     if (event.key == OIS::KC_ESCAPE)
       {
         _stillRunning = false;
-        unloadCurrentState();
+        return false;
       }
     return true;
   }
@@ -381,7 +321,7 @@ namespace ZGame
     OgreConsole* ogreConsole = CommandController::getSingleton().getConsole();
     bool consoleVis = ogreConsole->isVisible();
     //console
-    if (event.key == OIS::KC_TAB)
+    if (event.key == OIS::KC_GRAVE)
       {
         if (consoleVis)
           {
@@ -401,9 +341,15 @@ namespace ZGame
     return true;
   }
 
+
   bool
   EngineController::onMouseMove(const OIS::MouseEvent &event)
   {
+    /*
+     * Note: It is ugly to intercept trays events this way. The original plan is to have the concept of intercepting events. We need to implement
+     * that using Delegates. This way, we can filter and intercept events. Bascially we need to better manage this. Perhaps by having a pump at the game state
+     * level and implement a handler which wraps the pumps and is reactive to events.
+     */
     _mousePump->updateMouseMoveEvt(event);
     return true;
   }
@@ -412,7 +358,7 @@ namespace ZGame
   EngineController::onMouseDown(const OIS::MouseEvent &event,
       const OIS::MouseButtonID id)
   {
-    _mousePump->updateMouseDownEvt(event, id);
+        _mousePump->updateMouseDownEvt(event, id);
     return true;
   }
 
@@ -487,11 +433,16 @@ namespace ZGame
   void
   EngineController::unloadCurrentState()
   {
+    cout << "-------------------Unloading current state-----------------" << endl;
     _lfcPump->updateOnDestroyObs();
     _lfcPump->removeAllObs();
+    cout << "All observers from life cycle pump removed." << endl;
     _keyPump->removeAllObs();
+    cout << "All observers from key pump removed." << endl;
     _mousePump->removeAllObs();
+    cout << "All observers from mouse pump removed." << endl;
     _curGameState.reset(0);
+    cout << "--------------------------------------------------------------" << endl;
   }
   /**
    * This class realizes the current state. What it does is load the data pointed to by current state meta data.
@@ -535,7 +486,7 @@ namespace ZGame
         KeyEventRegister keyReg;
         MouseEventRegister mouseReg;
 
-        _curGameState->init(lfcReg, keyReg, mouseReg);
+        _curGameState->init(lfcReg, keyReg, mouseReg, _sdkTrayMgr.get());
 
         //We manually register the net client for now. We do this
         //since we have not implemented Stateful states. The original

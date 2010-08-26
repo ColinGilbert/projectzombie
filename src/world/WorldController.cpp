@@ -49,6 +49,7 @@ bool WorldController::onDestroy()
     cout << "WorldController::onDestroy called." << endl;
     cout << "Deleting WorldMap." << endl;
     delete _worldMap;
+    cout << "WorldController::onDestroy done." << endl;
     return true;
 }
 
@@ -165,10 +166,11 @@ void
     //defaultimp.layerList[0].textureNames.push_back("tron_detail.dds");
     defaultimp.layerList[0].textureNames.push_back("tron2_diffuse.dds");
     defaultimp.layerList[0].textureNames.push_back("tron2_normal.dds");
+    /*
     defaultimp.layerList[1].worldSize = 1000;
     defaultimp.layerList[1].textureNames.push_back("tron_diffuse.dds");
     defaultimp.layerList[1].textureNames.push_back("tron_normal.dds");
-    
+    */
 }
 
 void

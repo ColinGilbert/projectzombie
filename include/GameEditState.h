@@ -13,7 +13,7 @@ using namespace std;
 #include <Ogre.h>
 #include <OIS/OIS.h>
 #include "GameState.h"
-
+#include <boost/shared_ptr.hpp>
 
 namespace ZGame
 {
@@ -37,8 +37,8 @@ public:
   bool onKeyDown(const OIS::KeyEvent &evt);
 
 protected:
-  boost::shared_ptr<GameEditView> _editView;
 
+  boost::shared_ptr<GameEditView> _editView;
   virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
   virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
 };

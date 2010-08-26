@@ -26,11 +26,11 @@ namespace ZGame
     void removeAllObs();
   protected:
       typedef std::vector<ZGame::EVENT::ZMouseMoveEvt>::iterator MoveObsItr;
-      typedef std::vector<ZGame::EVENT::ZMouseUpEvt>::iterator UpObsItr;
-      typedef std::vector<ZGame::EVENT::ZMouseDownEvt>::iterator DownObsItr;
+      typedef std::vector<ZGame::EVENT::ZMouseEvt>::iterator UpObsItr;
+      typedef std::vector<ZGame::EVENT::ZMouseEvt>::iterator DownObsItr;
       std::vector<ZGame::EVENT::ZMouseMoveEvt> _moveObs;
-      std::vector<ZGame::EVENT::ZMouseUpEvt> _upObs;
-      std::vector<ZGame::EVENT::ZMouseDownEvt> _downObs;
+      std::vector<ZGame::EVENT::ZMouseEvt> _upObs;
+      std::vector<ZGame::EVENT::ZMouseEvt> _downObs;
 
   };
 
