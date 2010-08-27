@@ -83,6 +83,12 @@ ZWorkspace::buildGroups()
   _zclCtrl->prepare(_entMgr->getEntBuffers(), _worldCtrl->getWorldMap());
 }
 
+void
+ZWorkspace::updateGroupGoals()
+{
+  _entMgr->updateGoalsBuffer();
+}
+
 
 
 

@@ -35,6 +35,8 @@ namespace ZGame
 
     void
     buildGroups();
+    void
+    updateGroupGoals();
 
     void
     resetAll();

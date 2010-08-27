@@ -95,6 +95,8 @@ namespace ZGame
             cl::Buffer _entsModeCL;
             cl::Buffer _gradCL;
             cl::Buffer _contourCL;
+            cl::Buffer _entsGoalsCL;
+            cl::Buffer _entsStoreOneCL;
             size_t _entsDim; //The dimension of vector per entity. This is used as stride into flat 1D buffer.
             size_t _numOfEnts; 
             size_t _entsBufLen;
@@ -102,6 +104,8 @@ namespace ZGame
             Ogre::Real* _entsOrientBuf;
             Ogre::Real* _entsVelBuf;
             Ogre::uchar* _entsModeBuf;
+            Ogre::Real* _entsGoalsBuf;
+            Ogre::Real* _entsStoreOneBuf;
             std::vector<size_t> _mapShape;
             size_t _mapBufLen;
             Ogre::Real* _gradMap;

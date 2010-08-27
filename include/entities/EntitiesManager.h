@@ -14,18 +14,6 @@ using std::vector;
 namespace ZGame
 {
 
-  /*
-   * NOTE: The reason that we are passing in world controller and ZCLController is because we haven't finished CommandController's Service Manager. The create entity commands need these.
-   */
-  namespace ZCL
-  {
-  class ZCLController;
-  }
-  namespace World
-  {
-    class WorldController;
-  }
-
   namespace Entities
   {
     class ZEntity;
@@ -44,15 +32,28 @@ namespace ZGame
       Ogre::Real* worldOrient;
       Ogre::Real* velocity;
       Ogre::Real* goals;
+      Ogre::Real* storeone;
+
 
       Ogre::uchar* mode;
       void
       clear()
       {
-        delete[] worldPos;
-        delete[] worldOrient;
-        delete[] mode;
-        delete[] goals;
+        if(worldPos)
+          delete[] worldPos;
+        worldPos = 0;
+        if(worldOrient)
+          delete[] worldOrient;
+        worldOrient = 0;
+        if(mode)
+          delete[] mode;
+        mode = 0;
+        if(goals)
+          delete[] goals;
+        if(storeone)
+          delete[] storeone;
+        storeone = 0;
+        goals = 0;
         numOfEnts = 0;
       }
     };
@@ -108,6 +109,11 @@ namespace ZGame
         return &_ents;
       }
 
+      void
+      updateGoalsBuffer();
+
+
+
       EntitiesManager*
       getManager()
       {
@@ -152,18 +158,6 @@ namespace ZGame
       void
       decreaseNumOfEntitiesPerGroup();
 
-      ZCL::ZCLController*
-      getZCLController()
-      {
-        return _zclCtrl;
-      }
-
-      World::WorldController*
-      getWorldController()
-      {
-        return _worldCtrl;
-      }
-
     protected:
     private:
       static int _KEY;
@@ -175,8 +169,6 @@ namespace ZGame
       size_t _numPerGroup;
       size_t _increaseByMultiplier;
       std::vector<EntitiesGroup*> _groups;
-      World::WorldController* _worldCtrl;
-      ZCL::ZCLController* _zclCtrl;
 
       void
       _getNewKey(Entities::ZENT_KEY &key);

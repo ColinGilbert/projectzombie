@@ -87,7 +87,7 @@ EntitiesMenu::EntitiesMenu(ZWorkspace* workspace) :
 
 EntitiesCreateMenu::EntitiesCreateMenu(ZWorkspace* workspace) :
   EntitiesMenu(workspace), _adjustCenterMode(false), _curIcon(0), _ground(Ogre::Vector3::UNIT_Y, 0.0f), _groupSelectMenu(0), _centerGroupButton(0),
-      _createButton(0), _resetButton(0), _perGroupSlider(0), _groupRadiusSlider(0)
+      _createButton(0), _updateButton(0), _resetButton(0), _perGroupSlider(0), _groupRadiusSlider(0)
 {
   using namespace OgreBites;
   const Ogre::Real width = 150.0f;
@@ -216,6 +216,8 @@ EntitiesCreateMenu::_resetAll()
   _perGroupSlider = 0;
   _tray->destroyWidget(_groupRadiusSlider);
   _groupRadiusSlider = 0;
+  _tray->destroyWidget(_updateButton);
+  _updateButton = 0;
 
 }
 
@@ -225,8 +227,16 @@ EntitiesCreateMenu::_createGroups()
   _workspace->buildGroups();
   if (_resetButton == 0)
     _resetButton = _tray->createButton(OgreBites::TL_BOTTOMLEFT, "ENTRESETBUTTON", "Reset", 150.0f);
+  if (_updateButton == 0)
+    _updateButton = _tray->createButton(OgreBites::TL_BOTTOMRIGHT, "ENTUPDATEBUTTON", "Update", 150.0f);
   _tray->destroyWidget(_createButton);
   _createButton = 0;
+}
+
+void
+EntitiesCreateMenu::_updateGroups()
+{
+  _workspace->updateGroupGoals();
 }
 
 bool
@@ -260,6 +270,13 @@ EntitiesCreateMenu::handleButton(OgreBites::Button* button)
           if (bName.compare(_resetButton->getName()) == 0)
             {
               _resetAll();
+            }
+        }
+      if (_updateButton != 0)
+        {
+          if (bName.compare(_updateButton->getName()) == 0)
+            {
+              _updateGroups();
             }
         }
     }

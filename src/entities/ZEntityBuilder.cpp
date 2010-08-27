@@ -73,6 +73,7 @@ EntitiesBuilder::build(EntitiesManager* entMgr)
         offset.z = vecOnSphere[1] * radius; //scale by radius
         ZEntity* ent = entMgr->createZEntity();
         pos = center + offset;
+
         ent->onRead(pos, orient, center);
     }
     

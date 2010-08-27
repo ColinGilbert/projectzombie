@@ -191,6 +191,7 @@ GameMainState::onDestroy()
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameMainState::noDestroy()");
   _zclCtrl->printKernelTime();
+  _controlMod->onDestroy();
   return true;
 }
 /**

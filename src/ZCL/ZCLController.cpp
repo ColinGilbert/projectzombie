@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <cstdio>
 
+#define GROUP_SIZE 80
+
 using std::ifstream;
 using std::string;
 using std::cout;
@@ -27,7 +29,7 @@ extern ZGame::World::WorldScale WSCALE;
 
 ZCLController::ZCLController() :
   _entsDim(0), _numOfEnts(0), _entsBufLen(0), _entsPosBuf(0), _entsOrientBuf(0), _entsModeBuf(0), _mapBufLen(0), _gradMap(0), _contourMap(0),
-      _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(true), _iterCount(0), _loopI(0)
+      _iterations(1000), _deviceKernelTime(0.0), _argI(0), _useGPU(false), _iterCount(0), _loopI(0)
 {
 }
 
@@ -297,25 +299,31 @@ ZCLController::initCLBuffers(ZEntityBuffers* entBufs, WorldMap* worldMap)
   _entsOrientBuf = entsBuf->worldOrient;
   _entsVelBuf = entsBuf->velocity;
   _entsModeBuf = entsBuf->mode;
+  _entsGoalsBuf = entsBuf->goals;
+  _entsStoreOneBuf = entsBuf->storeone;
 
   size_t bufferLen = _entsDim * _numOfEnts * sizeof(Real); //We have numOfEnts entities with a _entsDim dimensional vector per entity.
   _entsBufLen = bufferLen;
   //Initialize the OpenCL buffers by using host memory ptr.
   //Position
-  //_entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE , bufferLen,
-  _entsPosCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsPosBuf, &err);
+  _entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE , bufferLen, _entsPosBuf, &err);
+  //_entsPosCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsPosBuf, &err);
   _chkErr(err, "Buffer::Buffer(): entities position buffer.");
   //Orientation
-  //_entsOrientCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
-  _entsOrientCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsOrientBuf, &err);
+  _entsOrientCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsOrientBuf, &err);
+  //_entsOrientCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsOrientBuf, &err);
   _chkErr(err, "Buffer::Buffer(): entities orientation buffer.");
   //Velocity
-  //_entsVelCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen,
-  _entsVelCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsVelBuf, &err);
+  _entsVelCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsVelBuf, &err);
+  //_entsVelCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsVelBuf, &err);
   //Mode buffer
-  //_entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char),
-  _entsModeCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char), _entsModeBuf, &err);
+  //_entsModeCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char), _entsModeBuf, &err);
+  //_entsModeCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, _numOfEnts * sizeof(unsigned char), _entsModeBuf, &err);
   _chkErr(err, "Buffer::Buffer(): entities mode buffer.");
+  _entsGoalsCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsGoalsBuf, &err);
+  _chkErr(err, "Buffer::Buffer(): entities goals buffer.");
+  _entsStoreOneCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsStoreOneBuf, &err);
+    _chkErr(err, "Buffer::Buffer(): entities goals buffer.");
 }
 
 void
@@ -334,8 +342,10 @@ ZCLController::initArgs()
   _chkErr(err, "Kernel::setArg()");
   err = _kernel[0].setArg(_argI++, _entsVelCL); //velocity
   _chkErr(err, "Kernel::setArg() velocity buffer");
-  err = _kernel[0].setArg(_argI++, _entsModeCL);
-  _chkErr(err, "Kernel::setArg()");
+  //err = _kernel[0].setArg(_argI++, _entsModeCL);
+  //_chkErr(err, "Kernel::setArg()");
+  err = _kernel[0].setArg(_argI++, _entsGoalsCL);
+  err = _kernel[0].setArg(_argI++, _entsStoreOneCL);
   err = _kernel[0].setArg(_argI++, _numOfEnts);
   _chkErr(err, "Kernel::setArg()");
   err = _kernel[0].setArg(_argI++, _mapShape[0]); //Where _mapShapep[0] specifies U, or number of rows.
@@ -366,6 +376,8 @@ ZCLController::onUpdate(const Ogre::FrameEvent &evt)
       _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
       _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
       _queue.enqueueReadBuffer(_entsVelCL, true, 0, _entsBufLen, _entsVelBuf);
+      _queue.enqueueReadBuffer(_entsGoalsCL, true, 0, _entsBufLen, _entsGoalsBuf);
+      _queue.enqueueReadBuffer(_entsStoreOneCL, true, 0, _entsBufLen, _entsStoreOneBuf);
     }
   _queue.finish();
 
@@ -380,7 +392,7 @@ void
 ZCLController::enqueueKernel(bool block = false)
 {
   cl::Event e;
-  _queue.enqueueNDRangeKernel(_kernel[0], cl::NullRange, cl::NDRange(_numOfEnts), cl::NullRange, 0, &e);
+  _queue.enqueueNDRangeKernel(_kernel[0], cl::NullRange, cl::NDRange(_numOfEnts), cl::NDRange(GROUP_SIZE), 0, &e);
   if (block)
     e.wait();
 }

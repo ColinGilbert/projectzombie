@@ -72,6 +72,7 @@ class EntitiesCreateMenu : public EntitiesMenu
     OgreBites::SelectMenu* _groupSelectMenu;
     OgreBites::Button* _centerGroupButton;
     OgreBites::Button* _createButton;
+    OgreBites::Button* _updateButton;
     OgreBites::Button* _resetButton;
     OgreBites::Slider* _perGroupSlider;
     OgreBites::Slider* _groupRadiusSlider;
@@ -92,6 +93,8 @@ class EntitiesCreateMenu : public EntitiesMenu
     _adjustCenter(bool engage);
     void
     _createGroups();
+    void
+    _updateGroups();
     void
     _resetAll();
 

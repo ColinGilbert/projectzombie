@@ -4,6 +4,7 @@ Note: We're not using any advanced features of Scons (e.g. autoconf like feature
 get something working on Linux.
 """
 
+
 import os
 
 HOME = os.environ['HOME']
@@ -29,10 +30,9 @@ env.Append( LIBDIR = Split(libpath))
 env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
-env.Append( CPPFLAGS = ['-g'])
-#env.Append( CPPFLAGS = ['-o2 -Wall'])
+env.Append( CPPFLAGS = ['-ggdb'])
+#env.Append( CPPFLAGS = ['-o2 -ggdb']) #build with optimization level 2 AND output debug info.
 env['CXXCOM'] = "$CXX $_CCCOMCOM -o $TARGET -c $CXXFLAGS $CCFLAGS $SOURCES"
-
 
 
 env.SConscript('src/SConscript', exports='env', variant_dir='build/', src_dir='src/', duplicate=0)

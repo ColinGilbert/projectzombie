@@ -57,6 +57,33 @@ EntitiesManager::clearZEntities()
   _zEntsVec.clear();
 }
 
+
+void
+EntitiesManager::updateGoalsBuffer()
+{
+  size_t idx = 0;
+  size_t numOfEnts = _ents.numOfEnts;
+  size_t vecDim = _ents.COMPONENT_DIM;
+  size_t grpIdx = 0;
+  size_t endIdx = _groups[grpIdx]->numOfEnts;
+  Vector3 goal = _groups[grpIdx]->center;
+
+  for(size_t i = 0; i < numOfEnts; ++i)
+    {
+      if(i == endIdx)
+        {
+          grpIdx++;
+          endIdx = endIdx + _groups[grpIdx]->numOfEnts;
+          goal = _groups[grpIdx]->center;
+        }
+      _ents.goals[idx] = goal.x;
+      _ents.goals[idx + 1] = goal.y;
+      _ents.goals[idx + 2] = goal.z;
+      //leave w alone. We are storing random number seed there. This is all temporary, will be refactor later so it is not so convoluted.
+      idx += vecDim;
+    }
+}
+
 /**
  *This method will convert the zEntities in this manager into ZEntitiBuffers form.
  *
@@ -75,6 +102,7 @@ EntitiesManager::zEntitiesToBuffer()
   _ents.worldOrient = new Real[_ents.numOfEnts * vecDim]; //4D quaternion per entity.
   _ents.velocity = new Real[_ents.numOfEnts * vecDim]; //4D vector of velocity per entity.
   _ents.goals = new Real[_ents.numOfEnts * vecDim];
+  _ents.storeone = new Real[_ents.numOfEnts * vecDim];
   _ents.mode = new uchar[_ents.numOfEnts]; //byte mod variable per entity.
   //Iterate through ZEntities and copy the data over for reach ZEntity
   size_t entIdx = 0;
@@ -86,6 +114,7 @@ EntitiesManager::zEntitiesToBuffer()
       const Vector3& pos = (*it)->getPosition();
       const Quaternion& orient = (*it)->getOrientation();
       const Vector3& goal = (*it)->getGoal();
+      //const Ogre::Real base = -1.0f - _ents.numOfEnts;
 
       //We use the entity velocity buffer's last element for storing thrust.
       initVel.x = Ogre::Math::RangeRandom(200.0f, 350.0f);
@@ -105,7 +134,8 @@ EntitiesManager::zEntitiesToBuffer()
       _ents.goals[entIdx * vecDim] = goal.x;
       _ents.goals[entIdx * vecDim + 1] = goal.y;
       _ents.goals[entIdx * vecDim + 2] = goal.z;
-      _ents.goals[entIdx * vecDim + 3] = 0.0f;
+      _ents.goals[entIdx * vecDim + 3] = Ogre::Math::RangeRandom(0.0f, 2147483647.0f ); //generate a random seed.
+      _ents.storeone[entIdx * vecDim] = Ogre::Math::RangeRandom(5.0f, 15.0f);
       entIdx++;
     }
   cout << "Done buffer conversion." << endl;

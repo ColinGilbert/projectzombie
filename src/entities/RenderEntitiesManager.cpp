@@ -64,17 +64,21 @@ bool
     InstancedGeometry::BatchInstanceIterator regIt = batch->getBatchInstanceIterator();
     size_t k = 0;
     ZENTITY_VEC::const_iterator iter = begin;
+
+    size_t batchInstanceIdx = 0;
+
     while (regIt.hasMoreElements ())
     {
 
         InstancedGeometry::BatchInstance *r = regIt.getNext();
-
+        cout << "Batch Indstance Idx: " << batchInstanceIdx++ << endl;
         InstancedGeometry::BatchInstance::InstancedObjectIterator bit = r->getObjectIterator();
         int j = 0;
         Vector3 pos; Quaternion orient;
 
         while(bit.hasMoreElements())
         {
+            cout << "Batch Instance has InstancedObjects" << endl;
             InstancedGeometry::InstancedObject* obj = bit.getNext();
             (*iter)->onWrite(pos, orient);
             obj->setPosition(pos);
@@ -95,14 +99,14 @@ bool
             ++j;
             iter++;
             k++;
-            //cout << "Number of InstancedObject: " << k << endl;
+            cout << "Number of InstancedObject: " << k << endl;
 
 
         }
 
     }
-    if(iter != end)
-        OGRE_EXCEPT(Exception::ERR_INVALID_STATE,"There are more zEntities than there are instanced geometries.", "RenderEntities::createRenderEntities");
+    //if(iter != end)
+        //OGRE_EXCEPT(Exception::ERR_INVALID_STATE,"There are more zEntities than there are instanced geometries.", "RenderEntities::createRenderEntities");
 
     return true;
 }
