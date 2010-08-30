@@ -65,7 +65,8 @@ namespace ZGame
             /** \brief This utility method will output device information. */
             void printDeviceInfo(std::vector<cl::Device> &devs);
             /** \brief This method will enqueue kernels to the command queue.*/
-            void enqueueKernel(bool blocking);
+            void enqueueKernel0(bool blocking);
+            void enqueueKernel1(bool blocking);
             /** \brief This method will read back the buffers.**/
             //void readBackBuffers();
             
@@ -83,6 +84,8 @@ namespace ZGame
                 }
             }
             
+            void loadKernel(std::vector<cl::Kernel> &kernel, std::string&, std::string);
+
         private:
             cl::Context _context;
             std::vector<cl::Device> _devices;
@@ -97,6 +100,7 @@ namespace ZGame
             cl::Buffer _contourCL;
             cl::Buffer _entsGoalsCL;
             cl::Buffer _entsStoreOneCL;
+            cl::Buffer _densityCL;
             size_t _entsDim; //The dimension of vector per entity. This is used as stride into flat 1D buffer.
             size_t _numOfEnts; 
             size_t _entsBufLen;
@@ -106,6 +110,7 @@ namespace ZGame
             Ogre::uchar* _entsModeBuf;
             Ogre::Real* _entsGoalsBuf;
             Ogre::Real* _entsStoreOneBuf;
+            Ogre::Real* _densityBuf;
             std::vector<size_t> _mapShape;
             size_t _mapBufLen;
             Ogre::Real* _gradMap;

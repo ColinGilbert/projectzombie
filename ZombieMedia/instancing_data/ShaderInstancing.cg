@@ -1,0 +1,89 @@
+//------------------------------------------------------------------------------------------
+//Copyright (C) 2010 Matias N. Goldberg (dark_sylinc)
+//------------------------------------------------------------------------------------------
+
+//---------------------------------------------
+//Vertex Shader Input
+//---------------------------------------------
+struct VS_INPUT
+{
+	float4 Position	:	POSITION;
+	float3 Normal	:	NORMAL;
+	float3 Tangent	:	TANGENT;
+	float2 uv0		:	TEXCOORD0;
+
+	float4 BlendIdx	:	BLENDINDICES;
+	float4 BlendWgt	:	BLENDWEIGHT;
+};
+
+//---------------------------------------------
+//Pixel Shader Input
+//---------------------------------------------
+struct PS_INPUT
+{
+	float2 uv0		:	TEXCOORD0;
+};
+
+//---------------------------------------------
+//Vertex Shader Output
+//---------------------------------------------
+struct VS_OUTPUT
+{
+	float4 Position	:	POSITION;
+	PS_INPUT	ps;
+};
+
+//---------------------------------------------
+//Main Vertex Shader
+//---------------------------------------------
+VS_OUTPUT main_vs( in VS_INPUT input,
+				   uniform float4x4 viewProjMatrix,
+				   uniform float3x4 worldMatrix3x4Array[80] )
+{
+	VS_OUTPUT output;
+
+	float4 worldPos = 0;
+
+	worldPos			= float4( mul( worldMatrix3x4Array[input.BlendIdx[0]], input.Position ).xyz, 1.0f );
+	/*int i;
+	for( i=0; i<4; i++ )
+		worldPos += float4( mul( worldMatrix3x4Array[input.BlendIdx[i]], input.Position ).xyz, 1.0f ) * input.BlendWgt[i];*/
+
+	//Transform the position
+	output.Position		= mul( viewProjMatrix, worldPos );
+	output.ps.uv0		= input.uv0;
+
+	return output;
+}
+
+//---------------------------------------------
+//Pixel Shader Output
+//---------------------------------------------
+struct PS_OUTPUT
+{
+	float4 colour		:	COLOR0;
+};
+
+//---------------------------------------------
+//Main Pixel Shader
+//---------------------------------------------
+PS_OUTPUT main_ps( PS_INPUT input ,
+
+				uniform float4  lightAmbient,
+				uniform float4	lightPosition,
+				uniform half4	lightDiffuse,
+				uniform half4	lightSpecular,
+				uniform half4	lightAttenuation,
+				uniform half	surfaceShininess,
+				uniform half4	cameraPos //,
+
+				//Textures
+				//uniform sampler2D diffuseMap : register(s0)
+				)
+{
+	PS_OUTPUT output;
+	//const half4 baseColour = tex2D( diffuseMap, input.uv0 );
+	output.colour	= float4( 1.0f, 0.0f, 0.0f, 1.0f );
+
+	return output;
+}

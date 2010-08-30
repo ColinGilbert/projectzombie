@@ -152,6 +152,21 @@ ZCLController::initCL(std::string& configName)
   printDeviceInfo(_devices);
 
   cout << "Loading Kernels." << endl;
+  cout << "Kernel 0" << endl;
+  loadKernel(_kernel, configName, "updateEnt");
+  cout << "Kernel 1" << endl;
+  configName = std::string("../scripts/density_kernel.cl");
+  loadKernel(_kernel, configName, "updateDensity");
+  cout << "Kernels loaded." << endl;
+
+  cout << "Creating command queue" << endl;
+  _queue = cl::CommandQueue(_context, _devices[dId]);
+}
+
+void
+ZCLController::loadKernel(std::vector<cl::Kernel> &kernel, std::string &configName, std::string methodName)
+{
+  cl_int err;
   string sourceStr = FileToString(configName);
   cl::Program::Sources sources(1, std::make_pair(sourceStr.c_str(), sourceStr.length()));
   _program = cl::Program(_context, sources);
@@ -161,25 +176,22 @@ ZCLController::initCL(std::string& configName)
     {
       _chkErr(err, "Program::Build");
       //query build info.
-      std::string buildLog = _program.getBuildInfo<CL_PROGRAM_BUILD_LOG> (_devices[dId]);
+      std::string buildLog = _program.getBuildInfo<CL_PROGRAM_BUILD_LOG> (_devices[0]);
       cout << "Build Log: " << endl;
       cout << buildLog << endl;
     }
   catch (std::exception e)
     {
       //query build info.
-      std::string buildLog = _program.getBuildInfo<CL_PROGRAM_BUILD_LOG> (_devices[dId]);
+      std::string buildLog = _program.getBuildInfo<CL_PROGRAM_BUILD_LOG> (_devices[0]);
       cout << "Build Log: " << endl;
       cout << buildLog << endl;
       throw e;
     }
 
-  cl::Kernel kernel = cl::Kernel(_program, "updateEnt", &err);
+  cl::Kernel tkernel = cl::Kernel(_program, methodName.c_str(), &err);
   _chkErr(err, "Kernel::Kernel");
-  _kernel.push_back(kernel);
-
-  cout << "Creating command queue" << endl;
-  _queue = cl::CommandQueue(_context, _devices[dId]);
+  kernel.push_back(tkernel);
 }
 
 void
@@ -301,12 +313,13 @@ ZCLController::initCLBuffers(ZEntityBuffers* entBufs, WorldMap* worldMap)
   _entsModeBuf = entsBuf->mode;
   _entsGoalsBuf = entsBuf->goals;
   _entsStoreOneBuf = entsBuf->storeone;
+  _densityBuf = entsBuf->density;
 
   size_t bufferLen = _entsDim * _numOfEnts * sizeof(Real); //We have numOfEnts entities with a _entsDim dimensional vector per entity.
   _entsBufLen = bufferLen;
   //Initialize the OpenCL buffers by using host memory ptr.
   //Position
-  _entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE , bufferLen, _entsPosBuf, &err);
+  _entsPosCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsPosBuf, &err);
   //_entsPosCL = cl::Buffer(_context, CL_MEM_COPY_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsPosBuf, &err);
   _chkErr(err, "Buffer::Buffer(): entities position buffer.");
   //Orientation
@@ -323,7 +336,8 @@ ZCLController::initCLBuffers(ZEntityBuffers* entBufs, WorldMap* worldMap)
   _entsGoalsCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsGoalsBuf, &err);
   _chkErr(err, "Buffer::Buffer(): entities goals buffer.");
   _entsStoreOneCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsStoreOneBuf, &err);
-    _chkErr(err, "Buffer::Buffer(): entities goals buffer.");
+  _chkErr(err, "Buffer::Buffer(): entities goals buffer.");
+  _densityCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _mapBufLen, _densityBuf, &err);
 }
 
 void
@@ -345,6 +359,8 @@ ZCLController::initArgs()
   //err = _kernel[0].setArg(_argI++, _entsModeCL);
   //_chkErr(err, "Kernel::setArg()");
   err = _kernel[0].setArg(_argI++, _entsGoalsCL);
+  err = _kernel[0].setArg(_argI++, _densityCL);
+
   err = _kernel[0].setArg(_argI++, _entsStoreOneCL);
   err = _kernel[0].setArg(_argI++, _numOfEnts);
   _chkErr(err, "Kernel::setArg()");
@@ -355,6 +371,13 @@ ZCLController::initArgs()
   err = _kernel[0].setArg(_argI++, WSCALE.unitsPerMeter);
   _chkErr(err, "Kernel::setArg() units per meter");
   err = _kernel[0].setArg(_argI, 0.0f); //initialize dt.
+
+  _kernel[1].setArg(0, _entsPosCL);
+  _kernel[1].setArg(1, _densityCL);
+  _kernel[1].setArg(2, _mapShape[0]);
+  _kernel[1].setArg(3, _mapShape[1]);
+  _kernel[1].setArg(4, WSCALE.unitsPerMeter);
+  _counter.Reset();
 }
 
 /**
@@ -363,23 +386,19 @@ ZCLController::initArgs()
 bool
 ZCLController::onUpdate(const Ogre::FrameEvent &evt)
 {
-  _counter.Reset();
+
   _counter.Start();
   //for(size_t i = 0; i < _iterations; ++i)
   //{
+
+  //enqueueKernel1(false); //THis won't work because of global sync. issues. You need to sort/bin the items per workgroup first for this to work.
+
   _kernel[0].setArg(_argI, evt.timeSinceLastFrame); //update dt.
-  enqueueKernel(false); //run the kernels
+  enqueueKernel0(false); //run the kernels
+
+
   //}
-  if (_useGPU)
-    {
-      //read back the buffer. Going to be slow.
-      _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
-      _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
-      _queue.enqueueReadBuffer(_entsVelCL, true, 0, _entsBufLen, _entsVelBuf);
-      _queue.enqueueReadBuffer(_entsGoalsCL, true, 0, _entsBufLen, _entsGoalsBuf);
-      _queue.enqueueReadBuffer(_entsStoreOneCL, true, 0, _entsBufLen, _entsStoreOneBuf);
-    }
-  _queue.finish();
+
 
   _counter.Stop();
 
@@ -389,12 +408,42 @@ ZCLController::onUpdate(const Ogre::FrameEvent &evt)
 }
 
 void
-ZCLController::enqueueKernel(bool block = false)
+ZCLController::enqueueKernel1(bool block = false)
+{
+  cl::Event e;
+  _queue.enqueueNDRangeKernel(_kernel[1], cl::NullRange, cl::NDRange(_numOfEnts), cl::NDRange(GROUP_SIZE), 0, &e);
+
+  //if (block)
+    // e.wait();
+
+  //if (block)
+    //  {
+        //read back the buffer. Going to be slow.
+      //  _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
+        //_queue.enqueueReadBuffer(_densityCL, true, 0, _entsBufLen, _densityBuf);
+      //}
+    //_queue.finish();
+}
+
+void
+ZCLController::enqueueKernel0(bool block = false)
 {
   cl::Event e;
   _queue.enqueueNDRangeKernel(_kernel[0], cl::NullRange, cl::NDRange(_numOfEnts), cl::NDRange(GROUP_SIZE), 0, &e);
-  if (block)
-    e.wait();
+
+  if (_useGPU)
+     {
+       //read back the buffer. Going to be slow.
+       _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
+       _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
+       _queue.enqueueReadBuffer(_entsVelCL, true, 0, _entsBufLen, _entsVelBuf);
+       _queue.enqueueReadBuffer(_entsGoalsCL, true, 0, _entsBufLen, _entsGoalsBuf);
+       _queue.enqueueReadBuffer(_entsStoreOneCL, true, 0, _entsBufLen, _entsStoreOneBuf);
+       _queue.enqueueReadBuffer(_densityCL, true, 0, _entsBufLen, _densityBuf);
+     }
+   _queue.finish();
+
+
 }
 
 bool
@@ -406,7 +455,7 @@ ZCLController::onUpdate()
   for (size_t i = 0; i < _iterations; ++i)
     {
       _kernel[0].setArg(_argI, dt); //update dt.
-      enqueueKernel(false); //run the kernels
+      enqueueKernel0(false); //run the kernels
     }
   _queue.finish();
   _counter.Stop();

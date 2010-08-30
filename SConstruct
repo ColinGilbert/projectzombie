@@ -30,8 +30,8 @@ env.Append( LIBDIR = Split(libpath))
 env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
-env.Append( CPPFLAGS = ['-ggdb'])
-#env.Append( CPPFLAGS = ['-o2 -ggdb']) #build with optimization level 2 AND output debug info.
+#env.Append( CPPFLAGS = ['-ggdb'])
+env.Append( CPPFLAGS = ['-o2']) #build with optimization level 2 AND output debug info.
 env['CXXCOM'] = "$CXX $_CCCOMCOM -o $TARGET -c $CXXFLAGS $CCFLAGS $SOURCES"
 
 

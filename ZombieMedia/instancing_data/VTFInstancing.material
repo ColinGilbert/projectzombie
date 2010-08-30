@@ -1,0 +1,70 @@
+vertex_program VTFInstancing_vs cg
+{
+	source VTFInstancing.cg
+	entry_point main_vs
+	profiles glslv
+
+	uses_vertex_texture_fetch true
+
+	default_params
+	{
+		param_named_auto viewProjMatrix				viewproj_matrix
+	}
+}
+
+fragment_program VTFInstancing_ps cg
+{
+	source VTFInstancing.cg
+	entry_point main_ps
+	profiles glslf
+
+	default_params
+	{
+	}
+}
+
+vertex_program VTFInstancing_vs_glsl glsl
+{
+	source VTFInstancingVP.glsl
+	uses_vertex_texture_fetch true
+	profiles gp4vp
+
+	default_params
+	{
+		param_named_auto viewProjMatrix viewproj_matrix
+	}
+}
+
+fragment_program VTFInstancing_ps_glsl glsl
+{
+	source VTFInstancingFP.glsl
+	profiles gp4fp
+	default_params
+	{
+	}
+
+}
+
+material BlueVTF
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref VTFInstancing_vs_glsl
+			{
+				//param_named matrixTexture int 1
+			}
+
+			fragment_program_ref VTFInstancing_ps_glsl
+			{
+			}
+
+			texture_unit InstancingVTF
+			{
+				//binding_type	vertex
+				//filtering		none
+			}
+		}
+	}
+}

@@ -32,10 +32,13 @@ GraphicsController::onInit()
   Viewport* vp = EngineView::getSingleton().getCurrentCamera()->getViewport();
   lm->logMessage(Ogre::LML_NORMAL, "Adding compositor bloom");
 
-  CompositorManager &compMan = CompositorManager::getSingleton();
+  //CompositorManager &compMan = CompositorManager::getSingleton();
 
-  compMan.addCompositor(vp, "Bloom");
-  compMan.setCompositorEnabled(vp, "Bloom", true);
+  //CompositorManager* compMan = CompositorManager::getSingletonPtr();
+
+  //compMan->addCompositor(vp, "Bloom");
+  //compMan->setCompositorEnabled(vp, "Bloom", true);
+
 
 
   scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
@@ -45,9 +48,13 @@ GraphicsController::onInit()
   scnMgr->setShadowDirectionalLightExtrusionDistance(75);
   //scnMgr->setShadowTextureSettings(512, 2);
 
+
+
   Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(
       Ogre::TFO_ANISOTROPIC);
   Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(7);
+
+
 
   /*
   //lm->logMessage(Ogre::LML_NORMAL, "Adding deffered shading and SSAO.");

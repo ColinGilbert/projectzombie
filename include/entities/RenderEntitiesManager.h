@@ -52,6 +52,10 @@ namespace ZGame
             void
               resetRenderEntities();
         protected:
+
+        private:
+            void _removeChildObjects(Ogre::SceneNode* node);
+
         private:
             //typedef vector<Ogre::SceneNode*> ENT_NODES_VEC;
             //typedef ENT_NODES_VEC::iterator ENT_NODES_ITER;
@@ -63,6 +67,8 @@ namespace ZGame
             Ogre::SceneManager* _scnMgr;
             std::vector<Ogre::InstancedGeometry*> _renderInstances;
             Ogre::vector<Ogre::AnimationState*>::type _animations;
+            Ogre::SceneNode* _instancesRoot;
+
 
         };
     }

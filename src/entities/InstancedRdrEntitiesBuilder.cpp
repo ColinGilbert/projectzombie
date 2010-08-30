@@ -1,7 +1,9 @@
 #include <OgreRoot.h>
+#include <OgreInstanceManager.h>
+#include <OgreInstancedEntity.h>
 #include "entities/InstancedRdrEntitiesBuilder.h"
 
-//#define CROWD 1
+#define CROWD 1
 //#define INSTANCING 1
 #include <iostream>
 using std::cout;
@@ -22,11 +24,22 @@ InstancedRdrEntitiesBuilder::InstancedRdrEntitiesBuilder(SceneManager* scnMgr) :
 InstancedRdrEntitiesBuilder::~InstancedRdrEntitiesBuilder()
 {
 }
+/*
+ void
+ InstancedRdrEntitiesBuilder::build2(size_t numOfMeshes, Ogre::SceneNode* rootNode, std::string meshName)
+ {
+ using namespace Ogre;
+ InstanceManager* instanceMgr = _scnMgr->createInstanceManager("MyInstanceMgr", meshName+".mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
+ Ogre::InstanceManager::TextureVTF, 220);
+
+ }
+ */
 
 void
 InstancedRdrEntitiesBuilder::build(size_t numOfMeshes, std::vector<Ogre::InstancedGeometry*> &renderInstance, std::string meshName)
 {
 
+  cout << "InstancedRdrEntiteiBuilder build" << endl;
   size_t objectCount = numOfMeshes;
   size_t numRendered = 1;
   _chkVertexProgram();
@@ -37,46 +50,56 @@ InstancedRdrEntitiesBuilder::build(size_t numOfMeshes, std::vector<Ogre::Instanc
       objectCount -= MAX_PER_BATCH;
     }
 
-  Ogre::String meshNames[7] =
-    { "Barrel", "razor", "cube", "column", "sphere", "WoodPallet", "tudorhouse" };
+  //Ogre::String meshNames[7] =
+  //{ "Barrel", "razor", "cube", "column", "sphere", "WoodPallet", "tudorhouse" };
 
   //InstancedGeometry* batch = new InstancedGeometry(_scnMgr, meshName + "s");
+
+  cout << "Creating batch" << endl;
+
   const size_t batchSize = (numOfMeshes > MAX_PER_BATCH) ? MAX_PER_BATCH : numOfMeshes;
   InstancedGeometry* batch = _scnMgr->createInstancedGeometry("InstancedMeshes");
   const size_t arraySize = 1;
+
+  //const size_t meshIdx = i % arraySize;
+  //MeshPtr m = MeshManager::getSingleton().getByName(meshNames[meshIdx] + ".mesh");
+  MeshPtr m = MeshManager::getSingleton().getByName(meshName + ".mesh");
+  if (m.isNull())
+    {
+      m = MeshManager::getSingleton().load(meshName + ".mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    }
+  Entity* ent = _scnMgr->createEntity("InstancedEntity", meshName+".mesh");
+
+  //ent->setMaterialName("Ogre/DepthShadowmap/Receiver/Robot");
+  batch->setCastShadows(true);
+
+  batch->setBatchInstanceDimensions(Vector3(1000000, 1000000, 1000000));
+
+  cout << "Setting up material" << endl;
+  setupInstancedMaterialToEntity(ent);
+
   for (size_t i = 0; i < batchSize; ++i)
     {
 
-      const size_t meshIdx = i % arraySize;
-      MeshPtr m = MeshManager::getSingleton().getByName(meshNames[meshIdx] + ".mesh");
-      if (m.isNull())
-        {
-          m = MeshManager::getSingleton().load(meshName + ".mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-        }
-      Entity* ent = _scnMgr->createEntity(meshNames[meshIdx] + Ogre::StringConverter::toString(i), meshNames[meshIdx] + ".mesh");
-
-      //ent->setMaterialName("Ogre/DepthShadowmap/Receiver/Robot");
-      batch->setCastShadows(true);
-
-      batch->setBatchInstanceDimensions(Vector3(1000000, 1000000, 1000000));
-
-      setupInstancedMaterialToEntity(ent);
       //batch->add
       batch->addEntity(ent, Vector3::ZERO);
       //destroy the entity. We no longer need it. It's been "instanced" or cloned now.
-      _scnMgr->destroyEntity(ent);
+
     }
+  cout << "Done adding entitiy" << endl;
+  //_scnMgr->destroyEntity(ent);
   batch->setOrigin(Vector3::ZERO);
 
+  cout << "entity destroyed" << endl;
   batch->build();
 
+  cout << "Done build." << endl;
   //Add the batch instances. We are going to set the actual positions for batch instances elsewhere.
-   for (size_t k = 0; k < numRendered - 1; ++k)
-     {
-       cout << "Adding batch instance!" << endl;
-       batch->addBatchInstance();
-     }
-
+  for (size_t k = 0; k < numRendered - 1; ++k)
+    {
+      cout << "Adding batch instance!" << endl;
+      batch->addBatchInstance();
+    }
 
   batch->setVisible(true);
   renderInstance.push_back(batch);

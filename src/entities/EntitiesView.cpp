@@ -165,9 +165,10 @@ EntitiesCreateMenu::_addGroup()
   //if (_resetbutton == 0)
   //_resetButton = tray->createButton(OgreBites::TL_BOTTOMLEFT, "ENTRESETBUTTON", "Reset", width);
 
+
   if (_perGroupSlider == 0)
     {
-      unsigned int nTimes = 10;
+      unsigned int nTimes = 20;
       _perGroupSlider = _tray->createThickSlider(OgreBites::TL_LEFT, "ENTPERGRPSLIDER", "Ents Per Group", 320.0f, 150.0f, 80.0f, 80.0f * nTimes, nTimes);
     }
   if (_groupRadiusSlider == 0)

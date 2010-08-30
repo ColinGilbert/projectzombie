@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <algorithm>
+#include <string>
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -14,11 +15,14 @@ using std::endl;
 #include "entities/InstancedRdrEntitiesBuilder.h"
 #include "world/WorldController.h"
 #include "ZCL/ZCLController.h"
+#include "world/WorldScale.h"
 using namespace Ogre;
 
 using namespace ZGame::Entities;
 
 int EntitiesManager::_KEY = 0;
+
+extern ZGame::World::WorldScale WSCALE;
 
 EntitiesManager::EntitiesManager() : _numOfEnts(0), _numOfGroups(0), _numPerGroup(InstancedRdrEntitiesBuilder::MAX_PER_BATCH),
     _increaseByMultiplier(2)
@@ -57,6 +61,25 @@ EntitiesManager::clearZEntities()
   _zEntsVec.clear();
 }
 
+
+
+void
+EntitiesManager::updateDensityBuffer()
+{
+  Vector3 pos;
+  size_t numOfEnts = _ents.numOfEnts;
+  size_t vecDim = _ents.COMPONENT_DIM;
+  size_t idx;
+  memset(_ents.density, 0, sizeof(Real)*513*513*vecDim);
+  for(size_t i = 0; i < numOfEnts; ++i)
+    {
+      //hash value.
+      pos.x = _ents.worldPos[i*vecDim];
+      pos.z = _ents.worldPos[i*vecDim+2];
+      idx = (size_t)(pos.z / WSCALE.unitsPerMeter) * 513 + (size_t)(pos.x / WSCALE.unitsPerMeter);
+      _ents.density[idx * vecDim] = 20.0f;
+    }
+}
 
 void
 EntitiesManager::updateGoalsBuffer()
@@ -104,6 +127,14 @@ EntitiesManager::zEntitiesToBuffer()
   _ents.goals = new Real[_ents.numOfEnts * vecDim];
   _ents.storeone = new Real[_ents.numOfEnts * vecDim];
   _ents.mode = new uchar[_ents.numOfEnts]; //byte mod variable per entity.
+  size_t dSize = 513*513*vecDim;
+  _ents.density = new Real[dSize];
+
+  memset(_ents.density, 0, sizeof(Real)*513*513*vecDim);
+  //std::fill(_ents.density, _ents.density + 512*512*vecDim, 0.0f);
+  cout << "done memsetting density" << endl;
+
+
   //Iterate through ZEntities and copy the data over for reach ZEntity
   size_t entIdx = 0;
   Vector3 initVel(0.0f, 0.0f, 0.0f); //initial velocity is zero.
@@ -111,7 +142,7 @@ EntitiesManager::zEntitiesToBuffer()
   //size_t endGrpIdx = _groups[grpIdx].numOfEnts;
   for (ZENT_ITER it = _zEntsVec.begin(); it != _zEntsVec.end(); ++it)
     {
-      const Vector3& pos = (*it)->getPosition();
+      const Vector3 &pos = (*it)->getPosition();
       const Quaternion& orient = (*it)->getOrientation();
       const Vector3& goal = (*it)->getGoal();
       //const Ogre::Real base = -1.0f - _ents.numOfEnts;
@@ -136,6 +167,16 @@ EntitiesManager::zEntitiesToBuffer()
       _ents.goals[entIdx * vecDim + 2] = goal.z;
       _ents.goals[entIdx * vecDim + 3] = Ogre::Math::RangeRandom(0.0f, 2147483647.0f ); //generate a random seed.
       _ents.storeone[entIdx * vecDim] = Ogre::Math::RangeRandom(5.0f, 15.0f);
+      //Hash density values.
+      cout << "Hasing" << endl;
+
+
+      size_t idx = (size_t)(pos.z / WSCALE.unitsPerMeter) * 513 + (size_t)(pos.x / WSCALE.unitsPerMeter);
+      cout << "idx, dsize: " << idx << " " << dSize << endl;
+      _ents.density[idx * vecDim] = 1.0f; //We assume individual addtion of density is 1.0. This is clearly a hack!!!
+
+      cout << "Done hasing!" << endl;
+
       entIdx++;
     }
   cout << "Done buffer conversion." << endl;

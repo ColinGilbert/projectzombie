@@ -160,7 +160,7 @@ GameMainState::onInit()
   _worldController->onInit();
   Ogre::LogManager::getSingleton().logMessage("Done creating world");
 
-  createCharacters();
+  //createCharacters();
   Ogre::LogManager::getSingleton().logMessage("Done creating characters.");
   //We need to initialize OpenCL after creating the world and entities, as OpenCL requires both entities and world map data to function.
   Ogre::LogManager::getSingleton().logMessage("Intitializing MainGameState SDK Tray.");
@@ -176,6 +176,7 @@ GameMainState::onUpdate(const Ogre::FrameEvent &evt)
 {
   if (_entMgr->getNumOfEntities() > 0)
     {
+      _entMgr->updateDensityBuffer();
       _zclCtrl->onUpdate(evt);
       const float* posBuf = 0;
       const float* orientBuf = 0;
@@ -230,7 +231,6 @@ GameMainState::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id
   OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
   if (_sdkTrayMgr->injectMouseUp(evt, id))
     return true;
-  _entsView->onMouseUp(evt, id);
   _entsView->onMouseUp(evt, id);
 }
 

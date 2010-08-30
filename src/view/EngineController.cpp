@@ -256,7 +256,7 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-        updateStats();
+        //updateStats();
       }
     catch (Ogre::Exception e)
       {

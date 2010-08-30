@@ -33,6 +33,7 @@ namespace ZGame
       Ogre::Real* velocity;
       Ogre::Real* goals;
       Ogre::Real* storeone;
+      Ogre::Real* density;
 
 
       Ogre::uchar* mode;
@@ -50,10 +51,15 @@ namespace ZGame
         mode = 0;
         if(goals)
           delete[] goals;
+        goals = 0;
+
         if(storeone)
           delete[] storeone;
         storeone = 0;
-        goals = 0;
+
+        if(density)
+          delete[] density;
+        density = 0;
         numOfEnts = 0;
       }
     };
@@ -111,6 +117,9 @@ namespace ZGame
 
       void
       updateGoalsBuffer();
+
+      void
+      updateDensityBuffer();
 
 
 

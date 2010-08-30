@@ -1,7 +1,6 @@
 //#pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 #pragma OPENCL EXTENSION cl_amd_printf : enable
 
-
 #define IA 16807                        // a
 #define IM 2147483647                   // m
 #define AM (1.0/IM)                     // 1/m - To calculate floating point result
@@ -13,44 +12,42 @@
 #define RMAX (1.0 - EPS)
 #define GROUP_SIZE 80
 
-
-
 /* Generate uniform random deviation */
 /* Park-Miller with Bays-Durham shuffle and added safeguards
-   Returns a uniform random deviate between (-FACTOR/2, FACTOR/2)
-   input seed should be negative */
+ Returns a uniform random deviate between (-FACTOR/2, FACTOR/2)
+ input seed should be negative */
 float ran1(int idum, __local int *iv)
-{
+  {
     int j;
     int k;
     int iy = 0;
     int tid = get_local_id(0);
     //printf("local id, idum: %d %d\n", tid, idum);
 
-    for(j = NTAB; j >=0; j--)                   //Load the shuffle
-    {
+    for(j = NTAB; j >=0; j--) //Load the shuffle
+
+      {
         k = idum / IQ;
         idum = IA * (idum - k * IQ) - IR * k;
 
         if(idum < 0)
-            idum += IM;
+        idum += IM;
 
         if(j < NTAB)
-            iv[NTAB* tid + j] = idum;
-    }
+        iv[NTAB* tid + j] = idum;
+      }
     iy = iv[NTAB* tid];
 
     k = idum / IQ;
     idum = IA * (idum - k * IQ) - IR * k;
 
     if(idum < 0)
-        idum += IM;
+    idum += IM;
 
     j = iy / NDIV;
     iy = iv[NTAB * tid + j];
-    return AM * iy;   //AM *iy will be between 0.0 and 1.0
-}
-
+    return AM * iy; //AM *iy will be between 0.0 and 1.0
+  }
 
 bool
 IsInRange(float d, float l, float r)
@@ -95,6 +92,58 @@ ComputeTankPot(float4* goal, float4* pos)
   return rt;
 }
 
+uint
+getCellOffset(int4* cell, const uint mapHeight)
+{
+  return (*cell).z * mapHeight + (*cell).x;
+}
+
+float
+DensityGradientAtCell(__global float* density, int4* cell, float4* result, const uint mapHeight, const uint mapWidth)
+  {
+    const int4 u = (int4)(0, 0, 1, 0);
+    const int4 d = (int4)(0, 0, -1, 0);
+    const int4 l = (int4)(-1, 0, 0, 0);
+    const int4 r = (int4)(1, 0, 0, 0);
+    float pl, pr, pu, pd;
+    const float half = 0.5f;
+
+    float4 temp;
+    int4 ucell = *cell + u;
+    int4 dcell = *cell + d;
+    int4 lcell = *cell + l;
+    int4 rcell = *cell + r;
+
+    ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapHeight));
+    ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapWidth));
+    dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapHeight));
+    dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapWidth));
+    lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapHeight));
+    lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapWidth));
+    rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapHeight));
+    rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapWidth));
+
+    //grab the density of the 4 cells.
+    uint offset = getCellOffset(&ucell, mapHeight);
+    pu = -vload4(offset, density).x;
+    //printf("pu: %f\n", pu);
+    offset = getCellOffset(&dcell, mapHeight);
+    pd = -vload4(offset, density).x;
+    //printf("pd %f\n", pd);
+    offset = getCellOffset(&lcell, mapHeight);
+    pl = -vload4(offset, density).x;
+    //printf("pl %f\n", pl);
+    offset = getCellOffset(&rcell, mapHeight);
+    pr = -vload4(offset, density).x;
+    //printf("pr %f\n", pr);
+
+    //compute potential
+    //Compute gradient;
+    (*result).z = (pu - pd) * half;
+    (*result).x = (pr - pl) * half;
+
+  }
+
 void
 GradientAtCell(float4* goal, int4* cell, float4* result, const uint mapHeight, const uint mapWidth)
 {
@@ -109,14 +158,14 @@ GradientAtCell(float4* goal, int4* cell, float4* result, const uint mapHeight, c
   int4 dcell = *cell + d;
   int4 lcell = *cell + l;
   int4 rcell = *cell + r;
-  ucell = convert_int4(clamp(convert_float4(ucell), 0, (float)mapHeight));
-  ucell = convert_int4(clamp(convert_float4(ucell), 0, (float)mapWidth));
-  dcell = convert_int4(clamp(convert_float4(dcell), 0, (float)mapHeight));
-  dcell = convert_int4(clamp(convert_float4(dcell), 0, (float)mapWidth));
-  lcell = convert_int4(clamp(convert_float4(lcell), 0,(float)mapHeight));
-  lcell = convert_int4(clamp(convert_float4(lcell), 0, (float)mapWidth));
-  rcell = convert_int4(clamp(convert_float4(rcell), 0, (float)mapHeight));
-  rcell = convert_int4(clamp(convert_float4(rcell), 0, (float)mapWidth));
+  ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapHeight));
+  ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapWidth));
+  dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapHeight));
+  dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapWidth));
+  lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapHeight));
+  lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapWidth));
+  rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapHeight));
+  rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapWidth));
   //compute potential
   temp = convert_float4(lcell);
   pl = ComputeTankPot(goal, &temp);
@@ -238,6 +287,7 @@ updateEnt(__constant float* gradIn,
     __global float* entsOrient,
     __global float* entsVel,
     __global float* goals,//__global uchar* entsMode,
+    __global float* density,
     __global float* storeone,
     const uint numOfEnts,
     const uint mapHeight, //Number of rows. Parameter U for u in U.
@@ -249,7 +299,7 @@ updateEnt(__constant float* gradIn,
     const int CLIMB = 1.0f;
     const int DESCEND = 2.0f;
     const int EXIT_DESCEND = 3.0f;
-   // const int AT_GOAL = 4.0f;
+    // const int AT_GOAL = 4.0f;
     int4 targetCell;
     float4 cGrad;
     float4 goalCGrad; //computed from our goal potential
@@ -281,6 +331,8 @@ updateEnt(__constant float* gradIn,
     float4 velocity = vload4(tid, entsVel);
     float4 mapPos = worldPos / unitsPerBlock; //transform into map space.
 
+    float densityLength;
+
     float4 stone = vload4(tid, storeone);
 
     mapPos = clamp(mapPos, 0.0f, (float)mapHeight);
@@ -289,58 +341,64 @@ updateEnt(__constant float* gradIn,
     int4 cell = convert_int4(mapPos);
     uint cellOffset1 = cell.z * mapHeight + cell.x;
 
-
-
     di = fast_distance(mapPos, goal);
-
-    if ( di < 5.0 + randGoal)
-      {
-        //play proability game.
-        if ( di < stone.x )
-          return;
-      }
-    else
-      {
-        stone.x = 5.0 + urand * randGoal;
-      }
 
     //printf("goal: %f,%f,%f. seed: %f. urand: %f. di: %f. randGoal: %f\n", goal.x, goal.y, goal.z, seed, urand, di, randGoal);
     if(mode == CLIMB) //ascending mode: CLIMB
+
       {
         //Read in the direction vector.
         cGrad = vload4(cellOffset1, gradIn);
+        GradientAtCell(&goal, &cell, &goalCGrad, mapHeight, mapWidth);
+        cGrad += goalCGrad;
+        //add the density gradient for stupid crowd avoidance.
+        DensityGradientAtCell(density, &cell, &goalCGrad, mapHeight, mapWidth);
+        densityLength = fast_length(goalCGrad);
+        cGrad += goalCGrad;
+
         //compute the target cell.
         targetCell = convert_int4(mapPos + cGrad);//cell + convert_int4(dir);
         //Read in the gradient at target cell.
         uint cellOffset2 = targetCell.z * mapHeight + targetCell.x;
         tgtCGrad = vload4(cellOffset2, gradIn);
         //Compute the goal graidents
-        GradientAtCell(&goal, &cell, &goalCGrad, mapHeight, mapWidth);
+
         GradientAtCell(&goal, &targetCell, &tgtGoalCGrad, mapHeight, mapWidth);
         //implied linear gradient operator. Linear independence P(x+y) = P(x) + P(y)
-        cGrad += goalCGrad;
+
         tgtCGrad += tgtGoalCGrad;
 
         //compute dot produce of entity direction and gradient vector.
-        normal = fast_normalize(tgtCGrad);
-        dpp = dot(cGrad, normal);
+        //normal = fast_normalize(tgtCGrad);
 
-        if(dpp < DPPCMP1)
+        dpp = dot(fast_normalize(cGrad), fast_normalize(tgtCGrad));
+
+        if(dpp < DPPCMP1 && densityLength < 0.00000001)
           {
             mode = DESCEND; //DESCENDING mode.
             impulse = true;
           }
         else
           {
-            //compute quaternion.
-            AxisAngleToQuaternion(&worldOrient, &YAXIS, atan2(cGrad.x, cGrad.z));
-            //update entities.
-            UpdateEntity(&worldPos, &worldOrient, &velocity, &goalOld, &stone, &mode, entsPos, entsOrient, entsVel, goals, storeone,
-               tid, unitsPerBlock, dt, impulse);
-            return;
+            if ( di < 5.0 + randGoal)
+              {
+                //play proability game.
+                if ( di < stone.x )
+                return;
+              }
+            else
+              {
+                stone.x = 5.0 + urand * randGoal;
+                //compute quaternion.
+                AxisAngleToQuaternion(&worldOrient, &YAXIS, atan2(cGrad.x, cGrad.z));
+                //update entities.
+                UpdateEntity(&worldPos, &worldOrient, &velocity, &goalOld, &stone, &mode, entsPos, entsOrient, entsVel, goals, storeone,
+                    tid, unitsPerBlock, dt, impulse);
+                return;
+              }
+
           }
       }
-
 
     //Look at contour map.
     cGrad = vload4(cellOffset1, contourIn);
@@ -360,9 +418,22 @@ updateEnt(__constant float* gradIn,
         if(mode != EXIT_DESCEND) //We need to go one more step.
         mode = EXIT_DESCEND; //enter EXIT_DESCEND mode.
       }
-    AxisAngleToQuaternion(&worldOrient, &YAXIS, atan2(cGrad.x, cGrad.z));
-    UpdateEntity(&worldPos, &worldOrient, &velocity, &goalOld, &stone, &mode, entsPos, entsOrient, entsVel, goals, storeone,
-        tid, unitsPerBlock, dt, impulse);
 
-    return;
+    if ( di < 5.0 + randGoal)
+      {
+        //play proability game.
+        if ( di < stone.x )
+        return;
+      }
+    else
+      {
+        stone.x = 5.0 + urand * randGoal;
+        //compute quaternion.
+        AxisAngleToQuaternion(&worldOrient, &YAXIS, atan2(cGrad.x, cGrad.z));
+        UpdateEntity(&worldPos, &worldOrient, &velocity, &goalOld, &stone, &mode, entsPos, entsOrient, entsVel, goals, storeone,
+            tid, unitsPerBlock, dt, impulse);
+
+        return;
+      }
+
   }

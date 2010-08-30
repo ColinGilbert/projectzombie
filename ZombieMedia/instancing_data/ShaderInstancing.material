@@ -1,0 +1,47 @@
+vertex_program ShaderInstancing_vs cg
+{
+	source ShaderInstancing.cg
+	entry_point main_vs
+	profiles vs_3_0 vp40 arbvp1
+
+	includes_skeletal_animation true
+
+	default_params
+	{
+		param_named_auto viewProjMatrix				viewproj_matrix
+		param_named_auto worldMatrix3x4Array		world_matrix_array_3x4
+	}
+}
+
+fragment_program ShaderInstancing_ps cg
+{
+	source ShaderInstancing.cg
+	entry_point main_ps
+	profiles ps_3_0 fp40
+
+	default_params
+	{
+	}
+}
+
+material Red
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref ShaderInstancing_vs
+			{
+			}
+
+			fragment_program_ref ShaderInstancing_ps
+			{
+			}
+
+			/*texture_unit Diffuse
+			{
+				texture_alias		DiffuseMap
+			}*/
+		}
+	}
+}
