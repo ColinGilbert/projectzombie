@@ -120,9 +120,11 @@ ZCLController::initCL(std::string& configName)
   for (int i = 0; i < allPlatforms.size(); i++)
     {
       allPlatforms[i].getInfo((cl_platform_info) CL_PLATFORM_VENDOR, &platformVendor);
+      cout << "Platform: " << platformVendor << endl;
       if (platformVendor.compare("Advanced Micro Devices, Inc.") == 0 && !_useGPU)
         {
           platformIdx = i;
+	  break;
         }
       else
         platformIdx = i;

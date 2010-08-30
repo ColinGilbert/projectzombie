@@ -97,7 +97,7 @@ namespace ZGame
 
         const RenderTarget::FrameStats& stats = _window->getStatistics();
 
-        if ((_statsClockVariable % 300) == 0)
+        if ((_statsClockVariable % 400) == 0)
           {
             cout << avgFps << ": " << StringConverter::toString(stats.avgFPS) << endl;
             cout << currFps << ": " << StringConverter::toString(stats.lastFPS) << endl;
@@ -256,7 +256,7 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-        //updateStats();
+        updateStats();
       }
     catch (Ogre::Exception e)
       {

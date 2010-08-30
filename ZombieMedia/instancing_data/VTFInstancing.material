@@ -2,7 +2,7 @@ vertex_program VTFInstancing_vs cg
 {
 	source VTFInstancing.cg
 	entry_point main_vs
-	profiles glslv
+	profiles vp40
 
 	uses_vertex_texture_fetch true
 
@@ -16,7 +16,7 @@ fragment_program VTFInstancing_ps cg
 {
 	source VTFInstancing.cg
 	entry_point main_ps
-	profiles glslf
+	profiles fp40
 
 	default_params
 	{
@@ -51,12 +51,12 @@ material BlueVTF
 	{
 		pass
 		{
-			vertex_program_ref VTFInstancing_vs_glsl
+			vertex_program_ref VTFInstancing_vs
 			{
 				//param_named matrixTexture int 1
 			}
 
-			fragment_program_ref VTFInstancing_ps_glsl
+			fragment_program_ref VTFInstancing_ps
 			{
 			}
 

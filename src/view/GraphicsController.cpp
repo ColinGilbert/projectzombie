@@ -6,10 +6,10 @@
  */
 #include "GraphicsController.h"
 #include "EngineView.h"
-#include "ogre/SSAOLogic.h"
-#include "ogre/DeferredLightCP.h"
-#include "ogre/GBufferSchemeHandler.h"
-#include "ogre/NullSchemeHandler.h"
+//#include "ogre/SSAOLogic.h"
+//#include "ogre/DeferredLightCP.h"
+//#include "ogre/GBufferSchemeHandler.h"
+//#include "ogre/NullSchemeHandler.h"
 
 
 using ZGame::GraphicsController;
