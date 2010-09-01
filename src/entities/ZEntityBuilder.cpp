@@ -54,9 +54,9 @@ EntitiesBuilder::build(EntitiesManager* entMgr)
     //boost::variate_generator<boost::minstd_rand, boost::uniform_real<> > randRadius;
 
     //GPUEntsDistributor<boost::minstd_rand, boost::uniform_int<> > dist(rng, xDist, zDist);
-    Vector3 pos; 
+    Vector3 pos(Ogre::Vector3::ZERO); 
     Quaternion orient;
-    Vector3 offset;
+    Vector3 offset(Ogre::Vector3::ZERO);
     cout << "Creating " << numOfEnts << " number of entities." << endl;
 
     for(int i=0; i<numOfEnts; ++i)
@@ -72,8 +72,10 @@ EntitiesBuilder::build(EntitiesManager* entMgr)
         offset.x = vecOnSphere[0] * radius;
         offset.z = vecOnSphere[1] * radius; //scale by radius
         ZEntity* ent = entMgr->createZEntity();
+        //cout << "builder center: " << center << endl;
+        //cout << "builder offset: " << offset << endl;
         pos = center + offset;
-
+        //cout << "builder pos: " << pos << endl;
         ent->onRead(pos, orient, center);
     }
     

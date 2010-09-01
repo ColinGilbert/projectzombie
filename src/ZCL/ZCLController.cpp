@@ -20,7 +20,10 @@ using std::cerr;
 #include "world/WorldMap.h"
 #include "world/WorldScale.h"
 
-using ZGame::Entities::ZEntityBuffers;
+using namespace ZGame;
+
+using ZGame::ZCL::ZCLController;
+//using ZGame::Entities::ZEntityBuffers;
 using ZGame::World::WorldMap;
 
 using namespace ZGame::ZCL;
@@ -285,7 +288,7 @@ ZCLController::printDeviceInfo(std::vector<cl::Device> &devs)
 }
 
 void
-ZCLController::initCLBuffers(ZEntityBuffers* entBufs, WorldMap* worldMap)
+    ZCLController::initCLBuffers(Entities::ZEntityBuffers* entBufs, WorldMap* worldMap)
 {
   using Ogre::Real;
   using Ogre::uchar;
@@ -340,6 +343,7 @@ ZCLController::initCLBuffers(ZEntityBuffers* entBufs, WorldMap* worldMap)
   _entsStoreOneCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, bufferLen, _entsStoreOneBuf, &err);
   _chkErr(err, "Buffer::Buffer(): entities goals buffer.");
   _densityCL = cl::Buffer(_context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, _mapBufLen, _densityBuf, &err);
+  cout << "Done loading OpenCL buffers." << endl;
 }
 
 void
@@ -433,8 +437,8 @@ ZCLController::enqueueKernel0(bool block = false)
   cl::Event e;
   _queue.enqueueNDRangeKernel(_kernel[0], cl::NullRange, cl::NDRange(_numOfEnts), cl::NDRange(GROUP_SIZE), 0, &e);
 
-  if (_useGPU)
-     {
+  //if (_useGPU)
+    // {
        //read back the buffer. Going to be slow.
        _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
        _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
@@ -442,7 +446,7 @@ ZCLController::enqueueKernel0(bool block = false)
        _queue.enqueueReadBuffer(_entsGoalsCL, true, 0, _entsBufLen, _entsGoalsBuf);
        _queue.enqueueReadBuffer(_entsStoreOneCL, true, 0, _entsBufLen, _entsStoreOneBuf);
        _queue.enqueueReadBuffer(_densityCL, true, 0, _entsBufLen, _densityBuf);
-     }
+     //}
    _queue.finish();
 
 

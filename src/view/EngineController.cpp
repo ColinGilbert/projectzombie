@@ -130,7 +130,7 @@ namespace ZGame
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
     _root.reset(
-        new Ogre::Root("plugins.cfg", "plsm2_display.cfg", "Pchaos.log"));
+        new Ogre::Root("plugins.cfg", "pchaos.cfg", "Pchaos.log"));
     if (_root->showConfigDialog())
       {
         _window = _root->initialise(true);
@@ -164,6 +164,7 @@ namespace ZGame
     loadStates();
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
+    lm->setLogDetail(Ogre::LL_NORMAL);
 
     lm->logMessage(Ogre::LML_TRIVIAL, "States finished loading");
 
@@ -486,8 +487,9 @@ namespace ZGame
         KeyEventRegister keyReg;
         MouseEventRegister mouseReg;
 
-        _curGameState->init(lfcReg, keyReg, mouseReg, _sdkTrayMgr.get());
 
+        _curGameState->init(lfcReg, keyReg, mouseReg, _sdkTrayMgr.get());
+        LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Current game state done init.");
         //We manually register the net client for now. We do this
         //since we have not implemented Stateful states. The original
         //idea for Stateful states is so we use Stateful states as

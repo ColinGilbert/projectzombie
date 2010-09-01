@@ -168,15 +168,8 @@ EntitiesManager::zEntitiesToBuffer()
       _ents.goals[entIdx * vecDim + 3] = Ogre::Math::RangeRandom(0.0f, 2147483647.0f ); //generate a random seed.
       _ents.storeone[entIdx * vecDim] = Ogre::Math::RangeRandom(5.0f, 15.0f);
       //Hash density values.
-      cout << "Hasing" << endl;
-
-
       size_t idx = (size_t)(pos.z / WSCALE.unitsPerMeter) * 513 + (size_t)(pos.x / WSCALE.unitsPerMeter);
-      cout << "idx, dsize: " << idx << " " << dSize << endl;
       _ents.density[idx * vecDim] = 1.0f; //We assume individual addtion of density is 1.0. This is clearly a hack!!!
-
-      cout << "Done hasing!" << endl;
-
       entIdx++;
     }
   cout << "Done buffer conversion." << endl;

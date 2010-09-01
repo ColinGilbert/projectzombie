@@ -20,6 +20,7 @@ using ZGame::Entities::EntitiesCreateMenu;
 using ZGame::Entities::EntitiesGroup;
 using ZGame::Entities::EntitiesManager;
 using ZGame::Entities::RenderEntitiesManager;
+using ZGame::ZWorkspace;
 using OgreBites::Button;
 using OgreBites::SelectMenu;
 
@@ -48,6 +49,7 @@ bool
 EntitiesView::onMouseMove(const OIS::MouseEvent &evt)
 {
   _createMenu->onMouseMove(evt);
+  return true;
 }
 
 bool
@@ -55,12 +57,13 @@ EntitiesView::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID i
 {
   cout << "MOUSE DOWN CALLED!" << endl;
   _createMenu->onMouseDown(evt, id);
+  return true;
 }
 
 bool
 EntitiesView::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
-
+    return true;
 }
 
 bool
@@ -112,6 +115,7 @@ EntitiesCreateMenu::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButt
           _adjustCenter(false);
         }
     }
+  return true;
 }
 bool
 EntitiesCreateMenu::onMouseMove(const OIS::MouseEvent &evt)
@@ -124,10 +128,13 @@ EntitiesCreateMenu::onMouseMove(const OIS::MouseEvent &evt)
       if (intersect.first)
         {
           Ogre::Vector3 pos = r.getPoint(intersect.second);
+          cout << "intersect position: " << pos << endl;
           _curIcon->setPosition(pos);
 
         }
     }
+
+  return true;
 }
 
 void
@@ -195,6 +202,7 @@ EntitiesCreateMenu::_adjustCenter(bool engage)
       //Set the center for group.
       Entities::EntitiesGroup* grp = _workspace->getEntitiesManager()->getGroup(_curGrpIdx);
       grp->center = _curIcon->getPosition();
+      cout << "Group center set at: " << grp->center << endl;
       _adjustCenterMode = false;
       _tray->showTrays();
     }
@@ -314,7 +322,7 @@ EntitiesCreateMenu::handleSlider(OgreBites::Slider* slider)
     {
       grp->radius = (int) (_groupRadiusSlider->getValue());
     }
-
+  return true;
 }
 /*
  EntitiesGoalMenu::EntitiesGoalMenu(OgreBites::SdkTrayManager* tray) :

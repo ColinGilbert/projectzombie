@@ -13,7 +13,7 @@ using namespace std;
 #include "ServerController.h"
 //#include "GPUEntsDistributor.h"
 
-#define CROWD 1
+
 
 /*
 * ZombieDriver.cpp
@@ -35,21 +35,21 @@ extern "C" {
 
     ZGame::MainController* engineControl = 0;
 
-    /*
-    #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
     INT 
-    WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-    #else*/
+        WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+#else
     int
         main(int argc, char** argv)
-        //#endif
+#endif
     {
         using namespace ZGame;
 #ifdef __DEBUG
         cout << "Debug mode: " << endl;
 #endif
         //signal(SIGINT,clean_up_func);
-
+        int argc = 1;
         cout << "About to new EngineController" << endl;
         //#if
         if(argc == 1) //run client
@@ -85,7 +85,7 @@ extern "C" {
         }
         catch(...)
         {
-           
+
             delete engineControl;
         }
 

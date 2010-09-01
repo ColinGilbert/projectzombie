@@ -9,6 +9,7 @@
 using std::vector;
 
 #include <Ogre.h>
+
 #include "entities/EntitiesDefs.h"
 #include "delegates/EntityDelegates.h"
 
@@ -68,8 +69,9 @@ namespace ZGame
             std::vector<Ogre::InstancedGeometry*> _renderInstances;
             Ogre::vector<Ogre::AnimationState*>::type _animations;
             Ogre::SceneNode* _instancesRoot;
-	    Ogre::InstanceManager* _instMgr;
-
+#ifdef VTFINST
+    	    Ogre::InstanceManager* _instMgr;
+#endif
 
         };
     }

@@ -2,7 +2,7 @@ vertex_program VTFInstancing_vs cg
 {
 	source VTFInstancing.cg
 	entry_point main_vs
-	profiles vp40
+	profiles vs_3_0 vp40
 
 	uses_vertex_texture_fetch true
 
@@ -16,7 +16,7 @@ fragment_program VTFInstancing_ps cg
 {
 	source VTFInstancing.cg
 	entry_point main_ps
-	profiles fp40
+	profiles ps_3_0 fp40
 
 	default_params
 	{

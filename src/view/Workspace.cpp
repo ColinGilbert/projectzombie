@@ -12,6 +12,7 @@
 #include "world/WorldController.h"
 #include <sstream>
 
+using namespace ZGame;
 using ZGame::ZWorkspace;
 
 size_t ZWorkspace::_ID = 0;

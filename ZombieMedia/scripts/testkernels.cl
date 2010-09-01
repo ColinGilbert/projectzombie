@@ -114,14 +114,14 @@ DensityGradientAtCell(__global float* density, int4* cell, float4* result, const
     int4 lcell = *cell + l;
     int4 rcell = *cell + r;
 
-    ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapHeight));
-    ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapWidth));
-    dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapHeight));
-    dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapWidth));
-    lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapHeight));
-    lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapWidth));
-    rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapHeight));
-    rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapWidth));
+    ucell = convert_int4(clamp(convert_float4(ucell), 0.0f, (float) mapHeight));
+    ucell = convert_int4(clamp(convert_float4(ucell), 0.0f, (float) mapWidth));
+    dcell = convert_int4(clamp(convert_float4(dcell), 0.0f, (float) mapHeight));
+    dcell = convert_int4(clamp(convert_float4(dcell), 0.0f, (float) mapWidth));
+    lcell = convert_int4(clamp(convert_float4(lcell), 0.0f, (float) mapHeight));
+    lcell = convert_int4(clamp(convert_float4(lcell), 0.0f, (float) mapWidth));
+    rcell = convert_int4(clamp(convert_float4(rcell), 0.0f, (float) mapHeight));
+    rcell = convert_int4(clamp(convert_float4(rcell), 0.0f, (float) mapWidth));
 
     //grab the density of the 4 cells.
     uint offset = getCellOffset(&ucell, mapHeight);
@@ -158,14 +158,14 @@ GradientAtCell(float4* goal, int4* cell, float4* result, const uint mapHeight, c
   int4 dcell = *cell + d;
   int4 lcell = *cell + l;
   int4 rcell = *cell + r;
-  ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapHeight));
-  ucell = convert_int4(clamp(convert_float4(ucell), 0, (float) mapWidth));
-  dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapHeight));
-  dcell = convert_int4(clamp(convert_float4(dcell), 0, (float) mapWidth));
-  lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapHeight));
-  lcell = convert_int4(clamp(convert_float4(lcell), 0, (float) mapWidth));
-  rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapHeight));
-  rcell = convert_int4(clamp(convert_float4(rcell), 0, (float) mapWidth));
+  ucell = convert_int4(clamp(convert_float4(ucell), 0.0f, (float) mapHeight));
+  ucell = convert_int4(clamp(convert_float4(ucell), 0.0f, (float) mapWidth));
+  dcell = convert_int4(clamp(convert_float4(dcell), 0.0f, (float) mapHeight));
+  dcell = convert_int4(clamp(convert_float4(dcell), 0.0f, (float) mapWidth));
+  lcell = convert_int4(clamp(convert_float4(lcell), 0.0f, (float) mapHeight));
+  lcell = convert_int4(clamp(convert_float4(lcell), 0.0f, (float) mapWidth));
+  rcell = convert_int4(clamp(convert_float4(rcell), 0.0f, (float) mapHeight));
+  rcell = convert_int4(clamp(convert_float4(rcell), 0.0f, (float) mapWidth));
   //compute potential
   temp = convert_float4(lcell);
   pl = ComputeTankPot(goal, &temp);
@@ -267,6 +267,8 @@ UpdateEntity(float4* pos, float4* orient, float4* velocity, float4* goal, float4
 
     *velocity = (*velocity) + (k1 + k2) / 2.0f;
     *pos = *pos + *velocity * dt;
+    
+    
     //*pos = *pos + TDir * dt;
 
     //Output
@@ -340,6 +342,8 @@ updateEnt(__constant float* gradIn,
 
     int4 cell = convert_int4(mapPos);
     uint cellOffset1 = cell.z * mapHeight + cell.x;
+
+    //printf("tid: %d", tid);
 
     di = fast_distance(mapPos, goal);
 

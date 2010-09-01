@@ -1,9 +1,10 @@
 #include <OgreRoot.h>
-#include <OgreInstanceManager.h>
-#include <OgreInstancedEntity.h>
+//#include <OgreInstanceManager.h>
+//#include <OgreInstancedEntity.h>
+#include "entities/EntitiesDefs.h"
 #include "entities/InstancedRdrEntitiesBuilder.h"
 
-#define CROWD 1
+//#define CROWD 1
 //#define INSTANCING 1
 #include <iostream>
 using std::cout;

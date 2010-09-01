@@ -76,6 +76,7 @@ GraphicsController::onInit()
   scnMgr->setShadowTextureSize(512);
   scnMgr->setShadowTexturePixelFormat(PF_FLOAT16_R);
   */
+  return true;
 }
 
 bool

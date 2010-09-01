@@ -1,15 +1,16 @@
 #include <iostream>
 
 //#define VTFINST
-#define CROWD 1
+//#define CROWD 1
 using std::cout;
 using std::endl;
 
 #include <boost/shared_ptr.hpp>
-
+#include "entities/EntitiesDefs.h"
+#ifdef VTFINST
 #include <OgreInstanceManager.h>
 #include <OgreInstancedEntity.h>
-
+#endif
 using boost::shared_ptr;
 
 #include "entities/RenderEntitiesManager.h"
@@ -34,7 +35,9 @@ RenderEntitiesManager::RenderEntitiesManager() :
   crtRdrCmd->setCommandMemento(dlg.GetMemento());
   CommandController::getSingleton().addCommand(crtRdrCmd);
   _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
+#ifdef VTFINST
   _instMgr = 0;
+#endif
 }
 
 RenderEntitiesManager::~RenderEntitiesManager()
@@ -102,14 +105,15 @@ RenderEntitiesManager::createRenderEntities(ZENTITY_VEC::const_iterator begin, Z
   _instancesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("RDR_ENTITIES_ROOT");
   if(_instMgr == 0)
     _instMgr = _scnMgr->createInstanceManager("MyInstanceMgr", "robot.mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
-      Ogre::InstanceManager::TextureVTF, 220);
+      Ogre::InstanceManager::TextureVTF, 300, IM_USEALL);
+  //_instMgr = _scnMgr->createInstanceManager("MyInstanceMgr", "robot.mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
+  //Ogre::InstanceManager::ShaderBased, 80);
 
   cout << "Creating instanced entities" << endl;
   cout << "Num of ents: " << numOfEnts << endl;
   ZENTITY_VEC::const_iterator iter = begin;
   for (size_t i = 0; i < numOfEnts; ++i)
     {
-      cout << "Creating rdr entities" << endl;
       InstancedEntity *ent = _instMgr->createInstancedEntity("BlueVTF");
       SceneNode* sceneNode = _instancesRoot->createChildSceneNode();
       sceneNode->attachObject(ent);
@@ -240,23 +244,24 @@ RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* or
   const Quaternion initialOrient(Ogre::Radian(Ogre::Degree(-90.0f).valueRadians()), Ogre::Vector3::UNIT_Y);
   //const Quaternion initialOrient;
   Ogre::vector<AnimationState*>::type::iterator it;
-  it=_animations.begin();
+  //it=_animations.begin();
   //Vector3 pos;
   //Quaternion quat;
   while(itChild.hasMoreElements())
     {
       //cout << "Updating child nodes!" << endl;
       SceneNode* pChildNode = static_cast<SceneNode*> (itChild.getNext());
-      const Vector3 pos(posBuf[idx], posBuf[idx + 1], posBuf[idx + 2]);
+      Vector3 pos(posBuf[idx], posBuf[idx + 1], posBuf[idx + 2]);
       //cout << "Pos: " << pos << endl;
+      pos.y = 0.0f;
       pChildNode->setPosition(pos);
       Quaternion quat(orientBuf[idx], orientBuf[idx + 1], orientBuf[idx + 2], orientBuf[idx + 3]);
       quat = quat * initialOrient;
       pChildNode->setOrientation(quat);
-
-      (*it)->addTime(dt*1.0f);
+      
+      //(*it)->addTime(dt*1.0f);
       //(*it)->addTime(dt*velocityBuf[idx]);
-      it++;
+      //it++;
       idx += DIM;
     }
 }
@@ -276,6 +281,7 @@ RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* or
   size_t idx = 0;
   const size_t DIM = 4;
   const Ogre::Quaternion initialOrient(Ogre::Radian(Ogre::Degree(-90.0f).valueRadians()), Ogre::Vector3::UNIT_Y);
+  //Vector3 pos;
 #ifdef CROWD
   Ogre::vector<AnimationState*>::type::iterator it;
   it=_animations.begin();
@@ -290,7 +296,10 @@ RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* or
       while (bit.hasMoreElements())
         {
           InstancedGeometry::InstancedObject* obj = bit.getNext();
-          const Vector3 pos(posBuf[idx], posBuf[idx + 1], posBuf[idx + 2]);
+          //cout << "Pos buffer: " << posBuf[idx + 1] << endl;
+          Vector3 pos(posBuf[idx], posBuf[idx + 1], posBuf[idx + 2]);
+          pos.y = 0.0f;
+          //cout << "Postion for rdr ent: " << pos << endl;
           obj->setPosition(pos);
           Quaternion quat(orientBuf[idx], orientBuf[idx + 1], orientBuf[idx + 2], orientBuf[idx + 3]);
           quat = quat * initialOrient;

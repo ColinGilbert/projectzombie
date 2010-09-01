@@ -1,4 +1,4 @@
-#pragma ONCE
+#pragma once
 #include "net/NetController.h"
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"

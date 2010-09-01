@@ -1,8 +1,11 @@
 #ifndef _ZGAME_ENTITIES_DEFS_H
 #define _ZGAME_ENTITIES_DEFS_H
 
-
 #include <Ogre.h>
+
+#define VTFINST
+//#define CROWD
+
 
 namespace ZGame
 {
