@@ -68,6 +68,8 @@ namespace ZGame
             Ogre::SceneManager* _scnMgr;
             std::vector<Ogre::InstancedGeometry*> _renderInstances;
             Ogre::vector<Ogre::AnimationState*>::type _animations;
+            std::vector<Ogre::InstancedEntity*> _instEnts;
+
             Ogre::SceneNode* _instancesRoot;
 #ifdef VTFINST
     	    Ogre::InstanceManager* _instMgr;

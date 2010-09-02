@@ -49,7 +49,7 @@ extern "C" {
         cout << "Debug mode: " << endl;
 #endif
         //signal(SIGINT,clean_up_func);
-        int argc = 1;
+        //argc = 1;
         cout << "About to new EngineController" << endl;
         //#if
         if(argc == 1) //run client

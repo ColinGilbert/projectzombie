@@ -1,27 +1,54 @@
-vertex_program ShaderInstancing_vs cg
+//--------------------------------------------------------------
+// GLSL Programs
+//--------------------------------------------------------------
+vertex_program ShaderInstancing_glsl_vs glsl
+{
+	source ShaderInstancing.vert
+}
+
+fragment_program ShaderInstancing_glsl_ps glsl
+{
+	source ShaderInstancing.frag
+}
+
+//--------------------------------------------------------------
+// CG Programs
+//--------------------------------------------------------------
+vertex_program ShaderInstancing_cg_vs cg
 {
 	source ShaderInstancing.cg
 	entry_point main_vs
-	profiles vs_3_0 vp40 arbvp1
+	profiles vs_3_0 vp40
+}
+
+fragment_program ShaderInstancing_cg_ps cg
+{
+	source ShaderInstancing.cg
+	entry_point main_ps
+	profiles ps_3_0 fp40
+}
+
+//--------------------------------------------------------------
+// Unified CG/GLSL Programs
+//--------------------------------------------------------------
+vertex_program ShaderInstancing_vs unified
+{
+	delegate ShaderInstancing_cg_vs
+	delegate ShaderInstancing_glsl_vs
 
 	includes_skeletal_animation true
 
 	default_params
 	{
-		param_named_auto viewProjMatrix				viewproj_matrix
-		param_named_auto worldMatrix3x4Array		world_matrix_array_3x4
+		param_named_auto	viewProjMatrix				viewproj_matrix
+		param_named_auto	worldMatrix3x4Array			world_matrix_array_3x4
 	}
 }
 
-fragment_program ShaderInstancing_ps cg
+fragment_program ShaderInstancing_ps unified
 {
-	source ShaderInstancing.cg
-	entry_point main_ps
-	profiles ps_3_0 fp40
-
-	default_params
-	{
-	}
+	delegate ShaderInstancing_cg_ps
+	delegate ShaderInstancing_glsl_ps
 }
 
 material Red

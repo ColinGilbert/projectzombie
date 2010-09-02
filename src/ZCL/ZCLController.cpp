@@ -437,8 +437,8 @@ ZCLController::enqueueKernel0(bool block = false)
   cl::Event e;
   _queue.enqueueNDRangeKernel(_kernel[0], cl::NullRange, cl::NDRange(_numOfEnts), cl::NDRange(GROUP_SIZE), 0, &e);
 
-  //if (_useGPU)
-    // {
+  if (_useGPU)
+     {
        //read back the buffer. Going to be slow.
        _queue.enqueueReadBuffer(_entsPosCL, true, 0, _entsBufLen, _entsPosBuf);
        _queue.enqueueReadBuffer(_entsOrientCL, true, 0, _entsBufLen, _entsOrientBuf);
@@ -446,7 +446,7 @@ ZCLController::enqueueKernel0(bool block = false)
        _queue.enqueueReadBuffer(_entsGoalsCL, true, 0, _entsBufLen, _entsGoalsBuf);
        _queue.enqueueReadBuffer(_entsStoreOneCL, true, 0, _entsBufLen, _entsStoreOneBuf);
        _queue.enqueueReadBuffer(_densityCL, true, 0, _entsBufLen, _densityBuf);
-     //}
+    }
    _queue.finish();
 
 

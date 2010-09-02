@@ -1,4 +1,28 @@
-vertex_program VTFInstancing_vs cg
+//--------------------------------------------------------------
+// GLSL Programs
+//--------------------------------------------------------------
+vertex_program VTFInstancing_glsl_vs glsl
+{
+	source VTFInstancingVP.glsl
+
+	uses_vertex_texture_fetch true
+
+	default_params
+	{
+		param_named_auto	viewProjMatrix				viewproj_matrix
+		param_named			matrixTexture				int 0
+	}
+}
+
+fragment_program VTFInstancing_glsl_ps glsl
+{
+	source VTFInstancingFP.glsl
+}
+
+//--------------------------------------------------------------
+// CG Programs
+//--------------------------------------------------------------
+vertex_program VTFInstancing_cg_vs cg
 {
 	source VTFInstancing.cg
 	entry_point main_vs
@@ -12,7 +36,7 @@ vertex_program VTFInstancing_vs cg
 	}
 }
 
-fragment_program VTFInstancing_ps cg
+fragment_program VTFInstancing_cg_ps cg
 {
 	source VTFInstancing.cg
 	entry_point main_ps
@@ -23,26 +47,19 @@ fragment_program VTFInstancing_ps cg
 	}
 }
 
-vertex_program VTFInstancing_vs_glsl glsl
+//--------------------------------------------------------------
+// Unified CG/GLSL Programs
+//--------------------------------------------------------------
+vertex_program VTFInstancing_vs unified
 {
-	source VTFInstancingVP.glsl
-	uses_vertex_texture_fetch true
-	profiles gp4vp
-
-	default_params
-	{
-		param_named_auto viewProjMatrix viewproj_matrix
-	}
+	delegate VTFInstancing_cg_vs
+	delegate VTFInstancing_glsl_vs
 }
 
-fragment_program VTFInstancing_ps_glsl glsl
+fragment_program VTFInstancing_ps unified
 {
-	source VTFInstancingFP.glsl
-	profiles gp4fp
-	default_params
-	{
-	}
-
+	delegate VTFInstancing_cg_ps
+	delegate VTFInstancing_glsl_ps
 }
 
 material BlueVTF
@@ -53,7 +70,6 @@ material BlueVTF
 		{
 			vertex_program_ref VTFInstancing_vs
 			{
-				//param_named matrixTexture int 1
 			}
 
 			fragment_program_ref VTFInstancing_ps
@@ -62,8 +78,8 @@ material BlueVTF
 
 			texture_unit InstancingVTF
 			{
-				//binding_type	vertex
-				//filtering		none
+				binding_type	vertex
+				filtering		none
 			}
 		}
 	}
