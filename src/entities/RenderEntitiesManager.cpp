@@ -34,14 +34,18 @@ RenderEntitiesManager::RenderEntitiesManager() :
   shared_ptr<Command> crtRdrCmd(cmd);
   crtRdrCmd->setCommandMemento(dlg.GetMemento());
   CommandController::getSingleton().addCommand(crtRdrCmd);
-  _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
+  //_entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
 #ifdef VTFINST
   _instMgr = 0;
+  _entNodesRoot = 0;
+#else
+  _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
 #endif
 }
 
 RenderEntitiesManager::~RenderEntitiesManager()
 {
+  resetRenderEntities();
 }
 
 void
@@ -55,7 +59,8 @@ RenderEntitiesManager::_removeChildObjects(Ogre::SceneNode* node)
         {
           MovableObject* pObject = static_cast<MovableObject*> (itObject.getNext());
           node->detachObject(pObject);
-	  //_instMgr->destroyInstancedEntity(pObject);
+	  //_scnMgr->destroyInstancedEntity(pObject);
+
 	  //node->getCreator()->destroyMovableObject(pObject);
         }
       SceneNode::ChildNodeIterator itChild = node->getChildIterator();
@@ -63,7 +68,11 @@ RenderEntitiesManager::_removeChildObjects(Ogre::SceneNode* node)
         {
           SceneNode* pChildNode = static_cast<SceneNode*> (itChild.getNext());
           _removeChildObjects(pChildNode);
+          node->removeChild(pChildNode);
+          OGRE_DELETE pChildNode;
         }
+      //remove node
+
     }
 }
 
@@ -73,12 +82,15 @@ RenderEntitiesManager::resetRenderEntities()
 
 #ifdef VTFINST
 
-  _removeChildObjects(_instancesRoot);
-  _instancesRoot->removeAllChildren();
-  _scnMgr->destroySceneNode(_instancesRoot);
+  _removeChildObjects(_entNodesRoot);
+
+
+
+  OGRE_DELETE _entNodesRoot;
   _scnMgr->destroyInstanceManager(_instMgr);
   _instMgr = 0;
-  _instancesRoot = 0;
+  _entNodesRoot = 0;
+  //_instancesRoot = 0;
 
 #else
 
@@ -102,15 +114,18 @@ RenderEntitiesManager::createRenderEntities(ZENTITY_VEC::const_iterator begin, Z
 
   std::string meshName = "robot";
 
-  _instancesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("RDR_ENTITIES_ROOT");
-
+  //_instancesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("RDR_ENTITIES_ROOT");
+  //_entNodesRoot = OGRE_NEW SceneNode(0);
+  //_entNodesRoot->_notifyRootNode();
+  //_scnMgr->getRootSceneNode()->addChild(_entNodesRoot);
+  //_entNodesRoot->setVisible(true);
 
   cout << "IM_USE16BIT: " << IM_USEALL << endl;
   cout << "IM_USEVTFBESTFIT" << IM_VTFBESTFIT << endl;
 
   if(_instMgr == 0)
-    _instMgr = _scnMgr->createInstanceManager("MyInstanceMgr", "ninja.mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
-      Ogre::InstanceManager::TextureVTF, 400, Ogre::IM_USE16BIT);
+    _instMgr = _scnMgr->createInstanceManager("MyInstanceMgr", "robot.mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
+      Ogre::InstanceManager::TextureVTF, 300, Ogre::IM_USEALL);
 
   //size_t recommendedBatchSize = _instMgr->getMaxOrBestNumInstancesPerBatch("BlueVTF", 300, IM_VTFBESTFIT);
   cout << "------------------------RECOMMENDED SIZE---------------------------" << endl;
@@ -127,7 +142,9 @@ RenderEntitiesManager::createRenderEntities(ZENTITY_VEC::const_iterator begin, Z
   for (size_t i = 0; i < numOfEnts; ++i)
     {
       InstancedEntity *ent = _instMgr->createInstancedEntity("BlueVTF");
-      //SceneNode* sceneNode = _instancesRoot->createChildSceneNode();
+      //SceneNode* sceneNode = OGRE_NEW SceneNode(0);
+      //_entNodesRoot->addChild(sceneNode);
+      //sceneNode->setVisible(true);
       SceneNode* sceneNode = _scnMgr->getRootSceneNode()->createChildSceneNode();
       sceneNode->attachObject(ent);
       Vector3 pos;
@@ -140,6 +157,8 @@ RenderEntitiesManager::createRenderEntities(ZENTITY_VEC::const_iterator begin, Z
       _animations.push_back(anim);
       anim->setTimePosition(Ogre::Math::RangeRandom(0.0f, 30.0f));
       anim->setEnabled(true);
+
+
 
       _instEnts.push_back(ent);
 
@@ -254,19 +273,19 @@ RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* or
 {
   size_t numOfEnts = 0;
   using namespace Ogre;
-  //SceneNode::ChildNodeIterator itChild = _instancesRoot->getChildIterator();
+  //SceneNode::ChildNodeIterator itChild = _entNodesRoot->getChildIterator();
   size_t idx = 0;
   const size_t DIM = 4;
   const Quaternion initialOrient(Ogre::Radian(Ogre::Degree(-90.0f).valueRadians()), Ogre::Vector3::UNIT_Y);
   //const Quaternion initialOrient;
   Ogre::vector<AnimationState*>::type::iterator it;
-  //it=_animations.begin();
+  it=_animations.begin();
   //Vector3 pos;
   //Quaternion quat;
 
   //while(itChild.hasMoreElements())
     //{
-
+      //cout << "Updatind child in pseudo root" << endl;
   //Ogre::vector<Ogre::InstancedEntity>::type::iterator eit;
 
   //while(eit.hasMoreElements())
@@ -279,16 +298,17 @@ RenderEntitiesManager::updateRenderEntities(const float* posBuf, const float* or
       Vector3 pos(posBuf[idx], posBuf[idx + 1], posBuf[idx + 2]);
       //cout << "Pos: " << pos << endl;
       pos.y = 0.0f;
-      //pChildNode->setPosition(pos);
+
       Quaternion quat(orientBuf[idx], orientBuf[idx + 1], orientBuf[idx + 2], orientBuf[idx + 3]);
       quat = quat * initialOrient;
+      //pChildNode->setPosition(pos);
       //pChildNode->setOrientation(quat);
       _instEnts[i]->getParentSceneNode()->setPosition(pos);
       _instEnts[i]->getParentSceneNode()->setOrientation(quat);
       
-      //(*it)->addTime(dt*1.0f);
-      //(*it)->addTime(dt*velocityBuf[idx]);
-      //it++;
+      (*it)->addTime(dt*1.0f);
+      (*it)->addTime(dt*velocityBuf[idx]*0.01);
+      it++;
       idx += DIM;
     }
     //}

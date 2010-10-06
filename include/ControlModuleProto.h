@@ -27,6 +27,7 @@ namespace ZGame
     {
     public:
         ControlModuleProto();
+        ControlModuleProto(float startTrans);
         virtual
             ~ControlModuleProto();
 
@@ -60,6 +61,10 @@ namespace ZGame
         Ogre::Real _rotPitch;
         Ogre::Real _rotFactor;
         Ogre::Camera* _cam;
+        int _mx_rel;
+        int _my_rel;
+        int _mx;
+        int _my;
 
         enum TransMode
         {
@@ -83,6 +88,7 @@ namespace ZGame
 
         //Clean up the lookat and camera nodes.
         void cleanUpNodes();
+        void _doMouseMove(Ogre::Real dt);
 
     };
 

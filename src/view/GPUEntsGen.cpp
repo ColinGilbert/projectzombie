@@ -160,10 +160,10 @@ GPUEntsGen::loadPositions()
         {
             dist.nextPosition(pos); //get randomly distributed position
             //PixelUtil::packColour((float)pos.x,(float)pos.y,0.0,0.0f,Ogre::PF_FLOAT32_RGBA,(void*)(&pDest[pitchY*j+i]));
-            *pDest++ = pos.z; //b
-            *pDest++ = pos.x;  //g
-            *pDest++ = pos.y; //r
-            *pDest++ = 0.0f; //a
+            *(pDest++) = pos.z; //b
+            *(pDest++) = pos.x;  //g
+            *(pDest++) = 0.0f;//pos.y; //r
+            *(pDest++) = 0.0f; //a
         }
     }
     pixBuffer->unlock();
@@ -197,10 +197,10 @@ GPUEntsGen::loadDirections()
             Real theta = static_cast<Real>(randTheta());
             dir.x = Math::Cos(theta);
             dir.z = Math::Sin(theta);
-            *pDest++ = dir.x;
-            *pDest++ = dir.z;
-            *pDest++ = 0.0f;
-            *pDest++ = theta;
+            *(pDest++) = dir.x;
+            *(pDest++) = dir.z;
+            *(pDest++) = 0.0f;
+            *(pDest++) = theta;
         }
     }
     pixBuffer->unlock();

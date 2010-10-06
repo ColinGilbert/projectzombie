@@ -95,6 +95,9 @@ namespace ZGame
             regKeyObsForInjection(KeyEventRegister &keyReg);
         virtual void
             regMouseObsForInjection(MouseEventRegister &mouseReg);
+
+
+
     private:
     private:
         auto_ptr<ZGame::World::WorldController> _worldController;

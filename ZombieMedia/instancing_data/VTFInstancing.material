@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 vertex_program VTFInstancing_glsl_vs glsl
 {
-	source VTFInstancingVP.glsl
+	source GLSL/VTFInstancing.vert
 
 	uses_vertex_texture_fetch true
 
@@ -16,7 +16,7 @@ vertex_program VTFInstancing_glsl_vs glsl
 
 fragment_program VTFInstancing_glsl_ps glsl
 {
-	source VTFInstancingFP.glsl
+	source GLSL/VTFInstancing.frag
 }
 
 //--------------------------------------------------------------

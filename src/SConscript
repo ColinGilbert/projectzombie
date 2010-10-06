@@ -14,6 +14,7 @@ files.append(File(Glob('utilities/*.cpp')))
 files.append(File(Glob('view/*.cpp')))
 files.append(File(Glob('ZCL/*.cpp')))
 files.append(File(Glob('world/*.cpp')))
+files.append(File(Glob('graphics/*.cpp')))
 #files.append(File(Glob('ogre/*.cpp')))
 Import('env')
 

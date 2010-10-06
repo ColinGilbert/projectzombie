@@ -1,4 +1,4 @@
-//#pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
+#pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 #pragma OPENCL EXTENSION cl_amd_printf : enable
 
 #define IA 16807                        // a
@@ -68,7 +68,7 @@ ComputeTankPot(float4* goal, float4* pos)
   //We are working in MAP space.
   const float tol = 0.000001f;
   const float D = 7.0f;
-  const float R = 512.0f;
+  const float R = 1024.0f;
   const float W = 0.5f;
   const float USCALE = 240.0f;
   const float DF = 2.0f;
@@ -415,11 +415,11 @@ updateEnt(__constant float* gradIn,
     dpp = dot(cGrad, normal);
     //Descend mode
     if(mode == EXIT_DESCEND) //If is in exit descend mode.
-    mode = CLIMB; //go back to climb mode.
+      mode = CLIMB; //go back to climb mode.
     if(dpp > DPPCMP1)
       {
         impulse = true;
-        if(mode != EXIT_DESCEND) //We need to go one more step.
+        if(mode != CLIMB) //We need to go one more step.
         mode = EXIT_DESCEND; //enter EXIT_DESCEND mode.
       }
 

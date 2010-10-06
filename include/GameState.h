@@ -15,7 +15,8 @@
 
 #include <vector>
 #include <memory>
-//
+
+#include <OIS/OIS.h>
 
 using namespace std;
 
@@ -67,6 +68,7 @@ namespace ZGame
       return _tray;
     }
 
+  protected:
   private:
     auto_ptr<GraphicsController> _gfxCtrl;
     OgreBites::SdkTrayManager* _tray;

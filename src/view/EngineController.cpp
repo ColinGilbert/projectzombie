@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdexcept>
 using namespace std;
-
+//#include <Threading/DefaultWorkQueueStandard.h>
 #include "EngineController.h"
 #include "EngineView.h"
 #include "GameStateFactory.h"
@@ -31,10 +31,8 @@ namespace ZGame
 {
 
   EngineController::EngineController() :
-    MainController(), _stillRunning(true), _lfcPump(new LifeCyclePump()),
-        _keyPump(new KeyboardPump()), _mousePump(new MousePump()),
-        _curStateInfo(0), _curGameState(0), _statsClockVariable(0),
-        _sdkTrayMgr(0)
+    MainController(), _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(new KeyboardPump()), _mousePump(new MousePump()), _curStateInfo(0),
+        _curGameState(0), _statsClockVariable(0), _sdkTrayMgr(0)
   {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -72,8 +70,9 @@ namespace ZGame
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
-    cam->setNearClipDistance(10.0f);
-    cam->setPosition(0.0f, 190.0f, 0.0f);
+    cam->setNearClipDistance(0.5f);
+    cam->setFarClipDistance(512.0f);
+    cam->setPosition(0, 0.0f, 0.0f);
     cam->rotate(Vector3(0.0f, 1.0f, 0.0f), Ogre::Radian(-Ogre::Math::PI / 2.0f));
     return cam;
   }
@@ -94,7 +93,6 @@ namespace ZGame
     try
       {
 
-
         const RenderTarget::FrameStats& stats = _window->getStatistics();
 
         if ((_statsClockVariable % 400) == 0)
@@ -102,11 +100,11 @@ namespace ZGame
             cout << avgFps << ": " << StringConverter::toString(stats.avgFPS) << endl;
             cout << currFps << ": " << StringConverter::toString(stats.lastFPS) << endl;
             cout << bestFps << ": " << StringConverter::toString(stats.bestFPS) << endl;
-            cout << tris << ": " <<  StringConverter::toString(stats.triangleCount) << endl;
+            cout << tris << ": " << StringConverter::toString(stats.triangleCount) << endl;
             cout << batches << ": " << StringConverter::toString(stats.batchCount) << endl;
           }
         _statsClockVariable++;
-           }
+      }
     catch (...)
       { /* ignore */
       }
@@ -129,8 +127,9 @@ namespace ZGame
     using namespace Ogre;
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
-    _root.reset(
-        new Ogre::Root("plugins.cfg", "pchaos.cfg", "Pchaos.log"));
+    _root.reset(new Ogre::Root("plugins.cfg", "pchaos.cfg", "Pchaos.log"));
+    //_root->setWorkQueue(OGRE_NEW Ogre::DefaultWorkQueue("DefaultWorkerQueue"));
+
     if (_root->showConfigDialog())
       {
         _window = _root->initialise(true);
@@ -138,18 +137,16 @@ namespace ZGame
     else
       return false;
 
-
     chooseSceneManager();
+    _scnMgr->setShadowTechnique(Ogre::SHADOWDETAILTYPE_ADDITIVE);
 
     Ogre::Camera* cam = createDefaultCamera();
     Ogre::Viewport* vp = _window->addViewport(cam);
     vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
-    cam->setAspectRatio(Real(vp->getActualWidth())
-        / Real(vp->getActualHeight()));
+    cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 
     _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
-
 
     //input
     _inController.reset(new InputController());
@@ -160,6 +157,10 @@ namespace ZGame
     //turn off loading bar
     _sdkTrayMgr->showLoadingBar();
     loadAssets("resources.cfg");
+
+    //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
+    Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");
+
     //load states
     loadStates();
 
@@ -167,8 +168,6 @@ namespace ZGame
     lm->setLogDetail(Ogre::LL_NORMAL);
 
     lm->logMessage(Ogre::LML_TRIVIAL, "States finished loading");
-
-
 
     lm->logMessage(Ogre::LML_TRIVIAL, "Injected input.");
 
@@ -181,8 +180,7 @@ namespace ZGame
     initConsole();
 
     lm->logMessage(Ogre::LML_NORMAL, "Initializing debug overlay.");
-    _debugOverlay = OverlayManager::getSingleton().getByName(
-        "Core/DebugOverlay");
+    _debugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
 
     //Create the NetClient. Note: This is place-holder code until we get the "service" framework.
     //Everything that uses CommandController depends on Console being initialized. This is bad, need to fix this ASAP.
@@ -190,8 +188,6 @@ namespace ZGame
     _netClient.reset(new ZGame::Networking::NetClientController());
 
     _sdkTrayMgr->hideLoadingBar();
-
-
 
     return true;
   }
@@ -220,7 +216,6 @@ namespace ZGame
     _inController->addMouseListeners(_listenerID, mouseObs);
   }
 
-
   void
   EngineController::loadAssets(Ogre::String filename)
   {
@@ -240,8 +235,7 @@ namespace ZGame
           {
             typeName = i->first;
             archName = i->second;
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                resourcePath + archName, typeName, secName);
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(resourcePath + archName, typeName, secName);
           }
       }
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -278,8 +272,7 @@ namespace ZGame
   EngineController::onDestroy()
   {
     MainController::onDestroy();
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
-        "EngineController.onDestroy()");
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "EngineController.onDestroy()");
     try
       {
         _inController->onDestroy();
@@ -332,6 +325,10 @@ namespace ZGame
         else
           ogreConsole->setVisible(true);
       }
+    else if(event.key == OIS::KC_SYSRQ)
+      {
+        _window->writeContentsToTimestampedFile("zombie_shot",".png");
+      }
 
     ogreConsole->onKeyPressed(event);
     //OgreConsole::getSingleton().onKeyPressed(event);
@@ -341,7 +338,6 @@ namespace ZGame
       }
     return true;
   }
-
 
   bool
   EngineController::onMouseMove(const OIS::MouseEvent &event)
@@ -356,16 +352,14 @@ namespace ZGame
   }
 
   bool
-  EngineController::onMouseDown(const OIS::MouseEvent &event,
-      const OIS::MouseButtonID id)
+  EngineController::onMouseDown(const OIS::MouseEvent &event, const OIS::MouseButtonID id)
   {
-        _mousePump->updateMouseDownEvt(event, id);
+    _mousePump->updateMouseDownEvt(event, id);
     return true;
   }
 
   bool
-  EngineController::onMouseUp(const OIS::MouseEvent &event,
-      const OIS::MouseButtonID id)
+  EngineController::onMouseUp(const OIS::MouseEvent &event, const OIS::MouseButtonID id)
   {
     _mousePump->updateMouseUpEvt(event, id);
     return true;
@@ -374,14 +368,11 @@ namespace ZGame
   void
   EngineController::loadStartStateToCurrentState(const Ogre::String curKey)
   {
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
-        "In loadStartStateToCurrentstate");
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In loadStartStateToCurrentstate");
 
-    for (ZGame::GameStateInfoMapItr it = _gameSInfoMap.begin(); it
-        != _gameSInfoMap.end(); ++it)
+    for (ZGame::GameStateInfoMapItr it = _gameSInfoMap.begin(); it != _gameSInfoMap.end(); ++it)
       {
-        cout << "info keys,keys: " << it->first << " " << it->second.key
-            << "\n";
+        cout << "info keys,keys: " << it->first << " " << it->second.key << "\n";
       }
 
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
@@ -408,16 +399,14 @@ namespace ZGame
   void
   EngineController::loadCurrentState(const Ogre::String curKey)
   {
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,
-        "In load current state");
+    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In load current state");
     ZGame::GameStateInfoMapItr it = _gameSInfoMap.find(curKey);
     if (it != _gameSInfoMap.end())
       {
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
           {
             if (_curGameState.get() == 0)
-              throw(invalid_argument(
-                  "Current game state is null when trying to load a new STATELESS current state"));
+              throw(invalid_argument("Current game state is null when trying to load a new STATELESS current state"));
             unloadCurrentState();
             //_curStateInfo.reset(&it->second);
             _curStateInfo = &it->second;
@@ -457,8 +446,7 @@ namespace ZGame
     logM->logMessage(Ogre::LML_NORMAL, "In realizeCurrentState");
     logM->logMessage(Ogre::LML_NORMAL, "StateInfo: ");
     logM->logMessage(Ogre::LML_NORMAL, "Key: " + _curStateInfo->key);
-    logM->logMessage(Ogre::LML_NORMAL, "Class: "
-        + _curStateInfo->gameStateClass);
+    logM->logMessage(Ogre::LML_NORMAL, "Class: " + _curStateInfo->gameStateClass);
     if (_curStateInfo->stateType == GameStateInfo::STATEFUL)
       {
         //add to stateful
@@ -467,10 +455,8 @@ namespace ZGame
       {
         ZGame::EVENT::KeyboardEvtObserver keyObs;
         if (_curGameState.get() != 0)
-          throw(invalid_argument(
-              "Invalid current game state when realizing new state. Current game state is not null!"));
-        _curGameState.reset(ZGame::GameStateFactory::createGameState(
-            _curStateInfo->gameStateClass));
+          throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
+        _curGameState.reset(ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass));
 
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
@@ -486,7 +472,6 @@ namespace ZGame
         LifeCycleRegister lfcReg;
         KeyEventRegister keyReg;
         MouseEventRegister mouseReg;
-
 
         _curGameState->init(lfcReg, keyReg, mouseReg, _sdkTrayMgr.get());
         LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Current game state done init.");

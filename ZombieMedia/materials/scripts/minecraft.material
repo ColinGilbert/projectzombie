@@ -1,0 +1,49 @@
+
+
+material PRJZ/Minecraft
+{
+	technique
+	{
+		pass
+		{	//cull_hardware back_face
+			texture_unit DiffuseMap
+			{
+				filtering none
+				//filtering bilinear
+				//texture minecraft_terrain_hi.png
+				texture minecraft_terrain_rpg.png
+			}
+			
+			vertex_program_ref MinecraftVPF_glsl
+			{
+				//param_named		LightPosition	float4	       256 512 -512 0
+				
+			}
+			
+			fragment_program_ref MinecraftFPFPF_glsl
+			{
+				param_named	terrainTexture	int 0
+			}
+			
+		
+		}
+	}
+
+	// this is the technique for the scheme "geom" that the SSAO
+    // compositor uses to render the geometry map
+	technique geom
+	{
+	    scheme geom
+
+	    pass
+	    {
+	        vertex_program_ref geom_vs
+	        {
+	        }
+
+	        fragment_program_ref geom_ps
+	        {
+	        }
+	    }
+	}		
+}

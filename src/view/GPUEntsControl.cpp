@@ -57,10 +57,10 @@ namespace ZGame
     //Setup the ping pongs
     _posPingPong.reset(new PingPongShaders(_stateTex, MaterialPtr(
         MaterialManager::getSingleton().getByName(
-            "ZGame/GPUEntsPosUpdatePingPong")), Real(50000.0f)));
+            "ZGame/GPUEntsPosUpdatePingPong")), Real(5000000.0f)));
     _dirPingPong.reset(new PingPongShaders(_dirTex, MaterialPtr(
         MaterialManager::getSingleton().getByName(
-            "ZGame/GPUEntsDirUpdatePingPong")), Real(50000.0f)));
+            "ZGame/GPUEntsDirUpdatePingPong")), Real(5000000.0f)));
     //attach direction texture to pos update shader
     MaterialPtr posMat = MaterialManager::getSingleton().getByName(
         "ZGame/GPUEntsPosUpdatePingPong");

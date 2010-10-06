@@ -4,6 +4,7 @@ Note: We're not using any advanced features of Scons (e.g. autoconf like feature
 get something working on Linux.
 """
 
+#NOTE: Please change all the directory strings into a LIST PLEASE!!!
 
 import os
 
@@ -15,11 +16,13 @@ OGRE_INCLUDE = "/usr/local/include/OGRE/ /usr/local/include/OGRE/Terrain/"
 RAKNET_HOME = HOME+"/software/raknet_new/"
 RAKNET_PATH = RAKNET_HOME
 includes = OGRE_INCLUDE + " /usr/include/ /usr/include/c++/4.4/ /usr/local/include/ "+ATISTREAMSDKROOT+"/include/ "+PRJZ_HOME+"include/ "+RAKNET_HOME+"Source"
+includes += " /usr/local/include/PolyVoxCore/ /usr/local/include/PolyVoxUtil/ /usr/include/libnoise/"
 OGRE_LIB = "/usr/local/lib/OGRE/"
 #libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/lib/ /usr/local/lib/ "
-libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/local/lib/ "
+libpath = OGRE_LIB + " "+ATISTREAMSDKROOT+"/lib/x86/" + " /usr/local/lib/"
 
-libs = "OgreMain OgreTerrain OgrePaging OgreRTShaderSystem OIS OpenCL" 
+
+libs = "OgreMain OgreTerrain OgrePaging OgreRTShaderSystem OIS OpenCL PolyVoxCore PolyVoxUtil noise boost_thread" 
 
 env = Environment()
 
@@ -31,7 +34,10 @@ env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
 #env.Append( CPPFLAGS = ['-ggdb'])
-env.Append( CPPFLAGS = ['-o2']) #build with optimization level 2 AND output debug info.
+env.Append( CPPFLAGS = ['-O3','-std=c++0x','-enable-checking=none' ]) #build with optimization level 2 AND output debug info.
+#env.Append( CCFLAGS = [])
+print env['CXXCOM'] + "\n"
+print env['_CCCOMCOM'] + "\n"
 env['CXXCOM'] = "$CXX $_CCCOMCOM -o $TARGET -c $CXXFLAGS $CCFLAGS $SOURCES"
 
 

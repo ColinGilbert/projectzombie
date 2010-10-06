@@ -23,7 +23,7 @@ namespace ZGame
     ~KeyEventRegister();
 
     void injectKeySubj(const EVENT::KeyEvtSubject &subj);
-    void registerKeyObs(const EVENT::KeyboardEvtObserver& obs); //utility method for register key observers.
+    void registerKeyObs(EVENT::KeyboardEvtObserver& obs); //utility method for register key observers.
   protected:
 	typedef std::vector<EVENT::KeyboardEvtObserver>::iterator KeyObsIt;
 	std::vector<EVENT::KeyboardEvtObserver> _keyObs;

@@ -8,6 +8,7 @@
 #include <Ogre.h>
 using namespace Ogre;
 #include "MouseEventRegister.h"
+#include "DelegatesUtil.h"
 
 namespace ZGame
 {
@@ -37,9 +38,10 @@ namespace ZGame
   }
 
   void
-  MouseEventRegister::registerMouseObs(const EVENT::MouseEvtObserver &obs)
+  MouseEventRegister::registerMouseObs(EVENT::MouseEvtObserver &obs)
   {
     _obs.push_back(obs);
+    EVENT::clearMouseObs(obs);
   }
 
 }

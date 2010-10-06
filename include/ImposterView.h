@@ -5,6 +5,11 @@
 *      Author: bey0nd
 */
 
+/**
+ * \Note: THis file was meant to be use temporarily to do GUI like thing before a true GUI interface is implemented. You can disregard this as these sorts of view functionalities
+ * will be refactored.
+ */
+
 #ifndef IMPOSTERVIEW_H_
 #define IMPOSTERVIEW_H_
 //#include <string>

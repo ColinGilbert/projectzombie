@@ -36,6 +36,13 @@ namespace ZGame
     //This method called during the update phase of the life cycle
     bool
     onUpdate(const Ogre::FrameEvent &evt);
+
+    bool
+    onDestroy()
+    {
+
+    }
+
   protected:
 	  Ogre::TexturePtr _stateTex; //gpu entities state texture
 	  Ogre::TexturePtr _dirTex; //gpu entities direction texture.

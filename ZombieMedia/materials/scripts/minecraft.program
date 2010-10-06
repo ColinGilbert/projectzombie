@@ -1,0 +1,21 @@
+vertex_program MinecraftVPF_glsl glsl
+{
+	
+	source MinecraftVP.vert
+	
+	default_params
+	{
+		param_named_auto	worldViewProjMatrix	worldviewproj_matrix
+		//param_named_auto	LightPosition	light_position int 0
+	
+	}
+}
+
+fragment_program MinecraftFPFPF_glsl glsl
+{
+	
+	source MinecraftFP.frag
+	default_params
+	{
+	}
+}

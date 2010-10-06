@@ -94,11 +94,11 @@ void
     //First build the lights.
     Vector3 lightDir(-0.5f, -0.3f, -0.3f);
     lightDir.normalise();
-    _scnMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
+    _scnMgr->setAmbientLight(Ogre::ColourValue(0.0, -0.1, 1.0));
     Light* light = _scnMgr->createLight("terrainLight");
     light->setType(Light::LT_DIRECTIONAL);
     light->setDirection(lightDir);
-    light->setDiffuseColour(ColourValue(0.05, 0.95, 0.05));
+    light->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
     light->setSpecularColour(ColourValue(1.0f, 1.0f, 1.0f));
 
     _scnMgr->setAmbientLight(ColourValue(0.3f, 0.3f, 0.3f));

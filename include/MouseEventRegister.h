@@ -21,7 +21,7 @@ namespace ZGame
     ~MouseEventRegister();
 
     void injectMouseSubj(const EVENT::MouseEvtSubject &subj);
-    void registerMouseObs(const EVENT::MouseEvtObserver &obs);
+    void registerMouseObs(EVENT::MouseEvtObserver &obs);
   protected:
 	typedef std::vector<EVENT::MouseEvtObserver>::iterator ObsItr;
 	std::vector<EVENT::MouseEvtObserver> _obs;

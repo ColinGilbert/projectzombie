@@ -10,6 +10,7 @@ using namespace std;
 #include <Ogre.h>
 using namespace Ogre;
 #include "KeyEventRegister.h"
+#include "DelegatesUtil.h"
 
 namespace ZGame
 {
@@ -34,9 +35,10 @@ namespace ZGame
       }
   }
 
-  void KeyEventRegister::registerKeyObs(const EVENT::KeyboardEvtObserver &obs)
+  void KeyEventRegister::registerKeyObs(EVENT::KeyboardEvtObserver &obs)
   {
     _keyObs.push_back(obs);
+    EVENT::clearKeyObs(obs);
   }
 
 

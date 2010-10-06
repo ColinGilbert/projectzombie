@@ -25,6 +25,7 @@ namespace ZGame
     virtual
     ~EngineView();
 
+
     void
     setCurrentCamera(Ogre::Camera* cam);
     Ogre::Camera*
