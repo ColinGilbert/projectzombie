@@ -36,13 +36,13 @@ extern "C" {
     ZGame::MainController* engineControl = 0;
 
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    INT 
-        WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
+//#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+  //  INT 
+    //    WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+//#else
     int
         main(int argc, char** argv)
-#endif
+//#endif
     {
         using namespace ZGame;
 #ifdef __DEBUG

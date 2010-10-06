@@ -70,7 +70,7 @@ namespace ZGame
             Ogre::vector<Ogre::AnimationState*>::type _animations;
             std::vector<Ogre::InstancedEntity*> _instEnts;
 
-            //Ogre::SceneNode* _instancesRoot;
+            Ogre::SceneNode* _instancesRoot;
 #ifdef VTFINST
     	    Ogre::InstanceManager* _instMgr;
 #endif
