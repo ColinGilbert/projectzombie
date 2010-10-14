@@ -84,12 +84,12 @@ namespace ZGame
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "Initializing graphics controller.");
     _gfxCtrl->onInit();
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "Initializing Volume Map");
-    _map.setOrigin(Ogre::Vector3(0, 128, 0));
+    _map.setOrigin(Ogre::Vector3(0, -64, 0));
     _map.load();
 
     _pageManager.setPageProvider(&_dummyPageProvider);
     _pageManager.addCamera(EngineView::getSingleton().getCurrentCamera());
-    _volumePaging = OGRE_NEW World::VolumeMapPaging(&_pageManager);
+    _volumePaging = OGRE_NEW_T(World::VolumeMapPaging(&_pageManager), Ogre::MEMCATEGORY_GENERAL);
     Ogre::PagedWorld* world = _pageManager.createWorld();
     _volumePaging->createWorldSection(world, &_map, _map.getRegionsHalfWidth(), _map.getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
 
@@ -106,7 +106,9 @@ namespace ZGame
   bool
   GameEditState::onDestroy()
   {
+      using World::VolumeMapPaging;
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameEditState::onDestroy");
+    OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
     return true;
   }
 

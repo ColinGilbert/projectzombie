@@ -231,6 +231,7 @@ GameMainState::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID 
     return true;
   _entsView->onMouseDown(evt, id);
   _controlMod->onMouseDown(evt, id);
+  return true;
 }
 
 bool

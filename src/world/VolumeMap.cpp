@@ -4,6 +4,7 @@
  *  Created on: Sep 21, 2010
  *      Author: beyzend
  */
+#include <OgreMemoryAllocatorConfig.h>
 #include <memory>
 #include <iostream>
 #include <OgreException.h>
@@ -12,6 +13,7 @@ using std::endl;
 #include "world/VolumeMap.h"
 #include "PolyVoxImpl/Utility.h"
 #include "world/PerlinNoiseMapGen.h"
+#include "world/WorldDefs.h"
 using ZGame::World::VolumeMap;
 using PolyVox::MaterialDensityPair44;
 using PolyVox::Volume;
@@ -24,6 +26,8 @@ using PolyVox::CubicSurfaceExtractor;
 using PolyVox::SurfaceMesh;
 using namespace ZGame::World;
 using namespace Ogre;
+
+
 
 const uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 
@@ -74,11 +78,11 @@ createCubeInVolume(Volume<MaterialDensityPair44>& volData, Vector3DUint16 lowerC
     }
 }
 
-const int SW = 320.0;
-const int SH = 256;
-const int SD = 320.0;
+//const int SW = 320.0;
+//const int SH = 256;
+//const int SD = 320.0;
 VolumeMap::VolumeMap() :
-  _regionSideLen(16), _numOfPages(30 * 30), _regionsWidth(SW), _regionsHeight(SH), _regionsDepth(SD)
+  _regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(30 * 30), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
 {
   World::PerlinNoiseMapGen::initGradientPoints();
 }
@@ -91,17 +95,20 @@ VolumeMap::~VolumeMap()
 void
 VolumeMap::_freeAll()
 {
-  using std::map;
-  using std::list;
+  using Ogre::map;
+  using Ogre::list;
   //Iterate through pagesMap and free that.
-  map<Ogre::PageID, VolumePage*>::iterator iter = _pagesMap.begin();
+  
+  //map<Ogre::PageID, VolumePage*>::iterator iter = _pagesMap.begin();
+  PagesMap::iterator iter = _pagesMap.begin();
   for (iter = _pagesMap.begin(); iter != _pagesMap.end(); ++iter)
     {
       delete iter->second;
     }
   _pagesMap.clear();
   //Iterate through free list and free that.
-  list<VolumePage*>::iterator liter;
+  //list<VolumePage*>::iterator liter;
+  FreeList::iterator liter;
   for (liter = _freeList.begin(); liter != _freeList.end(); ++liter)
     {
       delete *liter;
@@ -133,8 +140,9 @@ VolumeMap::handleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
   //_mapGen.generate(&page->data, x, y);
   //MUST MAKE SURE YOU allocate mesh before requesting this request to the WorkerQueue.
   PolyVox::CubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
+  //PolyVox::SurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), page->surface);
   surfExtractor.execute();
-  response = OGRE_NEW WorkQueue::Response(req, true, Any());
+  response = OGRE_NEW_T_SIMD (WorkQueue::Response(req, true, Any()), Ogre::MEMCATEGORY_GENERAL);
   return response;
 }
 
@@ -147,10 +155,14 @@ VolumeMap::canHandleResponse(const WorkQueue::Response* res, const WorkQueue* sr
   else
     return true;
 }
-
+/**
+** \note Please review this code to see if they are better ways for error handling (see the allocation code).  
+*/
 void
 VolumeMap::handleResponse(const WorkQueue::Response* res, const Ogre::WorkQueue* srcQ)
 {
+    using Ogre::WorkQueue;
+    using PolyVox::SurfaceMesh;
   LoadRequest lreq = any_cast<LoadRequest> (res->getRequest()->getData());
   if (res->succeeded())
     {
@@ -159,21 +171,25 @@ VolumeMap::handleResponse(const WorkQueue::Response* res, const Ogre::WorkQueue*
       int x, z;
       _unpackIndex(page->id, &x, &z);
 
-      cout << "Page loaded response: " << x << ", " << z << endl;
-      Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 64.0, (float) (z) * _regionSideLen);
+      //cout << "Page loaded response: " << x << ", " << z << endl;
+      Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (z) * _regionSideLen);
       //cout << "PageWorldPos: " << pageWorldPos << endl;
       //pageWorldPos = pageWorldPos; //- _origin*2;
       page->mapView.updateOrigin(pageWorldPos);
       //if (create)
       page->mapView.createRegion(page->isEmpty(), lreq.surface);
-      OGRE_DELETE lreq.surface;
+      OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
       _pagesMap[page->id] = page;
       //page->data.tidyUpMemory();
+      
     }
   else
     {
       Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, "FAILED TO HANDLE RESPONSE in VOLUME_MAP");
     }
+
+  //OGRE_DELETE_T(res, Response, Ogre::MEMCATEGORY_GENERAL);
+    
 }
 
 void
@@ -220,9 +236,9 @@ VolumeMap::loadPage(Ogre::PageID pageID)
   _unpackIndex(pageID, &x, &y);
   y = -y;
   pageID = _packIndex(x, y);
-  using std::map;
-  map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
-
+  //using std::map;
+  //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
+  PagesMap::iterator findMe = _pagesMap.find(pageID);
   if (findMe == _pagesMap.end())
     {
       VolumePage* page = _getFree();
@@ -232,7 +248,7 @@ VolumeMap::loadPage(Ogre::PageID pageID)
       LoadRequest req;
       req.origin = this;
       req.page = page;
-      req.surface = OGRE_NEW PolyVox::SurfaceMesh;
+      req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
       Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, false);
 
       //_loadPage(page, true);
@@ -253,8 +269,8 @@ VolumeMap::unloadPage(Ogre::PageID pageID)
   y = -y;
   pageID = _packIndex(x, y);
   using std::map;
-  map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
-
+  //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
+  PagesMap::iterator findMe = _pagesMap.find(pageID);
   if (findMe == _pagesMap.end())
     return; //If it's not in _pagesMap then we dont' care. Probably due to thread not catching up.
   //OGRE_EXCEPT( Ogre::Exception::ExceptionCodes::ERR_ITEM_NOT_FOUND, "unload a pageid that is not found in pagesMap", "VolumeMap::unloadPage");

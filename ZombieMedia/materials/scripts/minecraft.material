@@ -5,11 +5,21 @@ material PRJZ/Minecraft
 	technique
 	{
 		pass
-		{	//cull_hardware back_face
+		{	
+			depth_bias 0.1
+			//cull_hardware back_face
+			//cull_software back
+			//polygon_mode wireframe
 			texture_unit DiffuseMap
 			{
-				filtering none
+				//filtering trilinear
+				//tex_address_mode wrap
+				//filtering none
 				//filtering bilinear
+				filtering point point point 
+				//filtering anisotropy anisotropy point
+				max_anisotropy 2
+				mipmap_bias -2.0
 				//texture minecraft_terrain_hi.png
 				texture minecraft_terrain_rpg.png
 			}

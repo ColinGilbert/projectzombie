@@ -40,7 +40,7 @@ namespace ZGame
     bool
     onDestroy()
     {
-
+        return true;
     }
 
   protected:

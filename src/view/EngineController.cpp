@@ -27,6 +27,11 @@ using namespace std;
 #include "CommandController.h"
 #include "DelegatesUtil.h"
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+static const Ogre::String PlatformPath("configs_windows/");
+#else 
+static const Ogre::String PlatformPath("configs_linux/");
+#endif
 namespace ZGame
 {
 
@@ -117,7 +122,7 @@ namespace ZGame
     using namespace Ogre;
     using namespace OgreBites;
     //bootstrap Sdk resources.
-    loadAssets("bootstrap.cfg");
+    loadAssets(PlatformPath + "bootstrap.cfg");
     _sdkTrayMgr.reset(new SdkTrayManager("ZombieTray", _window, _inController->getMouse(), 0));
   }
 
@@ -127,7 +132,7 @@ namespace ZGame
     using namespace Ogre;
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
-    _root.reset(new Ogre::Root("plugins.cfg", "pchaos.cfg", "Pchaos.log"));
+    _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Pchaos.log"));
     //_root->setWorkQueue(OGRE_NEW Ogre::DefaultWorkQueue("DefaultWorkerQueue"));
 
     if (_root->showConfigDialog())
@@ -156,7 +161,7 @@ namespace ZGame
     loadSdkTrays();
     //turn off loading bar
     _sdkTrayMgr->showLoadingBar();
-    loadAssets("resources.cfg");
+    loadAssets(PlatformPath + "resources.cfg");
 
     //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
     Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");

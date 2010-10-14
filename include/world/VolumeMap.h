@@ -9,11 +9,11 @@
 #include <SurfaceMesh.h>
 #include <Volume.h>
 #include "world/VolumeMapView.h" //We use it directly here instead of relying on the Observer pattern to update views.
-#include <Paging/OgreGrid2DPageStrategy.h>
-#include <Paging/OgrePagedWorldSection.h>
-#include <Paging/OgrePagedWorld.h>
-#include <Paging/OgrePageManager.h>
-#include <world/PerlinNoiseMapGen.h>
+#include <OgreGrid2DPageStrategy.h>
+#include <OgrePagedWorldSection.h>
+#include <OgrePagedWorld.h>
+#include <OgrePageManager.h>
+#include "world/PerlinNoiseMapGen.h"
 /*
  * VolumeMap.h
  *
@@ -105,12 +105,16 @@ namespace ZGame
         {
 
         }
+        ~VolumePage()
+        {
+            
+        }
         bool
         isEmpty()
         {
           return _empty;
         }
-        bool
+        void
         setEmpty(bool tf)
         {
           _empty = tf;
@@ -129,7 +133,7 @@ namespace ZGame
         PolyVox::Volume<PolyVox::MaterialDensityPair44> data;
         VolumeMapView mapView;
         PerlinNoiseMapGen gen;
-      private:
+        private:
         bool _allocated;
         bool _empty;
       };
@@ -176,8 +180,13 @@ namespace ZGame
       Ogre::uint32 _volHeightInRegions;
       Ogre::uint32 _volDepthInRegions;
       Ogre::Vector3 _origin;
-      std::list<VolumePage*> _freeList;
-      std::map<Ogre::PageID, VolumePage*> _pagesMap;
+      //typedef std::list<VolumePage*>::type FreeList;
+      typedef Ogre::list<VolumePage*>::type FreeList;
+      //std::list<VolumePage*> _freeList;
+      FreeList _freeList;
+      //std::map<Ogre::PageID, VolumePage*> _pagesMap;
+      typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
+      PagesMap _pagesMap;
       PerlinNoiseMapGen _mapGen;
       size_t _numOfPages;
 

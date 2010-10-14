@@ -166,7 +166,7 @@ struct geomOut
 geomOut geom_ps(in float4 vp : TEXCOORD0, in float4 vn : TEXCOORD1, uniform float far)
 {
     geomOut OUT;
-    float coeff = 1.0;
+    float coeff = 0.8;
     OUT.c = float4(length(vp.xyz) * coeff / far, normalize(vn.xyz).xyz);
     return OUT;
 }

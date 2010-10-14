@@ -10,8 +10,7 @@
  * is we can push stuff to the objects residing in a game state--dependency injection,sort of.
  */
 
-#ifndef GAMESTATE_H_
-#define GAMESTATE_H_
+#pragma once
 
 #include <vector>
 #include <memory>
@@ -77,4 +76,4 @@ namespace ZGame
 
 }
 
-#endif /* GAMESTATE_H_ */
+

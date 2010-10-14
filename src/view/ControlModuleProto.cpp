@@ -181,8 +181,9 @@ namespace ZGame
       }
     else
       {
-        _cam->yaw(Radian(-Ogre::Math::DegreesToRadians(dt * 25.0 *_mx_rel)));
-        _cam->pitch(Radian(-Ogre::Math::DegreesToRadians(dt * 25.0*_my_rel)));
+          //locked in at 60fps
+        _cam->yaw(Radian(-Ogre::Math::DegreesToRadians(0.016 * 25.0 *_mx_rel)));
+        _cam->pitch(Radian(-Ogre::Math::DegreesToRadians(0.016 * 25.0*_my_rel)));
       }
     _mx_rel = 0;
     _my_rel = 0;

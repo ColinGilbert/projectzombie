@@ -46,14 +46,25 @@ namespace ZGame
       generate(PolyVox::Volume<PolyVox::MaterialDensityPair44>* data, Ogre::int32 pageX, Ogre::int32 pageY);
 
     private:
-
+        struct HeightVal
+        {
+            uint8_t uValue;
+            float value;
+        };
     private:
       PolyVox::Volume<PolyVox::MaterialDensityPair44> *_data;
       //noise::module::Billow _myModule;
       static GradientBlockMap above;
       static GradientBlockMap below;
       float _valRange;
-      noise::module::Perlin finalTerrain;
+      //noise::module::Perlin finalTerrain;
+      noise::module::RidgedMulti mountainTerrain;
+      noise::module::Billow baseFlatTerrain;
+      noise::module::ScaleBias flatTerrain;
+      noise::module::Perlin terrainType;
+      noise::module::Select terrainSelection;
+      noise::module::Turbulence finalTerrain;
+      //noise::module::Cache finalTerrainInput;
 
     };
   }

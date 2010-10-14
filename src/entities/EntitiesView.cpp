@@ -308,6 +308,7 @@ EntitiesCreateMenu::handleSelectMenu(OgreBites::SelectMenu* selectMenu)
       _groupRadiusSlider->setValue(grp->radius);
 
     }
+  return true;
 }
 bool
 EntitiesCreateMenu::handleSlider(OgreBites::Slider* slider)

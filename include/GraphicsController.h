@@ -125,10 +125,18 @@ namespace ZGame
     void _initShadows();
     void _initSSAO();
     void _initHDR();
+    void _parseHDRConfig();
 
   private:
     Ogre::SceneManager* _scnMgr;
     Ogre::Viewport* _vp;
+    size_t _WHICH_TONEMAPPER;
+    size_t _WHICH_STARTYPE;
+    size_t _WHICH_GLARETYPE;
+    size_t _ADAPT_SCALE;
+    float _AUTO_KEY;
+    float _GLARE_STRENGTH;
+    float _STAR_STRENGTH;
 
 
   };

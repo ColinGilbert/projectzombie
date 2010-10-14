@@ -25,7 +25,8 @@
 
 #include "Ogre.h"
 
-
+using std::cout;
+using std::endl;
 HDRCompositor::HDRCompositor(RenderWindow* win, Camera* cam) : m_Scales(7)
 {
 	m_Window = win;
@@ -270,24 +271,26 @@ String HDRCompositor::StarTypeToString(const STARTYPE StarType)
 void HDRCompositor::Create(void)
 {
 	Release();
-
+    cout << "Done releasing." << endl;
 	m_Compositor = CompositorManager::getSingleton().create("HDR", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
+    cout << "Done creating compositor." << endl;
 	m_HDRTechnique = m_Compositor->createTechnique();
-
+    cout << "Done creating technique." << endl;
 	//render scene
 	CreateTextureDef("Scene",0,0,PF_FLOAT16_RGB);
-		
+    cout << "Done creating texture definition." << endl;
 	CompositionTargetPass *tp = m_HDRTechnique->createTargetPass();
+    cout << "creating target pass." << endl;
 	tp->setInputMode(CompositionTargetPass::IM_PREVIOUS);
+    cout << "Input mode set." << endl;
 	tp->setOutputName("Scene");
-
+    cout << "Output name set to Scene" << endl;
 	RenderDownSample();
-
+    cout << "Finishe rendering down sample." << endl;
     CalculateLuminance();
-	
+	cout << "Luminance computed." << endl;
 	CalculateKey();
-
+    cout << "Key computed." << endl;
 	if(m_GlareType || m_StarType)
 	{
 		BrightPass();
@@ -298,21 +301,22 @@ void HDRCompositor::Create(void)
 		if(m_StarType)
 			BuildStar();
 	}
-
+    cout << "Glare and star pass set." << endl;
 	if(m_ToneMapper == TM_REINHARDLOCAL)
 		BuildScales();
-
+    cout << "Scale built." << endl;
 	FinalRendering();
-
+    cout << "Final rendering!" << endl;
 	Viewport* const vp = m_Window->getViewport(0);
 	Ogre::CompositorInstance* const instance = CompositorManager::getSingleton().addCompositor(vp, "HDR");
-
+    cout << "Cpmpositor instance set." << endl;
 	//if(instance)
-	//	instance->addListener(this);
+		//instance->addListener(this);
 
 	notifyViewportSize(vp->getActualWidth(), vp->getActualHeight());
-
-	Enable(m_Enable);
+    cout << "View port notified." << endl;
+    cout << "VP: " << vp << endl;
+	//Enable(m_Enable);
 }
 
 void HDRCompositor::CreateTextureDef(const String name,const unsigned int width,const unsigned int height,const Ogre::PixelFormat format)
@@ -321,7 +325,7 @@ void HDRCompositor::CreateTextureDef(const String name,const unsigned int width,
 	texdef->width = width;
 	texdef->height = height;
 	std::cout << "FORMAT LIST SIZE: " << texdef->formatList.size() << std::endl;
-	texdef->formatList.push_back(format);
+    texdef->formatList.push_back(format);
 }
 
 void HDRCompositor::BrightPass(void)

@@ -6,7 +6,7 @@
  */
 
 #include "world/PerlinNoiseMapGen.h"
-
+#include "world/WorldDefs.h"
 using namespace noise;
 using namespace ZGame::World;
 using namespace PolyVox;
@@ -21,14 +21,14 @@ GradientBlockMap PerlinNoiseMapGen::below;
 void PerlinNoiseMapGen::initGradientPoints()
 {
   using std::make_pair;
-above.addGradientPoint(make_pair(-1.0000, 0));
-above.addGradientPoint(make_pair(-0.2550, 0));
-above.addGradientPoint(make_pair(0.0000, 0));
+above.addGradientPoint(make_pair(-1.0000, 2));
+above.addGradientPoint(make_pair(-0.875, 3));
+above.addGradientPoint(make_pair(-0.700, 1));
 //low ground layer
-above.addGradientPoint(make_pair(0.0625, 0)); //grass
-above.addGradientPoint(make_pair(0.3750, 0)); //dirt
-above.addGradientPoint(make_pair(0.7500, 0)); //rock
-above.addGradientPoint(make_pair(1.0000, 3)); //rock
+above.addGradientPoint(make_pair(0.0625, 1)); //grass
+above.addGradientPoint(make_pair(0.3750, 1)); //dirt
+above.addGradientPoint(make_pair(0.7500, 2)); //rock
+above.addGradientPoint(make_pair(1.0000, 2)); //rock
 
 //Below: rock, dirt, grass, air
 below.addGradientPoint(make_pair(-1.0000, 1));
@@ -81,19 +81,40 @@ PerlinNoiseMapGen::PerlinNoiseMapGen() :
   //finalTerrain.SetFrequency(0.5);
   //finalTerrain.SetOctaveCount(8);
   //finalTerrain.SetPersistence(1.0 / 2.0);
-  finalTerrain.SetFrequency(6);
-  finalTerrain.SetOctaveCount(1);
-  finalTerrain.SetPersistence(1.0 / 8.0);
 
+  mountainTerrain.SetFrequency(6.0);
+  mountainTerrain.SetOctaveCount(1);
+  //mountainTerrain.SetPer
+  baseFlatTerrain.SetFrequency(1.0);
+  flatTerrain.SetScale(0.25);
+  flatTerrain.SetSourceModule(0, baseFlatTerrain);
+  flatTerrain.SetBias(-0.75);
+
+  terrainSelection.SetSourceModule(0, flatTerrain);
+   terrainSelection.SetSourceModule(1, mountainTerrain);
+   terrainSelection.SetControlModule(terrainType);
+   terrainSelection.SetBounds(0.0, 1000.0);
+   terrainSelection.SetEdgeFalloff(0.125);
+
+   finalTerrain.SetSourceModule(0, terrainSelection);
+   finalTerrain.SetFrequency(1.0);
+   finalTerrain.SetPower(0.125);
+
+  /*
+  finalTerrain.SetFrequency(8.0);
+  finalTerrain.SetOctaveCount(1);
+  finalTerrain.SetPersistence(3.0 / 4.0);
+  //finalTerrain.SetSourceModule(0, finalTerrainInput);
+  */
 }
 
 PerlinNoiseMapGen::~PerlinNoiseMapGen()
 {
 
 }
-
+/*
 void
-PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pageX, Ogre::int32 pageY)
+PerlinNoiseMapGen::generate_(Volume<MaterialDensityPair44>* data, Ogre::int32 pageX, Ogre::int32 pageY)
 {
   using namespace noise;
   using std::make_pair;
@@ -126,7 +147,7 @@ PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pag
    finalTerrain.SetSourceModule(0, terrainSelection);
    finalTerrain.SetFrequency(1.0);
    finalTerrain.SetPower(0.125);
-   */
+   
 
   _data = data;
   //Add the gradient points which maps gradients into block types.
@@ -135,7 +156,7 @@ PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pag
   int height = _data->getHeight();
   int depth = _data->getDepth();
   float halfHeight = (float)(height) / 2.0;
-  //_data->setBorderValue(MaterialDensityPair44(1, MaterialDensityPair44::getMaxDensity()));
+  //_data->setBorderValue(MaterialDensityPair44(0, MaterialDensityPair44::getMaxDensity()));
   const double mod = 1.0 / 32.0; /// 8.0;
   //Vector3DFloat v3dVolCenter(_data->getWidth() / 2, _data->getHeight() / 2, _data->getDepth() / 2);
   for (int z = 0; z < width; z++)
@@ -152,8 +173,8 @@ PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pag
                * We differentiate between below and above ground because the scale which maps into block ranges (i.e. value which ranges from grass to rock) is fliped.
                * For above ground, the map is such that the "floor" (in terms of the map generate by Perlin noise) consit mostly of air. It then moves to grass->rock (for terrain).
                * For below ground, it is the opposite. With "Air" consiting of rock. With the upper range air (i.e. pockets of air within in rocks.)
-               */
-              if (v3dCurrentPos.getY() < halfHeight - (30 * (val + 1.0f) / 2.0))
+               
+              if (v3dCurrentPos.getY() < halfHeight - (10.0 * (val + 1.0f) / 2.0))
                 {
                   val = -val; //flip the scale so rock is more.
                   uValue = below.getMappedValue(val);
@@ -168,7 +189,8 @@ PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pag
                 {
                   uValue = above.getMappedValue(val);
                 }
-
+              
+              uValue = above.getMappedValue(val);
               //cout << "uValue: " << uValue << endl;
               _data->setVoxelAt(x, y, z, MaterialDensityPair44(uValue, uValue > 0 ? MaterialDensityPair44::getMaxDensity()
                   : MaterialDensityPair44::getMinDensity()));
@@ -177,4 +199,62 @@ PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pag
     }
 
 }
+*/
+void
+PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pageX, Ogre::int32 pageY)
+{
+    using namespace noise;
+    using std::make_pair;
+    _data = data;
 
+    const int width = _data->getWidth();
+    const int height = _data->getHeight();
+    const int depth = _data->getDepth();
+    const float halfHeight = (float)(height) / 2.0;
+    const float oceanFloor = halfHeight - 16.0;
+    const double mod = 1.0 / 32.0;
+    HeightVal hVals[WORLD_BLOCK_WIDTH][WORLD_BLOCK_DEPTH];
+
+    //First construct a 2D perlin noise using a cache. Height value is constant and is defined as oceanFloor.
+    for(size_t z=0; z < width; z++)
+    {
+        for(size_t x = 0; x < depth; x++)
+        {
+            Vector3DFloat v3dCurrentPos(x, oceanFloor, z);
+            double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height - 1)) * mod,
+                  ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
+            hVals[z][x].uValue = above.getMappedValue(val);
+            hVals[z][x].value = oceanFloor + (height - 8.0 - oceanFloor) * (val + 1.0) / 2.0;
+        }
+    }
+    //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
+    //If it's the current height, fill with value stored in height map. Else it is air.
+    for(size_t z=0; z < width; z++)
+    {
+        for(size_t y = 0; y < height; y++)
+        {
+            for(size_t x = 0; x < depth; x++)
+            {
+                float val = (size_t)(hVals[z][x].value);
+                if(y < val)
+                {
+                    //rocks all the way down
+                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(2, MaterialDensityPair44::getMaxDensity()));
+                }
+                else if(y == val)
+                {
+                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(hVals[z][x].uValue, hVals[z][x].uValue > 0 ? MaterialDensityPair44::getMaxDensity()
+                  : MaterialDensityPair44::getMinDensity()));
+                }
+                else if(y <= halfHeight - 10.0) //halfHeight is sea level
+                {
+                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(206, MaterialDensityPair44::getMaxDensity()));
+                }
+                else
+                {
+                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(0, MaterialDensityPair44::getMinDensity()));
+                }
+            }
+        }
+    }
+}

@@ -68,9 +68,9 @@ VolumeMapView::updateRegion(bool regionEmpty, PolyVox::SurfaceMesh* mesh)
 void
 VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh* mesh, Ogre::ManualObject* manual)
 {
-  const float ATLAS_WIDTH = 512.0f;
-  const float TEX_WIDTH = 32.0f;
-  const float BlockOffset = TEX_WIDTH / ATLAS_WIDTH;
+  const float ATLAS_WIDTH = 4096.0f;
+  const float TEX_WIDTH = 256.0f;
+  const float BlockOffset = (TEX_WIDTH) / ATLAS_WIDTH;
   const float pixelOffset = 1.0 / ATLAS_WIDTH;
   const float blockEOffset = 1.0 / TEX_WIDTH;
   using std::vector;
@@ -83,7 +83,7 @@ VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh* mesh, Ogre::
   //Build the Ogre Manual Object. We first iterate through the vertices add position to that.
   //
   const Ogre::Vector2 texCoords[4] =
-    { Ogre::Vector2(0.0f, 1.0f), Ogre::Vector2(1.0f, 1.0f), Ogre::Vector2(0.0f, 0.0f), Ogre::Vector2(1.0f, 0.0f) };
+    { Ogre::Vector2(0.0f, 0.0f), Ogre::Vector2(1.0f, 0.0f), Ogre::Vector2(0.0f, 1.0f), Ogre::Vector2(1.0f, 1.0f) };
   size_t texIdx = 0;
 
   _manual->estimateVertexCount(indices.size());
@@ -92,7 +92,7 @@ VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh* mesh, Ogre::
   if (isUpdate)
     {
       manual->beginUpdate(0);
-    }
+   } 
   else
     _manual->begin("PRJZ/Minecraft", Ogre::RenderOperation::OT_TRIANGLE_LIST, "PROJECT_ZOMBIE");
 
@@ -110,12 +110,15 @@ VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh* mesh, Ogre::
       texIdx++;
 
       Ogre::ColourValue val;
-      uint8_t material = vertex.getMaterial() + 0.5; //add 0.5 for floating point accuracies?
-      val.r = (float) (material - 1) * BlockOffset;// - pixelOffset;
-      val.g = 0.0f;
-      val.b = 0.0f;
-      val.a = 1.0f;
-      manual->colour(val);
+      size_t material = vertex.getMaterial() + 0.5f; 
+      
+      manual->textureCoord(material / 256.0f, 0.0, 0.0, 0.0);
+      //val.r = (float)(material) / 256.0f;//(float) (material - 1) * BlockOffset;// - pixelOffset;
+      //val.g = 0.0f;
+      //val.b = 0.0f;
+      //val.a = 1.0f;
+      //Ogre::Colo
+      //manual->colour(val);
     }
   //Then iterate through the indices add create the indices list.
   for (vector<uint32_t>::const_iterator itIdx = indices.begin(); itIdx != indices.end(); ++itIdx)

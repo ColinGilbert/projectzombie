@@ -7,10 +7,10 @@
 
 #pragma once
 #include <Ogre.h>
-#include <Paging/OgreGrid2DPageStrategy.h>
-#include <Paging/OgrePagedWorldSection.h>
-#include <Paging/OgrePagedWorld.h>
-#include <Paging/OgrePageManager.h>
+#include <OgreGrid2DPageStrategy.h>
+#include <OgrePagedWorldSection.h>
+#include <OgrePagedWorld.h>
+#include <OgrePageManager.h>
 
 namespace ZGame
 {

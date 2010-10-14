@@ -20,8 +20,8 @@ varying vec3  DiffuseColor;
 const float ATLAS_WIDTH = 512.0;
 const float TEX_WIDTH = 32.0;
 const float BlockOffset = TEX_WIDTH / ATLAS_WIDTH;
-const float pixOffset = 1.0 / ATLAS_WIDTH;
-const float eOffset = (TEX_WIDTH-1) / ATLAS_WIDTH;// - 12*pixOffset ;
+
+const float eOffset = (TEX_WIDTH) / ATLAS_WIDTH;// - 12*pixOffset ;
 varying float LightIntensity;
 //varying vec2 MCposition;
 
@@ -57,14 +57,15 @@ void main(void)
 {
    vec3 tnorm      = normal;//normalize(gl_NormalMatrix * normal);
 
-  
+   float pixelOffset = eOffset / TEX_WIDTH;
 
-  DiffuseColor   *= 1.0;//ScaleFactor;
+   //DiffuseColor   *= 1.0;//ScaleFactor;
   //LightIntensity = DiffuseContrib * diffuse + SpecularContrib * spec;
-  LightIntensity = 0.9;
-  if(vertex.y <= 127.0) 
+  LightIntensity = 1.0;
+  
+  if(vertex.y <= 117.0) 
     {//below ground constant. We are assuming we're at sunset, and thus sun directional light is parrallel to the ground.
-      LightIntensity = mix(0.0, 0.11, vertex.y / 127.0);
+      LightIntensity = mix(0.0, 0.0007, vertex.y / 117.0);
        DiffuseColor    = C1 * L22A * (tnorm.x * tnorm.x - tnorm.y * tnorm.y) +
                       C3 * L20A * tnorm.z * tnorm.z +
                       C4 * L00A -
@@ -78,7 +79,7 @@ void main(void)
 
     }
   else
-    {
+  {
       DiffuseColor    = C1 * L22 * (tnorm.x * tnorm.x - tnorm.y * tnorm.y) +
                       C3 * L20 * tnorm.z * tnorm.z +
                       C4 * L00 -
@@ -89,11 +90,35 @@ void main(void)
                       2.0 * C2 * L11  * tnorm.x +
                       2.0 * C2 * L1m1 * tnorm.y +
                       2.0 * C2 * L10  * tnorm.z;
-    }
+      }
   gl_Position = worldViewProjMatrix * vertex;
-   vec4 texStart = colour;
+  //vec4 texStart = colour;
   //texStart.x = texStart.x + 16*pixOffset;//vec4(gl_Color, 0.0, 0.0, 0.0);
-  texStart.x = texStart.x + pixOffset;//vec4(gl_Color, 0.0, 0.0, 0.0);
-  gl_TexCoord[0] =  texStart + uv0*eOffset;//BlockOffset;
+  //texStart.x = texStart.x; //+ pixOffset;//vec4(gl_Color, 0.0, 0.0, 0.0);
+  //float idx = colour.x * 256.0 - 1.0;
+  float idx = uv1.x * 256.0 - 1.0;
+  //idx = 206;
+  if(idx < 0.0)
+    {
+    LightIntensity = 10.0;
+    DiffuseColor = vec3(1.0, 1.0, 1.0);
+    }
+  float blocky = floor((idx) / 16.0);
+  float blockx = ((idx) - blocky * 16.0);
+
+  
+  gl_TexCoord[0] =  vec4(blockx, blocky, 0, 0) * eOffset + uv0 * eOffset;
+  
+if(uv0.x == 1.0)
+  gl_TexCoord[0].x -= pixelOffset;//uv0.x -= pixelOffset;
+ if(uv0.y == 1.0)
+   gl_TexCoord[0].y -= pixelOffset;//uv0.y -= pixelOffset;
+  
+  
+  
+ //gl_TexCoord[0] =  vec4(colour.x * 256.0, 0, 0, 0) * eOffset + uv0 * eOffset;//texStart;// + uv0*eOffset;// - pixelOffset;//BlockOffset;
+   
+  
+   
   
 }

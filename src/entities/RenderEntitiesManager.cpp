@@ -153,7 +153,7 @@ bool
     }
 
     cout << "Finished creating instanced entities" << endl;
-
+    return true;
 }
 #else
 

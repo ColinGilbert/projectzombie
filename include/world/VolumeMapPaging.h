@@ -7,10 +7,10 @@
 
 #pragma once
 //#include <Terrain/OgreTerrainPrerequisites.h>
-#include <Paging/OgrePageManager.h>
-#include <Paging/OgrePagedWorldSection.h>
-#include <Paging/OgrePagedWorld.h>
-#include <Paging/OgrePageManager.h>
+#include <OgrePageManager.h>
+#include <OgrePagedWorldSection.h>
+#include <OgrePagedWorld.h>
+#include <OgrePageManager.h>
 //#include "world/VolumePagedWorldSection.h"
 
 using Ogre::int32;

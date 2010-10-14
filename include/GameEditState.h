@@ -5,13 +5,10 @@
  *      Author: bey0nd
  */
 
-#ifndef GAMEEDITSTATE_H_
-#define GAMEEDITSTATE_H_
-
+#pragma once
 #include <memory>
 using namespace std;
 #include <Ogre.h>
-#include <OIS/OIS.h>
 #include "GameState.h"
 #include <boost/shared_ptr.hpp>
 #include "world/VolumeMap.h"
@@ -99,4 +96,3 @@ namespace ZGame
 
   };
 }
-#endif /* GAMEEDITSTATE_H_ */

@@ -5,14 +5,13 @@
  *      Author: bey0nd
  */
 
-#ifndef ENGINECONTROLLER_H_
-#define ENGINECONTROLLER_H_
+#pragma once
 
 //#include <string>
 
 #include <vector>
 #include <Ogre.h>
-#include <OIS/OIS.h>
+//#include <OIS/OIS.h>
 #include <SdkTrays.h>
 
 #include <boost/thread/thread.hpp>
@@ -149,5 +148,3 @@ namespace ZGame
   };
 
 }
-
-#endif /* ENGINECONTROLLER_H_ */

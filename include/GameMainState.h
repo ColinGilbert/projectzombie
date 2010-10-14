@@ -5,9 +5,7 @@
 *      Author: bey0nd
 */
 
-#ifndef GAMEMAINSTATE_H_
-#define GAMEMAINSTATE_H_
-
+#pragma once
 #include <Ogre.h>
 
 
@@ -19,7 +17,7 @@
 
 
 using namespace std;
-#include <OIS/OIS.h>
+
 //#include <boost/shared_ptr.hpp>
 
 #include "GameState.h"
@@ -114,4 +112,3 @@ namespace ZGame
     };
 }
 
-#endif /* GAMEMAINSTATE_H_ */

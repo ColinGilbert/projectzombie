@@ -10,6 +10,7 @@
 #include "world/VolumeMap.h"
 
 using ZGame::World::VolumeMapPaging;
+using ZGame::World::VolumeMap;
 using namespace Ogre;
 VolumeMapPaging::VolumeMapPaging(PageManager* pageMgr) :
   _pageMgr(pageMgr)

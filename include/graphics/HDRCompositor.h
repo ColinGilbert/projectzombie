@@ -20,7 +20,9 @@
  * @author	Christian Luksch
  * @see		Readme.txt
  */
-
+#include <iostream>
+using std::cout; 
+using std::endl;
 #include <OgreCompositor.h>
 #include <OgreCompositorLogic.h>
 #include <OgreCompositorManager.h>
@@ -54,10 +56,11 @@ public:
   virtual void
   compositorInstanceCreated(Ogre::CompositorInstance* newInstance)
   {
+    cout << "HDRLogic::CompositorInstanceCreate called." << endl;
     //DANGEROUS: Make sure listener is set!
-    Ogre::CompositorInstance::Listener* listener = listener;//createListener(newInstance);
-    newInstance->addListener(listener);
-    mListeners[newInstance] = listener;
+   // Ogre::CompositorInstance::Listener* listener = _listener;//createListener(newInstance);
+    newInstance->addListener(_listener);
+    mListeners[newInstance] = _listener;
   }
 
   /** @copydoc CompositorLogic::compositorInstanceDestroyed */
@@ -154,6 +157,10 @@ public:
   {
   }
 
+   void
+  Create(void);
+
+
   void
   Release(void);
 
@@ -174,7 +181,7 @@ public:
   SetToneMapper(const TONEMAPPER ToneMapper)
   {
     m_ToneMapper = ToneMapper;
-    Create();
+    //Create();
   }
 
   GLARETYPE
@@ -186,7 +193,7 @@ public:
   SetGlareType(const GLARETYPE GlareType)
   {
     m_GlareType = GlareType;
-    Create();
+    //Create();
   }
 
   float
@@ -209,7 +216,7 @@ public:
   SetGlarePasses(const float Passes)
   {
     m_GlarePasses = Passes;
-    Create();
+    //Create();
   }
 
   STARTYPE
@@ -221,7 +228,7 @@ public:
   SetStarType(const STARTYPE StarType)
   {
     m_StarType = StarType;
-    Create();
+    //Create();
   }
 
   float
@@ -244,7 +251,7 @@ public:
   SetStarPasses(const float Passes)
   {
     m_StarPasses = Passes;
-    Create();
+    //Create();
   }
 
   bool
@@ -256,7 +263,7 @@ public:
   SetAutoKeying(const bool AutoKeying)
   {
     m_AutoKeying = AutoKeying;
-    Create();
+    //Create();
   }
 
   bool
@@ -268,7 +275,7 @@ public:
   SetLumAdapdation(bool LumAdaptation)
   {
     m_LumAdaption = LumAdaptation;
-    Create();
+    //Create();
   }
 
   float
@@ -338,7 +345,7 @@ public:
     if (rt != m_DebugRendertarget)
       {
         m_DebugRendertarget = rt;
-        Create();
+        //Create();
       }
   }
 
@@ -349,9 +356,7 @@ public:
   static String
   StarTypeToString(const STARTYPE StarType);
 
-  void
-  Create(void);
-
+ 
 private:
 
   void
