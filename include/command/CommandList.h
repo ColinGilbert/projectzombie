@@ -33,6 +33,7 @@ namespace ZGame
             static const COMMAND::COMMAND_KEY CAMERA_ATTACH;
             static const COMMAND::COMMAND_KEY CLIENT_CONNECT;
             static const COMMAND::COMMAND_KEY CLIENT_DISCONNECT;
+            static const COMMAND::COMMAND_KEY GRAPHICS_ADJUSTSHADOW;
             //static const COMMAND::COMMAND_KEY CREATE_RENDER_ENT;
             //static const Ogre::String NODETEST;
             

@@ -42,6 +42,7 @@ namespace ZGame
     lfcReg.registerLfcObs(lfcObs);
 
     LifeCycle::bindLifeCycleObserver(lfcObs, *_gfxCtrl.get(), LifeCycle::LFC_ON_UPDATE);
+    lfcReg.registerLfcObs(lfcObs);
 
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Out GameEditState regLfcObsForInjection");
   }

@@ -18,6 +18,9 @@ namespace ZGame
   {
     class VolumeMap;
     using namespace Ogre;
+    using Ogre::uint16;
+    using Ogre::int16;
+    using Ogre::int32;
     class VolumePagedWorldSection : public Ogre::PagedWorldSection
     {
     public:

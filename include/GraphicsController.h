@@ -6,6 +6,11 @@
 #include <Ogre.h>
 #include <OIS/OIS.h>
 #include "graphics/HDRCompositor.h"
+
+#include "SkyX/SkyX.h"
+
+#include <memory>
+
 namespace ZGame
 {
 
@@ -89,12 +94,15 @@ namespace ZGame
     }
   } ;
 
+
   class GraphicsController
   {
   public:
     GraphicsController();
     virtual
     ~GraphicsController();
+
+    static const size_t NUM_OF_BANDS = 5;
 
     bool
     onInit();
@@ -107,6 +115,8 @@ namespace ZGame
     onKeyUp(const OIS::KeyEvent &evt);
     bool
     onKeyDown(const OIS::KeyEvent &evt);
+
+    bool adjustShadow(const Ogre::StringVector &params);
 
 
   protected:
@@ -126,7 +136,7 @@ namespace ZGame
     void _initSSAO();
     void _initHDR();
     void _parseHDRConfig();
-
+    void _initSkyX();
   private:
     Ogre::SceneManager* _scnMgr;
     Ogre::Viewport* _vp;
@@ -134,10 +144,15 @@ namespace ZGame
     size_t _WHICH_STARTYPE;
     size_t _WHICH_GLARETYPE;
     size_t _ADAPT_SCALE;
+    bool _IS_AUTO_KEY;
     float _AUTO_KEY;
     float _GLARE_STRENGTH;
     float _STAR_STRENGTH;
-
-
+    Ogre::ShadowCameraSetupPtr _pssmSetup;
+    std::auto_ptr<SkyX::SkyX> _skyX;
+    Ogre::Real _SHC_R[NUM_OF_BANDS*NUM_OF_BANDS]; //4 is because we have to use multiple of fours. WARNING, this only works of 3 or 4 bands only!!!
+    Ogre::Real _SHC_G[NUM_OF_BANDS*NUM_OF_BANDS];
+    Ogre::Real _SHC_B[NUM_OF_BANDS*NUM_OF_BANDS];
+    Ogre::Real _timeCount;
   };
 }

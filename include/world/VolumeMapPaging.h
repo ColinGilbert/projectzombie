@@ -44,8 +44,8 @@ namespace ZGame
       ~VolumeMapPaging();
 
       VolumePagedWorldSection*
-      createWorldSection(Ogre::PagedWorld* world, VolumeMap* volumeMap, Ogre::Real loadRadius, Ogre::Real holdRadius, int32 minX, int32 minY, int32 maxX,
-          int32 maxY, Ogre::SceneManager* scnMgr, const Ogre::String& sectionName = Ogre::StringUtil::BLANK);
+      createWorldSection(Ogre::PagedWorld* world, VolumeMap* volumeMap, Ogre::Real loadRadius, Ogre::Real holdRadius, Ogre::int32 minX, Ogre::int32 minY, Ogre::int32 maxX,
+          Ogre::int32 maxY, Ogre::SceneManager* scnMgr, const Ogre::String& sectionName = Ogre::StringUtil::BLANK);
 
     protected:
       Ogre::SectionFactory _sectionFactory;

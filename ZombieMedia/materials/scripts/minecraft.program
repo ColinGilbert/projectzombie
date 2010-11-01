@@ -1,4 +1,90 @@
-vertex_program MinecraftVPF_glsl glsl
+vertex_program PRJZ/PSSM/shadow_caster_vs cg
+{
+	source Minecraft.cg
+	profiles vs_2_x argvp1
+	entry_point caster_vs
+	default_params
+	{
+	param_named_auto wvpMat worldviewproj_matrix
+	
+	}
+}
+
+fragment_program PRJZ/PSSM/shadow_caster_ps cg
+{
+	source Minecraft.cg
+	profiles ps_2_0 arbfp1
+	entry_point caster_ps
+	default_params
+	{
+	}
+}
+
+
+
+vertex_program MinecraftVP_cg cg
+{
+	source Minecraft.cg
+	profiles vs_3_0 
+	entry_point main_vp
+
+	default_params
+	{
+		param_named_auto worldViewProj	worldviewproj_matrix
+		//param_named_auto lightPosition	light_position_object_space 0
+		param_named_auto eyePos	camera_position_object_space
+		//param_named_auto texWorldViewProjMatrix0	texture_worldviewproj_matrix 0
+		//param_named_auto texWorldViewProjMatrix1	texture_worldviewproj_matrix 1
+		//param_named_auto texWorldViewProjMatrix2	texture_worldviewproj_matrix 2
+		//param_named_auto depthRange0			shadow_scene_depth_range 0  
+		//param_named_auto depthRange1			shadow_scene_depth_range 1
+		//param_named_auto depthRange2			shadow_scene_depth_range 2
+	}
+}
+
+vertex_program MinecraftGeom_vs cg
+{
+	source Minecraft.cg
+	profiles vs_3_0
+	entry_point geom_vs
+	default_params
+	{
+		param_named_auto wvpMat worldviewproj_matrix
+		param_named_auto wvMat worldview_matrix
+	}
+}
+
+fragment_program MinecraftGeom_ps cg
+{
+	source Minecraft.cg
+	profiles ps_3_0
+	entry_point geom_ps
+	default_params
+	{
+		param_named_auto far far_clip_distance
+	}
+}
+
+fragment_program MinecraftFP_cg cg
+{
+	source Minecraft.cg
+	profiles ps_3_0
+	entry_point main_fp
+
+	default_params
+	{
+		//param_named_auto lightDiffuse	derived_light_diffuse_colour 0
+		//param_named_auto lightSpecular	derived_light_specular_colour 0
+		//param_named_auto ambient	derived_ambient_light_colour
+		//param_named_auto inverseShadowmapSize0	inverse_texture_size 0
+		//param_named_auto inverseShadowmapSize1	inverse_texture_size 1
+		//param_named_auto inverseShadowmapSize2	inverse_texture_size 2
+		//param_named pssmSplitPoints MANUAL
+	}
+
+}
+
+vertex_program MinecraftVP_glsl glsl
 {
 	
 	source MinecraftVP.vert
@@ -6,16 +92,30 @@ vertex_program MinecraftVPF_glsl glsl
 	default_params
 	{
 		param_named_auto	worldViewProjMatrix	worldviewproj_matrix
+		param_named_auto lightPosition				light_position_object_space 0
+		param_named_auto eyePosition				camera_position_object_space
+		param_named_auto texWorldViewProjMatrix0	texture_worldviewproj_matrix 0
+		param_named_auto texWorldViewProjMatrix1	texture_worldviewproj_matrix 1
+		param_named_auto texWorldViewProjMatrix2	texture_worldviewproj_matrix 2
+		//param_named_auto depthRange0				shadow_scene_depth_range 0
 		//param_named_auto	LightPosition	light_position int 0
-	
+		param_named_auto depthRange0				shadow_scene_depth_range 0
+		param_named_auto depthRange1				shadow_scene_depth_range 1
+		param_named_auto depthRange2				shadow_scene_depth_range 2
 	}
 }
 
-fragment_program MinecraftFPFPF_glsl glsl
+fragment_program MinecraftFP_glsl glsl
 {
 	
 	source MinecraftFP.frag
 	default_params
 	{
+		param_named_auto lightDiffuse		derived_light_diffuse_colour 0
+		param_named_auto lightSpecular		derived_light_specular_colour 0
+		param_named_auto ambient			derived_ambient_light_colour 
+		param_named_auto invShadowMapSize0	inverse_texture_size 0
+		param_named_auto invShadowMapSize1	inverse_texture_size 1
+		param_named_auto invShadowMapSize2	inverse_texture_size 2
 	}
 }

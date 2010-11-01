@@ -28,9 +28,9 @@ namespace ZGame
       ~VolumeMapView();
 
       void
-      createRegion(bool regionEmpty, PolyVox::SurfaceMesh* mesh);
+      createRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh);
       void
-      updateRegion(bool regionEmpty, PolyVox::SurfaceMesh *mesh);
+      updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial> *mesh);
       void
       unloadRegion(bool regionEmpty);
       void
@@ -54,7 +54,7 @@ namespace ZGame
       _initManualObject();
       /** \brief This method will create a manual mesh from the given PolyVox SurfaceMesh.**/
       void
-      _manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh* mesh, Ogre::ManualObject* manual);
+      _manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh, Ogre::ManualObject* manual);
 
       void
       _convertColorFromMaterialID(Ogre::ColourValue &val, uint8_t materialID);

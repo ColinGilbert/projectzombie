@@ -12,7 +12,7 @@ using std::cout;
 using std::endl;
 
 using namespace ZGame::World;
-using PolyVox::SurfaceVertex;
+using PolyVox::PositionMaterial;
 using PolyVox::SurfaceMesh;
 using PolyVox::Vector3DFloat;
 using namespace Ogre;
@@ -38,7 +38,7 @@ VolumeMapView::_initManualObject()
 }
 
 void
-VolumeMapView::createRegion(bool regionEmpty, PolyVox::SurfaceMesh* mesh)
+VolumeMapView::createRegion(bool regionEmpty, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
   //if (!regionEmpty)
   _manual = _scnMgr->createManualObject();
@@ -59,67 +59,63 @@ VolumeMapView::unloadRegion(bool regionEmpty)
 }
 
 void
-VolumeMapView::updateRegion(bool regionEmpty, PolyVox::SurfaceMesh* mesh)
+VolumeMapView::updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
   if (!regionEmpty)
     _manualFromMesh(true, mesh, _manual);
 }
 
 void
-VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh* mesh, Ogre::ManualObject* manual)
+VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh<PositionMaterial>* mesh, Ogre::ManualObject* manual)
 {
+    /*
   const float ATLAS_WIDTH = 4096.0f;
   const float TEX_WIDTH = 256.0f;
   const float BlockOffset = (TEX_WIDTH) / ATLAS_WIDTH;
   const float pixelOffset = 1.0 / ATLAS_WIDTH;
   const float blockEOffset = 1.0 / TEX_WIDTH;
+  */
   using std::vector;
   const vector<uint32_t>& indices = mesh->getIndices();
-  const vector<SurfaceVertex>& vertices = mesh->getVertices();
+  const vector<PositionMaterial>& vertices = mesh->getVertices();
 
   if(vertices.size() < 1)
     return;
 
   //Build the Ogre Manual Object. We first iterate through the vertices add position to that.
   //
+  /*
   const Ogre::Vector2 texCoords[4] =
     { Ogre::Vector2(0.0f, 0.0f), Ogre::Vector2(1.0f, 0.0f), Ogre::Vector2(0.0f, 1.0f), Ogre::Vector2(1.0f, 1.0f) };
   size_t texIdx = 0;
-
-  _manual->estimateVertexCount(indices.size());
+  */
+  _manual->estimateIndexCount(indices.size());
   _manual->estimateVertexCount(vertices.size());
-
+  /*
   if (isUpdate)
     {
       manual->beginUpdate(0);
    } 
-  else
+  else //"PRJZ/Minecraft" Ogre/shadow/depth/integrated/pssm
+    */
     _manual->begin("PRJZ/Minecraft", Ogre::RenderOperation::OT_TRIANGLE_LIST, "PROJECT_ZOMBIE");
 
-  for (vector<SurfaceVertex>::const_iterator itVertex = vertices.begin(); itVertex != vertices.end(); ++itVertex)
+  for (vector<PositionMaterial>::const_iterator itVertex = vertices.begin(); itVertex != vertices.end(); ++itVertex)
     {
-      const SurfaceVertex& vertex = *itVertex;
+      const PositionMaterial& vertex = *itVertex;
       const Vector3DFloat& vertPos = vertex.getPosition();
       //const Vector3DFloat& finalPos = vertPos + static_cast<Vector3DFloat> (mesh.m_Region.getLowerCorner());
       Vector3DFloat origin(_origin.x, _origin.y, _origin.z);
       const Vector3DFloat& finalPos = vertPos + origin;
       manual->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
-      manual->normal(vertex.getNormal().getX(), vertex.getNormal().getY(), vertex.getNormal().getZ());
+      //manual->normal(vertex.getNormal().getX(), vertex.getNormal().getY(), vertex.getNormal().getZ()); 
       //Assume that the passed in position are counter clockwise starting from top left corner.
-      manual->textureCoord(texCoords[texIdx % 4]);
-      texIdx++;
-
+      
       Ogre::ColourValue val;
       size_t material = vertex.getMaterial() + 0.5f; 
       
       manual->textureCoord(material / 256.0f, 0.0, 0.0, 0.0);
-      //val.r = (float)(material) / 256.0f;//(float) (material - 1) * BlockOffset;// - pixelOffset;
-      //val.g = 0.0f;
-      //val.b = 0.0f;
-      //val.a = 1.0f;
-      //Ogre::Colo
-      //manual->colour(val);
-    }
+      }
   //Then iterate through the indices add create the indices list.
   for (vector<uint32_t>::const_iterator itIdx = indices.begin(); itIdx != indices.end(); ++itIdx)
     {

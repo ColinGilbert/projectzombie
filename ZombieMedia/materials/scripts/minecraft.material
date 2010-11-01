@@ -1,39 +1,140 @@
+vertex_program PRJZ/PSSM/shadow_caster_vsGLSL glsl
+{
+	source CasterPSSMVert.glsl
+	
+	default_params
+	{
+		param_named_auto worldViewProjMatrix worldviewproj_matrix
+		param_named_auto depthRange scene_depth_range 0
+	}
+}
 
+fragment_program PRJZ/PSSM/shadow_caster_psGLSL glsl
+{
+	source CasterPSSMFrag.glsl
+	default_params
+	{
+	}
+}
+
+vertex_program PRJZ/PSSM/shadow_caster_vs unified
+{
+	delegate PRJZ/PSSM/shadow_caster_vs
+	//delegate PRJZ/PSSM/shadow_caster_vsGLSL
+}
+
+fragment_program PRJZ/PSSM/shadow_caster_ps unified
+{
+	delegate PRJZ/PSSM/shadow_caster_ps
+	//delegate PRJZ/PSSM/shadow_caster_psGLSL
+}
+
+
+
+
+material PRJZ/PSSM/shadow_caster
+{
+	technique
+	{
+		// all this will do is write depth and depth² to red and green
+		pass
+		{
+			vertex_program_ref PRJZ/PSSM/shadow_caster_vs
+			{
+			}
+
+			fragment_program_ref PRJZ/PSSM/shadow_caster_ps 
+			{
+			}
+		}
+	}	
+}
+
+vertex_program PRJZ/PSSM/shadow_reciever_vs unified
+{
+	delegate MinecraftVP_cg
+	//delegate MinecraftVP_glsl
+}
+
+fragment_program PRJZ/PSSM/shadow_reciever_ps unified
+{
+	delegate MinecraftFP_cg
+	//delegate MinecraftFP_glsl
+}
 
 material PRJZ/Minecraft
 {
 	technique
 	{
+		//shadow_caster_material PRJZ/PSSM/shadow_caster
+		
 		pass
-		{	
-			depth_bias 0.1
-			//cull_hardware back_face
+		{	ambient 1 1 1 1
+			diffuse 1 1 1 1
+
+			//depth_bias 0.1
+			//cull_hardware 
 			//cull_software back
 			//polygon_mode wireframe
-			texture_unit DiffuseMap
+
+
+			vertex_program_ref PRJZ/PSSM/shadow_reciever_vs
+			{
+				//param_named		LightPosition	float4	       256 512 -512 0
+				
+			}
+			
+		
+
+			texture_unit diffuseMap
 			{
 				//filtering trilinear
 				//tex_address_mode wrap
 				//filtering none
 				//filtering bilinear
 				filtering point point point 
-				//filtering anisotropy anisotropy point
+				//filtering anisotropic anisotropic point
 				max_anisotropy 2
 				mipmap_bias -2.0
-				//texture minecraft_terrain_hi.png
-				texture minecraft_terrain_rpg.png
+				texture minecraft_terrain_hi.png
+				//texture minecraft_terrain_rpg.png
+				//texture minecraft_terrain_bb.png
+				//texture minecraft_terrain_dot.png
+				//texture minecraft_terrain_bb_paint.png
+				//texture minecraft_terrain_128_one.png
 			}
+			//texture_unit shadow0
+			//{
+				//content_type shadow
+				//tex_address_mode border
+				//tex_border_colour 1 1 1 1
+				
+			//}
+			//texture_unit shadow1
+			//{
+				//content_type shadow
+				//tex_address_mode border
+				//tex_border_colour 1 1 1 1
+				
+			//}
+			//texture_unit shadow2
+			//{
+				//content_type shadow
+				//tex_address_mode border
+				//tex_border_colour 1 1 1 1
+				
+			//}
 			
-			vertex_program_ref MinecraftVPF_glsl
+			fragment_program_ref PRJZ/PSSM/shadow_reciever_ps
 			{
-				//param_named		LightPosition	float4	       256 512 -512 0
+				//param_named	terrainTexture	int 0
+				//param_named diffuseMap int 0
+				//param_named shadowMap0 int 1
+				//param_named shadowMap1 int 2
+				//param_named shadowMap2 int 3
 				
 			}
-			
-			fragment_program_ref MinecraftFPFPF_glsl
-			{
-				param_named	terrainTexture	int 0
-			}
+		
 			
 		
 		}
@@ -41,17 +142,21 @@ material PRJZ/Minecraft
 
 	// this is the technique for the scheme "geom" that the SSAO
     // compositor uses to render the geometry map
+	
 	technique geom
 	{
 	    scheme geom
-
+	    
 	    pass
 	    {
-	        vertex_program_ref geom_vs
+		//depth_write on
+	    	//depth_check off
+
+	        vertex_program_ref MinecraftGeom_vs
 	        {
 	        }
 
-	        fragment_program_ref geom_ps
+	        fragment_program_ref MinecraftGeom_ps
 	        {
 	        }
 	    }

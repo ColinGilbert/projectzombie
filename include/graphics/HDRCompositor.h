@@ -193,7 +193,7 @@ public:
   SetGlareType(const GLARETYPE GlareType)
   {
     m_GlareType = GlareType;
-    //Create();
+    Create();
   }
 
   float
@@ -216,7 +216,7 @@ public:
   SetGlarePasses(const float Passes)
   {
     m_GlarePasses = Passes;
-    //Create();
+    Create();
   }
 
   STARTYPE
@@ -228,7 +228,7 @@ public:
   SetStarType(const STARTYPE StarType)
   {
     m_StarType = StarType;
-    //Create();
+    Create();
   }
 
   float
@@ -251,7 +251,7 @@ public:
   SetStarPasses(const float Passes)
   {
     m_StarPasses = Passes;
-    //Create();
+    Create();
   }
 
   bool
@@ -263,7 +263,7 @@ public:
   SetAutoKeying(const bool AutoKeying)
   {
     m_AutoKeying = AutoKeying;
-    //Create();
+    Create();
   }
 
   bool
@@ -275,7 +275,7 @@ public:
   SetLumAdapdation(bool LumAdaptation)
   {
     m_LumAdaption = LumAdaptation;
-    //Create();
+    Create();
   }
 
   float
@@ -345,7 +345,7 @@ public:
     if (rt != m_DebugRendertarget)
       {
         m_DebugRendertarget = rt;
-        //Create();
+        Create();
       }
   }
 

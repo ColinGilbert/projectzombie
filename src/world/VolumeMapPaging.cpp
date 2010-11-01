@@ -12,6 +12,7 @@
 using ZGame::World::VolumeMapPaging;
 using ZGame::World::VolumeMap;
 using namespace Ogre;
+using Ogre::int32;
 VolumeMapPaging::VolumeMapPaging(PageManager* pageMgr) :
   _pageMgr(pageMgr)
 {
@@ -26,7 +27,7 @@ VolumeMapPaging::~VolumeMapPaging()
 using ZGame::World::VolumePagedWorldSection;
 
 VolumePagedWorldSection*
-VolumeMapPaging::createWorldSection(PagedWorld* world, VolumeMap* volumeMap, Real loadRadius, Real holdRadius, int32 minX, int32 minY, int32 maxX, int32 maxY,
+VolumeMapPaging::createWorldSection(PagedWorld* world, VolumeMap* volumeMap, Real loadRadius, Real holdRadius, Ogre::int32 minX, Ogre::int32 minY, Ogre::int32 maxX, Ogre::int32 maxY,
     SceneManager* scnMgr, const String& sectionName)
 {
   VolumePagedWorldSection* ret = static_cast<VolumePagedWorldSection*> (world->createSection(scnMgr, SectionFactory::FACTORY_NAME, sectionName));

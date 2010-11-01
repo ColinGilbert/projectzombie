@@ -142,7 +142,7 @@ namespace ZGame
       {
         VolumePage* page;
         VolumeMap* origin;
-        PolyVox::SurfaceMesh* surface;
+        PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* surface;
         friend std::ostream&
         operator<<(std::ostream& o, const LoadRequest& r)
         {

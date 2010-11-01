@@ -29,7 +29,7 @@ using namespace Ogre;
 
 
 
-const uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
+const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 
 void
 createSphereInVolume(Volume<MaterialDensityPair44>& volData, float fRadius, uint8_t uValue)
@@ -248,7 +248,7 @@ VolumeMap::loadPage(Ogre::PageID pageID)
       LoadRequest req;
       req.origin = this;
       req.page = page;
-      req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
+      req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
       Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, false);
 
       //_loadPage(page, true);
@@ -292,7 +292,7 @@ VolumeMap::_loadPage(VolumeMap::VolumePage* page, bool create)
   page->setAllocated();
   _mapGen.generate(&page->data, x, z);
   //Extract the surface. We are creating surface mesh on stack. Maybe look into optimizing this for reuse instead.
-  SurfaceMesh mesh;
+  SurfaceMesh<PolyVox::PositionMaterial> mesh;
   //Vector3DInt16 regLowerCorner(0, 0, 0);
   //Vector3DInt16 regUpperCorner(page->data.getDepth(), page->data.getHeight(), page->data.getWidth());
 
@@ -314,6 +314,7 @@ void
 VolumeMap::_defineRegions()
 {
   using namespace Ogre;
+  using Ogre::int32;
   int32 startX, startZ, endX, endZ;
   //Figure out the Page x,y. X goes left to right, Z goes from negative to positive. Note: This way of doing this may be stupid but I have a headache right now.
   int halfRegions = _regionsWidth / 2 / _regionSideLen;
@@ -343,6 +344,9 @@ Ogre::uint32
 VolumeMap::_packIndex(Ogre::int32 x, Ogre::int32 y)
 {
   using namespace Ogre;
+  using Ogre::uint32;
+  using Ogre::int16;
+  using Ogre::uint16;
   // Convert to signed 16-bit so sign bit is in bit 15
   int16 xs16 = static_cast<int16> (x);
   int16 ys16 = static_cast<int16> (y);

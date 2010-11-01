@@ -270,9 +270,10 @@ String HDRCompositor::StarTypeToString(const STARTYPE StarType)
 
 void HDRCompositor::Create(void)
 {
+    cout << "Cpmpositor instance set." << endl;
 	Release();
     cout << "Done releasing." << endl;
-	m_Compositor = CompositorManager::getSingleton().create("HDR", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	m_Compositor = CompositorManager::getSingleton().create("HDR", "PROJECT_ZOMBIE");
     cout << "Done creating compositor." << endl;
 	m_HDRTechnique = m_Compositor->createTechnique();
     cout << "Done creating technique." << endl;
@@ -307,12 +308,13 @@ void HDRCompositor::Create(void)
     cout << "Scale built." << endl;
 	FinalRendering();
     cout << "Final rendering!" << endl;
-	Viewport* const vp = m_Window->getViewport(0);
-	Ogre::CompositorInstance* const instance = CompositorManager::getSingleton().addCompositor(vp, "HDR");
-    cout << "Cpmpositor instance set." << endl;
-	//if(instance)
-		//instance->addListener(this);
-
+	
+	 Viewport* const vp = m_Window->getViewport(0);
+    Ogre::CompositorInstance* const instance = CompositorManager::getSingleton().addCompositor(vp, "HDR", 0);
+   
+	if(instance)
+		instance->addListener(this);
+    //Ogre::CompositorManager::getSingleton().addCompositor(vp, "HDR", 0);
 	notifyViewportSize(vp->getActualWidth(), vp->getActualHeight());
     cout << "View port notified." << endl;
     cout << "VP: " << vp << endl;
