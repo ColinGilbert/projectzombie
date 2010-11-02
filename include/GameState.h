@@ -1,14 +1,14 @@
 /*
- * GameState.h
- *
- *  Created on: Aug 28, 2008
- *      Author: bey0nd
- *
- * This class defines the GameState class. The GameState class is the super class for the concept of states in ZGame's engine.
- * Mainly the idea here is that the state class will store the current state of the game. For example: In the GameMainState, we would store all the controllers and managers
- * used by the GameMainState. It will also handle registering any objects residing in the state for events. So conceptually this is similar to a controller. The other idea
- * is we can push stuff to the objects residing in a game state--dependency injection,sort of.
- */
+* GameState.h
+*
+*  Created on: Aug 28, 2008
+*      Author: bey0nd
+*
+* This class defines the GameState class. The GameState class is the super class for the concept of states in ZGame's engine.
+* Mainly the idea here is that the state class will store the current state of the game. For example: In the GameMainState, we would store all the controllers and managers
+* used by the GameMainState. It will also handle registering any objects residing in the state for events. So conceptually this is similar to a controller. The other idea
+* is we can push stuff to the objects residing in a game state--dependency injection,sort of.
+*/
 
 #pragma once
 
@@ -16,63 +16,65 @@
 #include <memory>
 
 #include <OIS/OIS.h>
+#include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
+#include "MouseEventRegister.h"
+#include "LifeCycleDelegates.h"
+#include "DelegatesUtil.h"
 
 using namespace std;
 
 namespace OgreBites
 {
-  class SdkTrayManager;
+    class SdkTrayManager;
 }
 
 namespace ZGame
 {
-  class LifeCycleRegister;
-  class KeyEventRegister;
-  class MouseEventRegister;
-  class GraphicsController;
+    class LifeCycleRegister;
+    class KeyEventRegister;
+    class MouseEventRegister;
+    class GraphicsController;
 
-  class GameState
-  {
-  public:
-    virtual
-    ~GameState();
-    void
-    init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
-        MouseEventRegister &mouseReg, OgreBites::SdkTrayManager* tray);
-  protected:
-
-    GameState(); //protected constructor
-    virtual void
-    regLfcObsForInjection(LifeCycleRegister &lfcReg)
+    class GameState
     {
-    }
-    virtual void
-    regKeyObsForInjection(KeyEventRegister &keyReg)
-    {
-    }
-    virtual void
-    regMouseObsForInjection(MouseEventRegister &mouseReg)
-    {
-    }
+    public:
+        virtual
+            ~GameState();
+        void
+            init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
+            MouseEventRegister &mouseReg, OgreBites::SdkTrayManager* tray);
+    protected:
 
-    GraphicsController*
-    getGraphicsController()
-    {
-      return _gfxCtrl.get();
-    }
+        GameState(); //protected constructor
 
-    OgreBites::SdkTrayManager*
-    getSdkTray()
-    {
-      return _tray;
-    }
+        virtual void
+            GameState::regLfcObsForInjection(LifeCycleRegister &lfcReg);
+        virtual void
+            GameState::regKeyObsForInjection(KeyEventRegister &keyReg);
+        virtual void
+            GameState::regMouseObsForInjection(MouseEventRegister &mouseReg);
+        
 
-  protected:
-  private:
-    auto_ptr<GraphicsController> _gfxCtrl;
-    OgreBites::SdkTrayManager* _tray;
 
-  };
+        GraphicsController*
+            getGraphicsController()
+        {
+            return _gfxCtrl.get();
+        }
+
+        OgreBites::SdkTrayManager*
+            getSdkTray()
+        {
+            return _tray;
+        }
+
+    protected:
+    private:
+        auto_ptr<GraphicsController> _gfxCtrl;
+        OgreBites::SdkTrayManager* _tray;
+
+    };
 
 }
 

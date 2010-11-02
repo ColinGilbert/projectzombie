@@ -71,22 +71,13 @@ namespace ZGame
         bool onKeyDown(const OIS::KeyEvent &evt);
         bool onKeyUp(const OIS::KeyEvent &evt);
     protected:
-        auto_ptr<GPUEntities> _gpuEnts;
-        shared_ptr<GPUEntsView> _gpuEntsView;
         Ogre::Camera* _cam;
         Ogre::Real _dz;
         bool _forward;
         bool _backward;
         Ogre::Real _trans;
         shared_ptr<ControlModuleProto> _controlMod;
-        shared_ptr<WhiteNoiseView> _whtNoiseView;
-        shared_ptr<GPUEntsControl> _gpuEntsControl;
-
-        void createGPUEntities();
-        void createCharacters();
-        /** \brief This method will initialize the graphical state, before any sub-module graphical state initialization.**/
-        void initGraphicalState();
-        
+                
         virtual void
             regLfcObsForInjection(LifeCycleRegister &lfcReg);
         virtual void
@@ -107,7 +98,7 @@ namespace ZGame
         auto_ptr<Entities::EntitiesView> _entsView;
         auto_ptr<ZWorkspace> _workspace;
         //Graphics stuff.
-
+        
 
     };
 }

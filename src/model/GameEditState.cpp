@@ -1,9 +1,9 @@
 /*
- * GameEditState.cpp
- *
- *  Created on: Aug 28, 2008
- *      Author: bey0nd
- */
+* GameEditState.cpp
+*
+*  Created on: Aug 28, 2008
+*      Author: bey0nd
+*/
 #include <Ogre.h>
 #include <SdkTrays.h>
 #include "GameEditState.h"
@@ -17,21 +17,22 @@
 #include "EngineView.h"
 namespace ZGame
 {
-  GameEditState::GameEditState() :
-    GameState() , _controlMod(50.0f), _gfxCtrl(new ZGame::GraphicsController()), _volumePaging(0)//_editView(new GameEditView())
+    GameEditState::GameEditState() :
+GameState() , _controlMod(50.0f), _volumePaging(0)//_editView(new GameEditView())
 
-  {
+{
     // TODO Auto-generated constructor stub
-  }
+}
 
-  GameEditState::~GameEditState()
-  {
+GameEditState::~GameEditState()
+{
     // TODO Auto-generated destructor stub
-  }
+}
 
-  void
-  GameEditState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
-  {
+void
+    GameEditState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
+{
+    GameState::regLfcObsForInjection(lfcReg);
     //This state
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regLfcObsForInjection");
     LifeCycle::LifeCycleObserver lfcObs;
@@ -40,18 +41,15 @@ namespace ZGame
 
     LifeCycle::bindLifeCycleObserver(lfcObs, _controlMod);
     lfcReg.registerLfcObs(lfcObs);
-
-    LifeCycle::bindLifeCycleObserver(lfcObs, *_gfxCtrl.get(), LifeCycle::LFC_ON_UPDATE);
-    lfcReg.registerLfcObs(lfcObs);
-
+    
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Out GameEditState regLfcObsForInjection");
-  }
+}
 
-  void
-  GameEditState::regKeyObsForInjection(KeyEventRegister &keyReg)
-  {
+void
+    GameEditState::regKeyObsForInjection(KeyEventRegister &keyReg)
+{
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regKeyObsForInjection");
-
+    GameState::regKeyObsForInjection(keyReg);
     //This
     EVENT::KeyboardEvtObserver keyObs;
     EVENT::bindKeyObserver(keyObs, *this);
@@ -60,15 +58,13 @@ namespace ZGame
     EVENT::bindKeyObserver(keyObs, _controlMod);
     keyReg.registerKeyObs(keyObs);
 
-    EVENT::bindKeyObserver(keyObs, *_gfxCtrl.get());
-    keyReg.registerKeyObs(keyObs);
-
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regKeyObsForInjection");
-  }
+}
 
-  void
-  GameEditState::regMouseObsForInjection(MouseEventRegister &mouseReg)
-  {
+void
+    GameEditState::regMouseObsForInjection(MouseEventRegister &mouseReg)
+{
+    GameState::regMouseObsForInjection(mouseReg);
     EVENT::MouseEvtObserver mouseObs;
 
     EVENT::bindMouseObserver(mouseObs, *this);
@@ -76,14 +72,14 @@ namespace ZGame
 
     EVENT::bindMouseObserver(mouseObs, _controlMod);
     mouseReg.registerMouseObs(mouseObs);
-  }
+}
 
-  bool
-  GameEditState::onInit()
-  {
+bool
+    GameEditState::onInit()
+{
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameEditState::onInit");
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "Initializing graphics controller.");
-    _gfxCtrl->onInit();
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "Initializing graphics controller.");
+    //GameState::getGraphicsController()->onInit();
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "Initializing Volume Map");
     _map.setOrigin(Ogre::Vector3(0, -64, 0));
     _map.load();
@@ -95,71 +91,71 @@ namespace ZGame
     _volumePaging->createWorldSection(world, &_map, _map.getRegionsHalfWidth(), _map.getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
 
     return true;
-  }
+}
 
-  bool
-  GameEditState::onUpdate(const Ogre::FrameEvent& evt)
-  {
+bool
+    GameEditState::onUpdate(const Ogre::FrameEvent& evt)
+{
     //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,"In GameEditState::onUpdate");
     return true;
-  }
+}
 
-  bool
-  GameEditState::onDestroy()
-  {
-      using World::VolumeMapPaging;
+bool
+    GameEditState::onDestroy()
+{
+    using World::VolumeMapPaging;
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameEditState::onDestroy");
     OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
     return true;
-  }
+}
 
-  bool
-  GameEditState::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
-  {
+bool
+    GameEditState::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
+{
     OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
     if (_sdkTrayMgr->injectMouseDown(evt, id))
-      return true;
+        return true;
     return true;
-  }
-  bool
-  GameEditState::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
-  {
+}
+bool
+    GameEditState::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
+{
     OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
     if (_sdkTrayMgr->injectMouseUp(evt, id))
-      return true;
+        return true;
     return true;
-  }
-  bool
-  GameEditState::onMouseMove(const OIS::MouseEvent &evt)
-  {
+}
+bool
+    GameEditState::onMouseMove(const OIS::MouseEvent &evt)
+{
     OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
     if (_sdkTrayMgr->injectMouseMove(evt))
-      return true;
+        return true;
     return true;
-  }
-  bool
-  GameEditState::onKeyDown(const OIS::KeyEvent &evt)
-  {
+}
+bool
+    GameEditState::onKeyDown(const OIS::KeyEvent &evt)
+{
     OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
     if (evt.key == OIS::KC_TAB)
-      {
+    {
         if (_sdkTrayMgr->areTraysVisible() && _sdkTrayMgr->isCursorVisible())
-          {
+        {
             _sdkTrayMgr->hideAll();
-          }
+        }
         else
-          {
+        {
             _sdkTrayMgr->showAll();
-          }
-      }
+        }
+    }
     return true;
-  }
+}
 
-  bool
-  GameEditState::onKeyUp(const OIS::KeyEvent &evt)
-  {
+bool
+    GameEditState::onKeyUp(const OIS::KeyEvent &evt)
+{
     return true;
-  }
+}
 
 }
 

@@ -60,37 +60,13 @@ namespace ZGame
     virtual void
     regMouseObsForInjection(MouseEventRegister &mouseReg);
 
-    class DummyPageProvider : public Ogre::PageProvider
-    {
-    public:
-      bool
-      prepareProceduralPage(Page* page, PagedWorldSection* section)
-      {
-        return true;
-      }
-      bool
-      loadProceduralPage(Page* page, PagedWorldSection* section)
-      {
-        return true;
-      }
-      bool
-      unloadProceduralPage(Page* page, PagedWorldSection* section)
-      {
-        return true;
-      }
-      bool
-      unprepareProceduralPage(Page* page, PagedWorldSection* section)
-      {
-        return true;
-      }
-    };
+   
 
   private:
     World::VolumeMap _map;
     ZGame::ControlModuleProto _controlMod;
-    std::auto_ptr<ZGame::GraphicsController> _gfxCtrl;
     Ogre::PageManager _pageManager;
-    DummyPageProvider _dummyPageProvider;
+    World::DummyPageProvider _dummyPageProvider; //This dummy class in in VolumeMapPaging.h
     World::VolumeMapPaging* _volumePaging;
 
 
