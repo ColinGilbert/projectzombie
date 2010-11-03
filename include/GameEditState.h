@@ -63,12 +63,8 @@ namespace ZGame
    
 
   private:
-    World::VolumeMap _map;
     ZGame::ControlModuleProto _controlMod;
-    Ogre::PageManager _pageManager;
-    World::DummyPageProvider _dummyPageProvider; //This dummy class in in VolumeMapPaging.h
-    World::VolumeMapPaging* _volumePaging;
-
+ 
 
   };
 }

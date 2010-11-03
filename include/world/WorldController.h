@@ -6,6 +6,9 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include "Controller.h"
+#include "world/WorldMap.h"
+#include "world/DummyPageProvider.h"
+
 
 /**
 *This class defines the world controller.
@@ -16,14 +19,13 @@ namespace ZGame
 {
     namespace World
     {
-        class WorldMap;
+        class VolumeMap;
+        class VolumeMapPaging;
         class WorldController
         {
         public:
             WorldController();
             ~WorldController();
-
-            
 
             //implements the LifeCycleEvents
             bool onInit();
@@ -40,11 +42,15 @@ namespace ZGame
         protected:
             
         private:
-            void init();
-            void loadWorldMap();
+            void _init();
+            void _loadWorldMap();
         private:
-            std::auto_ptr<WorldMap> _worldMap;
+            std::auto_ptr<World::WorldMap > _worldMap;
+            std::auto_ptr<VolumeMap > _volumeMap;
+            VolumeMapPaging* _volumePaging;
             Ogre::SceneManager* _scnMgr;
+            DummyPageProvider _pageProvider;
+            Ogre::PageManager _pageManager;
         
         };
     }

@@ -102,10 +102,6 @@ void
     EVENT::bindKeyObserver(keyObs, *_controlMod);
     keyReg.registerKeyObs(keyObs);
 
-    //Graphics module
-    EVENT::bindKeyObserver(keyObs, *GameState::getGraphicsController());
-    keyReg.registerKeyObs(keyObs);
-
     EVENT::bindKeyObserver(keyObs, *this);
     keyReg.registerKeyObs(keyObs);
 }

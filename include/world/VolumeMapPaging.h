@@ -15,6 +15,7 @@
 
 using Ogre::int32;
 
+
 namespace Ogre
 {
     class SectionFactory : public Ogre::PagedWorldSectionFactory
@@ -30,43 +31,16 @@ namespace Ogre
     };
 }
 
-
-
 namespace ZGame
 {
     namespace World
     {
         class VolumeMap;
         class VolumePagedWorldSection;
-        class DummyPageProvider : public Ogre::PageProvider
-        {
-            
-        public:
-            bool
-                prepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-            {
-                return true;
-            }
-            bool
-                loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-            {
-                return true;
-            }
-            bool
-                unloadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-            {
-                return true;
-            }
-            bool
-                unprepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-            {
-                return true;
-            }
-        };
         /**
         *This class is a wrapper to functionalities required of Ogre's Paging system. Namely,
         *this class provides a method to create a WorldSection (it takes care of 
-        *the boiler place code that is need to create a section).
+        *the boiler place code that is needed to create a section).
         **/
         class VolumeMapPaging
         {

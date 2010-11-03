@@ -82,7 +82,7 @@ bool
     _initSSAO();
     _initSkyX();
     _ssaoInstance->setEnabled(true);
-    //_hdrCompositor->Enable(true);
+    _hdrCompositor->Enable(true);
     //_scnMgr->setSkyBox(true, "Examples/MorningSkyBox", 10, true);
     //_initShadows();
     _scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
@@ -105,9 +105,9 @@ void
     _skyX->create();
 
     //Add ground atomospheric scattering pass to our terrain.
-    _skyX->getGPUManager()->addGroundPass(
-        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
+    //_skyX->getGPUManager()->addGroundPass(
+      //  static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
+        //getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
     //_skyX->getCloudsManager()->add(SkyX::CloudLayer::Options());
     
 
