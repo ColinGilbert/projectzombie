@@ -42,8 +42,10 @@ namespace ZGame
             bool 
                 createRenderEntity(const ZEntityResource* const res, const EntityUpdateEvent* const read);
             */
+            /*
             bool
                 createRenderEntity(ZEntity const* ent);
+            */
             /** \begin This method shall create a bunch of render entities, with the numbers of entities to create implicilty known from the iterators.**/
             bool
                 createRenderEntities(ZENTITY_VEC::const_iterator begin, ZENTITY_VEC::const_iterator end, size_t numOfEnts);
@@ -64,7 +66,6 @@ namespace ZGame
             /** This vector stores SceneNode pointers. Care must be taken to properly deallocate them such as when restarting,
             this RenderEntitiesMananger. Otherwise we can expect SceneManager to take care of deallocation for us, on shutdown.**/
             //ENT_NODES_VEC _entNodes;
-            Ogre::SceneNode* _entNodesRoot;
             Ogre::SceneManager* _scnMgr;
             std::vector<Ogre::InstancedGeometry*> _renderInstances;
             Ogre::vector<Ogre::AnimationState*>::type _animations;

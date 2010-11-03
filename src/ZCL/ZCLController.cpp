@@ -292,6 +292,12 @@ void
 {
   using Ogre::Real;
   using Ogre::uchar;
+  if(entBufs == 0 || worldMap == 0)
+  {
+      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, 
+          "Cannot initialize OpenCL Buffers. Entitity buffer or world map is null.");
+      return;
+  }
   cl_int err;
   Entities::ZEntityBuffers* entsBuf = entBufs;
   assert((worldMap->_COMPONENT_DIM == entsBuf->COMPONENT_DIM) && "Class Invariance failed! WorldMap component dimension does not agree with entities' component dimension.");

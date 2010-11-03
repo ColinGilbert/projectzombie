@@ -22,6 +22,7 @@ namespace ZGame
 
     GameState::~GameState()
     {
+        cout << "In gamestate destrutor." << endl;
         // TODO Auto-generated destructor stub
     }
 

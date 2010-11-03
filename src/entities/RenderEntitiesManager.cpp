@@ -25,7 +25,8 @@ using ZGame::COMMAND::CreateRenderEntCmd;
 using namespace ZGame::Entities;
 
 RenderEntitiesManager::RenderEntitiesManager() :
-_scnMgr(EngineView::getSingleton().getSceneManager())
+_scnMgr(EngineView::getSingleton().getSceneManager()), _instMgr(0),
+    _instancesRoot(0)
 {
     GetRenderEntitiesManager dlg;
     dlg.bind(this, &RenderEntitiesManager::getManager);
@@ -34,18 +35,16 @@ _scnMgr(EngineView::getSingleton().getSceneManager())
     shared_ptr<Command> crtRdrCmd(cmd);
     crtRdrCmd->setCommandMemento(dlg.GetMemento());
     CommandController::getSingleton().addCommand(crtRdrCmd);
-    _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
 #ifdef VTFINST
     _instMgr = 0;
-  _entNodesRoot = 0;
 #else
-  _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
+    _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
 #endif
 }
 
 RenderEntitiesManager::~RenderEntitiesManager()
 {
-  resetRenderEntities();
+    resetRenderEntities();
 }
 
 void
@@ -67,10 +66,10 @@ void
         {
             SceneNode* pChildNode = static_cast<SceneNode*> (itChild.getNext());
             _removeChildObjects(pChildNode);
-          node->removeChild(pChildNode);
-          OGRE_DELETE pChildNode;
+            node->removeChild(pChildNode);
+            OGRE_DELETE pChildNode;
         }
-      //remove node
+        //remove node
 
     }
 }
@@ -78,16 +77,26 @@ void
 void
     RenderEntitiesManager::resetRenderEntities()
 {
-
+    cout << "Resetting renderEntities. RenderEntitiesManager::resetRenderEntities." << endl;
 #ifdef VTFINST
 
-    _removeChildObjects(_instancesRoot);
-    _instancesRoot->removeAllChildren();
-    _scnMgr->destroySceneNode(_instancesRoot);
-    _scnMgr->destroyInstanceManager(_instMgr);
-    _instMgr = 0;
-    _instancesRoot = 0;
 
+    cout << "child objects removed from _instancedRoot." << endl;
+
+    if(_instancesRoot)
+    {
+        _removeChildObjects(_instancesRoot);
+        _instancesRoot->removeAllChildren();
+        _scnMgr->destroySceneNode(_instancesRoot);
+        _instancesRoot = 0;
+    }
+    if(_instMgr)
+    {
+        _scnMgr->destroyInstanceManager(_instMgr);
+        _instMgr = 0;
+    }
+    
+    cout << "Done reseting render entities." << endl;
 #else
 
     for (int i = 0; i < _renderInstances.size(); ++i)
@@ -148,7 +157,7 @@ bool
         anim->setTimePosition(Ogre::Math::RangeRandom(0.0f, 30.0f));
         anim->setEnabled(true);
         _instEnts.push_back(ent);
-        
+
         iter++; //Let's just refactor and pass in the vector so we don't have to do this.
     }
 
@@ -224,35 +233,33 @@ bool
 
 /**This method will build the scene nodes.
 *
-*\note: current method is to simply create a bunch of nodes directly off root node of the scene. In the future we will have to refactor such that we
-*build a tree off a node which we create from the root. Doing it this way, we only have to store the root node of the entities tree and thus skipping the
-*need to store a vector of scene nodes. (e.g: we can iterate through the scene nodes using Ogre's build-in node traversal facilities.)
-**/
+*
+*
 bool
-    RenderEntitiesManager::createRenderEntity(ZEntity const* ent)
+RenderEntitiesManager::createRenderEntity(ZEntity const* ent)
 {
-    //cout << "In RenderEntitieManager::createRenderEntity" << endl;
-    using namespace Ogre;
-    using Entities::ZEntityResource;
-    using Entities::ZEntity;
+//cout << "In RenderEntitieManager::createRenderEntity" << endl;
+using namespace Ogre;
+using Entities::ZEntityResource;
+using Entities::ZEntity;
 
-    ZEntityResource const* res = ent->getResource();
-    assert(res && "ZEnityResource pointer is null.");
+ZEntityResource const* res = ent->getResource();
+assert(res && "ZEnityResource pointer is null.");
 
-    Entity* ogreEnt = _scnMgr->createEntity(ent->getEntityName(), "ninja.mesh");//res->getResourceName());
-    SceneNode* node = _entNodesRoot->createChildSceneNode(ent->getEntityName());
-    //SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode(ent->getEntityName());
-    SceneNode* nodeChild = node->createChildSceneNode();
-    nodeChild->attachObject(ogreEnt);
-    //node->setScale(0.05f, 0.05f, 0.05f);
-    node->setPosition(ent->getPosition());
-    node->setOrientation(ent->getOrientation());
-    //_entNodes.push_back(node);
+Entity* ogreEnt = _scnMgr->createEntity(ent->getEntityName(), "ninja.mesh");//res->getResourceName());
+SceneNode* node = _entNodesRoot->createChildSceneNode(ent->getEntityName());
+//SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode(ent->getEntityName());
+SceneNode* nodeChild = node->createChildSceneNode();
+nodeChild->attachObject(ogreEnt);
+//node->setScale(0.05f, 0.05f, 0.05f);
+node->setPosition(ent->getPosition());
+node->setOrientation(ent->getOrientation());
+//_entNodes.push_back(node);
 
-    //assert(read && "EntityUpdateEvent read pointer is null");
-    return true;
+//assert(read && "EntityUpdateEvent read pointer is null");
+return true;
 }
-
+**/
 
 #ifdef VTFINST
 void
@@ -272,7 +279,7 @@ void
 
     //while(itChild.hasMoreElements())
     //{
-      //cout << "Updatind child in pseudo root" << endl;
+    //cout << "Updatind child in pseudo root" << endl;
     //Ogre::vector<Ogre::InstancedEntity>::type::iterator eit;
 
     //while(eit.hasMoreElements())

@@ -32,6 +32,7 @@ _hdrCompositor(0), _WHICH_TONEMAPPER(3), _WHICH_STARTYPE(1), _WHICH_GLARETYPE(1)
 
 GraphicsController::~GraphicsController()
 {
+    cout << "In graphicsController destructor." << endl;
     //delete _hdrCompositor;
 }
 

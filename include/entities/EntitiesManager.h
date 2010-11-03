@@ -23,7 +23,8 @@ namespace ZGame
     struct ZEntityBuffers
     {
       ZEntityBuffers() :
-        numOfEnts(0), worldPos(0), mode(0), worldOrient(0)
+        numOfEnts(0), worldPos(0), mode(0), worldOrient(0),goals(0),storeone(0),
+            density(0)
       {
       }
       size_t numOfEnts;

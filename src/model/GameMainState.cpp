@@ -34,14 +34,14 @@ GameMainState::GameMainState() :
 GameState(), _controlMod(new ControlModuleProto()),
     _worldController(new World::WorldController()), _charUtil(
     new Util::CharacterUtil()), _entMgr(0), //Do not initialize them here as services are not up yet when we are creating the GameMainState. This needs to change. i.e: we need to create game main state after ogre initializes.
-    _rdrEntMgr(0), _zclCtrl(new ZCLController()), _entsView(new Entities::EntitiesView()), _workspace(0)
+    _rdrEntMgr(0), _zclCtrl(new ZCLController()), _entsView(0), _workspace(0)
 {
 
 }
 
 GameMainState::~GameMainState()
 {
-    _controlMod.reset();
+    //_controlMod.reset();
     cout << "ControlModule reset." << endl;
     cout << "gpu ents ctrl reset." << endl;
     _worldController.reset(0);
@@ -139,16 +139,12 @@ bool
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameMainState onInit");
 
-    _zclCtrl->init("../scripts/testkernels.cl");
+    //_zclCtrl->init("../scripts/testkernels.cl");
     Ogre::LogManager::getSingleton().logMessage("Done initializing OpenCL.");
     //Setup the entities manager.
     _entMgr.reset(new Entities::EntitiesManager());
     _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
 
-    GraphicsController* gfxCtrl = getGraphicsController();
-    gfxCtrl->onInit();
-    Ogre::LogManager::getSingleton().logMessage("Done initializing Graphics Controller.");
-    
     _worldController->onInit();
     Ogre::LogManager::getSingleton().logMessage("Done creating world");
 
@@ -157,7 +153,7 @@ bool
     //We need to initialize OpenCL after creating the world and entities, as OpenCL requires both entities and world map data to function.
     Ogre::LogManager::getSingleton().logMessage("Intitializing MainGameState SDK Tray.");
     _workspace.reset(new ZWorkspace(_entMgr.get(), _rdrEntMgr.get(), getSdkTray(), _zclCtrl.get(), _worldController.get()));
-    _entsView->init(_workspace.get());
+    //_entsView->init(_workspace.get());
 
 
     return true;
@@ -166,6 +162,7 @@ bool
 bool
     GameMainState::onUpdate(const Ogre::FrameEvent &evt)
 {
+    /*
     if (_entMgr->getNumOfEntities() > 0)
     {
         _entMgr->updateDensityBuffer();
@@ -176,6 +173,7 @@ bool
         _zclCtrl->getBuffers(posBuf, orientBuf, velocityBuf);
         _rdrEntMgr->updateRenderEntities(posBuf, orientBuf, velocityBuf, evt.timeSinceLastFrame);
     }
+    */
     return true;
 }
 
@@ -199,7 +197,7 @@ bool
         return true;
     if (_sdkTrayMgr->isCursorVisible())
     {
-        _entsView->onMouseMove(evt);
+        //_entsView->onMouseMove(evt);
         return true;
     }
     _controlMod->onMouseMove(evt);
@@ -213,7 +211,7 @@ bool
     OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
     if (_sdkTrayMgr->injectMouseDown(evt, id))
         return true;
-    _entsView->onMouseDown(evt, id);
+    //_entsView->onMouseDown(evt, id);
     _controlMod->onMouseDown(evt, id);
     return true;
 }
@@ -224,7 +222,7 @@ bool
     OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
     if (_sdkTrayMgr->injectMouseUp(evt, id))
         return true;
-    _entsView->onMouseUp(evt, id);
+    //_entsView->onMouseUp(evt, id);
     return true;
 }
 

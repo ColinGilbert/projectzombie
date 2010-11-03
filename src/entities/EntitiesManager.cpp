@@ -39,8 +39,12 @@ EntitiesManager::EntitiesManager() : _numOfEnts(0), _numOfGroups(0), _numPerGrou
 
 EntitiesManager::~EntitiesManager()
 {
+    cout << "In EntitiesManager destructor." << endl;
   clearZEntities(); //just to be safe.
+  cout << "ZEntities cleared." << endl;
   _ents.clear();
+  cout << "Ents cleared." << endl;
+  
 }
 
 void
@@ -235,6 +239,4 @@ EntitiesManager::buildGroups()
   builder.build(this);
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "ZEntityBuilder::build finished.");
-
-
 }
