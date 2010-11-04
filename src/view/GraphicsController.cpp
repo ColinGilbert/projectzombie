@@ -81,7 +81,7 @@ bool
     _initHDR();
     _initSSAO();
     _initSkyX();
-    _ssaoInstance->setEnabled(true);
+    //_ssaoInstance->setEnabled(true);
     _hdrCompositor->Enable(true);
     //_scnMgr->setSkyBox(true, "Examples/MorningSkyBox", 10, true);
     //_initShadows();

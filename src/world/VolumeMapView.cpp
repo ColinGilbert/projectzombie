@@ -31,9 +31,9 @@ void
 {
     _scnMgr = EngineView::getSingleton().getSceneManager();
     _root = _scnMgr->getRootSceneNode()->createChildSceneNode();
-    //_manual = _scnMgr->createManualObject();
-    //_manual->setCastShadows(false);
-    //_manual->setDynamic(false);
+    _manual = _scnMgr->createManualObject();
+    _manual->setCastShadows(false);
+    _manual->setDynamic(false);
 
 }
 
@@ -41,9 +41,8 @@ void
     VolumeMapView::createRegion(bool regionEmpty, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
     //if (!regionEmpty)
-    _manual = _scnMgr->createManualObject();
-    _manual->setCastShadows(false);
-    _manual->setDynamic(false);
+    //_manual->detachFromParent();
+    _manual->clear();
     _manualFromMesh(false, mesh, _manual);
 }
 
@@ -53,9 +52,9 @@ void
     //if (!regionEmpty)
     //_root->detachObject(_manual);
     _manual->detachFromParent();
-    _scnMgr->destroyManualObject(_manual);
+    //_scnMgr->destroyManualObject(_manual);
     _root->setVisible(false, true);
-    _manual = 0;
+    //_manual = 0;
 
 }
 
@@ -106,12 +105,13 @@ void
         //cout << "INDEX!: " << ix << endl;
     }
     manual->end();
-
-    //add it to root scene.
     _root->attachObject(manual);
     _root->setVisible(true);
+    //add it to root scene.
+   
     //scnMgr->getRootSceneNode()->createChildSceneNode()->attachObject(manual);
 }
+
 
 void
     VolumeMapView::_convertColorFromMaterialID(Ogre::ColourValue &val, uint8_t materialID)
