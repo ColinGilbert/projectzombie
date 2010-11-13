@@ -86,7 +86,8 @@ void
     _volumePaging = OGRE_NEW_T(VolumeMapPaging(&_pageManager), 
         Ogre::MEMCATEGORY_GENERAL);
     Ogre::PagedWorld* world = _pageManager.createWorld();
-    _volumePaging->createWorldSection(world, _volumeMap.get(), _volumeMap->getRegionsHalfWidth(), 
-        _volumeMap->getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
+    _volumePaging->createWorldSection(world, _volumeMap.get(), 736.0, 
+        //_volumeMap->getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
+        32000.0, -23, -23, 23, 23, EngineView::getSingleton().getSceneManager());
 
 }

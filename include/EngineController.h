@@ -11,7 +11,7 @@
 
 #include <vector>
 #include <Ogre.h>
-//#include <OIS/OIS.h>
+#include <OIS/OIS.h>
 #include <SdkTrays.h>
 
 #include <boost/thread/thread.hpp>
@@ -75,8 +75,8 @@ namespace ZGame
     onMouseDown(const OIS::MouseEvent &event, const OIS::MouseButtonID id);
 
     //input observers
-    void
-    addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
+    //void
+    //addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
     //setters getters
     //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
   protected:

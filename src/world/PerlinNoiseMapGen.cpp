@@ -74,7 +74,7 @@ PerlinNoiseMapGen::PerlinNoiseMapGen() :
   //finalTerrain.SetOctaveCount(8);
   //finalTerrain.SetPersistence(1.0 / 2.0);
 
-  mountainTerrain.SetFrequency(6.0);
+  mountainTerrain.SetFrequency(1.0);
   mountainTerrain.SetOctaveCount(1);
   //mountainTerrain.SetPer
   baseFlatTerrain.SetFrequency(1.0);

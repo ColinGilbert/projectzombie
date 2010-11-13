@@ -4,7 +4,7 @@
  *  Created on: Aug 24, 2008
  *      Author: bey0nd
  */
-
+//#define OIS_DYNAMIC_LIB
 //#include <string>
 #include <iostream>
 #include <stdexcept>
@@ -76,7 +76,7 @@ namespace ZGame
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setNearClipDistance(0.5f);
-    cam->setFarClipDistance(320.0f);
+    cam->setFarClipDistance(5000.0f); //320.0f
     cam->setPosition(0, 0.0f, 0.0f);
     //cam->rotate(Vector3(0.0f, 1.0f, 0.0f), Ogre::Radian(-Ogre::Math::PI / 2.0f));
     return cam;
@@ -93,6 +93,7 @@ namespace ZGame
     static String worstFps = "Worst FPS: ";
     static String tris = "Triangle Count: ";
     static String batches = "Batch Count: ";
+   
 
     // update stats when necessary
     try
@@ -153,7 +154,8 @@ namespace ZGame
 
     _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
 
-    //input
+   
+      //input
     _inController.reset(new InputController());
     _inController->onInit(_window);
     injectInputSubject();
@@ -161,6 +163,7 @@ namespace ZGame
     loadSdkTrays();
     //turn off loading bar
     _sdkTrayMgr->showLoadingBar();
+  
     loadAssets(PlatformPath + "resources.cfg");
 
     //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
@@ -168,6 +171,8 @@ namespace ZGame
 
     //load states
     loadStates();
+
+   
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
     lm->setLogDetail(Ogre::LL_NORMAL);
@@ -193,6 +198,9 @@ namespace ZGame
     _netClient.reset(new ZGame::Networking::NetClientController());
 
     _sdkTrayMgr->hideLoadingBar();
+
+    
+
 
     return true;
   }
@@ -256,7 +264,7 @@ namespace ZGame
       {
         _inController->run();
         _lfcPump->updateOnUpdateObs(evt);
-        updateStats();
+        //updateStats();
       }
     catch (Ogre::Exception e)
       {

@@ -169,9 +169,9 @@ VolumePagedWorldSection::loadPage(PageID pageID, bool forceSynchronous)
     {
       long x, y;
       _unpackIndex(pageID, &x, &y);
-      //stringstream ss;
-      //ss << "++++++++++++++Load PageID: " << x << "," << -y << "++++++++++++++++\n";
-      //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, ss.str());
+      std::stringstream ss;
+      ss << "++++++++++++++Load PageID: " << x << "," << -y << "++++++++++++++++\n";
+      Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, ss.str());
       _volumeMap->loadPage(pageID);
       //_volumeMap->loadPage(pageID, forceSynchronous);
     }

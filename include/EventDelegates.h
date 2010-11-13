@@ -8,8 +8,8 @@
 #ifndef ZOMBIEDEFS_H_
 #define ZOMBIEDEFS_H_
 
-#define OIS_DYNAMIC_LIB
-#include <OIS/OIS.h>
+//#define OIS_DYNAMIC_LIB
+#include <OIS\OIS.h>
 #include "fastdelegate/FastDelegate.h"
 
 namespace ZGame

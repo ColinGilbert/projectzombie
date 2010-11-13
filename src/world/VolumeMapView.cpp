@@ -75,6 +75,9 @@ void
     if(vertices.size() < 1)
         return;
 
+    //const Ogre::Vector2 texCoords[4] =
+    //{ Ogre::Vector2(0.0f, 0.0f), Ogre::Vector2(1.0f, 0.0f), Ogre::Vector2(0.0f, 1.0f), Ogre::Vector2(1.0f, 1.0f) };
+    //size_t texIdx = 0;
     //Build the Ogre Manual Object. We first iterate through the vertices add position to that.
     //
     _manual->estimateIndexCount(indices.size());
@@ -86,13 +89,16 @@ void
         const PositionMaterial& vertex = *itVertex;
         const Vector3DFloat& vertPos = vertex.getPosition();
         //const Vector3DFloat& finalPos = vertPos + static_cast<Vector3DFloat> (mesh.m_Region.getLowerCorner());
-        Vector3DFloat origin(_origin.x, _origin.y, _origin.z);
-        const Vector3DFloat& finalPos = vertPos + origin;
-        manual->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
+        //Vector3DFloat origin(_origin.x, _origin.y, _origin.z);
+        //const Vector3DFloat& finalPos = vertPos + origin;
+        //manual->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
+        manual->position(vertPos.getX(), vertPos.getY(), vertPos.getZ());
         //manual->normal(vertex.getNormal().getX(), vertex.getNormal().getY(), vertex.getNormal().getZ()); 
         //Assume that the passed in position are counter clockwise starting from top left corner.
 
-        Ogre::ColourValue val;
+        //manual->textureCoord(texCoords[texIdx % 4]);
+        //texIdx++;
+        //Ogre::ColourValue val;
         size_t material = vertex.getMaterial() + 0.5f; 
 
         manual->textureCoord(material / 256.0f, 0.0, 0.0, 0.0);
@@ -106,6 +112,8 @@ void
     }
     manual->end();
     _root->attachObject(manual);
+    //translate node from object space to world space. World space coordinate is the origin of this block.
+    _root->setPosition(_origin);
     _root->setVisible(true);
     //add it to root scene.
    

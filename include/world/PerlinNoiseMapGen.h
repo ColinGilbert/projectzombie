@@ -15,10 +15,7 @@
 
 #include <iostream>
 #include <noise.h>
-#include <Ogre.h>
-#include <MaterialDensityPair.h>
-#include <Volume.h>
-
+#include "world/MapGenerator.h"
 #include "world/WorldDefs.h"
 
 namespace ZGame
@@ -39,7 +36,7 @@ namespace ZGame
       std::vector<std::pair<std::pair<float, uint8_t>, std::pair<float, uint8_t> > > _valueBucket;
       size_t _numOfBuckets;
     };
-    class PerlinNoiseMapGen
+    class PerlinNoiseMapGen : public MapGenerator
     {
     public:
       PerlinNoiseMapGen();
@@ -89,12 +86,12 @@ inline void PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogr
     _data = data;
 
     const int width = _data->getWidth();
-    const int height = _data->getHeight();
+    const int height = _data->getHeight() - 128;
     const int depth = _data->getDepth();
     const float halfHeight = (float)(height) / 2.0;
     const float oceanFloor = halfHeight - 16.0;
     
-    const double mod = 1.0 / 32.0;
+    const double mod = 1.0 / 16.0;
     HeightVal hVals[WORLD_BLOCK_WIDTH][WORLD_BLOCK_DEPTH];
 
     //First construct a 2D perlin noise using a cache. Height value is constant and is defined as oceanFloor.
@@ -103,7 +100,7 @@ inline void PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogr
         for(size_t x = 0; x < depth; x++)
         {
             Vector3DFloat v3dCurrentPos(x, oceanFloor, z);
-            double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height - 1)) * mod,
+            double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
                   ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
             hVals[z][x].uValue = above.getMappedValue(val);
             hVals[z][x].value = oceanFloor + (height - 8.0) * (val + 1.0) / 2.0;

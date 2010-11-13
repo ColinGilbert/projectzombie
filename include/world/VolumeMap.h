@@ -4,8 +4,7 @@
 #include <map>
 #include <Ogre.h>
 #include <MaterialDensityPair.h>
-#include <SurfaceExtractor.h>
-#include <CubicSurfaceExtractor.h>
+
 #include <SurfaceMesh.h>
 #include <Volume.h>
 #include "world/VolumeMapView.h" //We use it directly here instead of relying on the Observer pattern to update views.
@@ -14,6 +13,7 @@
 #include <OgrePagedWorld.h>
 #include <OgrePageManager.h>
 #include "world/PerlinNoiseMapGen.h"
+#include "world/TestMapGenerator.h"
 /*
  * VolumeMap.h
  *
@@ -101,13 +101,15 @@ namespace ZGame
       {
       public:
         VolumePage(size_t pageSize, size_t pageHeight) :
-          data(pageSize, pageHeight, pageSize, pageSize), _allocated(false), _empty(false)
+          data(pageSize, pageHeight, pageSize, pageSize), _allocated(false), _empty(false),
+              gen(new PerlinNoiseMapGen())
+              //gen(new TestMapGenerator())
         {
 
         }
         ~VolumePage()
         {
-            
+            delete gen;
         }
         bool
         isEmpty()
@@ -132,7 +134,8 @@ namespace ZGame
         Ogre::PageID id;
         PolyVox::Volume<PolyVox::MaterialDensityPair44> data;
         VolumeMapView mapView;
-        PerlinNoiseMapGen gen;
+        //PerlinNoiseMapGen gen;
+        MapGenerator* gen;
         private:
         bool _allocated;
         bool _empty;
@@ -160,14 +163,11 @@ namespace ZGame
       _initLists();
       void
       _freeAll();
-      void
-      _defineRegions();
       Ogre::uint32
       _packIndex(Ogre::int32 x, Ogre::int32 y);
       void
       _unpackIndex(Ogre::PageID pageID, Ogre::int32 *x, Ogre::int32 *y);
-      void
-      _loadPage(VolumePage* page, bool create = false);
+   
 
     private:
       //PolyVox::Volume<PolyVox::MaterialDensityPair44> _data;
@@ -187,7 +187,6 @@ namespace ZGame
       //std::map<Ogre::PageID, VolumePage*> _pagesMap;
       typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
       PagesMap _pagesMap;
-      PerlinNoiseMapGen _mapGen;
       size_t _numOfPages;
 
     };

@@ -75,7 +75,7 @@ bool InputController::onInit(Ogre::RenderWindow* window)
 void InputController::setWindowExtents(int width,int height)
 {
 
-    const OIS::MouseState &mouseState = _mouse->getMouseState();
+    const OIS::MouseState &mouseState = _mouse->getMouseState();//_mouse->getMouseState();
     mouseState.width = width;
     mouseState.height = height;
 }

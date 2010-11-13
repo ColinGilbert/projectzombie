@@ -38,6 +38,11 @@ namespace ZGame
       {
         _origin = origin;
       }
+      Ogre::ManualObject*
+          getManualObject()
+      {
+          return _manual;
+      }
 
 
     protected:

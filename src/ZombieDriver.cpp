@@ -1,6 +1,6 @@
 //#include <boost/thread.hpp>
 #define _SECURE_SCL 0
-
+//#define OIS_DYNAMIC_LIB
 #include <iostream>
 #include <stdexcept>
 

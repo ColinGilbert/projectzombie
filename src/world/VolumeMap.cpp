@@ -8,21 +8,25 @@
 #include <memory>
 #include <iostream>
 #include <OgreException.h>
+#include <CubicSurfaceExtractorWithNormals.h>
 using std::cout;
 using std::endl;
 #include "world/VolumeMap.h"
 #include "PolyVoxImpl/Utility.h"
 #include "world/PerlinNoiseMapGen.h"
 #include "world/WorldDefs.h"
+
+#include "world/ZCubicSurfaceExtractor.h"
 using ZGame::World::VolumeMap;
+using PolyVox::ZCubicSurfaceExtractor;
 using PolyVox::MaterialDensityPair44;
 using PolyVox::Volume;
 using PolyVox::Vector3DFloat;
 using PolyVox::Vector3DUint16;
 using PolyVox::Vector3DInt16;
 using std::shared_ptr;
-using PolyVox::SurfaceExtractor;
-using PolyVox::CubicSurfaceExtractor;
+//using PolyVox::SurfaceExtractor;
+using PolyVox::CubicSurfaceExtractorWithNormals;
 using PolyVox::SurfaceMesh;
 using namespace ZGame::World;
 using namespace Ogre;
@@ -31,58 +35,12 @@ using namespace Ogre;
 
 const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 
-void
-createSphereInVolume(Volume<MaterialDensityPair44>& volData, float fRadius, uint8_t uValue)
-{
-  //This vector hold the position of the center of the volume
-  Vector3DFloat v3dVolCenter(volData.getWidth() / 2, volData.getHeight() / 2, volData.getDepth() / 2);
-
-  //This three-level for loop iterates over every voxel in the volume
-  for (int z = 0; z < volData.getWidth(); z++)
-    {
-      for (int y = 0; y < volData.getHeight(); y++)
-        {
-          for (int x = 0; x < volData.getDepth(); x++)
-            {
-              //Store our current position as a vector...
-              Vector3DFloat v3dCurrentPos(x, y, z);
-              //And compute how far the current position is from the center of the volume
-              float fDistToCenter = (v3dCurrentPos - v3dVolCenter).length();
-
-              //If the current voxel is less than 'radius' units from the center
-              //then we make it solid, otherwise we make it empty space.
-              if (fDistToCenter <= fRadius)
-                {
-                  volData.setVoxelAt(x, y, z, MaterialDensityPair44(uValue, uValue > 0 ? MaterialDensityPair44::getMaxDensity()
-                      : MaterialDensityPair44::getMinDensity()));
-                }
-            }
-        }
-    }
-}
-
-void
-createCubeInVolume(Volume<MaterialDensityPair44>& volData, Vector3DUint16 lowerCorner, Vector3DUint16 upperCorner, uint8_t uValue)
-{
-  //This three-level for loop iterates over every voxel between the specified corners
-  for (int z = lowerCorner.getZ(); z <= upperCorner.getZ(); z++)
-    {
-      for (int y = lowerCorner.getY(); y <= upperCorner.getY(); y++)
-        {
-          for (int x = lowerCorner.getX(); x <= upperCorner.getX(); x++)
-            {
-              volData.setVoxelAt(x, y, z, MaterialDensityPair44(uValue, uValue > 0 ? MaterialDensityPair44::getMaxDensity()
-                  : MaterialDensityPair44::getMinDensity()));
-            }
-        }
-    }
-}
 
 //const int SW = 320.0;
 //const int SH = 256;
 //const int SD = 320.0;
 VolumeMap::VolumeMap() :
-  _regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(30 * 30), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
+  _regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(47 * 47), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
 {
   World::PerlinNoiseMapGen::initGradientPoints();
 }
@@ -109,10 +67,11 @@ VolumeMap::_freeAll()
   //Iterate through free list and free that.
   //list<VolumePage*>::iterator liter;
   FreeList::iterator liter;
+  /*
   for (liter = _freeList.begin(); liter != _freeList.end(); ++liter)
     {
       delete *liter;
-    }
+    }*/
   _freeList.clear();
 }
 
@@ -129,17 +88,17 @@ VolumeMap::canHandleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ
 WorkQueue::Response*
 VolumeMap::handleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
 {
-  PerlinNoiseMapGen gen;
   LoadRequest lreq = any_cast<LoadRequest> (req->getData());
-
   VolumePage* page = lreq.page;
   WorkQueue::Response* response = 0;
   int x, y;
   _unpackIndex(page->id, &x, &y);
-  page->gen.generate(&page->data, x, y);
+  y = -y;
+  page->gen->generate(&page->data, x, y);
   //_mapGen.generate(&page->data, x, y);
   //MUST MAKE SURE YOU allocate mesh before requesting this request to the WorkerQueue.
-  PolyVox::CubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
+  //PolyVox::CubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
+  ZCubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
   //PolyVox::SurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), page->surface);
   surfExtractor.execute();
   response = OGRE_NEW_T_SIMD (WorkQueue::Response(req, true, Any()), Ogre::MEMCATEGORY_GENERAL);
@@ -170,6 +129,7 @@ VolumeMap::handleResponse(const WorkQueue::Response* res, const Ogre::WorkQueue*
       VolumePage* page = lreq.page;
       int x, z;
       _unpackIndex(page->id, &x, &z);
+      z = -z;
 
       //cout << "Page loaded response: " << x << ", " << z << endl;
       Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (z) * _regionSideLen);
@@ -225,7 +185,6 @@ VolumeMap::load()
   wq->addRequestHandler(_workQueueChannel, this);
   wq->addResponseHandler(_workQueueChannel, this);
   _initLists();
-  //_defineRegions();
 }
 
 void
@@ -235,7 +194,7 @@ VolumeMap::loadPage(Ogre::PageID pageID)
   int x, y;
   _unpackIndex(pageID, &x, &y);
   y = -y;
-  pageID = _packIndex(x, y);
+  //pageID = _packIndex(x, y);
   //using std::map;
   //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
   PagesMap::iterator findMe = _pagesMap.find(pageID);
@@ -243,7 +202,11 @@ VolumeMap::loadPage(Ogre::PageID pageID)
     {
       VolumePage* page = _getFree();
       if (!page)
-        return; //no more free page. For now just completely ignore.
+      {
+          OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "No more free volume pages in the buffer!",
+              "VolumeMap::loadPage");
+        //return; //no more free page. For now just completely ignore.
+      }
       page->id = pageID;//_packIndex(x, y);
       LoadRequest req;
       req.origin = this;
@@ -280,63 +243,6 @@ VolumeMap::unloadPage(Ogre::PageID pageID)
 
   _pagesMap.erase(findMe);
   _addToList(page);
-
-}
-
-void
-VolumeMap::_loadPage(VolumeMap::VolumePage* page, bool create)
-{
-  int x, z;
-  _unpackIndex(page->id, &x, &z);
-  cout << "_loadPage: unpacked index: x,y: " << x << ", " << z << endl;
-  page->setAllocated();
-  _mapGen.generate(&page->data, x, z);
-  //Extract the surface. We are creating surface mesh on stack. Maybe look into optimizing this for reuse instead.
-  SurfaceMesh<PolyVox::PositionMaterial> mesh;
-  //Vector3DInt16 regLowerCorner(0, 0, 0);
-  //Vector3DInt16 regUpperCorner(page->data.getDepth(), page->data.getHeight(), page->data.getWidth());
-
-  PolyVox::CubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), &mesh);
-  surfExtractor.execute();
-  page->setEmpty(mesh.m_vecTriangleIndices.size() == 0);
-  //Now for all those with actual surfaces extracted, create it in View.
-  Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0, (float) (z) * _regionSideLen);
-  //cout << "PageWorldPos: " << pageWorldPos << endl;
-  //pageWorldPos = pageWorldPos; //- _origin*2;
-  page->mapView.updateOrigin(pageWorldPos);
-  //if (create)
-  page->mapView.createRegion(page->isEmpty(), &mesh);
-  //else
-  //page->mapView.updateRegion(page->isEmpty(), &mesh);
-}
-
-void
-VolumeMap::_defineRegions()
-{
-  using namespace Ogre;
-  using Ogre::int32;
-  int32 startX, startZ, endX, endZ;
-  //Figure out the Page x,y. X goes left to right, Z goes from negative to positive. Note: This way of doing this may be stupid but I have a headache right now.
-  int halfRegions = _regionsWidth / 2 / _regionSideLen;
-  startX = 0 - halfRegions;
-  startZ = startX;
-  endX = 0 + halfRegions;
-  endZ = endX;
-  int halfHeight = _regionsHeight / 2;
-  //Loop through each page regions.
-  for (int z = startZ; z <= endZ; ++z)
-    {
-      for (int x = startX; x <= endX; x++)
-        {
-
-          //For each region, define this region.
-          VolumePage* page = _getFree();
-          page->id = _packIndex(x, z);
-          _loadPage(page, true);
-          //Add this region to the pages map.
-          _pagesMap[page->id] = page;
-        }
-    }
 
 }
 

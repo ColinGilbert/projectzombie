@@ -43,12 +43,13 @@ void caster_ps(
 
 VS_OUT main_vp(
 	       float4 pos : POSITION,
-	       float3 tangent : TANGENT0,
-	       float3 normal1 : NORMAL,
+	       //float3 tangent : TANGENT0,
+	       //float3 normal1 : NORMAL,
 	       float4 uv1 : TEXCOORD0,
-	       float4 uv0 : TEXCOORD1,
+	       //float4 uv0 : TEXCOORD1,
 
 	       uniform float4x4 worldViewProj,
+	       //uniform float4x4 worldMat,
 	       uniform float3 sundir
 	       //uniform float4 lightPosition,
 	       //uniform float3 lightDiffuse,
@@ -133,9 +134,13 @@ const float3 L22  = float3(-0.161784, -0.191783, -0.219152);
 
   VS_OUT outp;
   outp.pos = mul(worldViewProj, pos);
-  outp.diffuseUV.xy = uv0.xy;
-  outp.worldPos = pos;
-  outp.textureAtlasOffset = uv1;
+  //outp.diffuseUV.xy = uv0.xy;
+  outp.worldPos = pos;//mul(worldMat, pos);
+  float idx = uv1.x * 256.0 - 1.0;
+  float blocky = floor(idx / 16.0);
+  float blockx = (idx - blocky * 16.0);
+  outp.textureAtlasOffset = float4(blockx, blocky, 0, 0) * eOffset;
+  
   //outp.P = float4(1.0, 1.0, 1.0, 1.0);
   
   return outp;
@@ -196,11 +201,11 @@ float4 main_fp(
 
   float3 normal = cross(ddy(In.worldPos.xyz), ddx(In.worldPos.xyz));
   normal = normalize(normal);
- 
+  /*
   float3x3 texMat = {0.0, 0.0, -1.0,
   	     -1.0, 0.0, 0.0,
-  	     0.0, 1.0, 0.0};
-  float3 n = mul(texMat, normal);
+  	     0.0, 1.0, 0.0};*/
+  float3 n = float3(-normal.z, -normal.x, normal.y);//mul(texMat, normal);
   //normal = n;
   float4 diffuseColor = float4(1.0, 1.0, 1.0, 1.0);
 
@@ -226,27 +231,30 @@ float4 main_fp(
     d7 * L43 * (n.y*n.z*(3.0*n.x*n.x-n.y*n.y)) + 
     d8 * L44 * (n.x*n.y*(n.x*n.x-n.y*n.y));
 #endif
-  diffuseColor *= 0.05;
+  diffuseColor *= 0.0005;
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)
     {
       uv0 = frac(In.worldPos.yz);
     }
+  
   if(normal.x < -0.5)
     {
       uv0 = frac(In.worldPos.yz);
-    }
+      }
   //top
+  
   if(normal.y > 0.5)
     {
       uv0 = frac(In.worldPos.xz);
     }
+  
   //bottom
   if(normal.y < -0.5)
     {
       uv0 = frac(In.worldPos.xz);
     }
- 
+  
   if(normal.z > 0.5)
     {
       uv0 = frac(In.worldPos.xy);
@@ -256,14 +264,15 @@ float4 main_fp(
       uv0 = frac(In.worldPos.xy);
     }
   
-  float idx = In.textureAtlasOffset.x * 256.0 - 1.0;
-  float blocky = floor(idx / 16.0);
-  float blockx = (idx - blocky * 16.0);
+  //float idx = In.textureAtlasOffset.x * 256.0 - 1.0;
+  //float blocky = floor(idx / 16.0);
+  //float blockx = (idx - blocky * 16.0);
   //blockx = 7;
   //blocky = 0;
-  float pixelOffset = eOffset / TEX_WIDTH;
-  float4 uv = (float4(blockx, blocky, 0, 0) + float4(uv0,1.0,1.0)) * eOffset;
-  float4 texDiffuse = tex2D(diffuseMap, uv.xy);
+  //float pixelOffset = eOffset / TEX_WIDTH;
+  //float4 uv = (float4(blockx, blocky, 0, 0) + float4(uv0,1.0,1.0)) * eOffset;
+  In.textureAtlasOffset += float4(uv0, 1.0, 1.0) * eOffset;
+  float4 texDiffuse = tex2D(diffuseMap, In.textureAtlasOffset.xy);
 
   /*
   if(uv0.x == 1.0)
@@ -290,7 +299,8 @@ float4 main_fp(
   if(uLightY < 0.0)
     nightMulti = lerp(0.05, 0.1, -uLightY);
   //float4 test = In.diffuseColor; 
-  float4 vColor = texDiffuse * diffuseColor * nightMulti * + float4(0.01, 0.01, 0.01, 0.0);
+  float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  //vColor.w = 1.0;
   //float4 vColor = texDiffuse * In.diffuseColor * nightMulti;// * intensity;
   //vColor = texDiffuse * 1.0;
   //(0.5 - 0.5*saturate(-(uLightY - 0.15)*4) + 0.115);

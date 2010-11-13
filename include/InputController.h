@@ -22,8 +22,8 @@ using namespace std;
 #include <Ogre.h>
 //Use this define to signify OIS will be used as a DLL
 //(so that dll import/export macros are in effect)
-#define OIS_DYNAMIC_LIB
-#include <OIS/OIS.h>
+//#define OIS_DYNAMIC_LIB
+//#include <OIS/OIS.h>
 #include "EventDelegates.h"
 
 namespace ZGame
