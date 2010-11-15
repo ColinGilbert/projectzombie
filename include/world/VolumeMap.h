@@ -101,12 +101,20 @@ namespace ZGame
       class VolumePage
       {
       public:
+
+          VolumePage(size_t pageSize, size_t pageHeight, MapGenerator* generator) :
+            data(pageSize, pageHeight, pageSize, 4), _allocated(false), _empty(false),
+                gen(generator)
+          {
+              data.setBorderValue(0);
+          }
+
         VolumePage(size_t pageSize, size_t pageHeight) :
-          data(pageSize, pageHeight, pageSize, pageSize), _allocated(false), _empty(false),
+          data(pageSize, pageHeight, pageSize, 4), _allocated(false), _empty(false),
               //gen(new PerlinNoiseMapGen())
               gen(new TestMapGenerator())
         {
-
+            
         }
         ~VolumePage()
         {

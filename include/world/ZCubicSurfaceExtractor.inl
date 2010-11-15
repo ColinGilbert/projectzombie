@@ -77,7 +77,7 @@ namespace PolyVox
     {
         using namespace PolyVox;
 
-        for(uint16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z <= _regSizeInVoxels.getUpperCorner().getZ(); z++)
+        for(uint16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z <= _regSizeInVoxels.getUpperCorner().getZ() + 2; z++)
         {
             uint16_t startX = _regSizeInVoxels.getLowerCorner().getX();
             //Initialize X faces
@@ -90,7 +90,7 @@ namespace PolyVox
 
             uint16_t regZ = z - _regSizeInVoxels.getLowerCorner().getZ();
 
-            for(uint16_t y = _regSizeInVoxels.getLowerCorner().getY(); y <= _regSizeInVoxels.getUpperCorner().getY(); y++)
+            for(uint16_t y = _regSizeInVoxels.getLowerCorner().getY(); y <= _regSizeInVoxels.getUpperCorner().getY() + 2; y++)
             {
 
                 //Initialize Z face.
@@ -110,7 +110,7 @@ namespace PolyVox
 
                 uint16_t regY = y - _regSizeInVoxels.getLowerCorner().getY();
 
-                for(uint16_t x = _regSizeInVoxels.getLowerCorner().getX(); x <= _regSizeInVoxels.getUpperCorner().getX(); x++)
+                for(uint16_t x = _regSizeInVoxels.getLowerCorner().getX(); x <= _regSizeInVoxels.getUpperCorner().getX() + 2; x++)
                 {
                     /*
                     if(x >= 10 && x < 20 && y == 79)

@@ -69,8 +69,8 @@ namespace PolyVox
                 uint16_t regX, uint16_t regY, uint16_t regZ,
                 AXIS xyz);
 
-            RLE_VEC rleXs[WORLD_BLOCK_WIDTH]; //run length for x facing faces.
-            RLE_INFO rleXsInfo[WORLD_BLOCK_WIDTH];
+            RLE_VEC rleXs[WORLD_BLOCK_WIDTH + 2]; //run length for x facing faces.
+            RLE_INFO rleXsInfo[WORLD_BLOCK_WIDTH + 2];
            
 
             //RLE_VEC _fronRLE;

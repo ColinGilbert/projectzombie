@@ -73,9 +73,9 @@ material PRJZ/Minecraft
 			diffuse 1 1 1 1
 
 			//depth_bias 0.1
-			//cull_hardware 
+			//cull_hardware none 
 			//cull_software back
-			polygon_mode wireframe
+			//polygon_mode wireframe
 
 
 			vertex_program_ref PRJZ/PSSM/shadow_reciever_vs
@@ -94,11 +94,11 @@ material PRJZ/Minecraft
 				//filtering bilinear
 				filtering point point point 
 				//filtering anisotropic anisotropic bilinear
-				max_anisotropy 2
+				max_anisotropy 8
 				mipmap_bias -2.0
-				texture minecraft_terrain_hi.png
+				//texture minecraft_terrain_hi.png
 				//texture minecraft_terrain_rpg.png
-				//texture minecraft_terrain_bb.png
+				texture minecraft_terrain_bb.png
 				//texture minecraft_terrain_dot.png
 				//texture minecraft_terrain_bb_paint.png
 				//texture minecraft_terrain_128_one.png

@@ -41,7 +41,7 @@ void
     VolumeMapView::createRegion(bool regionEmpty, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
     //if (!regionEmpty)
-    //_manual->detachFromParent();
+    _manual->detachFromParent();
     _manual->clear();
     _manualFromMesh(false, mesh, _manual);
 }

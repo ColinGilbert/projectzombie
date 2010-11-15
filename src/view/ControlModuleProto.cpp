@@ -23,7 +23,7 @@ namespace ZGame
   using namespace Ogre;
 
   ControlModuleProto::ControlModuleProto() :
-    _transVector(0.0f, 0.0f, 0.0f), _dTrans(800.0f), _transFactor(10.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(50 * 3.145), _mx_rel(0), _my_rel(0), _cam(
+    _transVector(0.0f, 0.0f, 0.0f), _dTrans(10.0f), _transFactor(1.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(50 * 3.145), _mx_rel(0), _my_rel(0), _cam(
         EngineView::getSingleton().getCurrentCamera()), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f)
   {
     // TODO Auto-generated constructor stub

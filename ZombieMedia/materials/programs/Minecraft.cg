@@ -36,8 +36,8 @@ void caster_ps(
 
 #define NUM_OF_COEF 3
 
-#define ATLAS_WIDTH 4096.0
-#define TEX_WIDTH 256.0
+#define ATLAS_WIDTH 512.0
+#define TEX_WIDTH 32.0
 #define BlockOffset TEX_WIDTH / ATLAS_WIDTH
 #define eOffset TEX_WIDTH / ATLAS_WIDTH
 
@@ -139,6 +139,7 @@ const float3 L22  = float3(-0.161784, -0.191783, -0.219152);
   float idx = uv1.x * 256.0 - 1.0;
   float blocky = floor(idx / 16.0);
   float blockx = (idx - blocky * 16.0);
+ 
   outp.textureAtlasOffset = float4(blockx, blocky, 0, 0) * eOffset;
   
   //outp.P = float4(1.0, 1.0, 1.0, 1.0);
@@ -273,7 +274,7 @@ float4 main_fp(
   //float4 uv = (float4(blockx, blocky, 0, 0) + float4(uv0,1.0,1.0)) * eOffset;
   In.textureAtlasOffset += float4(uv0, 1.0, 1.0) * eOffset;
   float4 texDiffuse = tex2D(diffuseMap, In.textureAtlasOffset.xy);
-
+  
   /*
   if(uv0.x == 1.0)
     outp.textureAtlasUV.x -= pixelOffset;
@@ -299,7 +300,7 @@ float4 main_fp(
   if(uLightY < 0.0)
     nightMulti = lerp(0.05, 0.1, -uLightY);
   //float4 test = In.diffuseColor; 
-  float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w*0.9999);
   //vColor.w = 1.0;
   //float4 vColor = texDiffuse * In.diffuseColor * nightMulti;// * intensity;
   //vColor = texDiffuse * 1.0;
