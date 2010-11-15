@@ -4,7 +4,7 @@
 *  Created on: Sep 30, 2010
 *      Author: beyzend
 */
-
+#pragma warning( disable : 4503)
 #pragma once
 //#include <Terrain/OgreTerrainPrerequisites.h>
 #include <OgrePageManager.h>

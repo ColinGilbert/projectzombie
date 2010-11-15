@@ -1,3 +1,4 @@
+#pragma warning( disable : 4503)
 #pragma once
 
 #include <list>
@@ -102,8 +103,8 @@ namespace ZGame
       public:
         VolumePage(size_t pageSize, size_t pageHeight) :
           data(pageSize, pageHeight, pageSize, pageSize), _allocated(false), _empty(false),
-              gen(new PerlinNoiseMapGen())
-              //gen(new TestMapGenerator())
+              //gen(new PerlinNoiseMapGen())
+              gen(new TestMapGenerator())
         {
 
         }
@@ -132,7 +133,7 @@ namespace ZGame
           _allocated = true;
         }
         Ogre::PageID id;
-        PolyVox::Volume<PolyVox::MaterialDensityPair44> data;
+        PolyVox::UInt8Volume data;
         VolumeMapView mapView;
         //PerlinNoiseMapGen gen;
         MapGenerator* gen;
@@ -164,9 +165,9 @@ namespace ZGame
       void
       _freeAll();
       Ogre::uint32
-      _packIndex(Ogre::int32 x, Ogre::int32 y);
+      _packIndex(long x, long y);
       void
-      _unpackIndex(Ogre::PageID pageID, Ogre::int32 *x, Ogre::int32 *y);
+      _unpackIndex(Ogre::PageID pageID, long *x, long *y);
    
 
     private:
@@ -181,11 +182,14 @@ namespace ZGame
       Ogre::uint32 _volDepthInRegions;
       Ogre::Vector3 _origin;
       //typedef std::list<VolumePage*>::type FreeList;
-      typedef Ogre::list<VolumePage*>::type FreeList;
+      //typedef Ogre::list<VolumePage*>::type FreeList;
+      //typedef std::list<VolumePage*> FreeList;
+      typedef std::deque<VolumePage*> FreeList;
       //std::list<VolumePage*> _freeList;
       FreeList _freeList;
       //std::map<Ogre::PageID, VolumePage*> _pagesMap;
-      typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
+      //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
+      typedef std::map<Ogre::PageID, VolumePage*> PagesMap;
       PagesMap _pagesMap;
       size_t _numOfPages;
 

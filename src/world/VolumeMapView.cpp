@@ -50,8 +50,8 @@ void
     VolumeMapView::unloadRegion(bool regionEmpty)
 {
     //if (!regionEmpty)
-    //_root->detachObject(_manual);
-    _manual->detachFromParent();
+    _root->detachObject(_manual);
+    //_manual->detachFromParent();
     //_scnMgr->destroyManualObject(_manual);
     _root->setVisible(false, true);
     //_manual = 0;

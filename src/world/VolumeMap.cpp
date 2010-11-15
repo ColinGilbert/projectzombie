@@ -1,10 +1,11 @@
+#pragma warning(disable : 4503)
 /*
  * VolumeMap.cpp
  *
  *  Created on: Sep 21, 2010
  *      Author: beyzend
  */
-#include <OgreMemoryAllocatorConfig.h>
+//#include <OgreMemoryAllocatorConfig.h>
 #include <memory>
 #include <iostream>
 #include <OgreException.h>
@@ -40,7 +41,7 @@ const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 //const int SH = 256;
 //const int SD = 320.0;
 VolumeMap::VolumeMap() :
-  _regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(47 * 47), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
+  _regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(22 * 22), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
 {
   World::PerlinNoiseMapGen::initGradientPoints();
 }
@@ -53,8 +54,8 @@ VolumeMap::~VolumeMap()
 void
 VolumeMap::_freeAll()
 {
-  using Ogre::map;
-  using Ogre::list;
+  //using Ogre::map;
+  //using Ogre::list;
   //Iterate through pagesMap and free that.
   
   //map<Ogre::PageID, VolumePage*>::iterator iter = _pagesMap.begin();
@@ -91,17 +92,18 @@ VolumeMap::handleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
   LoadRequest lreq = any_cast<LoadRequest> (req->getData());
   VolumePage* page = lreq.page;
   WorkQueue::Response* response = 0;
-  int x, y;
+  long x, y;
   _unpackIndex(page->id, &x, &y);
-  y = -y;
-  page->gen->generate(&page->data, x, y);
+  page->gen->generate(&page->data, x, -y);
+  page->data.tidyUpMemory();
   //_mapGen.generate(&page->data, x, y);
   //MUST MAKE SURE YOU allocate mesh before requesting this request to the WorkerQueue.
   //PolyVox::CubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
-  ZCubicSurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
+  ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
   //PolyVox::SurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), page->surface);
   surfExtractor.execute();
-  response = OGRE_NEW_T_SIMD (WorkQueue::Response(req, true, Any()), Ogre::MEMCATEGORY_GENERAL);
+  //response = OGRE_NEW_T_SIMD (WorkQueue::Response(req, true, Any()), Ogre::MEMCATEGORY_GENERAL);
+  response = new WorkQueue::Response(req, true, Any());
   return response;
 }
 
@@ -127,18 +129,18 @@ VolumeMap::handleResponse(const WorkQueue::Response* res, const Ogre::WorkQueue*
     {
       //cout << "Response success!" << endl;
       VolumePage* page = lreq.page;
-      int x, z;
+      long x, z;
       _unpackIndex(page->id, &x, &z);
-      z = -z;
-
+      
       //cout << "Page loaded response: " << x << ", " << z << endl;
-      Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (z) * _regionSideLen);
+      Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (-z) * _regionSideLen);
       //cout << "PageWorldPos: " << pageWorldPos << endl;
       //pageWorldPos = pageWorldPos; //- _origin*2;
       page->mapView.updateOrigin(pageWorldPos);
       //if (create)
       page->mapView.createRegion(page->isEmpty(), lreq.surface);
-      OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
+      //OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
+      delete lreq.surface;
       _pagesMap[page->id] = page;
       //page->data.tidyUpMemory();
       
@@ -161,11 +163,13 @@ VolumeMap::_addToList(VolumePage* page)
 VolumeMap::VolumePage*
 VolumeMap::_getFree()
 {
-  VolumeMap::VolumePage* ret = _freeList.front();
-  //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
-  _freeList.pop_front();
-  //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
+    cout << "_getFree: _freeList size: " << _freeList.size() << endl;
+    VolumeMap::VolumePage* ret = _freeList.front();
+    _freeList.pop_front();
+  
   return ret;
+  //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
+  //return ret;
 }
 void
 VolumeMap::_initLists()
@@ -191,9 +195,9 @@ void
 VolumeMap::loadPage(Ogre::PageID pageID)
 {
 
-  int x, y;
-  _unpackIndex(pageID, &x, &y);
-  y = -y;
+  //long x, y;
+  //_unpackIndex(pageID, &x, &y);
+  //y = -y;
   //pageID = _packIndex(x, y);
   //using std::map;
   //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
@@ -211,7 +215,8 @@ VolumeMap::loadPage(Ogre::PageID pageID)
       LoadRequest req;
       req.origin = this;
       req.page = page;
-      req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+      //req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+      req.surface = new PolyVox::SurfaceMesh<PolyVox::PositionMaterial>;
       Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, false);
 
       //_loadPage(page, true);
@@ -227,16 +232,16 @@ void
 VolumeMap::unloadPage(Ogre::PageID pageID)
 {
 
-  int x, y;
+  long x, y;
   _unpackIndex(pageID, &x, &y);
-  y = -y;
-  pageID = _packIndex(x, y);
+  //y = -y;
+  //pageID = _packIndex(x, y);
   using std::map;
   //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
   PagesMap::iterator findMe = _pagesMap.find(pageID);
   if (findMe == _pagesMap.end())
-    return; //If it's not in _pagesMap then we dont' care. Probably due to thread not catching up.
-  //OGRE_EXCEPT( Ogre::Exception::ExceptionCodes::ERR_ITEM_NOT_FOUND, "unload a pageid that is not found in pagesMap", "VolumeMap::unloadPage");
+    //If it's not in _pagesMap then we dont' care. Probably due to thread not catching up.
+  OGRE_EXCEPT( Ogre::Exception::ExceptionCodes::ERR_ITEM_NOT_FOUND, "unload a pageid that is not found in pagesMap", "VolumeMap::unloadPage");
 
   VolumePage* page = findMe->second;
   page->mapView.unloadRegion(page->isEmpty());
@@ -247,7 +252,7 @@ VolumeMap::unloadPage(Ogre::PageID pageID)
 }
 
 Ogre::uint32
-VolumeMap::_packIndex(Ogre::int32 x, Ogre::int32 y)
+VolumeMap::_packIndex(long x, long y)
 {
   using namespace Ogre;
   using Ogre::uint32;
@@ -268,7 +273,7 @@ VolumeMap::_packIndex(Ogre::int32 x, Ogre::int32 y)
 }
 
 void
-VolumeMap::_unpackIndex(Ogre::PageID pageID, Ogre::int32 *x, Ogre::int32 *y)
+VolumeMap::_unpackIndex(Ogre::PageID pageID, long *x, long *y)
 {
   using Ogre::uint16;
   using Ogre::int16;

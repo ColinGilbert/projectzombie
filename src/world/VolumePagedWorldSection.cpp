@@ -186,9 +186,9 @@ VolumePagedWorldSection::unloadPage(PageID pageID, bool forceSynchronous)
 
   long x, y;
   _unpackIndex(pageID, &x, &y);
-  //stringstream ss;
-  //ss << "Unload PageID: " << x << "," << y << "\n";
-  //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, ss.str());
+  std::stringstream ss;
+  ss << "Unload PageID: " << x << "," << y << "\n";
+  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, ss.str());
 
   PagedWorldSection::unloadPage(pageID, forceSynchronous);
 

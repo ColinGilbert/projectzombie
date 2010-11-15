@@ -57,7 +57,7 @@ void
 }
 
 void
-GradientBlockMap::addGradientPoint(std::pair<double, uint8_t> pair)
+GradientBlockMap::addGradientPoint(std::pair<float, uint8_t> pair)
 {
   _gradientMap.push_back(pair);
 }

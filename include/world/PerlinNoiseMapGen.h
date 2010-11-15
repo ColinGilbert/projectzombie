@@ -1,3 +1,4 @@
+#pragma warning(disable : 4503)
 #pragma once
 /*
  * PerlinNoiseMapGen.h
@@ -26,7 +27,7 @@ namespace ZGame
     {
     public:
       void
-      addGradientPoint(std::pair<double, uint8_t> pair);
+      addGradientPoint(std::pair<float, uint8_t> pair);
       uint8_t
       getMappedValue(double y);
       void
@@ -45,7 +46,7 @@ namespace ZGame
       static void initGradientPoints();
 
       void
-      generate(PolyVox::Volume<PolyVox::MaterialDensityPair44>* data, Ogre::int32 pageX, Ogre::int32 pageY);
+      generate(PolyVox::UInt8Volume* data, Ogre::int32 pageX, Ogre::int32 pageY);
 
     private:
         struct HeightVal
@@ -54,7 +55,7 @@ namespace ZGame
             float value;
         };
     private:
-      PolyVox::Volume<PolyVox::MaterialDensityPair44> *_data;
+      PolyVox::UInt8Volume *_data;
       //noise::module::Billow _myModule;
       static GradientBlockMap above;
       static GradientBlockMap below;
@@ -79,7 +80,7 @@ using namespace PolyVox;
 using std::cout;
 using std::endl;
 
-inline void PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogre::int32 pageX, Ogre::int32 pageY)
+inline void PerlinNoiseMapGen::generate(UInt8Volume* data, Ogre::int32 pageX, Ogre::int32 pageY)
 {
     using namespace noise;
     using std::make_pair;
@@ -99,7 +100,7 @@ inline void PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogr
     {
         for(size_t x = 0; x < depth; x++)
         {
-            Vector3DFloat v3dCurrentPos(x, oceanFloor, z);
+            Vector3DFloat v3dCurrentPos((float)x, oceanFloor, (float)z);
             double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
                   ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
             hVals[z][x].uValue = above.getMappedValue(val);
@@ -114,24 +115,27 @@ inline void PerlinNoiseMapGen::generate(Volume<MaterialDensityPair44>* data, Ogr
         {
             for(size_t x = 0; x < depth; x++)
             {
-                float val = (size_t)(hVals[z][x].value);
+                size_t val = (size_t)(hVals[z][x].value);
                 if(y < val)
                 {
                     //rocks all the way down
-                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(2, MaterialDensityPair44::getMaxDensity()));
+                    _data->setVoxelAt(x, y, z, 2);
                 }
                 else if(y == val)
                 {
-                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(hVals[z][x].uValue, hVals[z][x].uValue > 0 ? MaterialDensityPair44::getMaxDensity()
-                  : MaterialDensityPair44::getMinDensity()));
+                    //_data->setVoxelAt(x, y, z, MaterialDensityPair44(hVals[z][x].uValue, hVals[z][x].uValue > 0 ? MaterialDensityPair44::getMaxDensity()
+                  //: MaterialDensityPair44::getMinDensity()));
+                    _data->setVoxelAt(x, y, z, hVals[z][x].uValue);
                 }
-                else if(y <= halfHeight - 10.0) //halfHeight is sea level
+                else if(y <= (size_t(halfHeight - 10.0))) //halfHeight is sea level
                 {
-                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(206, MaterialDensityPair44::getMaxDensity()));
+                    //_data->setVoxelAt(x, y, z, MaterialDensityPair44(206, MaterialDensityPair44::getMaxDensity()));
+                    _data->setVoxelAt(x, y, z, 206);
                 }
                 else
                 {
-                    _data->setVoxelAt(x, y, z, MaterialDensityPair44(0, MaterialDensityPair44::getMinDensity()));
+                    //_data->setVoxelAt(x, y, z, MaterialDensityPair44(0, MaterialDensityPair44::getMinDensity()));
+                    _data->setVoxelAt(x, y, z, 0);
                 }
             }
         }
