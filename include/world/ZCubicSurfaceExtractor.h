@@ -1,4 +1,4 @@
-#pragma warning(disable : 4503)
+//#pragma warning(disable : 4503)
 #pragma once
 /**
 * \file This file contains an implementation of a custom CubicSurfaceExtractor. 
@@ -15,6 +15,13 @@
 namespace PolyVox
 {
         template <typename VoxelType>
+        /**
+        *\brief This class is a custom class for extracting a cubic surface from PolyVox Volumes using Run Length Encoding. 
+        *
+        *This class takes a PolyVox volume to generate a 1D run length encoding over the voxels while iterating over Z slices (constant Z per slice). For each
+        *slice update, it uses this RLE information to merge faces; for Z and Y facing faces, it merges per iteration of Y; for X facing faces, it merges per
+        *iteration of Z (since X facing faces' run length are computed in the Y direction as per iteration over Z slices).
+        **/
         class ZCubicSurfaceExtractor
         {
         public:
@@ -35,19 +42,27 @@ namespace PolyVox
                 MYFACE = 1, NOTMYFACE=0, NOFACE=-1
             };
 
+            struct RLE_VOXEL
+            {
+                RLE_VOXEL(VoxelType mat, uint16_t len, FACE which)
+                    : material(mat), length(len), whichFace(which) 
+                {
+                }
+                VoxelType material;
+                uint16_t length;
+                FACE whichFace;
+            };
+
             struct RLE_INFO
             {
                 uint16_t faceCount;
-                //uint8_t faceCount;
                 VoxelType faceMaterial;
                 FACE whichFace;
-                //int isMyFace;
-                //int faceMaterial;
             };
 
-            //material id, count, face orientation (is my face).
-            typedef std::pair<VoxelType, std::pair<size_t, FACE> > RLE;
-            typedef std::vector<RLE> RLE_VEC;
+            //material id, count, face orientation.
+            //typedef std::pair<VoxelType, std::pair<size_t, FACE> > RLE;
+            typedef std::vector<RLE_VOXEL> RLE_VEC;
             Volume<VoxelType>* _volData;
             //VolumeSampler<VoxelType> _sampVolume;
 
@@ -68,14 +83,6 @@ namespace PolyVox
             void _mergeFace(RLE_VEC &rleVec,
                 uint16_t regX, uint16_t regY, uint16_t regZ,
                 AXIS xyz);
-
-            RLE_VEC rleXs[WORLD_BLOCK_WIDTH + 2]; //run length for x facing faces.
-            RLE_INFO rleXsInfo[WORLD_BLOCK_WIDTH + 2];
-           
-
-            //RLE_VEC _fronRLE;
-            //RLE_VEC _backRLE;
-
         };
 }
 

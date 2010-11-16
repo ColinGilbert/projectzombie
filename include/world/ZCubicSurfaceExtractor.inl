@@ -7,8 +7,6 @@ using std::endl;
 #include <SurfaceMesh.h>
 #include <PolyVoxImpl/MarchingCubesTables.h>
 #include <VertexTypes.h>
-#include "world/WorldDefs.h"
-
 namespace PolyVox
 {
     template <typename VoxelType>
@@ -18,8 +16,6 @@ namespace PolyVox
         _regSizeInVoxels(region),
         _meshCurrent(result)
     {
-        //_frontRLE.reserve(16);
-        //_backRLE.reserve(16);
         _regSizeInVoxels.cropTo(_volData->getEnclosingRegion());
         _regSizeInCells = _regSizeInVoxels;
         _regSizeInCells.setUpperCorner(_regSizeInCells.getUpperCorner() - Vector3DInt16(1, 1, 1));
@@ -67,17 +63,21 @@ namespace PolyVox
     }
 
     /**
-    * This method will extractor a surface from the voxel data. It does this by operating on the slices
-    *over the three axis. The method will merge faces that have the same material. It uses a front/back face
-    *buffer to mark a voxel as been merged. When processing an merged voxel the voxel will be skipped.
-    * \note Caching behavior may be bad.
+    * This method will extract a surface from the voxel data. The surface that is extracted will be decimated through
+    * RLE; such that, for a slice the number of faces will be less than or equal to the number of voxels for that slice. 
+    * \precondition the volume data is valid in that it specifies a valid region of data (take notice of boundary conditions else you will get holes).
+    * \postcondition a surface is extracted from the given Volume and that surfaces has been merged through RLE.
     **/
     template <typename VoxelType>
     void ZCubicSurfaceExtractor<VoxelType>::execute()
     {
         using namespace PolyVox;
 
-        for(uint16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z <= _regSizeInVoxels.getUpperCorner().getZ() + 2; z++)
+        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth() + 1;
+        std::vector<RLE_VEC> rleXs(WORLD_BLOCK_WIDTH); 
+        std::vector<RLE_INFO> rleXsInfo(WORLD_BLOCK_WIDTH);
+
+        for(uint16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z <= _regSizeInVoxels.getUpperCorner().getZ(); z++)
         {
             uint16_t startX = _regSizeInVoxels.getLowerCorner().getX();
             //Initialize X faces
@@ -90,7 +90,7 @@ namespace PolyVox
 
             uint16_t regZ = z - _regSizeInVoxels.getLowerCorner().getZ();
 
-            for(uint16_t y = _regSizeInVoxels.getLowerCorner().getY(); y <= _regSizeInVoxels.getUpperCorner().getY() + 2; y++)
+            for(uint16_t y = _regSizeInVoxels.getLowerCorner().getY(); y <= _regSizeInVoxels.getUpperCorner().getY(); y++)
             {
 
                 //Initialize Z face.
@@ -98,7 +98,7 @@ namespace PolyVox
 
                 FACE zWhichFace; //whether face is on voxel or face is on next voxel.
                 VoxelType zFaceMaterial;
-                _resetParams(startX, y, z, zWhichFace, zFaceMaterial, Z); //0 is Z axis.
+                _resetParams(startX, y, z, zWhichFace, zFaceMaterial, Z); 
                 RLE_VEC rleZ;
 
                 //Initialize Y face
@@ -110,16 +110,8 @@ namespace PolyVox
 
                 uint16_t regY = y - _regSizeInVoxels.getLowerCorner().getY();
 
-                for(uint16_t x = _regSizeInVoxels.getLowerCorner().getX(); x <= _regSizeInVoxels.getUpperCorner().getX() + 2; x++)
+                for(uint16_t x = _regSizeInVoxels.getLowerCorner().getX(); x <= _regSizeInVoxels.getUpperCorner().getX(); x++)
                 {
-                    /*
-                    if(x >= 10 && x < 20 && y == 79)
-                        cout << "STOP HERE" << endl;
-                    if(x == 10)
-                        cout << "STOP HERE" << endl;
-                    if(x == 19)
-                        cout << "STOP HERE" << endl;
-                        */
                     //Start at the lower corner x.
                     uint16_t regX = x - _regSizeInVoxels.getLowerCorner().getX();
                     //int currentVoxel = _volData->getVoxelAt(x, y, z).getDensity() >= VoxelType::getThreshold();
@@ -139,14 +131,13 @@ namespace PolyVox
                     _markRLE(yFaceMaterial, currentMaterial, 
                         currentMaterialPlusY, yFaceCount, yWhichFace,
                         rleY);
-
                     _markRLE(rleXsInfo[regX].faceMaterial, currentMaterial,
                         currentMaterialPlusX, rleXsInfo[regX].faceCount, rleXsInfo[regX].whichFace,
                         rleXs[regX]);
                 }
                 _finalizeRLE(zFaceMaterial, zFaceCount, zWhichFace, rleZ);
                 _finalizeRLE(yFaceMaterial, yFaceCount, yWhichFace, rleY);
-                _mergeFace(rleZ, 0, regY, regZ, Z); //merge Z faces.
+                _mergeFace(rleZ, 0, regY, regZ, Z); 
                 _mergeFace(rleY, 0, regY, regZ, Y); 
             }
 
@@ -160,6 +151,7 @@ namespace PolyVox
                 rleXs[i].clear();
             } 
         }
+     
         _meshCurrent->m_Region = _regSizeInVoxels;
         _meshCurrent->m_vecLodRecords.clear();
         LodRecord lodRecord;
@@ -171,7 +163,7 @@ namespace PolyVox
 
 
 
-    /** This method will mark the a slice based on RLE.**/
+    /** This method will mark a slice based on RLE given book keeping data for RLE.**/
     template <typename VoxelType>
     inline void ZCubicSurfaceExtractor<VoxelType>::_markRLE(VoxelType &faceMaterial, VoxelType currentMaterial,
         VoxelType currentMaterialPlus, uint16_t &faceCount, FACE &previousWhichFace, 
@@ -188,7 +180,7 @@ namespace PolyVox
             }
             else
             {
-                rleVec.push_back(std::make_pair(faceMaterial, std::make_pair(faceCount, previousWhichFace))); //write facematerial, count, and which face face is facing.
+                rleVec.push_back(RLE_VOXEL(faceMaterial, faceCount, previousWhichFace)); //write facematerial, count, and which face face is facing.
                 previousWhichFace = NOFACE;
                 faceMaterial = AIR_BLOCK;
                 faceCount = 1;
@@ -203,7 +195,7 @@ namespace PolyVox
                     faceCount++;
                 else
                 {
-                    rleVec.push_back(std::make_pair(faceMaterial, std::make_pair(faceCount, previousWhichFace)));
+                    rleVec.push_back(RLE_VOXEL(faceMaterial, faceCount, previousWhichFace));
                     //previousWhichFace = MYFACE;
                     faceMaterial = currentMaterial;
                     faceCount = 1;
@@ -211,7 +203,7 @@ namespace PolyVox
             } 
             else //The previous face is NOTMYFACE or NOFACE, meaning the face has flipped to MyFace.
             {
-                rleVec.push_back(std::make_pair(faceMaterial, std::make_pair(faceCount, previousWhichFace)));
+                rleVec.push_back(RLE_VOXEL(faceMaterial, faceCount, previousWhichFace));
                 previousWhichFace = MYFACE;
                 faceMaterial = currentMaterial;
                 faceCount = 1;
@@ -222,7 +214,7 @@ namespace PolyVox
         {
             if(previousWhichFace == MYFACE)
             {
-                rleVec.push_back(std::make_pair(faceMaterial, std::make_pair(faceCount, previousWhichFace)));
+                rleVec.push_back(RLE_VOXEL(faceMaterial, faceCount, previousWhichFace));
                 previousWhichFace = NOTMYFACE;
                 faceMaterial = currentMaterialPlus;
                 faceCount = 1;
@@ -235,7 +227,7 @@ namespace PolyVox
                 }
                 else
                 {
-                    rleVec.push_back(std::make_pair(faceMaterial, std::make_pair(faceCount, previousWhichFace)));
+                    rleVec.push_back(RLE_VOXEL(faceMaterial, faceCount, previousWhichFace));
                     previousWhichFace = NOTMYFACE;
                     faceMaterial = currentMaterialPlus;
                     faceCount = 1;
@@ -245,16 +237,17 @@ namespace PolyVox
         }
     }
 
+    /** This method does the final step in marking a slice with RLE. Basically, the last run length data needs to be written out (i.e the state machine
+    has reached a final state, in the final state we need to write out the last bit of Run Length).**/
     template <typename VoxelType>
     inline void ZCubicSurfaceExtractor<VoxelType>::_finalizeRLE(
         VoxelType faceMaterial, uint16_t faceCount, FACE previousWhichFace,
         RLE_VEC& rleVec)
     {
-        rleVec.push_back(std::make_pair(faceMaterial, 
-            std::make_pair(faceCount, previousWhichFace)));
+        rleVec.push_back(RLE_VOXEL(faceMaterial, faceCount, previousWhichFace));
     }
 
-    /** This method will generate faces given an Run Length Encoding vector representing compressed faces.**/
+    /** This method will generate faces given a Run Length Encoding vector representing compressed faces.**/
     template <typename VoxelType>
     inline void ZCubicSurfaceExtractor<VoxelType>::_mergeFace(RLE_VEC &rleVec,
         uint16_t regX, uint16_t regY, uint16_t regZ, AXIS xyz)
@@ -262,13 +255,13 @@ namespace PolyVox
         uint16_t count = 0;
         for(size_t i = 0; i < rleVec.size(); ++i)
         {
-            count = rleVec[i].second.first;
-
-            if(rleVec[i].first > 0)
+            count = rleVec[i].length;
+            
+            if(rleVec[i].material > AIR_BLOCK)
             {
                 uint32_t v0, v1, v2, v3;
                 //Lower left corner
-                VoxelType faceMaterial = rleVec[i].first;
+                VoxelType faceMaterial = rleVec[i].material;
 
                 switch(xyz)
                 {
@@ -284,7 +277,7 @@ namespace PolyVox
                     //upper right corner
                     v3 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + count - 0.5f, regY + 0.5f, regZ + 0.5f), 
                         faceMaterial));
-                    if(rleVec[i].second.second == MYFACE)
+                    if(rleVec[i].whichFace== MYFACE)
                     {
 
                         _meshCurrent->addTriangleCubic(v0, v2, v1);
@@ -309,7 +302,7 @@ namespace PolyVox
                     v3 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + count - 0.5f, regY + 0.5f, regZ + 0.5f), 
                         faceMaterial));
                    
-                    if(rleVec[i].second.second == MYFACE)
+                    if(rleVec[i].whichFace == MYFACE)
                     {
                          _meshCurrent->addTriangleCubic(v0, v1, v2);
                          _meshCurrent->addTriangleCubic(v1, v3, v2);
@@ -333,7 +326,7 @@ namespace PolyVox
                     //upper right corner
                     v3 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + 0.5f, regY + count - 0.5f, regZ + 0.5f),
                         faceMaterial));
-                    if(rleVec[i].second.second == MYFACE)
+                    if(rleVec[i].whichFace == MYFACE)
                     {
 
                         _meshCurrent->addTriangleCubic(v0, v2, v1);
