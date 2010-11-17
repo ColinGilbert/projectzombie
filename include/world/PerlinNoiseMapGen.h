@@ -16,8 +16,11 @@
 
 #include <iostream>
 #include <noise.h>
+#include <noiseutils.h>
 #include "world/MapGenerator.h"
 #include "world/WorldDefs.h"
+
+
 
 namespace ZGame
 {
@@ -61,19 +64,25 @@ namespace ZGame
       static GradientBlockMap below;
       float _valRange;
       //noise::module::Perlin finalTerrain;
+      /*
       noise::module::RidgedMulti mountainTerrain;
       noise::module::Billow baseFlatTerrain;
       noise::module::ScaleBias flatTerrain;
       noise::module::Perlin terrainType;
       noise::module::Select terrainSelection;
-      noise::module::Turbulence finalTerrain;
-      //noise::module::Cache finalTerrainInput;
-
+      noise::module::Turbulence finalTerrain;*/
+      noisepp::RidgedMultiModule mountainTerrain;
+      noisepp::BillowModule baseFlatTerrain;
+      noisepp::ScaleBiasModule flatTerrain;
+      noisepp::PerlinModule terrainType;
+      noisepp::SelectModule terrainSelection;
+      noisepp::TurbulenceModule finalTerrain;
+      
     };
   }
 }
 
-using namespace noise;
+//using namespace noise;
 using namespace ZGame::World;
 using namespace PolyVox;
 
@@ -82,31 +91,39 @@ using std::endl;
 
 inline void PerlinNoiseMapGen::generate(UInt8Volume* data, Ogre::int32 pageX, Ogre::int32 pageY)
 {
-    using namespace noise;
+    using namespace noisepp;
     using std::make_pair;
     _data = data;
 
     const int width = _data->getWidth();
-    const int height = _data->getHeight() - 128;
+    const int height = _data->getHeight() - 10;
     const int depth = _data->getDepth();
     const float halfHeight = (float)(height) / 2.0;
     const float oceanFloor = halfHeight - 16.0;
     
-    const double mod = 1.0 / 16.0;
+    const float mod = 1.0 / 16.0;
     HeightVal hVals[WORLD_BLOCK_WIDTH][WORLD_BLOCK_DEPTH];
 
+    Pipeline2D pipeline;
+
+    ElementID id = finalTerrain.addToPipeline(&pipeline);
+    PipelineElement2D* finalElement = pipeline.getElement(id);
+    Cache *cache = pipeline.createCache();
     //First construct a 2D perlin noise using a cache. Height value is constant and is defined as oceanFloor.
     for(size_t z=0; z < width; z++)
     {
         for(size_t x = 0; x < depth; x++)
         {
             Vector3DFloat v3dCurrentPos((float)x, oceanFloor, (float)z);
-            double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
-                  ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
+            //double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
+              //    ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
+            float val = finalElement->getValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod,
+                ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod, cache);
             hVals[z][x].uValue = above.getMappedValue(val);
             hVals[z][x].value = oceanFloor + (height - 8.0) * (val + 1.0) / 2.0;
         }
     }
+    pipeline.freeCache(cache);
     //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
     //If it's the current height, fill with value stored in height map. Else it is air.
     for(size_t z=0; z < width; z++)

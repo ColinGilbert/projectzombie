@@ -103,7 +103,8 @@ float4 ssao_ps(
 
         // move new view-space position back into texture space
         #define RADIUS 0.2125
-        float4 nuv = mul(ptMat, float4(viewPos.xyz + randomDir * RADIUS, 1));
+        //#define RADIUS 0.5
+	float4 nuv = mul(ptMat, float4(viewPos.xyz + randomDir * RADIUS, 1));
         nuv.xy /= nuv.w;
 
         // compute occlusion based on the (scaled) Z difference

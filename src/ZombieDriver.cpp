@@ -1,3 +1,4 @@
+#pragma warning(disable : 4503)
 //#include <boost/thread.hpp>
 #define _SECURE_SCL 0
 //#define OIS_DYNAMIC_LIB

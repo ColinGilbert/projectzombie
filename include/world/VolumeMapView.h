@@ -1,9 +1,9 @@
 /*
- * VolumeMapView.h
- *
- *  Created on: Sep 21, 2010
- *      Author: beyzend
- */
+* VolumeMapView.h
+*
+*  Created on: Sep 21, 2010
+*      Author: beyzend
+*/
 
 #pragma once
 
@@ -15,56 +15,60 @@ using std::vector;
 
 namespace ZGame
 {
-  namespace World
-  {
-    /**
-     * This class will handle the representation layer of Volume Maps. It's main responsibility is to render the VolumeMap.
-     */
-    class VolumeMapView
+    namespace World
     {
-    public:
-      VolumeMapView();
-      virtual
-      ~VolumeMapView();
+        /**
+        * This class will handle the representation layer of Volume Maps. It's main responsibility is to render the VolumeMap.
+        */
+        class VolumeMapView
+        {
+        public:
+            VolumeMapView();
+            virtual
+                ~VolumeMapView();
 
-      void
-      createRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh);
-      void
-      updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial> *mesh);
-      void
-      unloadRegion(bool regionEmpty);
-      void
-      updateOrigin(const Ogre::Vector3 &origin)
-      {
-        _origin = origin;
-      }
-      Ogre::ManualObject*
-          getManualObject()
-      {
-          return _manual;
-      }
+            void
+                createRegion(const Ogre::Vector3 &origin, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh);
+            void
+                updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial> *mesh);
+            void
+                unloadRegion(bool regionEmpty);
+
+            Ogre::ManualObject*
+                getManualObject()
+            {
+                return _manual;
+            }
+            void
+                finalizeRegion();
+            void
+                updateOrigin(const Ogre::Vector3 &origin)
+            {
+                _origin = origin;
+            }
+
+        protected:
 
 
-    protected:
 
+        private:
 
+            static size_t man_count;
 
-    private:
+            Ogre::ManualObject* _manual;
+            Ogre::SceneNode* _root;
+            Ogre::Vector3 _origin; //the origin of this block
+            Ogre::SceneManager* _scnMgr;
 
-      Ogre::ManualObject* _manual;
-      Ogre::SceneNode* _root;
-      Ogre::Vector3 _origin; //the origin of this block
-      Ogre::SceneManager* _scnMgr;
+            void
+                _initManualObject();
+            /** \brief This method will create a manual mesh from the given PolyVox SurfaceMesh.**/
+            void
+                _manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh, Ogre::ManualObject* manual);
 
-      void
-      _initManualObject();
-      /** \brief This method will create a manual mesh from the given PolyVox SurfaceMesh.**/
-      void
-      _manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh, Ogre::ManualObject* manual);
+            void
+                _convertColorFromMaterialID(Ogre::ColourValue &val, uint8_t materialID);
 
-      void
-      _convertColorFromMaterialID(Ogre::ColourValue &val, uint8_t materialID);
-
-    };
-  }
+        };
+    }
 }

@@ -87,9 +87,9 @@ void
         Ogre::MEMCATEGORY_GENERAL);
     Ogre::PagedWorld* world = _pageManager.createWorld();
     _volumePaging->createWorldSection(world, _volumeMap.get(), 736.0, 
-        7360.0, -23, -23, 23, 23, EngineView::getSingleton().getSceneManager());
-     //_volumePaging->createWorldSection(world, _volumeMap.get(), 16.0, 
+        800.0, -2300, -2300, 2300, 2300, EngineView::getSingleton().getSceneManager());
+     //_volumePaging->createWorldSection(world, _volumeMap.get(), 320.0, 
         //_volumeMap->getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
-        //32000.0, -1, -1, 1, 1, EngineView::getSingleton().getSceneManager());
+        //384.0, -2300, -2300, 2300, 2300, EngineView::getSingleton().getSceneManager());
 
 }

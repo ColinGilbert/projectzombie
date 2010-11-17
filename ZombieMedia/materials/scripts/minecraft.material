@@ -145,12 +145,12 @@ material PRJZ/Minecraft
 	
 	technique geom
 	{
-	    scheme geom
+	   scheme geom
 	    
 	    pass
 	    {
-		//depth_write on
-	    	//depth_check off
+		depth_write on
+	    	//depth_check on
 
 	        vertex_program_ref MinecraftGeom_vs
 	        {

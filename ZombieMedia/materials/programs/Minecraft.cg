@@ -198,11 +198,10 @@ float4 main_fp(
  const float3 L43 = float3(SHC_R_16, SHC_G_16, SHC_B_16);
  const float3 L44 = float3(SHC_R_17, SHC_G_17, SHC_B_17);
  
-  
-
-  float3 normal = cross(ddy(In.worldPos.xyz), ddx(In.worldPos.xyz));
-  normal = normalize(normal);
-  /*
+ float3 normal = cross(ddy(In.worldPos.xyz),ddx(In.worldPos.xyz));
+ normal = normalize(normal);
+ 
+ /*
   float3x3 texMat = {0.0, 0.0, -1.0,
   	     -1.0, 0.0, 0.0,
   	     0.0, 1.0, 0.0};*/
@@ -232,7 +231,7 @@ float4 main_fp(
     d7 * L43 * (n.y*n.z*(3.0*n.x*n.x-n.y*n.y)) + 
     d8 * L44 * (n.x*n.y*(n.x*n.x-n.y*n.y));
 #endif
-  diffuseColor *= 0.0005;
+  diffuseColor *= 0.0002;
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)
     {
@@ -314,12 +313,10 @@ void geom_vs(
 	     in float4 p : POSITION, 
 	     out float4 cp : POSITION,
 	     out float4 vp : TEXCOORD0,
-	     out float4 worldPos : TEXCOORD1,
 	     uniform float4x4 wvpMat, uniform float4x4 wvMat)
 {
   cp = mul(wvpMat, p);
   vp = mul(wvMat, p);
-  worldPos = p;
 }
 
 struct geomOut
@@ -332,8 +329,8 @@ geomOut geom_ps(
 	       )
 {
   geomOut OUT;
-  float coeff = 1.0;
-  float3 normal = cross(ddy(worldPos.xyz), ddx(worldPos.xyz));
+  float coeff = 0.25;
+  float3 normal = cross(ddy(vp.xyz), ddx(vp.xyz));
   normal = normalize(normal);
   OUT.c = float4(length(vp.xyz) * coeff / far, normal);
   return OUT;

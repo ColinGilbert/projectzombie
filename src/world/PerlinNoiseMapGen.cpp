@@ -7,7 +7,7 @@
 #include <OgreException.h>
 #include "world/PerlinNoiseMapGen.h"
 
-using namespace noise;
+using namespace noisepp;
 using namespace ZGame::World;
 using namespace PolyVox;
 
@@ -73,7 +73,7 @@ PerlinNoiseMapGen::PerlinNoiseMapGen() :
   //finalTerrain.SetFrequency(0.5);
   //finalTerrain.SetOctaveCount(8);
   //finalTerrain.SetPersistence(1.0 / 2.0);
-
+  /*
   mountainTerrain.SetFrequency(1.0);
   mountainTerrain.SetOctaveCount(1);
   //mountainTerrain.SetPer
@@ -91,7 +91,30 @@ PerlinNoiseMapGen::PerlinNoiseMapGen() :
    finalTerrain.SetSourceModule(0, terrainSelection);
    finalTerrain.SetFrequency(1.0);
    finalTerrain.SetPower(0.125);
+   */
+  mountainTerrain.setFrequency(1.0);
+  mountainTerrain.setOctaveCount(1);
+  mountainTerrain.setQuality(noisepp::NOISE_QUALITY_FAST_LOW);
+  baseFlatTerrain.setFrequency(1.0);
+  baseFlatTerrain.setQuality(noisepp::NOISE_QUALITY_FAST_LOW);
+  
+  flatTerrain.setScale(0.25);
+  flatTerrain.setSourceModule(0, baseFlatTerrain);
+  flatTerrain.setBias(-0.75);
 
+
+  terrainSelection.setSourceModule(0, flatTerrain);
+  terrainSelection.setSourceModule(1, mountainTerrain);
+  terrainSelection.setControlModule(terrainType);
+  
+  terrainSelection.setLowerBound(0.0);
+  terrainSelection.setUpperBound(1000.0);
+  terrainSelection.setEdgeFalloff(0.125);
+
+  finalTerrain.setSourceModule(0, terrainSelection);
+  finalTerrain.setFrequency(1.0);
+  finalTerrain.setPower(0.125);
+  finalTerrain.setQuality(noisepp::NOISE_QUALITY_FAST_LOW);
   /*
   finalTerrain.SetFrequency(8.0);
   finalTerrain.SetOctaveCount(1);

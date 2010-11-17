@@ -31,18 +31,20 @@ void
 {
     _scnMgr = EngineView::getSingleton().getSceneManager();
     _root = _scnMgr->getRootSceneNode()->createChildSceneNode();
-    _manual = _scnMgr->createManualObject();
-    _manual->setCastShadows(false);
-    _manual->setDynamic(false);
+   
 
 }
 
 void
-    VolumeMapView::createRegion(bool regionEmpty, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
+    VolumeMapView::createRegion(const Ogre::Vector3 &origin, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
+    _origin = origin;
     //if (!regionEmpty)
     //_manual->detachFromParent();
-    _manual->clear();
+    //_manual->clear();
+    _manual = _scnMgr->createManualObject();
+    _manual->setCastShadows(false);
+    _manual->setDynamic(false);
     _manualFromMesh(false, mesh, _manual);
 }
 
@@ -50,9 +52,9 @@ void
     VolumeMapView::unloadRegion(bool regionEmpty)
 {
     //if (!regionEmpty)
-    _root->detachObject(_manual);
-    //_manual->detachFromParent();
-    //_scnMgr->destroyManualObject(_manual);
+    //_root->detachObject(_manual);
+    _manual->detachFromParent();
+    _scnMgr->destroyManualObject(_manual);
     _root->setVisible(false, true);
     //_manual = 0;
 
@@ -111,13 +113,19 @@ void
         //cout << "INDEX!: " << ix << endl;
     }
     manual->end();
-    _root->attachObject(manual);
     //translate node from object space to world space. World space coordinate is the origin of this block.
+
+    //add it to root scene.
+
+    //scnMgr->getRootSceneNode()->createChildSceneNode()->attachObject(manual);
+}
+
+void
+    VolumeMapView::finalizeRegion()
+{
+    _root->attachObject(_manual);
     _root->setPosition(_origin);
     _root->setVisible(true);
-    //add it to root scene.
-   
-    //scnMgr->getRootSceneNode()->createChildSceneNode()->attachObject(manual);
 }
 
 
