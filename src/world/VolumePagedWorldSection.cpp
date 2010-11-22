@@ -184,15 +184,15 @@ void
     if (!mParent->getManager()->getPagingOperationsEnabled())
         return;
     PageMap::iterator i = mPages.find(pageID);
-    if(i != mPages.end())
-    {
+    //if(i != mPages.end())
+    //{
         long x, y;
         _unpackIndex(pageID, &x, &y);
         std::stringstream ss;
         ss << "Unload PageID: " << x << "," << y << "\n";
         Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, ss.str());
         _volumeMap->unloadPage(pageID);
-    }
+    //}
     PagedWorldSection::unloadPage(pageID, forceSynchronous);
 
 

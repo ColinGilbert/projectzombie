@@ -34,7 +34,8 @@ GameMainState::GameMainState() :
 GameState(), _controlMod(new ControlModuleProto()),
     _worldController(new World::WorldController()), _charUtil(
     new Util::CharacterUtil()), _entMgr(0), //Do not initialize them here as services are not up yet when we are creating the GameMainState. This needs to change. i.e: we need to create game main state after ogre initializes.
-    _rdrEntMgr(0), _zclCtrl(new ZCLController()), _entsView(0), _workspace(0)
+    _rdrEntMgr(0), _zclCtrl(new ZCLController()), _entsView(0), _workspace(0),
+    _workspaceCtrl(0)
 {
 
 }
@@ -170,6 +171,7 @@ bool
         _rdrEntMgr->updateRenderEntities(posBuf, orientBuf, velocityBuf, evt.timeSinceLastFrame);
     }
     */
+    _worldController->onUpdate(evt);
     return true;
 }
 
@@ -209,6 +211,8 @@ bool
         return true;
     //_entsView->onMouseDown(evt, id);
     _controlMod->onMouseDown(evt, id);
+    //HACK test to add a cube.
+    _worldController->addCube();
     return true;
 }
 

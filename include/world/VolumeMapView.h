@@ -10,13 +10,14 @@
 #include <vector>
 #include <Ogre.h>
 #include <SurfaceMesh.h>
-
+#include <OgreBulletDynamics.h>
 using std::vector;
 
 namespace ZGame
 {
     namespace World
     {
+        class PhysicsManager;
         /**
         * This class will handle the representation layer of Volume Maps. It's main responsibility is to render the VolumeMap.
         */
@@ -32,7 +33,11 @@ namespace ZGame
             void
                 updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial> *mesh);
             void
-                unloadRegion(bool regionEmpty);
+                unloadRegion(PhysicsManager* phyMgr);
+            void
+                createPhysicsRegion(PhysicsManager* phyMgr);
+                //OgreBulletCollisions::ConvexHullCollisionShape* shape);
+                
 
             Ogre::ManualObject*
                 getManualObject()
@@ -59,7 +64,7 @@ namespace ZGame
             Ogre::SceneNode* _root;
             Ogre::Vector3 _origin; //the origin of this block
             Ogre::SceneManager* _scnMgr;
-
+            OgreBulletDynamics::RigidBody* _phyBody;
             void
                 _initManualObject();
             /** \brief This method will create a manual mesh from the given PolyVox SurfaceMesh.**/

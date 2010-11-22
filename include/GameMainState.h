@@ -6,21 +6,16 @@
 */
 
 #pragma once
-#include <Ogre.h>
 
+#include "ZPrerequisites.h"
+#include <Ogre.h>
+#include "GameState.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #include <memory>
 #else
 #include <tr1/memory>
 #endif
-
-
-using namespace std;
-
-//#include <boost/shared_ptr.hpp>
-
-#include "GameState.h"
 
 namespace ZGame
 {
@@ -33,6 +28,7 @@ namespace ZGame
     class WhiteNoiseView;
     class GPUEntsControl;
     class ZWorkspace;
+    class ZWorkspaceController;
     namespace ZCL
     {
         class ZCLController; 
@@ -89,14 +85,15 @@ namespace ZGame
 
     private:
     private:
-        auto_ptr<ZGame::World::WorldController> _worldController;
+        std::auto_ptr<ZGame::World::WorldController> _worldController;
         //Utilities for call back execution of commands
-        auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
-        auto_ptr<Entities::EntitiesManager> _entMgr;
-        auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
-        auto_ptr<ZCL::ZCLController> _zclCtrl;
-        auto_ptr<Entities::EntitiesView> _entsView;
-        auto_ptr<ZWorkspace> _workspace;
+        std::auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
+        std::auto_ptr<Entities::EntitiesManager> _entMgr;
+        std::auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
+        std::auto_ptr<ZCL::ZCLController> _zclCtrl;
+        std::auto_ptr<Entities::EntitiesView> _entsView;
+        std::auto_ptr<ZWorkspace> _workspace;
+        std::auto_ptr<ZGame::ZWorkspaceController> _workspaceCtrl;
         //Graphics stuff.
         
 

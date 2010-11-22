@@ -10,6 +10,7 @@
 #include "entities/RenderEntitiesManager.h"
 #include "ZCL/ZCLController.h"
 #include "world/WorldController.h"
+#include "world/PhysicsManager.h"
 #include <sstream>
 
 using namespace ZGame;

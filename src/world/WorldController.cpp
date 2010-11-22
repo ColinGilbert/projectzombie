@@ -14,17 +14,24 @@ using namespace Ogre;
 //#include "cologre.h"
 #include "EngineView.h"
 #include "world/WorldMap.h"
+#include "world/WorldConfig.h"
+#include "world/PhysicsManager.h"
+#include "world/WorldDefs.h"
 using namespace ZGame;
 using namespace ZGame::World;
 
 WorldController::WorldController() :
-_worldMap(0), _scnMgr(0), _volumePaging(0)
+_worldMap(0), _scnMgr(0), _volumePaging(0),
+    _physicsMgr(0), cam(EngineView::getSingleton().getCurrentCamera())
 {
     //init();
+
 }
 
 WorldController::~WorldController()
 {
+    _physicsMgr.reset(0);
+    _volumeMap.reset(0);
 }
 
 
@@ -39,7 +46,7 @@ bool WorldController::onUpdate(const Ogre::FrameEvent &evt)
 {
     using namespace std;
     Ogre::Real inc = evt.timeSinceLastFrame*0.8f;
-
+    _physicsMgr->onUpdate(evt);
     //_animState->addTime(inc);
     //_animState->setWeight(1.0);
 
@@ -57,6 +64,13 @@ bool WorldController::onDestroy()
     return true;
 }
 
+void
+    WorldController::addCube()
+{
+    Ogre::Vector3 pos = cam->getDerivedPosition();
+    _physicsMgr->addCube(pos);
+}
+
 /**
 *This method will initialize the world controller.
 *
@@ -65,29 +79,34 @@ bool WorldController::onDestroy()
 */
 void WorldController::_init()
 {
+    WorldConfig config;
+    config.load();
     _scnMgr = EngineView::getSingleton().getSceneManager();
-    //loadTerrain();
-    _loadWorldMap();
-    //loadSkyMap();
+    _physicsMgr.reset(new PhysicsManager());
+    _physicsMgr->onInit();
+    _loadWorldMap(config.getWorldMapConfig());
     //log->logMessage(Ogre::LML_TRIVIAL,"Out WorldController::init().");
 }
 
 void 
-    WorldController::_loadWorldMap()
+    WorldController::_loadWorldMap(WorldMapConfig &config)
 {
     //_worldMap.reset(new WorldMap());
     //_worldMap->load(); //We should implement load from configuration file.
-    _volumeMap.reset(new VolumeMap());
-    _volumeMap->setOrigin(Ogre::Vector3(0, -64, 0));
-    _volumeMap->load();
+    size_t numOfPages = config.loadRadius * 2 / WORLD_BLOCK_WIDTH;
+    numOfPages += 3; //give some extra room
+    _volumeMap.reset(new VolumeMap(numOfPages, config.forceSync));
+    _volumeMap->load(_physicsMgr.get());
 
     _pageManager.setPageProvider(&_pageProvider);
     _pageManager.addCamera(EngineView::getSingleton().getCurrentCamera());
     _volumePaging = OGRE_NEW_T(VolumeMapPaging(&_pageManager), 
         Ogre::MEMCATEGORY_GENERAL);
     Ogre::PagedWorld* world = _pageManager.createWorld();
-    _volumePaging->createWorldSection(world, _volumeMap.get(), 736.0, 
-        800.0, -2300, -2300, 2300, 2300, EngineView::getSingleton().getSceneManager());
+    _volumePaging->createWorldSection(world, _volumeMap.get(), config.loadRadius, 
+        config.unloadRadius, config.minx, config.miny, 
+        config.maxx, config.maxy, 
+        EngineView::getSingleton().getSceneManager());
      //_volumePaging->createWorldSection(world, _volumeMap.get(), 320.0, 
         //_volumeMap->getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
         //384.0, -2300, -2300, 2300, 2300, EngineView::getSingleton().getSceneManager());

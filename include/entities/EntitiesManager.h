@@ -187,7 +187,7 @@ namespace ZGame
       _getNumOfEntities()
       {
         size_t numOfEnts = 0;
-        for (int i = 0; i < _groups.size(); ++i)
+        for (size_t i = 0; i < _groups.size(); ++i)
           {
             numOfEnts += _groups[i]->numOfEnts;
           }

@@ -28,6 +28,7 @@ namespace ZGame
 {
   namespace World
   {
+      class PhysicsManager;
     /**
      * This class defines a representation or a volume map. A volume map is a container for managing a collection of Volume Pages. Volume Pages are
      * defined as a mapping to Ogre's Paging System's PageIDs to this Volume Map's Volume Pages, which contains PolyVox Volume data. In correspondance with
@@ -45,11 +46,11 @@ namespace ZGame
     class VolumeMap : public Ogre::WorkQueue::RequestHandler, public Ogre::WorkQueue::ResponseHandler
     {
     public:
-      VolumeMap();
+      VolumeMap(size_t numOfPages = (50*50), bool ASYNC = false);
       virtual
       ~VolumeMap();
       void
-      load();
+      load(PhysicsManager* phyMgr);
       void
       setOrigin(const Ogre::Vector3& origin)
       {
@@ -189,6 +190,7 @@ namespace ZGame
       Ogre::uint32 _volHeightInRegions;
       Ogre::uint32 _volDepthInRegions;
       Ogre::Vector3 _origin;
+      bool _FORCE_SYNC;
       //typedef std::list<VolumePage*>::type FreeList;
       //typedef Ogre::list<VolumePage*>::type FreeList;
       //typedef std::list<VolumePage*> FreeList;
@@ -200,6 +202,7 @@ namespace ZGame
       typedef std::map<Ogre::PageID, VolumePage*> PagesMap;
       PagesMap _pagesMap;
       size_t _numOfPages;
+      PhysicsManager* _phyMgr;
 
     };
   }

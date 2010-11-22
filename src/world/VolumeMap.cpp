@@ -16,8 +16,9 @@ using std::endl;
 #include "PolyVoxImpl/Utility.h"
 #include "world/PerlinNoiseMapGen.h"
 #include "world/WorldDefs.h"
-
 #include "world/ZCubicSurfaceExtractor.h"
+#include "world/PhysicsManager.h"
+
 using ZGame::World::VolumeMap;
 using PolyVox::ZCubicSurfaceExtractor;
 using PolyVox::MaterialDensityPair44;
@@ -41,9 +42,10 @@ const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 //const int SW = 320.0;
 //const int SH = 256;
 //const int SD = 320.0;
-VolumeMap::VolumeMap() :
+VolumeMap::VolumeMap(size_t numOfPages, bool FORCE_SYNC) :
 //_regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(50 * 50), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
-_regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(50 * 50), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
+_regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(numOfPages * numOfPages), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH),
+    _FORCE_SYNC(FORCE_SYNC)
 {
     World::PerlinNoiseMapGen::initGradientPoints();
 }
@@ -97,7 +99,7 @@ WorkQueue::Response*
     long x, y;
     _unpackIndex(page->id, &x, &y);
     page->gen->generate(&page->data, x, -y);
-    //page->data.tidyUpMemory();
+    page->data.tidyUpMemory();
     //_mapGen.generate(&page->data, x, y);
     //MUST MAKE SURE YOU allocate mesh before requesting this request to the WorkerQueue.
     //PolyVox::CubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
@@ -105,9 +107,6 @@ WorkQueue::Response*
     //PolyVox::SurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), page->surface);
     surfExtractor.execute();
     //response = OGRE_NEW_T_SIMD (WorkQueue::Response(req, true, Any()), Ogre::MEMCATEGORY_GENERAL);
-     Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (-y) * _regionSideLen);
-        //page->mapView.updateOrigin(pageWorldPos);
-        page->mapView.createRegion(pageWorldPos, lreq.surface);
     response = new WorkQueue::Response(req, true, Any());
     return response;
 }
@@ -136,11 +135,14 @@ void
         VolumePage* page = lreq.page;
         long x, z;
         _unpackIndex(page->id, &x, &z);
-       
-       
+         Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (-z) * _regionSideLen);
+        //page->mapView.updateOrigin(pageWorldPos);
+        page->mapView.createRegion(pageWorldPos, lreq.surface);
+    
         page->mapView.finalizeRegion();
-        //OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
-        delete lreq.surface;
+        page->mapView.createPhysicsRegion(_phyMgr);
+        OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
+        //delete lreq.surface;
         _pagesMap[page->id] = page;
         //page->data.tidyUpMemory();
 
@@ -184,8 +186,9 @@ void
 }
 
 void
-    VolumeMap::load()
+    VolumeMap::load(PhysicsManager* phyMgr)
 {
+    _phyMgr = phyMgr;
     WorkQueue* wq = Root::getSingleton().getWorkQueue();
     _workQueueChannel = wq->getChannel("PROJECT_ZOMBIE/VolumeMap");
     wq->addRequestHandler(_workQueueChannel, this);
@@ -218,9 +221,9 @@ void
         LoadRequest req;
         req.origin = this;
         req.page = page;
-        //req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
-        req.surface = new PolyVox::SurfaceMesh<PolyVox::PositionMaterial>;
-        Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, false);
+        req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+        //req.surface = new PolyVox::SurfaceMesh<PolyVox::PositionMaterial>;
+        Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, _FORCE_SYNC);
 
         //_loadPage(page, true);
         //_pagesMap[page->id] = page;
@@ -234,9 +237,11 @@ void
 void
     VolumeMap::unloadPage(Ogre::PageID pageID)
 {
-    //cout << "Unloading PageID: " << pageID << endl;
+    cout << "Unloading PageID: " << pageID << endl;
     long x, y;
     _unpackIndex(pageID, &x, &y);
+    cout << "pageID: " << x << " " << y << endl;
+  
     //y = -y;
     //pageID = _packIndex(x, y);
     using std::map;
@@ -251,7 +256,7 @@ void
     //OGRE_EXCEPT( Ogre::Exception::ExceptionCodes::ERR_ITEM_NOT_FOUND, "unload a pageid that is not found in pagesMap", "VolumeMap::unloadPage");
 
     VolumePage* page = findMe->second;
-    page->mapView.unloadRegion(page->isEmpty());
+    page->mapView.unloadRegion(_phyMgr);
 
     _pagesMap.erase(findMe);
     _addToList(page);

@@ -1,7 +1,7 @@
 vertex_program PRJZ/PSSM/shadow_caster_vs cg
 {
 	source Minecraft.cg
-	profiles vs_2_x argvp1
+	profiles vs_3_x argvp1
 	entry_point caster_vs
 	default_params
 	{
@@ -13,7 +13,7 @@ vertex_program PRJZ/PSSM/shadow_caster_vs cg
 fragment_program PRJZ/PSSM/shadow_caster_ps cg
 {
 	source Minecraft.cg
-	profiles ps_2_0 arbfp1
+	profiles ps_3_x arbfp1
 	entry_point caster_ps
 	default_params
 	{

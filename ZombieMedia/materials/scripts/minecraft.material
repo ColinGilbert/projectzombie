@@ -76,7 +76,7 @@ material PRJZ/Minecraft
 			//cull_hardware none 
 			//cull_software back
 			//polygon_mode wireframe
-
+			scene_blend alpha_blend
 
 			vertex_program_ref PRJZ/PSSM/shadow_reciever_vs
 			{

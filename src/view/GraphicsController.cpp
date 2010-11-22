@@ -113,7 +113,9 @@ void
 
 }
 
-
+/**
+** \note PLEASE REFACTOR THIS CODE to load from a defined path instead of current path.
+*/
 void
     GraphicsController::_parseHDRConfig()
 {

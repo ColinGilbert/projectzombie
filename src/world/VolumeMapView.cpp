@@ -8,6 +8,10 @@
 #include "world/VolumeMapView.h"
 #include "EngineView.h"
 #include <iostream>
+#include <Shapes/OgreBulletCollisionsTrimeshShape.h>
+#include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
+#include "world/PhysicsManager.h"
+#include <OgreException.h>
 using std::cout;
 using std::endl;
 
@@ -17,7 +21,7 @@ using PolyVox::SurfaceMesh;
 using PolyVox::Vector3DFloat;
 using namespace Ogre;
 
-VolumeMapView::VolumeMapView()
+VolumeMapView::VolumeMapView() : _manual(0), _phyBody(0)
 {
     _initManualObject();
 }
@@ -39,9 +43,6 @@ void
     VolumeMapView::createRegion(const Ogre::Vector3 &origin, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
     _origin = origin;
-    //if (!regionEmpty)
-    //_manual->detachFromParent();
-    //_manual->clear();
     _manual = _scnMgr->createManualObject();
     _manual->setCastShadows(false);
     _manual->setDynamic(false);
@@ -49,15 +50,13 @@ void
 }
 
 void
-    VolumeMapView::unloadRegion(bool regionEmpty)
+    VolumeMapView::unloadRegion(PhysicsManager* phyMgr)
 {
-    //if (!regionEmpty)
-    //_root->detachObject(_manual);
     _manual->detachFromParent();
     _scnMgr->destroyManualObject(_manual);
     _root->setVisible(false, true);
-    //_manual = 0;
-
+    phyMgr->destroyBody(_phyBody);
+    _phyBody = 0;
 }
 
 void
@@ -76,12 +75,6 @@ void
 
     if(vertices.size() < 1)
         return;
-
-    //const Ogre::Vector2 texCoords[4] =
-    //{ Ogre::Vector2(0.0f, 0.0f), Ogre::Vector2(1.0f, 0.0f), Ogre::Vector2(0.0f, 1.0f), Ogre::Vector2(1.0f, 1.0f) };
-    //size_t texIdx = 0;
-    //Build the Ogre Manual Object. We first iterate through the vertices add position to that.
-    //
     _manual->estimateIndexCount(indices.size());
     _manual->estimateVertexCount(vertices.size());
     _manual->begin("PRJZ/Minecraft", Ogre::RenderOperation::OT_TRIANGLE_LIST, "PROJECT_ZOMBIE");
@@ -90,17 +83,8 @@ void
     {
         const PositionMaterial& vertex = *itVertex;
         const Vector3DFloat& vertPos = vertex.getPosition();
-        //const Vector3DFloat& finalPos = vertPos + static_cast<Vector3DFloat> (mesh.m_Region.getLowerCorner());
-        //Vector3DFloat origin(_origin.x, _origin.y, _origin.z);
-        //const Vector3DFloat& finalPos = vertPos + origin;
-        //manual->position(finalPos.getX(), finalPos.getY(), finalPos.getZ());
+       
         manual->position(vertPos.getX(), vertPos.getY(), vertPos.getZ());
-        //manual->normal(vertex.getNormal().getX(), vertex.getNormal().getY(), vertex.getNormal().getZ()); 
-        //Assume that the passed in position are counter clockwise starting from top left corner.
-
-        //manual->textureCoord(texCoords[texIdx % 4]);
-        //texIdx++;
-        //Ogre::ColourValue val;
         size_t material = vertex.getMaterial() + 0.5f; 
 
         manual->textureCoord(material / 256.0f, 0.0, 0.0, 0.0);
@@ -110,15 +94,16 @@ void
     {
         manual->index(*itIdx);
         uint32_t ix = *itIdx;
-        //cout << "INDEX!: " << ix << endl;
     }
     manual->end();
-    //translate node from object space to world space. World space coordinate is the origin of this block.
-
-    //add it to root scene.
-
-    //scnMgr->getRootSceneNode()->createChildSceneNode()->attachObject(manual);
 }
+
+void
+    VolumeMapView::createPhysicsRegion(PhysicsManager* mgr)
+{
+    _phyBody = mgr->staticObjectFromManual(_manual, _phyBody, 0.1f, 0.6f, _root->_getFullTransform());
+}
+
 
 void
     VolumeMapView::finalizeRegion()

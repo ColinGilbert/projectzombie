@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include <Ogre.h>
+#include "ZPrerequisites.h"
 #include <SdkTrays.h>
 #include "ZException.h"
 
@@ -14,7 +14,6 @@ namespace ZGame
     class EntitiesManager;
     class EntitiesGroup;
     class RenderEntitiesManager;
-
   }
   namespace ZCL
   {
@@ -23,6 +22,7 @@ namespace ZGame
   namespace World
   {
     class WorldController;
+    class PhysicsManager;
   }
   class ZWorkspace
   {
@@ -66,6 +66,12 @@ namespace ZGame
     {
       return _tray;
     }
+    World::PhysicsManager*
+        getPhysicsManager()
+    {
+        return _phyMgr;
+    }
+
   protected:
 
   private:
@@ -78,6 +84,7 @@ namespace ZGame
     std::vector<Ogre::SceneNode*> _icons;
     ZCL::ZCLController* _zclCtrl;
     World::WorldController* _worldCtrl;
+    World::PhysicsManager* _phyMgr;
 
   private:
     void
