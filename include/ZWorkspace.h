@@ -71,6 +71,11 @@ namespace ZGame
     {
         return _phyMgr;
     }
+    World::WorldController*
+        getWorldController()
+    {
+        return _worldCtrl;
+    }
 
   protected:
 

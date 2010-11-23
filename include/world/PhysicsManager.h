@@ -45,6 +45,9 @@ namespace ZGame
 
             OgreBulletCollisions::ConvexHullCollisionShape* createConvexHullShape();
 
+            bool
+                getCollisionPoint(Ogre::Vector3 &intersectPoint, Ogre::Ray &rayTo, Ogre::Real farClipDistance);
+
         protected:
 
         private:

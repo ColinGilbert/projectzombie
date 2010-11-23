@@ -4,6 +4,10 @@
 #include <Shapes/OgreBulletCollisionsBoxShape.h>
 #include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
 #include <Shapes/OgreBulletCollisionsTrimeshShape.h>
+#include <OgreBulletCollisionsRay.h>
+#include <iostream>
+using std::cout;
+using std::endl;
 
 using ZGame::World::PhysicsManager;
 using namespace Ogre;
@@ -41,6 +45,7 @@ bool
     _debugDrawer = OGRE_NEW OgreBulletCollisions::DebugDrawer();
     _debugDrawer->setDrawWireframe(true);
     _debugDrawer->setDrawAabb(true);
+    
     _debugDrawer->setDebugDisplayEnabled(true);
     
     _world->setDebugDrawer(_debugDrawer);
@@ -187,16 +192,18 @@ void
     OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Trying to destroy a shape that is not managed by the Manager.",
         "PhysicsManager::destroyShape");
 }
-/*
-ManualObjectToShapeConverter::ManualObjectToShapeConverter() :
-VertexIndexToShape()
+
+bool
+    PhysicsManager::getCollisionPoint(Ogre::Vector3 &intersectPoint, Ogre::Ray &rayTo, Ogre::Real farClipDistance)
 {
-
+    OgreBulletCollisions::CollisionClosestRayResultCallback callback(rayTo, _world, farClipDistance);
+    _world->launchRay(callback);
+    if(callback.doesCollide())
+    {
+        //OgreBulletDynamics::RigidBody* body = static_cast<OgreBulletDynamics::RigidBody *>
+            //(callback.getCollidedObject());
+        intersectPoint = callback.getCollisionPoint();
+        return true;
+    }
+    return false;
 }
-
-void
-    ManualObjectToShapeConverter::addManualObject(Ogre::ManualObject* manual)
-{
-
-}
-*/

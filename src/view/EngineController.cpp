@@ -209,7 +209,7 @@ namespace ZGame
   EngineController::chooseSceneManager()
   {
     bool notFound = true;
-    _scnMgr = _root->createSceneManager(Ogre::ST_GENERIC, "ProjectChaos");
+    _scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "ProjectChaos");
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
     rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
 

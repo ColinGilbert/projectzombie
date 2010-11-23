@@ -32,7 +32,9 @@ namespace ZGame
             bool onInit();
             bool onUpdate(const Ogre::FrameEvent &evt);
             bool onDestroy();
-            void addCube();
+            // Temp method for testing
+            void addBlock(Ogre::Real cursorX, Ogre::Real cursorY);
+            void removeBlock(Ogre::Real cursorX, Ogre::Real cursorY);
 
             /** \brief This method will return a world map. \note Do not call while WorldController has not be initialized.**/
             WorldMap* getWorldMap()
@@ -54,8 +56,6 @@ namespace ZGame
             DummyPageProvider _pageProvider;
             Ogre::PageManager _pageManager;
             std::auto_ptr<PhysicsManager> _physicsMgr;
-            Ogre::Camera* cam;
-        
         };
     }
 }

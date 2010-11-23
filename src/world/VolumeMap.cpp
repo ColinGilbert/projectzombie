@@ -18,6 +18,10 @@ using std::endl;
 #include "world/WorldDefs.h"
 #include "world/ZCubicSurfaceExtractor.h"
 #include "world/PhysicsManager.h"
+#include "EngineView.h"
+
+#include <OgreBulletCollisionsRay.h>
+
 
 using ZGame::World::VolumeMap;
 using PolyVox::ZCubicSurfaceExtractor;
@@ -263,7 +267,7 @@ void
 
 }
 
-Ogre::uint32
+inline Ogre::uint32
     VolumeMap::_packIndex(long x, long y)
 {
     using namespace Ogre;
@@ -284,7 +288,7 @@ Ogre::uint32
     return key;
 }
 
-void
+inline void
     VolumeMap::_unpackIndex(Ogre::PageID pageID, long *x, long *y)
 {
     using Ogre::uint16;
@@ -294,4 +298,80 @@ void
 
     *x = static_cast<int16> (x16);
     *y = static_cast<int16> (y16);
+}
+
+void
+    VolumeMap::_addBlockToVolume(const Ogre::Vector3 &point, size_t blockType)
+{
+    Ogre::PageID pageID;
+    //first has point to page id.
+    long x = static_cast<size_t>(point.x) / WORLD_BLOCK_WIDTH; 
+    long z = static_cast<size_t>(-point.z) / WORLD_BLOCK_WIDTH;
+
+    pageID = _packIndex(x, z);
+    //Find this page id.
+    PagesMap::iterator findMe = _pagesMap.find(pageID);
+    if(findMe != _pagesMap.end())
+    {
+         
+        //Found this page let's add block to it.
+        VolumePage* page = findMe->second;
+        const size_t volHeight = page->data.getHeight();
+        const size_t volWidth = page->data.getWidth();
+        const size_t volDepth = page->data.getDepth();
+        page->mapView.unloadRegion(_phyMgr);
+        //has the point then modify that voxel.
+        size_t x = static_cast<size_t>(Ogre::Math::Abs(point.x)) % volDepth;
+        size_t y = static_cast<size_t>(Ogre::Math::Abs(point.y)) % volHeight;
+        size_t z = static_cast<size_t>(Ogre::Math::Abs(point.z)) % volWidth;
+
+        page->data.setVoxelAt(x, y, z, blockType);
+        PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
+        ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, page->data.getEnclosingRegion(), &surface);
+        surfExtractor.execute();
+        //regen the surface. Note we shouldn't need to reupdate the center of this page. The assumption here is that it should be set during creation.
+        page->mapView.updateRegion(&surface);
+        page->mapView.finalizeRegion();
+        page->mapView.createPhysicsRegion(_phyMgr);
+
+    }
+    //else throw exeception here this should never happen.
+    assert(findMe != _pagesMap.end() && "VolumeMap::_addBlockToVolume trying to add to non-existent Volume page.");
+}
+
+void
+    VolumeMap::addBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
+{
+    Ogre::Vector3 intersectPoint;
+    cout << "VolumeMap::addBlock" << endl;
+    
+    if(!_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
+    {
+        //We intersected nothing. We can create a block there.
+        cout << "Nothing was intersected. Still here is the point: " << intersectPoint << endl;
+        _addBlockToVolume(rayTo.getPoint(searchDistance), 1); //We assume that since nothing was hit then it is safe to
+        //add a block at searchDistance. This assumption could be wrong due to discretization.
+
+    }
+    else
+    {
+        cout << "Something was intersected. Here is the point: " << intersectPoint << endl;
+        //We can't add anything there.
+    }
+
+}
+
+void
+    VolumeMap::removeBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
+{
+    Ogre::Vector3 intersectPoint;
+    cout << "VolumeMap::removeBlock" << endl;
+    if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
+    {
+        cout << "Something was intersected. Here is the point: " << intersectPoint << endl;
+    }
+    else
+    {
+        cout << "Nothing was intersected. But here is the point: " << intersectPoint << endl;
+    }
 }

@@ -15,9 +15,21 @@ namespace ZGame
     class ZWorkspaceController
     {
     public:
-        ZWorkspaceController(ZWorkspace* workspace);
+        ZWorkspaceController();
         ~ZWorkspaceController();
         
+        /**
+        *\brief This method sets the workspace to corresponding to this controller.
+        *
+        * \note please make sure workspace is attached before doing anything with this
+        *controller. No checking is done.
+        */
+        void
+            setZWorkspaceController(ZWorkspace* workspace)
+        {
+            _workspace = workspace;
+        }
+
         bool 
             onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
         bool

@@ -17,12 +17,14 @@ using namespace Ogre;
 #include "world/WorldConfig.h"
 #include "world/PhysicsManager.h"
 #include "world/WorldDefs.h"
+
+
 using namespace ZGame;
 using namespace ZGame::World;
 
 WorldController::WorldController() :
 _worldMap(0), _scnMgr(0), _volumePaging(0),
-    _physicsMgr(0), cam(EngineView::getSingleton().getCurrentCamera())
+    _physicsMgr(0)
 {
     //init();
 
@@ -62,13 +64,6 @@ bool WorldController::onDestroy()
     OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
     cout << "WorldController::onDestroy done." << endl;
     return true;
-}
-
-void
-    WorldController::addCube()
-{
-    Ogre::Vector3 pos = cam->getDerivedPosition();
-    _physicsMgr->addCube(pos);
 }
 
 /**
@@ -111,4 +106,29 @@ void
         //_volumeMap->getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
         //384.0, -2300, -2300, 2300, 2300, EngineView::getSingleton().getSceneManager());
 
+}
+
+void
+    WorldController::addBlock(Ogre::Real cursorX, Ogre::Real cursorY)
+{
+    using namespace Ogre;
+    using namespace OgreBulletCollisions;
+    using namespace OgreBulletDynamics;
+    Ogre::Ray rayTo;
+    Ogre::Real searchDistance = 10.0f;
+    Ogre::Camera* cam = EngineView::getSingleton().getCurrentCamera();
+    cout << "cursorX, cursorY: " << cursorX << " , " << cursorY << endl;
+    rayTo = cam->getCameraToViewportRay(cursorX, cursorY); 
+    _volumeMap->addBlock(rayTo, searchDistance);
+}
+
+void
+    WorldController::removeBlock(Ogre::Real cursorX, Ogre::Real cursorY)
+{
+    Ogre::Ray rayTo;
+    Ogre::Camera* cam = EngineView::getSingleton().getCurrentCamera();
+    cout << "cursorX, cursorY: " << cursorX << " , " << cursorY << endl;
+    rayTo = cam->getCameraToViewportRay(cursorX, cursorY);
+    Ogre::Real searchDistance = 10.0f;
+    _volumeMap->removeBlock(rayTo, searchDistance);
 }

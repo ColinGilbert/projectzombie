@@ -31,7 +31,7 @@ namespace ZGame
             void
                 createRegion(const Ogre::Vector3 &origin, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh);
             void
-                updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PolyVox::PositionMaterial> *mesh);
+                updateRegion(PolyVox::SurfaceMesh<PolyVox::PositionMaterial> *mesh);
             void
                 unloadRegion(PhysicsManager* phyMgr);
             void

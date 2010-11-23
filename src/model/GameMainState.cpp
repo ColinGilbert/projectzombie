@@ -23,6 +23,7 @@ using namespace std;
 #include "GraphicsController.h"
 #include "entities/EntitiesView.h"
 #include "ZWorkspace.h"
+#include "ZWorkspaceController.h"
 
 using namespace Ogre;
 using namespace ZGame;
@@ -35,7 +36,7 @@ GameState(), _controlMod(new ControlModuleProto()),
     _worldController(new World::WorldController()), _charUtil(
     new Util::CharacterUtil()), _entMgr(0), //Do not initialize them here as services are not up yet when we are creating the GameMainState. This needs to change. i.e: we need to create game main state after ogre initializes.
     _rdrEntMgr(0), _zclCtrl(new ZCLController()), _entsView(0), _workspace(0),
-    _workspaceCtrl(0)
+    _workspaceCtrl(new ZWorkspaceController())
 {
 
 }
@@ -87,7 +88,7 @@ void
     LifeCycle::bindLifeCycleObserver(lfcObs, *_controlMod);
     lfcReg.registerLfcObs(lfcObs);
 
-
+    //Workspace controller
 }
 
 /**
@@ -105,6 +106,9 @@ void
 
     EVENT::bindKeyObserver(keyObs, *this);
     keyReg.registerKeyObs(keyObs);
+    //Workspace controller
+    EVENT::bindKeyObserver(keyObs, *_workspaceCtrl);
+    keyReg.registerKeyObs(keyObs);
 }
 
 /**
@@ -120,9 +124,8 @@ void
     EVENT::bindMouseObserver(mouseObs, *this);
     mouseReg.registerMouseObs(mouseObs);
 
-    //graphics module
-
-
+    EVENT::bindMouseObserver(mouseObs, *_workspaceCtrl);
+    mouseReg.registerMouseObs(mouseObs);
 }
 
 /**
@@ -150,6 +153,7 @@ bool
     //We need to initialize OpenCL after creating the world and entities, as OpenCL requires both entities and world map data to function.
     Ogre::LogManager::getSingleton().logMessage("Intitializing MainGameState SDK Tray.");
     _workspace.reset(new ZWorkspace(_entMgr.get(), _rdrEntMgr.get(), getSdkTray(), _zclCtrl.get(), _worldController.get()));
+    _workspaceCtrl->setZWorkspaceController(_workspace.get());
     //_entsView->init(_workspace.get());
 
 
@@ -211,8 +215,6 @@ bool
         return true;
     //_entsView->onMouseDown(evt, id);
     _controlMod->onMouseDown(evt, id);
-    //HACK test to add a cube.
-    _worldController->addCube();
     return true;
 }
 

@@ -43,6 +43,7 @@ void
     VolumeMapView::createRegion(const Ogre::Vector3 &origin, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
     _origin = origin;
+    assert(_manual == 0 && "Manual should be null invarience failed.");
     _manual = _scnMgr->createManualObject();
     _manual->setCastShadows(false);
     _manual->setDynamic(false);
@@ -60,10 +61,14 @@ void
 }
 
 void
-    VolumeMapView::updateRegion(bool regionEmpty, PolyVox::SurfaceMesh<PositionMaterial>* mesh)
+    VolumeMapView::updateRegion(PolyVox::SurfaceMesh<PositionMaterial>* mesh)
 {
-    if (!regionEmpty)
-        _manualFromMesh(true, mesh, _manual);
+    //CHECK manual is null.
+    assert(_manual == 0 && "Manual should be null invariance failed.");
+    _manual = _scnMgr->createManualObject();
+    _manual->setCastShadows(false);
+    _manual->setDynamic(false);
+    _manualFromMesh(false, mesh, _manual);
 }
 
 void
