@@ -305,11 +305,13 @@ void
 {
     Ogre::PageID pageID;
     //first has point to page id.
-    long x = static_cast<size_t>(point.x) / WORLD_BLOCK_WIDTH; 
-    long z = static_cast<size_t>(-point.z) / WORLD_BLOCK_WIDTH;
+    long x = point.x / WORLD_BLOCK_WIDTH; 
+    long z = -point.z / WORLD_BLOCK_WIDTH;
 
     pageID = _packIndex(x, z);
     //Find this page id.
+    cout << "Page idx: " << x << " " << z << endl;
+    cout << "World position picked: " << point << endl;
     PagesMap::iterator findMe = _pagesMap.find(pageID);
     if(findMe != _pagesMap.end())
     {
@@ -324,6 +326,8 @@ void
         size_t x = static_cast<size_t>(Ogre::Math::Abs(point.x)) % volDepth;
         size_t y = static_cast<size_t>(Ogre::Math::Abs(point.y)) % volHeight;
         size_t z = static_cast<size_t>(Ogre::Math::Abs(point.z)) % volWidth;
+
+        cout << "Hashed x, y, z: " << x << " , " << y << " , " << z << endl;
 
         page->data.setVoxelAt(x, y, z, blockType);
         PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
