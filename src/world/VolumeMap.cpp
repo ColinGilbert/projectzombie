@@ -308,7 +308,8 @@ inline void
 *
 **/
 inline void
-    VolumeMap::_addBlockToVolume(Ogre::Vector3 point, size_t blockType, Ogre::Vector3 rayDir)
+    VolumeMap::_modifyVolume(Ogre::Vector3 point, size_t blockType, Ogre::Vector3 rayDir,
+    VOLUME_MODIFY_MODE mode)
 {
     Ogre::PageID pageID;
     //We need to figure out which face. We need to hash the coordinate into a cube first,
@@ -324,27 +325,35 @@ inline void
     faces[3] = Ogre::Vector3(0.0f, -0.5f, 0.0f);
     faces[4] = Ogre::Vector3(0.0f, 0.0f, 0.5f);
     faces[5] = Ogre::Vector3(0.0f, 0.0f, -0.5f);
-    //cout << "-------------------" << endl;
-    //cout << "Cube center: " << cubeCenter << endl;
-    //cout << "point: " << point << endl;
+    cout << "-------------------" << endl;
+    cout << "Cube center: " << cubeCenter << endl;
+    cout << "point: " << point << endl;
     for(size_t i = 0; i < 6; ++i)
     {
         Ogre::Vector3 pointOnFace = cubeCenter + faces[i];
-        //cout << "pointOnFace: " << pointOnFace << endl;
+        cout << "pointOnFace: " << pointOnFace << endl;
         Ogre::Vector3 canadidateVecInPlane = point - pointOnFace; 
-        //cout << "canadidate vector is: " << canadidateVecInPlane << endl;
+        cout << "canadidate vector is: " << canadidateVecInPlane << endl;
         //If canadidate and faceNormal is orthgonal then onTheFace is in the plane of the face.
-        //cout << "face normal: " << faces[i] << endl;
+        cout << "face normal: " << faces[i] << endl;
         Ogre::Real dotp = canadidateVecInPlane.dotProduct(faces[i]);
-        //cout << "dotp is " << dotp << endl;
-        if(dotp == std::numeric_limits<Ogre::Real>::epsilon() || dotp == 0)
+        cout << "dotp is " << dotp << endl;
+        Ogre::Real epsilon = std::numeric_limits<Ogre::Real>::epsilon();
+        if(dotp <= epsilon && dotp >= -epsilon)
         {
-            //cout << "canadidate vector is in plane" << endl;
+            cout << "canadidate vector is in plane" << endl;
             //Depending on the direction of ray we pick the cube next to it.
             if(faces[i].dotProduct(rayDir) < 0.0f)
             {
-                cubeCenter += faces[i]*2.0f; //move away from the current cube in the direction of face normal.
+                if(mode == ADD_BLOCK)
+                    cubeCenter += faces[i]*2.0f; //move away from the current cube in the direction of face normal.
             }
+            else
+            {
+                if(mode == REMOVE_BLOCK)
+                    cubeCenter += faces[i]*2.0f;
+            }
+
         }    
     }
     
@@ -393,12 +402,12 @@ void
     Ogre::Vector3 intersectPoint;
     if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
     {
-        _addBlockToVolume(intersectPoint, 1, rayTo.getDirection());
+        _modifyVolume(intersectPoint, 1, rayTo.getDirection(), ADD_BLOCK);
     }
     else //No intersection. Just make searchDistance to be 2 cube units in ray direction so you add a cube in front of you.
     {
         //2.0f may not correspond to 2 cubes..
-        _addBlockToVolume(rayTo.getPoint(2.0f), 1, rayTo.getDirection());
+        _modifyVolume(rayTo.getPoint(2.0f), 1, rayTo.getDirection(), ADD_BLOCK);
     }
 }
 
@@ -409,10 +418,9 @@ void
     cout << "VolumeMap::removeBlock" << endl;
     if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
     {
-        cout << "Something was intersected. Here is the point: " << intersectPoint << endl;
+        _modifyVolume(intersectPoint, 0, rayTo.getDirection(), REMOVE_BLOCK);
     }
     else
     {
-        cout << "Nothing was intersected. But here is the point: " << intersectPoint << endl;
     }
 }

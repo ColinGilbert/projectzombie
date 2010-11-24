@@ -172,7 +172,10 @@ namespace ZGame
 
 
         private:
-
+            enum VOLUME_MODIFY_MODE
+            {
+                ADD_BLOCK=0, REMOVE_BLOCK
+            };
             void
                 _addToList(VolumePage* page);
             VolumePage*
@@ -187,11 +190,13 @@ namespace ZGame
                 _unpackIndex(Ogre::PageID pageID, long *x, long *y);
             
             void
-                _addBlockToVolume(Ogre::Vector3 point, size_t blockType, Ogre::Vector3 rayDir);
+                _modifyVolume(Ogre::Vector3 point, size_t blockType, Ogre::Vector3 rayDir,
+                VOLUME_MODIFY_MODE mode);
             void
                 _removeBlockFromVolume(const Ogre::Vector3 &point);
 
         private:
+            
             //PolyVox::Volume<PolyVox::MaterialDensityPair44> _data;
             VolumeMapView _view;
             Ogre::uint32 _regionSideLen;
