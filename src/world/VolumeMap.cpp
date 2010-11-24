@@ -7,6 +7,7 @@
 */
 //#include <OgreMemoryAllocatorConfig.h>
 #include <memory>
+#include <limits>
 #include <iostream>
 #include <OgreException.h>
 #include <CubicSurfaceExtractor.h>
@@ -139,10 +140,10 @@ void
         VolumePage* page = lreq.page;
         long x, z;
         _unpackIndex(page->id, &x, &z);
-         Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (-z) * _regionSideLen);
+        Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (-z) * _regionSideLen);
         //page->mapView.updateOrigin(pageWorldPos);
         page->mapView.createRegion(pageWorldPos, lreq.surface);
-    
+
         page->mapView.finalizeRegion();
         page->mapView.createPhysicsRegion(_phyMgr);
         OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
@@ -245,7 +246,7 @@ void
     long x, y;
     _unpackIndex(pageID, &x, &y);
     cout << "pageID: " << x << " " << y << endl;
-  
+
     //y = -y;
     //pageID = _packIndex(x, y);
     using std::map;
@@ -300,36 +301,79 @@ inline void
     *y = static_cast<int16> (y16);
 }
 
-void
-    VolumeMap::_addBlockToVolume(const Ogre::Vector3 &point, size_t blockType)
+/**
+*This method will add a block to the volume. This method assumes that the passed in point is a point on a face of a cube,
+*and the ray direction corresponds to the picking direction. (Note: This still works for empty space because the point of
+*intersection is still assumed to be on the face of a cube, albiet an empty one.
+*
+**/
+inline void
+    VolumeMap::_addBlockToVolume(Ogre::Vector3 point, size_t blockType, Ogre::Vector3 rayDir)
 {
     Ogre::PageID pageID;
-    //first has point to page id.
-    long x = point.x / WORLD_BLOCK_WIDTH; 
-    long z = -point.z / WORLD_BLOCK_WIDTH;
+    //We need to figure out which face. We need to hash the coordinate into a cube first,
+    //this will determine the center of a cube. We then iterate through the faces of this cube
+    //and tests whether the itnersected point is in the face (point in plane). 
+    Ogre::Vector3 cubeCenter(Ogre::Math::Floor(point.x + 0.5f),
+        Ogre::Math::Floor(point.y + 0.5f),
+        Ogre::Math::Floor(point.z + 0.5f));
+    Vector3 faces[6];
+    faces[0] = Ogre::Vector3(0.5f, 0.0f, 0.0f);
+    faces[1] = Ogre::Vector3(-0.5f, 0.0f, 0.0f);
+    faces[2] = Ogre::Vector3(0.0f, 0.5f, 0.0f);
+    faces[3] = Ogre::Vector3(0.0f, -0.5f, 0.0f);
+    faces[4] = Ogre::Vector3(0.0f, 0.0f, 0.5f);
+    faces[5] = Ogre::Vector3(0.0f, 0.0f, -0.5f);
+    //cout << "-------------------" << endl;
+    //cout << "Cube center: " << cubeCenter << endl;
+    //cout << "point: " << point << endl;
+    for(size_t i = 0; i < 6; ++i)
+    {
+        Ogre::Vector3 pointOnFace = cubeCenter + faces[i];
+        //cout << "pointOnFace: " << pointOnFace << endl;
+        Ogre::Vector3 canadidateVecInPlane = point - pointOnFace; 
+        //cout << "canadidate vector is: " << canadidateVecInPlane << endl;
+        //If canadidate and faceNormal is orthgonal then onTheFace is in the plane of the face.
+        //cout << "face normal: " << faces[i] << endl;
+        Ogre::Real dotp = canadidateVecInPlane.dotProduct(faces[i]);
+        //cout << "dotp is " << dotp << endl;
+        if(dotp == std::numeric_limits<Ogre::Real>::epsilon() || dotp == 0)
+        {
+            //cout << "canadidate vector is in plane" << endl;
+            //Depending on the direction of ray we pick the cube next to it.
+            if(faces[i].dotProduct(rayDir) < 0.0f)
+            {
+                cubeCenter += faces[i]*2.0f; //move away from the current cube in the direction of face normal.
+            }
+        }    
+    }
+    
+
+    //first hash point to page id.
+    long x = cubeCenter.x / WORLD_BLOCK_WIDTH; 
+    long z = -cubeCenter.z / WORLD_BLOCK_WIDTH;
+
 
     pageID = _packIndex(x, z);
     //Find this page id.
-    cout << "Page idx: " << x << " " << z << endl;
-    cout << "World position picked: " << point << endl;
+    //cout << "Page idx: " << x << " " << z << endl;
+    //cout << "Cube space world coordinate: " << cubeCenter << endl;
     PagesMap::iterator findMe = _pagesMap.find(pageID);
     if(findMe != _pagesMap.end())
     {
-         
         //Found this page let's add block to it.
         VolumePage* page = findMe->second;
-        const size_t volHeight = page->data.getHeight();
-        const size_t volWidth = page->data.getWidth();
-        const size_t volDepth = page->data.getDepth();
+        
+        //Transform into cube space local coordinates.
+        const Ogre::Vector3 &cubeOrigin = page->mapView.getOrigin();
+        cubeCenter -= cubeOrigin;
+        
         page->mapView.unloadRegion(_phyMgr);
-        //has the point then modify that voxel.
-        size_t x = static_cast<size_t>(Ogre::Math::Abs(point.x)) % volDepth;
-        size_t y = static_cast<size_t>(Ogre::Math::Abs(point.y)) % volHeight;
-        size_t z = static_cast<size_t>(Ogre::Math::Abs(point.z)) % volWidth;
+        
+        //cout << "cube in local space: " << cubeCenter<< endl;;
 
-        cout << "Hashed x, y, z: " << x << " , " << y << " , " << z << endl;
-
-        page->data.setVoxelAt(x, y, z, blockType);
+        page->data.setVoxelAt(static_cast<uint16_t>(cubeCenter.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeCenter.z), 
+            blockType);
         PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
         ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, page->data.getEnclosingRegion(), &surface);
         surfExtractor.execute();
@@ -347,22 +391,15 @@ void
     VolumeMap::addBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
 {
     Ogre::Vector3 intersectPoint;
-    cout << "VolumeMap::addBlock" << endl;
-    
-    if(!_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
+    if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
     {
-        //We intersected nothing. We can create a block there.
-        cout << "Nothing was intersected. Still here is the point: " << intersectPoint << endl;
-        _addBlockToVolume(rayTo.getPoint(searchDistance), 1); //We assume that since nothing was hit then it is safe to
-        //add a block at searchDistance. This assumption could be wrong due to discretization.
-
+        _addBlockToVolume(intersectPoint, 1, rayTo.getDirection());
     }
-    else
+    else //No intersection. Just make searchDistance to be 2 cube units in ray direction so you add a cube in front of you.
     {
-        cout << "Something was intersected. Here is the point: " << intersectPoint << endl;
-        //We can't add anything there.
+        //2.0f may not correspond to 2 cubes..
+        _addBlockToVolume(rayTo.getPoint(2.0f), 1, rayTo.getDirection());
     }
-
 }
 
 void

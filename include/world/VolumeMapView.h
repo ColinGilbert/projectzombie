@@ -46,6 +46,11 @@ namespace ZGame
             }
             void
                 finalizeRegion();
+            const Ogre::Vector3&
+                getOrigin()
+            {
+                return _origin;
+            }
             void
                 updateOrigin(const Ogre::Vector3 &origin)
             {

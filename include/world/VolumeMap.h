@@ -187,7 +187,7 @@ namespace ZGame
                 _unpackIndex(Ogre::PageID pageID, long *x, long *y);
             
             void
-                _addBlockToVolume(const Ogre::Vector3 &point, size_t blockType);
+                _addBlockToVolume(Ogre::Vector3 point, size_t blockType, Ogre::Vector3 rayDir);
             void
                 _removeBlockFromVolume(const Ogre::Vector3 &point);
 
