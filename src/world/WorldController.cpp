@@ -89,7 +89,7 @@ void
     //_worldMap.reset(new WorldMap());
     //_worldMap->load(); //We should implement load from configuration file.
     size_t numOfPages = config.loadRadius * 2 / WORLD_BLOCK_WIDTH;
-    numOfPages += 3; //give some extra room
+    numOfPages += 1; //give some extra room
     _volumeMap.reset(new VolumeMap(numOfPages, config.forceSync));
     _volumeMap->load(_physicsMgr.get());
 

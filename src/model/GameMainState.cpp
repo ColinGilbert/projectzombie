@@ -45,7 +45,6 @@ GameMainState::~GameMainState()
 {
     //_controlMod.reset();
     cout << "ControlModule reset." << endl;
-    cout << "gpu ents ctrl reset." << endl;
     _worldController.reset(0);
     cout << "World controller reset." << endl;
     _charUtil.reset(0);

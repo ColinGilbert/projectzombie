@@ -72,17 +72,17 @@ void
     PagesMap::iterator iter = _pagesMap.begin();
     for (iter = _pagesMap.begin(); iter != _pagesMap.end(); ++iter)
     {
-        delete iter->second;
+        OGRE_DELETE_T(iter->second, VolumePage, Ogre::MEMCATEGORY_GENERAL);
     }
     _pagesMap.clear();
     //Iterate through free list and free that.
     //list<VolumePage*>::iterator liter;
     FreeList::iterator liter;
-    /*
+    
     for (liter = _freeList.begin(); liter != _freeList.end(); ++liter)
     {
-    delete *liter;
-    }*/
+        OGRE_DELETE_T(*liter, VolumePage, Ogre::MEMCATEGORY_GENERAL);
+    }
     _freeList.clear();
 }
 
@@ -172,9 +172,12 @@ VolumeMap::VolumePage*
     VolumeMap::_getFree()
 {
     //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
+    if(_freeList.empty())
+        return OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(_regionSideLen,
+        _regionsHeight, new PerlinNoiseMapGen());
     VolumeMap::VolumePage* ret = _freeList.front();
+    
     _freeList.pop_front();
-
     return ret;
     //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
     //return ret;
@@ -199,7 +202,7 @@ void
     _workQueueChannel = wq->getChannel("PROJECT_ZOMBIE/VolumeMap");
     wq->addRequestHandler(_workQueueChannel, this);
     wq->addResponseHandler(_workQueueChannel, this);
-    _initLists();
+    //_initLists();
 }
 
 void
