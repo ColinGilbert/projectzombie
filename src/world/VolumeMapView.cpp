@@ -83,6 +83,7 @@ void
     _manual->estimateIndexCount(indices.size());
     _manual->estimateVertexCount(vertices.size());
     _manual->begin("PRJZ/Minecraft", Ogre::RenderOperation::OT_TRIANGLE_LIST, "PROJECT_ZOMBIE");
+    //_manual->begin("testatlas", Ogre::RenderOperation::OT_TRIANGLE_LIST, "PROJECT_ZOMBIE");
 
     for (vector<PositionMaterial>::const_iterator itVertex = vertices.begin(); itVertex != vertices.end(); ++itVertex)
     {

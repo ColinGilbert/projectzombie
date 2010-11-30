@@ -61,13 +61,13 @@ bool
     //First build the lights.
     Vector3 lightDir(1.0f, -0.6f, 0.0f);
     lightDir.normalise();
-    //_scnMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
+    _scnMgr->setAmbientLight(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
     Light* light = _scnMgr->createLight("terrainLight");
     light->setType(Light::LT_DIRECTIONAL);
     light->setDirection(lightDir);
     light->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
     light->setSpecularColour(ColourValue(0.1f, 0.1f, 0.1f));
-
+    
     _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
     //CompositorManager::getSingleton().setCompositorEnabled(_vp,"Bloom",true);
     _ssaoListener.setCamera(EngineView::getSingleton().getCurrentCamera());

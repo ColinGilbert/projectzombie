@@ -67,16 +67,22 @@ material PRJZ/Minecraft
 	technique
 	{
 		//shadow_caster_material PRJZ/PSSM/shadow_caster
+		//pass
+		//{
+			//diffuse vertexcolour
+			//lighting off
+			//alpha_rejection greater_equal 128
+		//}
 		
 		pass
-		{	ambient 1 1 1 1
-			diffuse 1 1 1 1
+		{	//ambient 1 1 1 1
+			//diffuse 1 1 1 1
 
 			//depth_bias 0.1
 			//cull_hardware none 
 			//cull_software back
 			//polygon_mode wireframe
-			scene_blend alpha_blend
+			modulate
 
 			vertex_program_ref PRJZ/PSSM/shadow_reciever_vs
 			{
@@ -161,4 +167,29 @@ material PRJZ/Minecraft
 	        }
 	    }
 	}		
+}
+
+material testatlas
+{
+	technique
+	{
+		//pass
+		//{
+			//diffuse vertexcolour
+			//lighting off
+			//alpha_rejection greater_equal 128
+		//}
+		pass
+		{
+			diffuse vertexcolour
+			//ambient 1.0 1.0 1.0
+			lighting off
+			//alpha_rejection greater_equal 128
+			//modulate
+			texture_unit
+			{
+				texture minecraft_terrain_bb.png
+			}
+		}
+	}
 }

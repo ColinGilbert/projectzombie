@@ -8,6 +8,7 @@
 //#include <OgreMemoryAllocatorConfig.h>
 #include <memory>
 #include <limits>
+#include <cmath>
 #include <iostream>
 #include <OgreException.h>
 #include <CubicSurfaceExtractor.h>
@@ -347,26 +348,35 @@ inline void
             {
                 if(mode == ADD_BLOCK)
                     cubeCenter += faces[i]*2.0f; //move away from the current cube in the direction of face normal.
+                cout << "ray dir and normal not same direction. Cube center: " << cubeCenter << endl;
             }
             else
             {
                 if(mode == REMOVE_BLOCK)
                     cubeCenter += faces[i]*2.0f;
+                cout << "ray dir and normal not same direction. Cube center: " << cubeCenter << endl;
             }
-
+            break;
         }    
     }
+    //first hash point to page id. We are mapping natural numbers into into natural numbers grouped by WORLD_BLOCK_WIDTH
+    //and negative of the natural number (excluding zero) to the negative of natural numbers grouped by WORLD_BLOCK_WDITH
+    long x, z;
+    if(cubeCenter.x < 0.0f)
+        x = Ogre::Math::Floor(cubeCenter.x / WORLD_BLOCK_WIDTH);
+    else
+        x = cubeCenter.x / WORLD_BLOCK_WIDTH;
+    if(cubeCenter.z < 0.0f)
+        z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
+    else
+        z = cubeCenter.z / WORLD_BLOCK_WIDTH;
     
-
-    //first hash point to page id.
-    long x = cubeCenter.x / WORLD_BLOCK_WIDTH; 
-    long z = -cubeCenter.z / WORLD_BLOCK_WIDTH;
-
+    z = -z; //negate z because Ogre paging system's coordinates are flipped.
 
     pageID = _packIndex(x, z);
     //Find this page id.
-    //cout << "Page idx: " << x << " " << z << endl;
-    //cout << "Cube space world coordinate: " << cubeCenter << endl;
+    cout << "Page idx: " << x << " " << z << endl;
+    cout << "Cube space world coordinate: " << cubeCenter << endl;
     PagesMap::iterator findMe = _pagesMap.find(pageID);
     if(findMe != _pagesMap.end())
     {
@@ -375,11 +385,12 @@ inline void
         
         //Transform into cube space local coordinates.
         const Ogre::Vector3 &cubeOrigin = page->mapView.getOrigin();
+        cout << "cube origin is: " << cubeOrigin << endl;
         cubeCenter -= cubeOrigin;
         
         page->mapView.unloadRegion(_phyMgr);
         
-        //cout << "cube in local space: " << cubeCenter<< endl;;
+        cout << "cube in local space: " << cubeCenter<< endl;;
 
         page->data.setVoxelAt(static_cast<uint16_t>(cubeCenter.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeCenter.z), 
             blockType);
