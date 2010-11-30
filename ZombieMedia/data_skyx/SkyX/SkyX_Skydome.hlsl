@@ -159,12 +159,14 @@ void main_fp(
 #ifdef LDR
 	oColor = float4((1 - exp(-uExposure * (rayleighPhase * iRayleighColor + miePhase * iMieColor))), iOpacity);
 #else // HDR
-    oColor = float4(rayleighPhase * iRayleighColor + miePhase * iMieColor, iOpacity);
+	float HDR_SCALE = 1.5;
+    oColor = float4(rayleighPhase * iRayleighColor + miePhase * iMieColor, iOpacity)*HDR_SCALE;
 #endif // LDR
 	
 	// For night rendering
-	float nightmult = saturate(1 - max(oColor.x, max(oColor.y, oColor.z))*10);
-	
+	//scale was 10
+	//float nightmult = saturate(1 - max(oColor.x, max(oColor.y, oColor.z))*10);
+	float nightmult = 0.5;
 #ifdef STARFIELD
 	oColor.xyz += nightmult *(float3(0.05, 0.05, 0.1)*(2-0.75*saturate(-uLightDir.y))*pow(iHeight,3) + tex2D(uStarfield, iUV+uTime)*(0.35f + saturate(-uLightDir.y*0.45f))); 
 #else // NO STARFIELD
