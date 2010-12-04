@@ -44,7 +44,7 @@ void
     Grid2DPageStrategyData* gridData = getGridStrategyData();
     gridData->setMode(G2D_X_Z); //Assume X,Z alignment for now.
     gridData->setOrigin(Ogre::Vector3(0, 0, 0));
-    gridData->setCellSize(_volumeMap->getRegionSideLength());
+    gridData->setCellSize(WORLD_BLOCK_WIDTH);
 
 }
 

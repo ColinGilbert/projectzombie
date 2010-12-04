@@ -49,7 +49,7 @@ namespace ZGame
       static void initGradientPoints();
 
       void
-      generate(PolyVox::UInt8Volume* data, Ogre::int32 pageX, Ogre::int32 pageY);
+      generate(PolyVox::UInt8Volume* data, PolyVox::Region region, Ogre::int32 pageX, Ogre::int32 pageY);
 
     private:
         struct HeightVal
@@ -89,15 +89,16 @@ using namespace PolyVox;
 using std::cout;
 using std::endl;
 
-inline void PerlinNoiseMapGen::generate(UInt8Volume* data, Ogre::int32 pageX, Ogre::int32 pageY)
+inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region region, 
+    Ogre::int32 pageX, Ogre::int32 pageY)
 {
     using namespace noisepp;
     using std::make_pair;
     _data = data;
 
-    const int width = _data->getWidth();
-    const int height = _data->getHeight() - 10;
-    const int depth = _data->getDepth();
+    const int width = region.width();
+    const int height = region.height() - 10;
+    const int depth = region.depth();
     const float halfHeight = (float)(height) / 2.0;
     const float oceanFloor = halfHeight - 16.0;
     
@@ -126,13 +127,15 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, Ogre::int32 pageX, Og
     pipeline.freeCache(cache);
     //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
     //If it's the current height, fill with value stored in height map. Else it is air.
-    for(size_t z=0; z < width; z++)
+    for(size_t z=region.getLowerCorner().getZ(); z < region.getUpperCorner().getZ(); z++)
     {
-        for(size_t y = 0; y < height; y++)
+        for(size_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
         {
-            for(size_t x = 0; x < depth; x++)
+            for(size_t x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX(); x++)
             {
-                size_t val = (size_t)(hVals[z][x].value);
+                size_t regionZ = z - region.getLowerCorner().getZ();
+                size_t regionX = x - region.getLowerCorner().getX();
+                size_t val = (size_t)(hVals[regionZ][regionX].value);
                 if(y < val)
                 {
                     //rocks all the way down
@@ -142,7 +145,7 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, Ogre::int32 pageX, Og
                 {
                     //_data->setVoxelAt(x, y, z, MaterialDensityPair44(hVals[z][x].uValue, hVals[z][x].uValue > 0 ? MaterialDensityPair44::getMaxDensity()
                   //: MaterialDensityPair44::getMinDensity()));
-                    _data->setVoxelAt(x, y, z, hVals[z][x].uValue);
+                    _data->setVoxelAt(x, y, z, hVals[regionZ][regionX].uValue);
                 }
                 else if(y <= (size_t(halfHeight - 10.0))) //halfHeight is sea level
                 {

@@ -45,12 +45,8 @@ using namespace Ogre;
 const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 
 
-//const int SW = 320.0;
-//const int SH = 256;
-//const int SD = 320.0;
-VolumeMap::VolumeMap(size_t numOfPages, bool FORCE_SYNC) :
-//_regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(50 * 50), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH)
-_regionSideLen(WORLD_BLOCK_WIDTH), _numOfPages(numOfPages * numOfPages), _regionsWidth(WORLD_WIDTH), _regionsHeight(WORLD_HEIGHT), _regionsDepth(WORLD_DEPTH),
+VolumeMap::VolumeMap(size_t volSideLenInPages, bool FORCE_SYNC) :
+_volSideLenInPages(volSideLenInPages), _volSizeInBlocks(volSideLenInPages*WORLD_BLOCK_WIDTH), _volHeight(WORLD_HEIGHT),
     _FORCE_SYNC(FORCE_SYNC)
 {
     World::PerlinNoiseMapGen::initGradientPoints();
@@ -75,15 +71,7 @@ void
         OGRE_DELETE_T(iter->second, VolumePage, Ogre::MEMCATEGORY_GENERAL);
     }
     _pagesMap.clear();
-    //Iterate through free list and free that.
-    //list<VolumePage*>::iterator liter;
-    FreeList::iterator liter;
-    
-    for (liter = _freeList.begin(); liter != _freeList.end(); ++liter)
-    {
-        OGRE_DELETE_T(*liter, VolumePage, Ogre::MEMCATEGORY_GENERAL);
-    }
-    _freeList.clear();
+   
 }
 
 bool
@@ -95,6 +83,20 @@ bool
     else
         return RequestHandler::canHandleRequest(req, srcQ);
 }
+/**
+* This method will create a region in local Volume space by transform the volume page id, and Ogre page id.
+**/
+Ogre::Vector2 
+    VolumeMap::_transformToVolumeLocal(Ogre::Vector2 volumeOrigin, Ogre::Vector2 local,
+    size_t volSideLenInBlocks)
+{
+    size_t halfVolSide = volSideLenInBlocks / 2;
+    Ogre::Vector2 coords = local;
+    Ogre::Vector2 volumeXForm = volumeOrigin * volSideLenInBlocks;
+    Ogre::Vector2 localXForm(halfVolSide, halfVolSide);
+    coords += (volumeXForm + localXForm);
+    return coords;
+}
 
 WorkQueue::Response*
     VolumeMap::handleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
@@ -102,17 +104,22 @@ WorkQueue::Response*
     LoadRequest lreq = any_cast<LoadRequest> (req->getData());
     VolumePage* page = lreq.page;
     WorkQueue::Response* response = 0;
-    long x, y;
-    _unpackIndex(page->id, &x, &y);
-    page->gen->generate(&page->data, x, -y);
-    page->data.tidyUpMemory();
-    //_mapGen.generate(&page->data, x, y);
-    //MUST MAKE SURE YOU allocate mesh before requesting this request to the WorkerQueue.
-    //PolyVox::CubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
-    ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, page->data.getEnclosingRegion(), lreq.surface);
-    //PolyVox::SurfaceExtractor<PolyVox::MaterialDensityPair44> surfExtractor(&page->data, page->data.getEnclosingRegion(), page->surface);
+    long volx, voly; long localx, localy;
+    _unpackIndex(page->id, &volx, &voly);
+    _unpackIndex(lreq.ogreId, &localx, &localy);
+    //transform ids
+    Ogre::Vector2 volumeOrigin(volx, voly);
+    Ogre::Vector2 pageCoords(static_cast<Ogre::Real>(localx) * WORLD_BLOCK_WIDTH, 
+        static_cast<Ogre::Real>(localy) * WORLD_BLOCK_WIDTH);
+    Ogre::Vector2 localOrigin = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
+    Ogre::Vector2 upperCorner = localOrigin + Ogre::Vector2(WORLD_BLOCK_WIDTH, WORLD_BLOCK_WIDTH);
+    PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
+        PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
+    World::TestMapGenerator gen;
+    gen.generate(&page->data, pageRegion, localy, -localy);
+ 
+    ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, lreq.surface);
     surfExtractor.execute();
-    //response = OGRE_NEW_T_SIMD (WorkQueue::Response(req, true, Any()), Ogre::MEMCATEGORY_GENERAL);
     response = new WorkQueue::Response(req, true, Any());
     return response;
 }
@@ -140,18 +147,14 @@ void
         //cout << "Response success!" << endl;
         VolumePage* page = lreq.page;
         long x, z;
-        _unpackIndex(page->id, &x, &z);
-        Ogre::Vector3 pageWorldPos((float) (x) * _regionSideLen, 0.0, (float) (-z) * _regionSideLen);
-        //page->mapView.updateOrigin(pageWorldPos);
-        page->mapView.createRegion(pageWorldPos, lreq.surface);
-
-        page->mapView.finalizeRegion();
-        page->mapView.createPhysicsRegion(_phyMgr);
-        OGRE_DELETE_T_SIMD (lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
-        //delete lreq.surface;
+        _unpackIndex(lreq.ogreId, &x, &z);
+        
+        PageRegion* region = page->getRegion(lreq.ogreId);
+        region->mapView.createRegion(page->worldOrigin, lreq.surface);
+        region->mapView.finalizeRegion();
+        region->mapView.createPhysicsRegion(_phyMgr);
+        OGRE_DELETE_T(lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
         _pagesMap[page->id] = page;
-        //page->data.tidyUpMemory();
-
     }
     else
     {
@@ -173,10 +176,11 @@ VolumeMap::VolumePage*
 {
     //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
     if(_freeList.empty())
-        return OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(_regionSideLen,
-        _regionsHeight, new PerlinNoiseMapGen());
+        OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No more free volume map pages.", "VolumeMap::_getFree()");
+    //return OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(_regionSideLen,
+    //_regionsHeight, new PerlinNoiseMapGen());
     VolumeMap::VolumePage* ret = _freeList.front();
-    
+
     _freeList.pop_front();
     return ret;
     //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
@@ -185,13 +189,37 @@ VolumeMap::VolumePage*
 void
     VolumeMap::_initLists()
 {
-    for (size_t i = 0; i < _numOfPages; ++i)
+
+    assert(_volSizeInBlocks >= WORLD_BLOCK_WIDTH && "Invalid num of pages.");
+    assert((_volSizeInBlocks % WORLD_BLOCK_WDITH == 0) && "numOfPages per axis MUST be a multiple of WORLD_BLOCK_SIZE");
+    size_t powerOfTwoSize = WORLD_BLOCK_WIDTH; //It should be no less than this.
+    while(_volSizeInBlocks != powerOfTwoSize && _volSizeInBlocks % powerOfTwoSize != _volSizeInBlocks)
     {
-        VolumePage* page = new VolumePage(_regionSideLen, _regionsHeight,
-            new PerlinNoiseMapGen());
-        //new TestMapGenerator());
-        _addToList(page);
+        powerOfTwoSize *= 2;
     }
+    _volSideLenInPages = powerOfTwoSize / WORLD_BLOCK_WIDTH;
+    Ogre::PageID pageId = _packIndex(0, 0);
+    _allocateVolume(pageId, powerOfTwoSize, _volHeight);
+    _volSizeInBlocks = powerOfTwoSize;
+}
+
+VolumeMap::VolumePage*
+    VolumeMap::_allocateVolume(Ogre::PageID pageId, size_t size, size_t height)
+{
+    PagesMap::iterator findMe = _pagesMap.find(pageId);
+    if(findMe == _pagesMap.end())
+    {
+        VolumePage* page = OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(size, height);
+        page->id = pageId;
+        long x,y;
+        _unpackIndex(pageId, &x, &y);
+        Ogre::Vector3 volWorldOrigin(static_cast<Ogre::Real>(x) * size, 0.0f, static_cast<Ogre::Real>(-y) * size);
+        _pagesMap[pageId] = page;
+        return page;
+    }
+    else
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Trying to allocate an existing Volume.", "VolumeMap::_allocateVolume");
+    return 0;
 }
 
 void
@@ -202,45 +230,51 @@ void
     _workQueueChannel = wq->getChannel("PROJECT_ZOMBIE/VolumeMap");
     wq->addRequestHandler(_workQueueChannel, this);
     wq->addResponseHandler(_workQueueChannel, this);
-    //_initLists();
+    _initLists();
+
+}
+
+/**
+* This method will convert Ogre's paging system's ID into Volume ID, which is used to reference Volumes for this VolumeMap.
+**/
+Ogre::PageID
+    VolumeMap::_pageIdToVolumeId(Ogre::PageID pageId, size_t volSideLen)
+{
+    long x, z;
+    _unpackIndex(pageId, &x, &z);
+    size_t halfVolSideLen = volSideLen / 2;
+    if(x < 0)
+        x = Ogre::Math::Floor(static_cast<Ogre::Real>(x) / halfVolSideLen + 0.5f);
+    else
+        x = x / halfVolSideLen;
+    if(z < 0)
+        z = Ogre::Math::Floor(static_cast<Ogre::Real>(z) / halfVolSideLen + 0.5f);
+    else
+        z = z / halfVolSideLen;
+    return _packIndex(x, z);
 }
 
 void
     VolumeMap::loadPage(Ogre::PageID pageID)
 {
-
-    //long x, y;
-    //_unpackIndex(pageID, &x, &y);
-    //y = -y;
-    //pageID = _packIndex(x, y);
-    //using std::map;
-    //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
-    //cout << "Loading PageID: " << pageID << endl;
-    PagesMap::iterator findMe = _pagesMap.find(pageID);
-    if (findMe == _pagesMap.end())
+    //translate Ogre paging system's page id into page id used in volume.
+    Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
+    PagesMap::iterator findMe = _pagesMap.find(volumeId);
+    VolumePage* page;
+    if(findMe == _pagesMap.end())
     {
-        VolumePage* page = _getFree();
-        if (!page)
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "No more free volume pages in the buffer!",
-                "VolumeMap::loadPage");
-            //return; //no more free page. For now just completely ignore.
-        }
-        page->id = pageID;//_packIndex(x, y);
-        LoadRequest req;
-        req.origin = this;
-        req.page = page;
-        req.surface = OGRE_NEW_T_SIMD (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
-        //req.surface = new PolyVox::SurfaceMesh<PolyVox::PositionMaterial>;
-        Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, _FORCE_SYNC);
-
-        //_loadPage(page, true);
-        //_pagesMap[page->id] = page;
+        page = _allocateVolume(volumeId, _volSizeInBlocks, _volHeight);
     }
     else
-    {
-        cout << "In load page and page was already loaded!" << endl;
-    }
+        page = findMe->second;
+    LoadRequest req;
+    req.origin = this;
+    req.page = page;
+    req.page->createRegion(pageID);
+    req.ogreId = pageID;
+    req.surface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+    Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, _FORCE_SYNC);
+
 }
 
 void
@@ -249,27 +283,22 @@ void
     cout << "Unloading PageID: " << pageID << endl;
     long x, y;
     _unpackIndex(pageID, &x, &y);
-    cout << "pageID: " << x << " " << y << endl;
+    cout << "pageID: " << x << " " << -y << endl;
+    Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
 
-    //y = -y;
-    //pageID = _packIndex(x, y);
-    using std::map;
-    //map<Ogre::PageID, VolumePage*>::iterator findMe = _pagesMap.find(pageID);
-    PagesMap::iterator findMe = _pagesMap.find(pageID);
-    if (findMe == _pagesMap.end())
+    PagesMap::iterator findMe = _pagesMap.find(volumeId);
+    if(findMe == _pagesMap.end())
     {
-        //cout << "!!unloading a page that was not found!!" << endl;
-        return;
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Trying to unload an volume page from a non-existing Volume", "VolumeMap::unloadPage");
     }
-    //If it's not in _pagesMap then we dont' care. Probably due to thread not catching up.
-    //OGRE_EXCEPT( Ogre::Exception::ExceptionCodes::ERR_ITEM_NOT_FOUND, "unload a pageid that is not found in pagesMap", "VolumeMap::unloadPage");
-
     VolumePage* page = findMe->second;
-    page->mapView.unloadRegion(_phyMgr);
-
-    _pagesMap.erase(findMe);
-    _addToList(page);
-
+    page->getRegion(pageID)->mapView.unloadRegion(_phyMgr);
+    page->removeRegion();
+    if(page->isEmpty())
+    {
+        OGRE_DELETE_T(page, VolumePage, Ogre::MEMCATEGORY_GENERAL);
+        _pagesMap.erase(volumeId);
+    }
 }
 
 inline Ogre::uint32
@@ -318,7 +347,7 @@ inline void
     Ogre::PageID pageID;
     //We need to figure out which face. We need to hash the coordinate into a cube first,
     //this will determine the center of a cube. We then iterate through the faces of this cube
-    //and tests whether the itnersected point is in the face (point in plane). 
+    //and tests whether the intersected point is in the face (point in plane). 
     Ogre::Vector3 cubeCenter(Ogre::Math::Floor(point.x + 0.5f),
         Ogre::Math::Floor(point.y + 0.5f),
         Ogre::Math::Floor(point.z + 0.5f));
@@ -373,26 +402,32 @@ inline void
         z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
     else
         z = cubeCenter.z / WORLD_BLOCK_WIDTH;
-    
+
     z = -z; //negate z because Ogre paging system's coordinates are flipped.
 
     pageID = _packIndex(x, z);
+    Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
+    long vx, vy;
+    _unpackIndex(volumeId, &vx, &vy);
     //Find this page id.
     cout << "Page idx: " << x << " " << z << endl;
+    cout << "Volume idx: " << vx << " " << vy << endl;
     cout << "Cube space world coordinate: " << cubeCenter << endl;
-    PagesMap::iterator findMe = _pagesMap.find(pageID);
+
+    PagesMap::iterator findMe = _pagesMap.find(volumeId);
     if(findMe != _pagesMap.end())
     {
         //Found this page let's add block to it.
         VolumePage* page = findMe->second;
-        
+
         //Transform into cube space local coordinates.
-        const Ogre::Vector3 &cubeOrigin = page->mapView.getOrigin();
-        cout << "cube origin is: " << cubeOrigin << endl;
-        cubeCenter -= cubeOrigin;
-        
-        page->mapView.unloadRegion(_phyMgr);
-        
+        Ogre::Vector2 volumeOrigin(vx, vy);
+        Ogre::Vector2 pageCoords(cubeCenter.x, -cubeCenter.z);
+        Ogre::Vector2 temp = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
+        cubeCenter.x = temp.x; cubeCenter.z = temp.y;
+        PageRegion* region = page->getRegion(pageID);
+        region->mapView.unloadRegion(_phyMgr);
+
         cout << "cube in local space: " << cubeCenter<< endl;;
 
         page->data.setVoxelAt(static_cast<uint16_t>(cubeCenter.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeCenter.z), 
@@ -401,9 +436,9 @@ inline void
         ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, page->data.getEnclosingRegion(), &surface);
         surfExtractor.execute();
         //regen the surface. Note we shouldn't need to reupdate the center of this page. The assumption here is that it should be set during creation.
-        page->mapView.updateRegion(&surface);
-        page->mapView.finalizeRegion();
-        page->mapView.createPhysicsRegion(_phyMgr);
+        region->mapView.updateRegion(&surface);
+        region->mapView.finalizeRegion();
+        region->mapView.createPhysicsRegion(_phyMgr);
 
     }
     //else throw exeception here this should never happen.

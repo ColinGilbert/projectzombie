@@ -2,6 +2,7 @@
 #pragma once
 
 #include <list>
+#include <unordered_map>
 #include <map>
 #include <Ogre.h>
 #include <MaterialDensityPair.h>
@@ -46,7 +47,7 @@ namespace ZGame
         class VolumeMap : public Ogre::WorkQueue::RequestHandler, public Ogre::WorkQueue::ResponseHandler
         {
         public:
-            VolumeMap(size_t numOfPages = (50*50), bool ASYNC = false);
+            VolumeMap(size_t volSideLenInPages = 3, bool ASYNC = false);
             virtual
                 ~VolumeMap();
             void
@@ -62,18 +63,8 @@ namespace ZGame
             {
                 return _origin;
             }
-            const Ogre::uint32
-                getRegionSideLength()
-            {
-                return _regionSideLen;
-            }
 
-            int
-                getRegionsHalfWidth()
-            {
-                return _regionsWidth / 2;
-            }
-
+            
             void
                 loadPage(Ogre::PageID pageID);
 
@@ -101,7 +92,10 @@ namespace ZGame
         protected:
 
             Ogre::uint16 _workQueueChannel;
-
+            struct PageRegion
+            {
+                VolumeMapView mapView;
+            };
             /**
             * This class defines a volume page. It has a correspondance to Ogre Paging's Paging system on PageID (uint32).
             */
@@ -109,50 +103,68 @@ namespace ZGame
             {
             public:
 
-                VolumePage(size_t pageSize, size_t pageHeight, MapGenerator* generator) :
-                  data(pageSize, pageHeight, pageSize, 4), _allocated(false), _empty(false),
-                      gen(generator)
+                VolumePage(size_t pageSize, size_t pageHeight) :
+                  data(pageSize, pageHeight, pageSize, 4), _regionCount(0)
                   {
                       data.setBorderValue(0);
                   }
-
-                  VolumePage(size_t pageSize, size_t pageHeight) :
-                  data(pageSize, pageHeight, pageSize, 4), _allocated(false), _empty(false),
-                      //gen(new PerlinNoiseMapGen())
-                      gen(new TestMapGenerator())
+                  virtual ~VolumePage()
                   {
-
+                      REGION_MAP::iterator it;
+                      for(it = _regionMap.begin(); it != _regionMap.end(); ++it)
+                      {
+                          OGRE_DELETE_T(it->second, PageRegion, Ogre::MEMCATEGORY_GENERAL);
+                          //delete it->second;
+                      }
+                      //_regionMap.clear();
                   }
-                  ~VolumePage()
+                  Ogre::PageID id;
+                  PolyVox::UInt8Volume data;
+                  PageRegion*
+                      createRegion(Ogre::PageID pageId)
                   {
-                      delete gen;
+                      REGION_MAP::iterator findMe = _regionMap.find(pageId);
+                      _regionCount++;
+                      if(findMe == _regionMap.end())
+                      {
+                          PageRegion* region = OGRE_NEW_T(PageRegion, Ogre::MEMCATEGORY_GENERAL);
+                          _regionMap[pageId] = region;
+                          return region;
+                      }
+                      
+                      return 0;
+                  }
+                  /** \note We are using hash map right now. In the future we can 
+                  switch this to arrays if needed.**/
+                  PageRegion*
+                      getRegion(Ogre::PageID pageId)
+                  {
+                      REGION_MAP::iterator findMe = _regionMap.find(pageId);
+                      if(findMe != _regionMap.end())
+                      {
+                          return findMe->second;
+                      }
+                      assert(findMe != _regionMap.end() && "Trying to get non-existent Volume paged region.");
+                      return 0;
+                  }
+                  void
+                      removeRegion()
+                  {
+                      _regionCount--;
                   }
                   bool
                       isEmpty()
                   {
-                      return _empty;
+                      assert(_regionCount > -1 && "Volume Region count is less than 0");
+                      return _regionCount == 0;
                   }
-                  void
-                      setEmpty(bool tf)
-                  {
-                      _empty = tf;
-                  }
-                  bool
-                      isAllocated()
-                  {
-                      return _allocated;
-                  }
-                  void
-                      setAllocated()
-                  {
-                      _allocated = true;
-                  }
-                  Ogre::PageID id;
-                  PolyVox::UInt8Volume data;
-                  VolumeMapView mapView;
-                  //PerlinNoiseMapGen gen;
-                  MapGenerator* gen;
+                Ogre::Vector3 worldOrigin;
+                  
             private:
+                //typedef std::unordered_map<Ogre::PageID, PageRegion*> REGION_MAP;
+                typedef Ogre::map<Ogre::PageID, PageRegion*>::type REGION_MAP;
+                REGION_MAP _regionMap;
+                size_t _regionCount;
                 bool _allocated;
                 bool _empty;
             };
@@ -161,6 +173,7 @@ namespace ZGame
             {
                 VolumePage* page;
                 VolumeMap* origin;
+                Ogre::PageID ogreId;
                 PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* surface;
                 friend std::ostream&
                     operator<<(std::ostream& o, const LoadRequest& r)
@@ -184,9 +197,9 @@ namespace ZGame
                 _initLists();
             void
                 _freeAll();
-            Ogre::uint32
+            static Ogre::uint32
                 _packIndex(long x, long y);
-            void
+            static void
                 _unpackIndex(Ogre::PageID pageID, long *x, long *y);
             
             void
@@ -194,18 +207,25 @@ namespace ZGame
                 VOLUME_MODIFY_MODE mode);
             void
                 _removeBlockFromVolume(const Ogre::Vector3 &point);
+            VolumePage*
+                _allocateVolume(Ogre::PageID pageId, size_t size, size_t height);
+            static Ogre::PageID
+                _pageIdToVolumeId(Ogre::PageID pageId, size_t volSideLen);
+            static Ogre::Vector2 
+                _transformToVolumeLocal(Ogre::Vector2 volumeOrigin, Ogre::Vector2 local,
+                size_t volSideLenInBlocks);
 
         private:
             
             //PolyVox::Volume<PolyVox::MaterialDensityPair44> _data;
             VolumeMapView _view;
-            Ogre::uint32 _regionSideLen;
-            Ogre::uint32 _regionsWidth;
-            Ogre::uint32 _regionsHeight;
-            Ogre::uint32 _regionsDepth;
+            Ogre::uint32 _volSideLenInPages;
+            Ogre::uint32 _volSizeInBlocks;
+            Ogre::uint32 _volHeight;
             Ogre::uint32 _volWidthInRegions;
             Ogre::uint32 _volHeightInRegions;
             Ogre::uint32 _volDepthInRegions;
+            
             Ogre::Vector3 _origin;
             bool _FORCE_SYNC;
             //typedef std::list<VolumePage*>::type FreeList;
@@ -215,10 +235,9 @@ namespace ZGame
             //std::list<VolumePage*> _freeList;
             FreeList _freeList;
             //std::map<Ogre::PageID, VolumePage*> _pagesMap;
-            //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
-            typedef std::map<Ogre::PageID, VolumePage*> PagesMap;
+            //typedef std::unordered_map<Ogre::PageID, VolumePage*> PagesMap;
+            typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
             PagesMap _pagesMap;
-            size_t _numOfPages;
             PhysicsManager* _phyMgr;
 
         };

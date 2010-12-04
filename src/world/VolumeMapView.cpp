@@ -28,6 +28,7 @@ VolumeMapView::VolumeMapView() : _manual(0), _phyBody(0)
 
 VolumeMapView::~VolumeMapView()
 {
+
 }
 
 void
@@ -53,11 +54,14 @@ void
 void
     VolumeMapView::unloadRegion(PhysicsManager* phyMgr)
 {
-    _manual->detachFromParent();
-    _scnMgr->destroyManualObject(_manual);
-    _root->setVisible(false, true);
-    phyMgr->destroyBody(_phyBody);
-    _phyBody = 0;
+    
+        _manual->detachFromParent();
+        _scnMgr->destroyManualObject(_manual);
+        _root->setVisible(false, true);
+        if(_phyBody)
+            phyMgr->destroyBody(_phyBody);
+        _phyBody = 0;
+    
 }
 
 void
@@ -107,7 +111,8 @@ void
 void
     VolumeMapView::createPhysicsRegion(PhysicsManager* mgr)
 {
-    _phyBody = mgr->staticObjectFromManual(_manual, _phyBody, 0.1f, 0.6f, _root->_getFullTransform());
+    if(_manual->getNumSections() > 0)
+        _phyBody = mgr->staticObjectFromManual(_manual, _phyBody, 0.1f, 0.6f, _root->_getFullTransform());
 }
 
 

@@ -16,9 +16,11 @@ namespace PolyVox
         _regSizeInVoxels(region),
         _meshCurrent(result)
     {
-        _regSizeInVoxels.cropTo(_volData->getEnclosingRegion());
+        
+        //_regSizeInVoxels.cropTo(_volData->getEnclosingRegion());
         _regSizeInCells = _regSizeInVoxels;
         _regSizeInCells.setUpperCorner(_regSizeInCells.getUpperCorner() - Vector3DInt16(1, 1, 1));
+        
         _meshCurrent->clear();
     }
 
@@ -73,11 +75,11 @@ namespace PolyVox
     {
         using namespace PolyVox;
 
-        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth() + 2;
+        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth();
         std::vector<RLE_VEC> rleXs(WORLD_BLOCK_WIDTH); 
         std::vector<RLE_INFO> rleXsInfo(WORLD_BLOCK_WIDTH);
         //WARNING: INT16_T WORKS FOR NOW DUE TO THE LIMITED size of the paged chunks. In the future this may overflow. WARNING!
-        for(int16_t z = _regSizeInVoxels.getLowerCorner().getZ()-1; z <= _regSizeInVoxels.getUpperCorner().getZ(); z++)
+        for(uint16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z < _regSizeInVoxels.getUpperCorner().getZ(); z++)
         {
             uint16_t startX = _regSizeInVoxels.getLowerCorner().getX();
             //Initialize X faces
@@ -88,9 +90,9 @@ namespace PolyVox
                     rleXsInfo[i].whichFace, rleXsInfo[i].faceMaterial, X);
             }
 
-            int16_t regZ = z - _regSizeInVoxels.getLowerCorner().getZ();
+            uint16_t regZ = z - _regSizeInVoxels.getLowerCorner().getZ();
 
-            for(int16_t y = _regSizeInVoxels.getLowerCorner().getY(); y <= _regSizeInVoxels.getUpperCorner().getY(); y++)
+            for(uint16_t y = _regSizeInVoxels.getLowerCorner().getY(); y < _regSizeInVoxels.getUpperCorner().getY(); y++)
             {
 
                 //Initialize Z face.
@@ -108,16 +110,12 @@ namespace PolyVox
                 _resetParams(startX, y, z, yWhichFace, yFaceMaterial, Y);
                 RLE_VEC rleY;
 
-                int16_t regY = y - _regSizeInVoxels.getLowerCorner().getY();
+                uint16_t regY = y - _regSizeInVoxels.getLowerCorner().getY();
 
-                for(int16_t x = _regSizeInVoxels.getLowerCorner().getX()-1; x <= _regSizeInVoxels.getUpperCorner().getX(); x++)
+                for(uint16_t x = _regSizeInVoxels.getLowerCorner().getX(); x < _regSizeInVoxels.getUpperCorner().getX(); x++)
                 {
                     //Start at the lower corner x.
-                    int16_t regX = x - _regSizeInVoxels.getLowerCorner().getX();
-                    //int currentVoxel = _volData->getVoxelAt(x, y, z).getDensity() >= VoxelType::getThreshold();
-                    //int plusZVoxel = _volData->getVoxelAt(x, y, z+1).getDensity() >= VoxelType::getThreshold();
-                    //int plusYVoxel = _volData->getVoxelAt(x, y+1, z).getDensity() >= VoxelType::getThreshold();
-                    //int plusXVoxel = _volData->getVoxelAt(x+1, y, z).getDensity() >= VoxelType::getThreshold();
+                    uint16_t regX = x - _regSizeInVoxels.getLowerCorner().getX();
                     
                     VoxelType currentMaterial = _volData->getVoxelAt(x, y, z);
                     VoxelType currentMaterialPlusZ = _volData->getVoxelAt(x, y, z+1);
@@ -131,14 +129,14 @@ namespace PolyVox
                     _markRLE(yFaceMaterial, currentMaterial, 
                         currentMaterialPlusY, yFaceCount, yWhichFace,
                         rleY);
-                    _markRLE(rleXsInfo[regX+1].faceMaterial, currentMaterial,
-                        currentMaterialPlusX, rleXsInfo[regX+1].faceCount, rleXsInfo[regX+1].whichFace,
-                        rleXs[regX+1]);
+                    _markRLE(rleXsInfo[regX].faceMaterial, currentMaterial,
+                        currentMaterialPlusX, rleXsInfo[regX].faceCount, rleXsInfo[regX].whichFace,
+                        rleXs[regX]);
                 }
                 _finalizeRLE(zFaceMaterial, zFaceCount, zWhichFace, rleZ);
                 _finalizeRLE(yFaceMaterial, yFaceCount, yWhichFace, rleY);
-                _mergeFace(rleZ, -1, regY, regZ, Z); 
-                _mergeFace(rleY, -1, regY, regZ, Y); 
+                _mergeFace(rleZ, _regSizeInVoxels.getLowerCorner().getX(), y, z, Z); 
+                _mergeFace(rleY, _regSizeInVoxels.getLowerCorner().getX(), y, z, Y); 
             }
 
             for(size_t i = 0; i < WORLD_BLOCK_WIDTH; ++i)
@@ -147,17 +145,17 @@ namespace PolyVox
                 _finalizeRLE(rleXsInfo[i].faceMaterial, rleXsInfo[i].faceCount, rleXsInfo[i].whichFace,
                     rleXs[i]);
                 _mergeFace(rleXs[i], 
-                    (int16_t)(i)-1, 0, regZ, X);
+                    _regSizeInVoxels.getLowerCorner().getX() + i, 0, regZ, X);
                 rleXs[i].clear();
             } 
         }
      
-        _meshCurrent->m_Region = _regSizeInVoxels;
-        _meshCurrent->m_vecLodRecords.clear();
-        LodRecord lodRecord;
-        lodRecord.beginIndex = 0;
-        lodRecord.endIndex = _meshCurrent->getNoOfIndices();
-        _meshCurrent->m_vecLodRecords.push_back(lodRecord);
+        //_meshCurrent->m_Region = _regSizeInVoxels;
+        //_meshCurrent->m_vecLodRecords.clear();
+        //LodRecord lodRecord;
+        //lodRecord.beginIndex = 0;
+        //lodRecord.endIndex = _meshCurrent->getNoOfIndices();
+        //_meshCurrent->m_vecLodRecords.push_back(lodRecord);
 
     }
 
@@ -250,7 +248,7 @@ namespace PolyVox
     /** This method will generate faces given a Run Length Encoding vector representing compressed faces.**/
     template <typename VoxelType>
     inline void ZCubicSurfaceExtractor<VoxelType>::_mergeFace(RLE_VEC &rleVec,
-        int16_t regX, int16_t regY, int16_t regZ, AXIS xyz)
+        uint16_t regX, uint16_t regY, uint16_t regZ, AXIS xyz)
     {
         uint16_t count = 0;
         for(size_t i = 0; i < rleVec.size(); ++i)

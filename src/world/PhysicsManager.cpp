@@ -145,6 +145,8 @@ OgreBulletDynamics::RigidBody*
     assert(_manual && "Trying to let Physics Manager create a object from a null manual object.");
     //if(!currentBody)
     //{
+    if(manual->getNumSections() == 0)
+        return 0;
         StaticMeshToShapeConverter shapeConvert(manual->getSection(0), transform);
         TriangleMeshCollisionShape* shape = shapeConvert.createTrimesh();
 

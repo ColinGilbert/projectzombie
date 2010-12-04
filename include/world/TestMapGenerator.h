@@ -9,11 +9,11 @@ namespace ZGame
         public:
             ~TestMapGenerator(){}
             void
-                generate(PolyVox::Volume<uint8_t>* data,
+                generate(PolyVox::Volume<uint8_t>* data, PolyVox::Region,
                 Ogre::int32 pageX, Ogre::int32 pageY);
         private:
             void
-                createSphereInVolume(Volume<uint8_t>& volData, float fRadius, uint8_t uValue);
+                createSphereInVolume(Volume<uint8_t>& volData,  PolyVox::Region &region, float fRadius, uint8_t uValue);
             void
                 createCubeInVolume(Volume<uint8_t>& volData, Vector3DUint16 lowerCorner, Vector3DUint16 upperCorner, uint8_t uValue);
         };
@@ -23,30 +23,33 @@ namespace ZGame
 using namespace ZGame::World;
 using namespace PolyVox;
 inline void 
-    TestMapGenerator::generate(Volume<uint8_t>* data,
+    TestMapGenerator::generate(Volume<uint8_t>* data, PolyVox::Region region,
     Ogre::int32 pageX, Ogre::int32 pageY)
 {
-    const int width = data->getWidth();
-    const int height = data->getHeight() - 128;
-    const int depth = data->getDepth();
+    
+    const int width = region.width();
+    const int height = region.height() - 10;
+    const int depth = region.depth();
     const float halfHeight = (float)(height) / 2.0f;
     const float oceanFloor = halfHeight;
-    createSphereInVolume(*data, Ogre::Math::RangeRandom(width-2, width+16), Ogre::Math::RangeRandom(1.0, 256.0));
+    createSphereInVolume(*data, region, Ogre::Math::RangeRandom(width-15, width), Ogre::Math::RangeRandom(1.0, 256.0));
     return;
 }
 
 inline void 
-    TestMapGenerator::createSphereInVolume(Volume<uint8_t>& volData, float fRadius, uint8_t uValue)
+    TestMapGenerator::createSphereInVolume(Volume<uint8_t>& volData, PolyVox::Region &region,
+    float fRadius, uint8_t uValue)
 {
 	//This vector hold the position of the center of the volume
-	Vector3DFloat v3dVolCenter(volData.getWidth() / 2, volData.getHeight() / 2, volData.getDepth() / 2);
+    Vector3DFloat v3dVolCenter(region.getLowerCorner().getX() + region.depth() / 2, 
+        region.getLowerCorner().getY() + region.height() / 2, region.getLowerCorner().getZ() + region.width() / 2);
 
 	//This three-level for loop iterates over every voxel in the volume
-	for (int z = 0; z < volData.getWidth(); z++)
+    for (int z = region.getLowerCorner().getZ(); z < region.getUpperCorner().getZ(); z++)
 	{
-		for (int y = 0; y < volData.getHeight(); y++)
+		for (int y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
 		{
-			for (int x = 0; x < volData.getDepth(); x++)
+			for (int x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX(); x++)
 			{
 				//Store our current position as a vector...
 				Vector3DFloat v3dCurrentPos(x,y,z);	

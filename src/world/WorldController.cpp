@@ -88,9 +88,8 @@ void
 {
     //_worldMap.reset(new WorldMap());
     //_worldMap->load(); //We should implement load from configuration file.
-    size_t numOfPages = config.loadRadius * 2 / WORLD_BLOCK_WIDTH;
-    numOfPages += 1; //give some extra room
-    _volumeMap.reset(new VolumeMap(numOfPages, config.forceSync));
+    size_t numOfPagesPerAxis = (config.unloadRadius  / WORLD_BLOCK_WIDTH * 2 + 1);
+    _volumeMap.reset(new VolumeMap(numOfPagesPerAxis, config.forceSync));
     _volumeMap->load(_physicsMgr.get());
 
     _pageManager.setPageProvider(&_pageProvider);

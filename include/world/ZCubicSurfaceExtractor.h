@@ -81,7 +81,7 @@ namespace PolyVox
                 FACE previousWhichFace, RLE_VEC& rleVec);
 
             void _mergeFace(RLE_VEC &rleVec,
-                int16_t regX, int16_t regY, int16_t regZ,
+                uint16_t regX, uint16_t regY, uint16_t regZ,
                 AXIS xyz);
         };
 }
