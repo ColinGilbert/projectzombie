@@ -117,7 +117,8 @@ WorkQueue::Response*
         PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
     //World::TestMapGenerator gen;
     World::PerlinNoiseMapGen gen;
-    gen.generate(&page->data, pageRegion, localy, localy);
+    gen.generate(&page->data, pageRegion, static_cast<Ogre::Real>(localx), 
+        static_cast<Ogre::Real>(localy));
  
     ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, lreq.surface);
     surfExtractor.execute();
@@ -155,7 +156,6 @@ void
         region->mapView.finalizeRegion();
         region->mapView.createPhysicsRegion(_phyMgr);
         OGRE_DELETE_T(lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
-        _pagesMap[page->id] = page;
     }
     else
     {

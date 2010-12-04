@@ -71,7 +71,7 @@ namespace PolyVox
             Region _regSizeInVoxels;
             Region _regSizeInCells;
 
-            void _resetParams(uint16_t x, uint16_t y, uint16_t z, FACE &whichFace,
+            void _resetParams(int16_t x, int16_t y, int16_t z, FACE &whichFace,
                 VoxelType &faceMaterial, AXIS xyz);
 
             void _markRLE(VoxelType &faceMaterial, VoxelType currentMaterial,
@@ -81,7 +81,7 @@ namespace PolyVox
                 FACE previousWhichFace, RLE_VEC& rleVec);
 
             void _mergeFace(RLE_VEC &rleVec,
-                uint16_t regX, uint16_t regY, uint16_t regZ,
+                int16_t regX, int16_t regY, int16_t regZ,
                 AXIS xyz);
         };
 }

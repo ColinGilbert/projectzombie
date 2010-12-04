@@ -49,7 +49,7 @@ namespace ZGame
       static void initGradientPoints();
 
       void
-      generate(PolyVox::UInt8Volume* data, PolyVox::Region region, Ogre::int32 pageX, Ogre::int32 pageY);
+      generate(PolyVox::UInt8Volume* data, PolyVox::Region region, Ogre::Real pageX, Ogre::Real pageY);
 
     private:
         struct HeightVal
@@ -90,7 +90,7 @@ using std::cout;
 using std::endl;
 
 inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region region, 
-    Ogre::int32 pageX, Ogre::int32 pageY)
+    Ogre::Real pageX, Ogre::Real pageY)
 {
     using namespace noisepp;
     using std::make_pair;
@@ -118,8 +118,8 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region regio
             Vector3DFloat v3dCurrentPos((float)x, oceanFloor, (float)z);
             //double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
               //    ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
-            float val = finalElement->getValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod,
-                ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod, cache);
+            float val = finalElement->getValue((pageX + v3dCurrentPos.getX() / (depth - 1)) * mod,
+                (pageY + v3dCurrentPos.getZ() / (width - 1)) * mod, cache);
             hVals[z][x].uValue = above.getMappedValue(val);
             hVals[z][x].value = oceanFloor + (height - 8.0) * (val + 1.0) / 2.0;
         }

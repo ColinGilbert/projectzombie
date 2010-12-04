@@ -10,7 +10,7 @@ namespace ZGame
             ~TestMapGenerator(){}
             void
                 generate(PolyVox::Volume<uint8_t>* data, PolyVox::Region,
-                Ogre::int32 pageX, Ogre::int32 pageY);
+                Ogre::Real pageX, Ogre::Real pageY);
         private:
             void
                 createSphereInVolume(Volume<uint8_t>& volData,  PolyVox::Region &region, float fRadius, uint8_t uValue);
@@ -24,7 +24,7 @@ using namespace ZGame::World;
 using namespace PolyVox;
 inline void 
     TestMapGenerator::generate(Volume<uint8_t>* data, PolyVox::Region region,
-    Ogre::int32 pageX, Ogre::int32 pageY)
+    Ogre::Real pageX, Ogre::Real pageY)
 {
     
     const int width = region.width();

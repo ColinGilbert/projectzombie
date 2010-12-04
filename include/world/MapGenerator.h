@@ -13,7 +13,7 @@ namespace ZGame
         public:
             virtual ~MapGenerator(){}
             virtual void generate(PolyVox::UInt8Volume* data, PolyVox::Region region,
-                Ogre::int32 pageX, Ogre::int32 pageY) = 0;
+                Ogre::Real pageX, Ogre::Real pageY) = 0;
             
         protected:
             MapGenerator(){}
