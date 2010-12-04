@@ -32,7 +32,9 @@ inline void
     const int depth = region.depth();
     const float halfHeight = (float)(height) / 2.0f;
     const float oceanFloor = halfHeight;
-    createSphereInVolume(*data, region, Ogre::Math::RangeRandom(width-15, width), Ogre::Math::RangeRandom(1.0, 256.0));
+    createSphereInVolume(*data, region, width - 15, 
+        //Ogre::Math::RangeRandom(width-15, width), 
+        Ogre::Math::RangeRandom(1.0, 256.0));
     return;
 }
 

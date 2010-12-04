@@ -189,7 +189,7 @@ void
         long x, y;
         _unpackIndex(pageID, &x, &y);
         std::stringstream ss;
-        ss << "Unload PageID: " << x << "," << y << "\n";
+        ss << "Unload PageID: " << x << "," << -y << "\n";
         Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, ss.str());
         _volumeMap->unloadPage(pageID);
     //}

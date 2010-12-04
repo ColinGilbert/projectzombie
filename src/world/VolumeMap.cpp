@@ -115,8 +115,9 @@ WorkQueue::Response*
     Ogre::Vector2 upperCorner = localOrigin + Ogre::Vector2(WORLD_BLOCK_WIDTH, WORLD_BLOCK_WIDTH);
     PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
         PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
-    World::TestMapGenerator gen;
-    gen.generate(&page->data, pageRegion, localy, -localy);
+    //World::TestMapGenerator gen;
+    World::PerlinNoiseMapGen gen;
+    gen.generate(&page->data, pageRegion, localy, localy);
  
     ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, lreq.surface);
     surfExtractor.execute();
@@ -213,7 +214,9 @@ VolumeMap::VolumePage*
         page->id = pageId;
         long x,y;
         _unpackIndex(pageId, &x, &y);
-        Ogre::Vector3 volWorldOrigin(static_cast<Ogre::Real>(x) * size, 0.0f, static_cast<Ogre::Real>(-y) * size);
+        Ogre::Vector3 volWorldOrigin(size * (static_cast<Ogre::Real>(x) - 1.0f / 2.0f), 
+            0.0f, size * (static_cast<Ogre::Real>(y) - 1.0 / 2.0f) );
+        page->worldOrigin = volWorldOrigin;
         _pagesMap[pageId] = page;
         return page;
     }
@@ -258,6 +261,10 @@ void
     VolumeMap::loadPage(Ogre::PageID pageID)
 {
     //translate Ogre paging system's page id into page id used in volume.
+    long x, y;
+    _unpackIndex(pageID, &x, &y);
+    y = -y;
+    pageID = _packIndex(x, y);
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
     PagesMap::iterator findMe = _pagesMap.find(volumeId);
     VolumePage* page;
@@ -280,10 +287,12 @@ void
 void
     VolumeMap::unloadPage(Ogre::PageID pageID)
 {
-    cout << "Unloading PageID: " << pageID << endl;
     long x, y;
     _unpackIndex(pageID, &x, &y);
-    cout << "pageID: " << x << " " << -y << endl;
+    y = -y;
+    pageID = _packIndex(x, y);
+    cout << "Unloading PageID: " << pageID << endl;
+    cout << "pageID: " << x << " " << y << endl;
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
 
     PagesMap::iterator findMe = _pagesMap.find(volumeId);
@@ -403,8 +412,6 @@ inline void
     else
         z = cubeCenter.z / WORLD_BLOCK_WIDTH;
 
-    z = -z; //negate z because Ogre paging system's coordinates are flipped.
-
     pageID = _packIndex(x, z);
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
     long vx, vy;
@@ -422,7 +429,7 @@ inline void
 
         //Transform into cube space local coordinates.
         Ogre::Vector2 volumeOrigin(vx, vy);
-        Ogre::Vector2 pageCoords(cubeCenter.x, -cubeCenter.z);
+        Ogre::Vector2 pageCoords(cubeCenter.x, cubeCenter.z);
         Ogre::Vector2 temp = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
         cubeCenter.x = temp.x; cubeCenter.z = temp.y;
         PageRegion* region = page->getRegion(pageID);
