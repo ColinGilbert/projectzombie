@@ -85,16 +85,16 @@ bool
 }
 /**
 * This method will create a region in local Volume space by transform the volume page id, and Ogre page id.
+* \precondition the coordinates to be transformed MUST BE in BLOCK (voxel) units!!! volumeOrigin must be PAGE units.
 **/
 Ogre::Vector2 
     VolumeMap::_transformToVolumeLocal(Ogre::Vector2 volumeOrigin, Ogre::Vector2 local,
     size_t volSideLenInBlocks)
 {
     size_t halfVolSide = volSideLenInBlocks / 2;
-    Ogre::Vector2 coords = local;
-    Ogre::Vector2 volumeXForm = volumeOrigin * volSideLenInBlocks;
-    Ogre::Vector2 localXForm(halfVolSide, halfVolSide);
-    coords += (volumeXForm + localXForm);
+    Ogre::Vector2 coords = local + Ogre::Vector2(halfVolSide, halfVolSide); //shift it to zero.
+    Ogre::Vector2 volumeXForm(0, 0);
+    coords -= volumeOrigin * volSideLenInBlocks; //transform into local space.
     return coords;
 }
 
@@ -246,14 +246,9 @@ Ogre::PageID
     long x, z;
     _unpackIndex(pageId, &x, &z);
     size_t halfVolSideLen = volSideLen / 2;
-    if(x < 0)
-        x = Ogre::Math::Floor(static_cast<Ogre::Real>(x) / halfVolSideLen + 0.5f);
-    else
-        x = x / halfVolSideLen;
-    if(z < 0)
-        z = Ogre::Math::Floor(static_cast<Ogre::Real>(z) / halfVolSideLen + 0.5f);
-    else
-        z = z / halfVolSideLen;
+
+    x = Ogre::Math::Floor(static_cast<Ogre::Real>(x) / volSideLen + 0.5f);
+    z = Ogre::Math::Floor(static_cast<Ogre::Real>(z) / volSideLen + 0.5f);
     return _packIndex(x, z);
 }
 
@@ -455,6 +450,7 @@ inline void
 void
     VolumeMap::addBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
 {
+    /*
     Ogre::Vector3 intersectPoint;
     if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
     {
@@ -464,12 +460,13 @@ void
     {
         //2.0f may not correspond to 2 cubes..
         _modifyVolume(rayTo.getPoint(2.0f), 1, rayTo.getDirection(), ADD_BLOCK);
-    }
+    }*/
 }
 
 void
     VolumeMap::removeBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
 {
+    /*
     Ogre::Vector3 intersectPoint;
     cout << "VolumeMap::removeBlock" << endl;
     if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
@@ -478,5 +475,5 @@ void
     }
     else
     {
-    }
+    }*/
 }
