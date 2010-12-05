@@ -406,7 +406,7 @@ inline void
         z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
     else
         z = cubeCenter.z / WORLD_BLOCK_WIDTH;
-
+   
     pageID = _packIndex(x, z);
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
     long vx, vy;
@@ -424,18 +424,23 @@ inline void
 
         //Transform into cube space local coordinates.
         Ogre::Vector2 volumeOrigin(vx, vy);
-        Ogre::Vector2 pageCoords(cubeCenter.x, cubeCenter.z);
-        Ogre::Vector2 temp = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
-        cubeCenter.x = temp.x; cubeCenter.z = temp.y;
+        Ogre::Vector2 cubeLocal = Ogre::Vector2(cubeCenter.x, cubeCenter.z);
+        cubeLocal = _transformToVolumeLocal(volumeOrigin, cubeLocal, _volSizeInBlocks);
+        Ogre::Vector2 pageCoords(static_cast<Ogre::Real>(x) * WORLD_BLOCK_WIDTH, 
+            static_cast<Ogre::Real>(z) * WORLD_BLOCK_WIDTH);
+        Ogre::Vector2 localOrigin = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
+        Ogre::Vector2 upperCorner = localOrigin + Ogre::Vector2(WORLD_BLOCK_WIDTH, WORLD_BLOCK_WIDTH);
+        PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
+        PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
         PageRegion* region = page->getRegion(pageID);
         region->mapView.unloadRegion(_phyMgr);
 
-        cout << "cube in local space: " << cubeCenter<< endl;;
+        cout << "cube in local space: " << cubeLocal << endl;;
 
-        page->data.setVoxelAt(static_cast<uint16_t>(cubeCenter.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeCenter.z), 
+        page->data.setVoxelAt(static_cast<uint16_t>(cubeLocal.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeLocal.y), 
             blockType);
         PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
-        ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, page->data.getEnclosingRegion(), &surface);
+        ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, &surface);
         surfExtractor.execute();
         //regen the surface. Note we shouldn't need to reupdate the center of this page. The assumption here is that it should be set during creation.
         region->mapView.updateRegion(&surface);
@@ -450,7 +455,7 @@ inline void
 void
     VolumeMap::addBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
 {
-    /*
+    
     Ogre::Vector3 intersectPoint;
     if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
     {
@@ -460,13 +465,13 @@ void
     {
         //2.0f may not correspond to 2 cubes..
         _modifyVolume(rayTo.getPoint(2.0f), 1, rayTo.getDirection(), ADD_BLOCK);
-    }*/
+    }
 }
 
 void
     VolumeMap::removeBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance)
 {
-    /*
+    
     Ogre::Vector3 intersectPoint;
     cout << "VolumeMap::removeBlock" << endl;
     if(_phyMgr->getCollisionPoint(intersectPoint, rayTo, searchDistance))
@@ -475,5 +480,5 @@ void
     }
     else
     {
-    }*/
+    }
 }

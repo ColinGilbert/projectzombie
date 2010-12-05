@@ -104,7 +104,7 @@ namespace ZGame
             public:
 
                 VolumePage(size_t pageSize, size_t pageHeight) :
-                  data(pageSize, pageHeight, pageSize, 4), _regionCount(0)
+                  data(pageSize, pageHeight, pageSize, 1), _regionCount(0)
                   {
                       data.setBorderValue(0);
                   }
