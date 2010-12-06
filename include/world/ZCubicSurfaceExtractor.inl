@@ -75,18 +75,18 @@ namespace PolyVox
     {
         using namespace PolyVox;
 
-        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth() + 1;
+        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth();
         std::vector<RLE_VEC> rleXs(WORLD_BLOCK_WIDTH); 
         std::vector<RLE_INFO> rleXsInfo(WORLD_BLOCK_WIDTH);
         int16_t startX = _regSizeInVoxels.getLowerCorner().getX();
             
-        for(int16_t z = _regSizeInVoxels.getLowerCorner().getZ() - 1; z < _regSizeInVoxels.getUpperCorner().getZ(); z++)
+        for(int16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z < _regSizeInVoxels.getUpperCorner().getZ(); z++)
         {
             //Initialize X faces
             for(size_t i = 0; i < WORLD_BLOCK_WIDTH; ++i)
             {
                 rleXsInfo[i].faceCount = 0;
-                _resetParams(startX + i - 1, 0, z, 
+                _resetParams(startX + i, 0, z, 
                     rleXsInfo[i].whichFace, rleXsInfo[i].faceMaterial, X);
             }
 
@@ -112,11 +112,12 @@ namespace PolyVox
 
                 int16_t regY = y - _regSizeInVoxels.getLowerCorner().getY();
 
-                for(int16_t x = _regSizeInVoxels.getLowerCorner().getX() -1 ; x < _regSizeInVoxels.getUpperCorner().getX(); x++)
+                for(int16_t x = _regSizeInVoxels.getLowerCorner().getX(); x < _regSizeInVoxels.getUpperCorner().getX(); x++)
                 {
                     //Start at the lower corner x.
                     int16_t regX = x - _regSizeInVoxels.getLowerCorner().getX();
-                    
+                    if(x == 63 && y == 127 && z == 79)
+                        cout << "stop here" << endl;
                     VoxelType currentMaterial = _volData->getVoxelAt(x, y, z);
                     VoxelType currentMaterialPlusZ = _volData->getVoxelAt(x, y, z+1);
                     VoxelType currentMaterialPlusY = _volData->getVoxelAt(x, y+1, z);
@@ -129,14 +130,14 @@ namespace PolyVox
                     _markRLE(yFaceMaterial, currentMaterial, 
                         currentMaterialPlusY, yFaceCount, yWhichFace,
                         rleY);
-                    _markRLE(rleXsInfo[regX + 1].faceMaterial, currentMaterial,
-                        currentMaterialPlusX, rleXsInfo[regX + 1].faceCount, rleXsInfo[regX + 1].whichFace,
-                        rleXs[regX + 1]);
+                    _markRLE(rleXsInfo[regX].faceMaterial, currentMaterial,
+                        currentMaterialPlusX, rleXsInfo[regX].faceCount, rleXsInfo[regX].whichFace,
+                        rleXs[regX]);
                 }
                 _finalizeRLE(zFaceMaterial, zFaceCount, zWhichFace, rleZ);
                 _finalizeRLE(yFaceMaterial, yFaceCount, yWhichFace, rleY);
-                _mergeFace(rleZ, startX - 1, y, z, Z); 
-                _mergeFace(rleY, startX - 1, y, z, Y); 
+                _mergeFace(rleZ, startX, y, z, Z); 
+                _mergeFace(rleY, startX, y, z, Y); 
             }
 
             for(size_t i = 0; i < WORLD_BLOCK_WIDTH; ++i)
@@ -145,7 +146,7 @@ namespace PolyVox
                 _finalizeRLE(rleXsInfo[i].faceMaterial, rleXsInfo[i].faceCount, rleXsInfo[i].whichFace,
                     rleXs[i]);
                 _mergeFace(rleXs[i], 
-                    startX + i - 1, 0, z, X);
+                    startX + i, 0, z, X);
                 rleXs[i].clear();
             } 
         }

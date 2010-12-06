@@ -93,7 +93,6 @@ Ogre::Vector2
 {
     size_t halfVolSide = volSideLenInBlocks / 2;
     Ogre::Vector2 coords = local + Ogre::Vector2(halfVolSide, halfVolSide); //shift it to zero.
-    Ogre::Vector2 volumeXForm(0, 0);
     coords -= volumeOrigin * volSideLenInBlocks; //transform into local space.
     return coords;
 }
@@ -241,14 +240,12 @@ void
 * This method will convert Ogre's paging system's ID into Volume ID, which is used to reference Volumes for this VolumeMap.
 **/
 Ogre::PageID
-    VolumeMap::_pageIdToVolumeId(Ogre::PageID pageId, size_t volSideLen)
+    VolumeMap::_pageIdToVolumeId(Ogre::PageID pageId, size_t volSideLenInPages)
 {
     long x, z;
     _unpackIndex(pageId, &x, &z);
-    size_t halfVolSideLen = volSideLen / 2;
-
-    x = Ogre::Math::Floor(static_cast<Ogre::Real>(x) / volSideLen + 0.5f);
-    z = Ogre::Math::Floor(static_cast<Ogre::Real>(z) / volSideLen + 0.5f);
+    x = Ogre::Math::Floor(static_cast<Ogre::Real>(x) / volSideLenInPages + 0.5f);
+    z = Ogre::Math::Floor(static_cast<Ogre::Real>(z) / volSideLenInPages + 0.5f);
     return _packIndex(x, z);
 }
 
@@ -398,15 +395,10 @@ inline void
     //first hash point to page id. We are mapping natural numbers into into natural numbers grouped by WORLD_BLOCK_WIDTH
     //and negative of the natural number (excluding zero) to the negative of natural numbers grouped by WORLD_BLOCK_WDITH
     long x, z;
-    if(cubeCenter.x < 0.0f)
-        x = Ogre::Math::Floor(cubeCenter.x / WORLD_BLOCK_WIDTH);
-    else
-        x = cubeCenter.x / WORLD_BLOCK_WIDTH;
-    if(cubeCenter.z < 0.0f)
-        z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
-    else
-        z = cubeCenter.z / WORLD_BLOCK_WIDTH;
-   
+
+    x = Ogre::Math::Floor(cubeCenter.x / WORLD_BLOCK_WIDTH);
+    z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
+    
     pageID = _packIndex(x, z);
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
     long vx, vy;
@@ -424,32 +416,69 @@ inline void
 
         //Transform into cube space local coordinates.
         Ogre::Vector2 volumeOrigin(vx, vy);
+        
         Ogre::Vector2 cubeLocal = Ogre::Vector2(cubeCenter.x, cubeCenter.z);
+
         cubeLocal = _transformToVolumeLocal(volumeOrigin, cubeLocal, _volSizeInBlocks);
-        Ogre::Vector2 pageCoords(static_cast<Ogre::Real>(x) * WORLD_BLOCK_WIDTH, 
-            static_cast<Ogre::Real>(z) * WORLD_BLOCK_WIDTH);
-        Ogre::Vector2 localOrigin = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
-        Ogre::Vector2 upperCorner = localOrigin + Ogre::Vector2(WORLD_BLOCK_WIDTH, WORLD_BLOCK_WIDTH);
-        PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
-        PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
+        
         PageRegion* region = page->getRegion(pageID);
+        PageRegion* regionLeft = 0;
+        PageRegion* regionBelow = 0;
         region->mapView.unloadRegion(_phyMgr);
+     
+        if(static_cast<long>(cubeLocal.x) % WORLD_BLOCK_WIDTH == 0)
+        {
+            Ogre::PageID leftId = _packIndex(x - 1, z);
+            regionLeft = page->getRegion(leftId);
+            if(regionLeft)
+                regionLeft->mapView.unloadRegion(_phyMgr);
+        }
+        if(static_cast<long>(cubeLocal.y) % WORLD_BLOCK_WIDTH == 0)
+        {
+            Ogre::PageID belowId = _packIndex(x, z - 1);
+            regionBelow = page->getRegion(belowId);
+            if(regionBelow)
+                regionBelow->mapView.unloadRegion(_phyMgr);
+
+        }
 
         cout << "cube in local space: " << cubeLocal << endl;;
 
         page->data.setVoxelAt(static_cast<uint16_t>(cubeLocal.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeLocal.y), 
-            blockType);
-        PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
-        ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, &surface);
-        surfExtractor.execute();
-        //regen the surface. Note we shouldn't need to reupdate the center of this page. The assumption here is that it should be set during creation.
-        region->mapView.updateRegion(&surface);
-        region->mapView.finalizeRegion();
-        region->mapView.createPhysicsRegion(_phyMgr);
+                blockType);
+        if(regionLeft) //ALL THIS just to remove a block on the border??? WTF. Okay, I store multiple pages per PolyVox::Volume to have better cache utilization.
+            //As in this case, the page->data contains multiple pages and they are contingous in memory.
+        {
+            _updatePageRegion(x - 1, z, regionLeft, page, volumeOrigin);
+            
+        }
+        if(regionBelow)
+        {
+            _updatePageRegion(x, z - 1, regionBelow, page, volumeOrigin);
+        }
 
+        _updatePageRegion(x, z, region, page, volumeOrigin);
     }
     //else throw exeception here this should never happen.
     assert(findMe != _pagesMap.end() && "VolumeMap::_addBlockToVolume trying to add to non-existent Volume page.");
+}
+/** \note Not checking region null.**/
+void
+    VolumeMap::_updatePageRegion(long pageX, long pageZ, PageRegion* region, 
+    VolumePage* page, Ogre::Vector2 volumeOrigin)
+{
+    assert(region != 0 && "the region you are updating is null!");
+    Ogre::Vector2 pageCoords(static_cast<Ogre::Real>(pageX) * WORLD_BLOCK_WIDTH, static_cast<Ogre::Real>(pageZ) * WORLD_BLOCK_WIDTH);
+    Ogre::Vector2 localOrigin = _transformToVolumeLocal(volumeOrigin, pageCoords, _volSizeInBlocks);
+    Ogre::Vector2 upperCorner = localOrigin + Ogre::Vector2(WORLD_BLOCK_WIDTH, WORLD_BLOCK_WIDTH);
+    PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
+        PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
+    PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
+    ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, &surface);
+    surfExtractor.execute();
+    region->mapView.updateRegion(&surface);
+    region->mapView.finalizeRegion();
+    region->mapView.createPhysicsRegion(_phyMgr);
 }
 
 void

@@ -104,7 +104,7 @@ namespace ZGame
             public:
 
                 VolumePage(size_t pageSize, size_t pageHeight) :
-                  data(pageSize, pageHeight, pageSize, 1), _regionCount(0)
+                  data(pageSize, pageHeight, pageSize, 32), _regionCount(0)
                   {
                       data.setBorderValue(0);
                   }
@@ -144,7 +144,6 @@ namespace ZGame
                       {
                           return findMe->second;
                       }
-                      assert(findMe != _regionMap.end() && "Trying to get non-existent Volume paged region.");
                       return 0;
                   }
                   void
@@ -197,9 +196,9 @@ namespace ZGame
                 _initLists();
             void
                 _freeAll();
-            static Ogre::uint32
+            Ogre::uint32
                 _packIndex(long x, long y);
-            static void
+            void
                 _unpackIndex(Ogre::PageID pageID, long *x, long *y);
             
             void
@@ -209,11 +208,14 @@ namespace ZGame
                 _removeBlockFromVolume(const Ogre::Vector3 &point);
             VolumePage*
                 _allocateVolume(Ogre::PageID pageId, size_t size, size_t height);
-            static Ogre::PageID
+            Ogre::PageID 
                 _pageIdToVolumeId(Ogre::PageID pageId, size_t volSideLen);
-            static Ogre::Vector2 
+            Ogre::Vector2 
                 _transformToVolumeLocal(Ogre::Vector2 volumeOrigin, Ogre::Vector2 local,
                 size_t volSideLenInBlocks);
+            void
+                _updatePageRegion(long pageX, long pageZ,
+                PageRegion* region, VolumePage* page, Ogre::Vector2 volumeOrigin);
 
         private:
             
