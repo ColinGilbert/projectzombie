@@ -103,7 +103,7 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region regio
     const float oceanFloor = halfHeight - 16.0;
     
     const float mod = 1.0 / 16.0;
-    HeightVal hVals[WORLD_BLOCK_WIDTH][WORLD_BLOCK_DEPTH];
+    HeightVal hVals[WORLD_BLOCK_WIDTH + 1][WORLD_BLOCK_DEPTH + 1];
 
     Pipeline2D pipeline;
 
@@ -111,9 +111,9 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region regio
     PipelineElement2D* finalElement = pipeline.getElement(id);
     Cache *cache = pipeline.createCache();
     //First construct a 2D perlin noise using a cache. Height value is constant and is defined as oceanFloor.
-    for(size_t z=0; z < width; z++)
+    for(size_t z=0; z <= width; z++)
     {
-        for(size_t x = 0; x < depth; x++)
+        for(size_t x = 0; x <= depth; x++)
         {
             Vector3DFloat v3dCurrentPos((float)x, oceanFloor, (float)z);
             //double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
@@ -127,11 +127,11 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region regio
     pipeline.freeCache(cache);
     //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
     //If it's the current height, fill with value stored in height map. Else it is air.
-    for(size_t z=region.getLowerCorner().getZ(); z < region.getUpperCorner().getZ(); z++)
+    for(size_t z=region.getLowerCorner().getZ(); z <= region.getUpperCorner().getZ(); z++)
     {
-        for(size_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
+        for(size_t y = region.getLowerCorner().getY(); y <= region.getUpperCorner().getY(); y++)
         {
-            for(size_t x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX(); x++)
+            for(size_t x = region.getLowerCorner().getX(); x <= region.getUpperCorner().getX(); x++)
             {
                 size_t regionZ = z - region.getLowerCorner().getZ();
                 size_t regionX = x - region.getLowerCorner().getX();
