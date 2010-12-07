@@ -293,8 +293,16 @@ void
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Trying to unload an volume page from a non-existing Volume", "VolumeMap::unloadPage");
     }
     VolumePage* page = findMe->second;
-    page->getRegion(pageID)->mapView.unloadRegion(_phyMgr);
-    page->removeRegion();
+    PageRegion* region = page->getRegion(pageID);
+    if(region)
+    {
+        page->getRegion(pageID)->mapView.unloadRegion(_phyMgr);
+        page->removeRegion();
+    }
+    else
+    {
+        cout << "Region does not exist in unloadPage!" << endl;
+    }
     if(page->isEmpty())
     {
         OGRE_DELETE_T(page, VolumePage, Ogre::MEMCATEGORY_GENERAL);

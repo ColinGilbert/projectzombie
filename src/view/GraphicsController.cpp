@@ -68,7 +68,7 @@ bool
     light->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
     light->setSpecularColour(ColourValue(0.1f, 0.1f, 0.1f));
     
-    _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
+    
     //CompositorManager::getSingleton().setCompositorEnabled(_vp,"Bloom",true);
     _ssaoListener.setCamera(EngineView::getSingleton().getCurrentCamera());
     Ogre::ColourValue fadeColour(0.109f, 0.417f, 0.625f);
@@ -83,6 +83,7 @@ bool
     _initSkyX();
     _ssaoInstance->setEnabled(true);
     _hdrCompositor->Enable(true);
+    _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
     //_scnMgr->setSkyBox(true, "Examples/MorningSkyBox", 10, true);
     //_initShadows();
     _scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);

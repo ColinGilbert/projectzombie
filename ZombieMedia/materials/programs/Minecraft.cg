@@ -36,8 +36,8 @@ void caster_ps(
 
 #define NUM_OF_COEF 3
 
-#define ATLAS_WIDTH 512.0
-#define TEX_WIDTH 32.0
+#define ATLAS_WIDTH 2048.0
+#define TEX_WIDTH 128.0
 #define BlockOffset TEX_WIDTH / ATLAS_WIDTH
 #define eOffset TEX_WIDTH / ATLAS_WIDTH
 

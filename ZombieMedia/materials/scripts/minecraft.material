@@ -102,9 +102,11 @@ material PRJZ/Minecraft
 				//filtering anisotropic anisotropic bilinear
 				max_anisotropy 8
 				mipmap_bias -2.0
+				//texture minecraft_terrain_sanguine_hi.png
+				texture minecraft_terrain_me_hi.png
 				//texture minecraft_terrain_hi.png
 				//texture minecraft_terrain_rpg.png
-				texture minecraft_terrain_bb.png
+				//texture minecraft_terrain_bb.png
 				//texture minecraft_terrain_dot.png
 				//texture minecraft_terrain_bb_paint.png
 				//texture minecraft_terrain_128_one.png
