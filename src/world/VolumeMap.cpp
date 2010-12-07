@@ -60,11 +60,7 @@ VolumeMap::~VolumeMap()
 void
     VolumeMap::_freeAll()
 {
-    //using Ogre::map;
-    //using Ogre::list;
-    //Iterate through pagesMap and free that.
-
-    //map<Ogre::PageID, VolumePage*>::iterator iter = _pagesMap.begin();
+   
     PagesMap::iterator iter = _pagesMap.begin();
     for (iter = _pagesMap.begin(); iter != _pagesMap.end(); ++iter)
     {
@@ -166,28 +162,7 @@ void
 }
 
 void
-    VolumeMap::_addToList(VolumePage* page)
-{
-    _freeList.push_back(page);
-}
-
-VolumeMap::VolumePage*
-    VolumeMap::_getFree()
-{
-    //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
-    if(_freeList.empty())
-        OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No more free volume map pages.", "VolumeMap::_getFree()");
-    //return OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(_regionSideLen,
-    //_regionsHeight, new PerlinNoiseMapGen());
-    VolumeMap::VolumePage* ret = _freeList.front();
-
-    _freeList.pop_front();
-    return ret;
-    //cout << "_getFree: _freeList size: " << _freeList.size() << endl;
-    //return ret;
-}
-void
-    VolumeMap::_initLists()
+    VolumeMap::_initVolumes()
 {
 
     assert(_volSizeInBlocks >= WORLD_BLOCK_WIDTH && "Invalid num of pages.");
@@ -232,7 +207,7 @@ void
     _workQueueChannel = wq->getChannel("PROJECT_ZOMBIE/VolumeMap");
     wq->addRequestHandler(_workQueueChannel, this);
     wq->addResponseHandler(_workQueueChannel, this);
-    _initLists();
+    _initVolumes();
 
 }
 

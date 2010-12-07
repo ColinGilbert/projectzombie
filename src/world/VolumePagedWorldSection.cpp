@@ -43,7 +43,9 @@ void
     using namespace Ogre;
     Grid2DPageStrategyData* gridData = getGridStrategyData();
     gridData->setMode(G2D_X_Z); //Assume X,Z alignment for now.
-    gridData->setOrigin(Ogre::Vector3(0, 0, 0));
+    //move down to make (0, 0, 0) the true origin of the system.
+    gridData->setOrigin(Ogre::Vector3(static_cast<Ogre::Real>(WORLD_BLOCK_WIDTH) / 2.0f, 0, static_cast<Ogre::Real>(WORLD_BLOCK_WIDTH)) / 2.0f);
+    //gridData->setOrigin(Ogre::Vector3(0.0f, 0.0f, 0.0f));
     gridData->setCellSize(WORLD_BLOCK_WIDTH);
 
 }

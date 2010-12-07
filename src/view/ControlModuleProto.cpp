@@ -235,7 +235,7 @@ namespace ZGame
         }
         else
         {
-            if(evt.timeSinceLastFrame < 0.10)
+            if(evt.timeSinceLastFrame < 0.05)
             {
                 _cam->moveRelative(_transVector * evt.timeSinceLastFrame);
                 _doMouseMove(evt.timeSinceLastFrame);

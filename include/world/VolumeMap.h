@@ -1,9 +1,7 @@
 #pragma warning( disable : 4503)
 #pragma once
 
-#include <list>
 #include <unordered_map>
-#include <map>
 #include <Ogre.h>
 #include <MaterialDensityPair.h>
 
@@ -160,8 +158,9 @@ namespace ZGame
                 Ogre::Vector3 worldOrigin;
                   
             private:
-                //typedef std::unordered_map<Ogre::PageID, PageRegion*> REGION_MAP;
-                typedef Ogre::map<Ogre::PageID, PageRegion*>::type REGION_MAP;
+                typedef std::unordered_map<Ogre::PageID, PageRegion*, hash<Ogre::PageID>, std::equal_to<Ogre::PageID>,
+                    Ogre::STLAllocator<std::pair<const Ogre::PageID, PageRegion*>, Ogre::GeneralAllocPolicy> > REGION_MAP;
+                //typedef Ogre::map<Ogre::PageID, PageRegion*>::type REGION_MAP;
                 REGION_MAP _regionMap;
                 size_t _regionCount;
                 bool _allocated;
@@ -189,11 +188,7 @@ namespace ZGame
                 ADD_BLOCK=0, REMOVE_BLOCK
             };
             void
-                _addToList(VolumePage* page);
-            VolumePage*
-                _getFree();
-            void
-                _initLists();
+                _initVolumes();
             void
                 _freeAll();
             Ogre::uint32
@@ -230,15 +225,9 @@ namespace ZGame
             
             Ogre::Vector3 _origin;
             bool _FORCE_SYNC;
-            //typedef std::list<VolumePage*>::type FreeList;
-            //typedef Ogre::list<VolumePage*>::type FreeList;
-            //typedef std::list<VolumePage*> FreeList;
-            typedef std::deque<VolumePage*> FreeList;
-            //std::list<VolumePage*> _freeList;
-            FreeList _freeList;
-            //std::map<Ogre::PageID, VolumePage*> _pagesMap;
-            //typedef std::unordered_map<Ogre::PageID, VolumePage*> PagesMap;
-            typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
+            typedef std::unordered_map<Ogre::PageID, VolumePage*, hash<Ogre::PageID>, std::equal_to<Ogre::PageID>,
+                Ogre::STLAllocator<std::pair<const Ogre::PageID, VolumePage*>, Ogre::GeneralAllocPolicy> > PagesMap;
+            //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
             PagesMap _pagesMap;
             PhysicsManager* _phyMgr;
 
