@@ -49,6 +49,7 @@ bool WorldController::onUpdate(const Ogre::FrameEvent &evt)
     using namespace std;
     Ogre::Real inc = evt.timeSinceLastFrame*0.8f;
     _physicsMgr->onUpdate(evt);
+    _volumeMap->onUpdate(evt);
     //_animState->addTime(inc);
     //_animState->setWeight(1.0);
 

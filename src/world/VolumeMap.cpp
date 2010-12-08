@@ -147,9 +147,17 @@ void
         _unpackIndex(lreq.ogreId, &x, &z);
         
         PageRegion* region = page->getRegion(lreq.ogreId);
-        region->mapView.createRegion(page->worldOrigin, lreq.surface);
-        region->mapView.finalizeRegion();
-        region->mapView.createPhysicsRegion(_phyMgr);
+        region->loading = false; //should be aware of variable access. Maybe we should use getter and setters.
+        if(!region->deferredUnload)
+        {
+            region->mapView.createRegion(page->worldOrigin, lreq.surface);
+            region->mapView.finalizeRegion();
+            region->mapView.createPhysicsRegion(_phyMgr);
+        }
+        else
+        {
+            _unloadPageRegion(page);
+        }
         OGRE_DELETE_T(lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
     }
     else
@@ -211,6 +219,12 @@ void
 
 }
 
+void
+    VolumeMap::onUpdate(const Ogre::FrameEvent &evt)
+{
+  
+}
+
 /**
 * This method will convert Ogre's paging system's ID into Volume ID, which is used to reference Volumes for this VolumeMap.
 **/
@@ -227,7 +241,6 @@ Ogre::PageID
 void
     VolumeMap::loadPage(Ogre::PageID pageID)
 {
-    //translate Ogre paging system's page id into page id used in volume.
     long x, y;
     _unpackIndex(pageID, &x, &y);
     y = -y;
@@ -251,7 +264,7 @@ void
 
 }
 
-void
+void 
     VolumeMap::unloadPage(Ogre::PageID pageID)
 {
     long x, y;
@@ -265,23 +278,35 @@ void
     PagesMap::iterator findMe = _pagesMap.find(volumeId);
     if(findMe == _pagesMap.end())
     {
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Trying to unload an volume page from a non-existing Volume", "VolumeMap::unloadPage");
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
+            "Trying to unload a page from a non-existent Volume", "VolumeMap::unloadPage");
     }
-    VolumePage* page = findMe->second;
-    PageRegion* region = page->getRegion(pageID);
+    PageRegion* region = findMe->second->getRegion(pageID);
     if(region)
     {
-        page->getRegion(pageID)->mapView.unloadRegion(_phyMgr);
-        page->removeRegion();
+        //Because process response and this is in the same thread, we have sequential guarantee. 
+        if(!region->loading)
+        {
+            region->mapView.unloadRegion(_phyMgr);
+            _unloadPageRegion(findMe->second);        
+        }
+        else//else deferred unloading to handle response, which unloads right after it loads
+            region->deferredUnload = true;
     }
-    else
-    {
-        cout << "Region does not exist in unloadPage!" << endl;
-    }
+}
+
+/**
+* \note invalid pointers are not checked!
+**/
+void
+    VolumeMap::_unloadPageRegion(VolumePage* page)
+{ 
+    page->decreaseRegion();
     if(page->isEmpty())
     {
+        Ogre::PageID id = page->id;
         OGRE_DELETE_T(page, VolumePage, Ogre::MEMCATEGORY_GENERAL);
-        _pagesMap.erase(volumeId);
+        _pagesMap.erase(id);
     }
 }
 

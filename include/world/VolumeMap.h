@@ -62,6 +62,8 @@ namespace ZGame
                 return _origin;
             }
 
+            void
+                onUpdate(const Ogre::FrameEvent &evt);
             
             void
                 loadPage(Ogre::PageID pageID);
@@ -92,7 +94,11 @@ namespace ZGame
             Ogre::uint16 _workQueueChannel;
             struct PageRegion
             {
+                PageRegion() : loading(false),
+                deferredUnload(false) {}
                 VolumeMapView mapView;
+                bool loading;
+                bool deferredUnload;
             };
             /**
             * This class defines a volume page. It has a correspondance to Ogre Paging's Paging system on PageID (uint32).
@@ -126,6 +132,7 @@ namespace ZGame
                       if(findMe == _regionMap.end())
                       {
                           PageRegion* region = OGRE_NEW_T(PageRegion, Ogre::MEMCATEGORY_GENERAL);
+                          region->loading = true;
                           _regionMap[pageId] = region;
                           return region;
                       }
@@ -145,7 +152,7 @@ namespace ZGame
                       return 0;
                   }
                   void
-                      removeRegion()
+                      decreaseRegion()
                   {
                       _regionCount--;
                   }
@@ -180,7 +187,27 @@ namespace ZGame
                 }
             };
 
-
+         private:
+            
+            //PolyVox::Volume<PolyVox::MaterialDensityPair44> _data;
+            VolumeMapView _view;
+            Ogre::uint32 _volSideLenInPages;
+            Ogre::uint32 _volSizeInBlocks;
+            Ogre::uint32 _volHeight;
+            Ogre::uint32 _volWidthInRegions;
+            Ogre::uint32 _volHeightInRegions;
+            Ogre::uint32 _volDepthInRegions;
+            
+            Ogre::Vector3 _origin;
+            bool _FORCE_SYNC;
+            typedef std::unordered_map<Ogre::PageID, VolumePage*, hash<Ogre::PageID>, std::equal_to<Ogre::PageID>,
+                Ogre::STLAllocator<std::pair<const Ogre::PageID, VolumePage*>, Ogre::GeneralAllocPolicy> > PagesMap;
+            //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
+            PagesMap _pagesMap;
+            PhysicsManager* _phyMgr;
+            typedef Ogre::deque<Ogre::PageID>::type PageQueue;
+            PageQueue _loadQueue;
+            PageQueue _unloadQueue;
 
         private:
             enum VOLUME_MODIFY_MODE
@@ -211,26 +238,9 @@ namespace ZGame
             void
                 _updatePageRegion(long pageX, long pageZ,
                 PageRegion* region, VolumePage* page, Ogre::Vector2 volumeOrigin);
-
-        private:
-            
-            //PolyVox::Volume<PolyVox::MaterialDensityPair44> _data;
-            VolumeMapView _view;
-            Ogre::uint32 _volSideLenInPages;
-            Ogre::uint32 _volSizeInBlocks;
-            Ogre::uint32 _volHeight;
-            Ogre::uint32 _volWidthInRegions;
-            Ogre::uint32 _volHeightInRegions;
-            Ogre::uint32 _volDepthInRegions;
-            
-            Ogre::Vector3 _origin;
-            bool _FORCE_SYNC;
-            typedef std::unordered_map<Ogre::PageID, VolumePage*, hash<Ogre::PageID>, std::equal_to<Ogre::PageID>,
-                Ogre::STLAllocator<std::pair<const Ogre::PageID, VolumePage*>, Ogre::GeneralAllocPolicy> > PagesMap;
-            //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
-            PagesMap _pagesMap;
-            PhysicsManager* _phyMgr;
-
+            void _unloadPageRegion(VolumePage* page);
+       
+        
         };
     }
 }
