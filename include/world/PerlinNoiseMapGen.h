@@ -49,7 +49,10 @@ namespace ZGame
       static void initGradientPoints();
 
       void
-      generate(PolyVox::UInt8Volume* data, PolyVox::Region region, Ogre::Real pageX, Ogre::Real pageY);
+          generate(PolyVox::UInt8Volume* data, PolyVox::Region region, Ogre::Real pageX, Ogre::Real pageY);
+
+      void
+      generate2d(PolyVox::UInt8Volume* data, PolyVox::Region region, Ogre::Real pageX, Ogre::Real pageY);
 
     private:
         struct HeightVal
@@ -77,6 +80,9 @@ namespace ZGame
       noisepp::PerlinModule terrainType;
       noisepp::SelectModule terrainSelection;
       noisepp::TurbulenceModule finalTerrain;
+      noisepp::SelectModule final;
+      noisepp::ConstantModule constantnegaOne;
+      noisepp::ConstantModule constantone;
       
     };
   }
@@ -88,6 +94,50 @@ using namespace PolyVox;
 
 using std::cout;
 using std::endl;
+
+
+inline void PerlinNoiseMapGen::generate2d(UInt8Volume* data, PolyVox::Region region, 
+    Ogre::Real pageX, Ogre::Real pageY)
+{
+    using namespace noisepp;
+    using std::make_pair;
+    _data = data;
+
+    const int width = region.width();
+    const int height = region.height() - 10;
+    const int depth = region.depth();
+    const float halfHeight = (float)(height) / 2.0;
+    const float oceanFloor = halfHeight - 16.0;
+    
+    //const float mod = 1.0 / 16.0;
+    const float mod = 1.0;
+    Pipeline3D pipeline;
+
+    ElementID id = final.addToPipeline(&pipeline);
+    PipelineElement3D* finalElement = pipeline.getElement(id);
+    Cache *cache = pipeline.createCache();
+    const size_t POWER=5; //hardcoded to assume world block width is 32.
+   
+    //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
+    //If it's the current height, fill with value stored in height map. Else it is air.
+    for(int16_t z=region.getLowerCorner().getZ() - 1; z <= region.getUpperCorner().getZ(); z++)
+    {
+        for(int16_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY() - halfHeight + 64; y++)
+        {
+            for(int16_t x = region.getLowerCorner().getX() - 1; x <= region.getUpperCorner().getX(); x++)
+            {
+                float regionZ = static_cast<float>(x) - region.getLowerCorner().getZ();
+                float regionY = static_cast<float>(y) - region.getLowerCorner().getY();
+                float regionX = static_cast<float>(z) - region.getLowerCorner().getX();
+                float val = finalElement->getValue((pageX + regionX / WORLD_BLOCK_WIDTH) * mod, regionY / WORLD_BLOCK_WIDTH * mod, 
+                    (pageY + regionZ / WORLD_BLOCK_WIDTH) * mod, cache);
+                data->setVoxelAt(x, y, z, above.getMappedValue(val));
+            }
+        }
+    }
+    pipeline.freeCache(cache);
+    
+}
 
 inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region region, 
     Ogre::Real pageX, Ogre::Real pageY)
@@ -103,43 +153,45 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region regio
     const float oceanFloor = halfHeight - 16.0;
     
     const float mod = 1.0 / 16.0;
-    HeightVal hVals[WORLD_BLOCK_WIDTH + 1][WORLD_BLOCK_DEPTH + 1];
+    HeightVal hVals[WORLD_BLOCK_WIDTH + 2][WORLD_BLOCK_DEPTH + 2];
 
     Pipeline2D pipeline;
 
     ElementID id = finalTerrain.addToPipeline(&pipeline);
     PipelineElement2D* finalElement = pipeline.getElement(id);
     Cache *cache = pipeline.createCache();
+    const size_t POWER= 1.0f; //hardcoded to assume world block width is 32.
     //First construct a 2D perlin noise using a cache. Height value is constant and is defined as oceanFloor.
-    for(size_t z=0; z <= width; z++)
+    for(size_t z=0; z < WORLD_BLOCK_WIDTH + 2; z++)
     {
-        for(size_t x = 0; x <= depth; x++)
+        for(size_t x = 0; x < WORLD_BLOCK_WIDTH + 2; x++)
         {
-            Vector3DFloat v3dCurrentPos((float)x, oceanFloor, (float)z);
+            Vector3DFloat v3dCurrentPos(static_cast<float>(x) - 1, oceanFloor, static_cast<float>(z) - 1);
             //double val = finalTerrain.GetValue(((float) (pageX) + v3dCurrentPos.getX() / (depth - 1)) * mod, (v3dCurrentPos.getY() / (height)) * mod,
               //    ((float) pageY + v3dCurrentPos.getZ() / (width - 1)) * mod);
-            
-            float val = finalElement->getValue((pageX + v3dCurrentPos.getX() / (depth - 1)) * mod,
-                (pageY + v3dCurrentPos.getZ() / (width - 1)) * mod, cache);
+            //should use bitwase shift here for divide
+            float val = finalElement->getValue((pageX + v3dCurrentPos.getX() / (WORLD_BLOCK_WIDTH)) * mod,
+                (pageY + v3dCurrentPos.getZ() / (WORLD_BLOCK_WIDTH)) * mod, cache);
             hVals[z][x].uValue = above.getMappedValue(val);
             hVals[z][x].value = oceanFloor + (height - 8.0) * (val + 1.0) / 2.0;
         }
     }
-    pipeline.freeCache(cache);
+    //pipeline.freeCache(cache);
     //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
     //If it's the current height, fill with value stored in height map. Else it is air.
-    for(size_t z=region.getLowerCorner().getZ(); z <= region.getUpperCorner().getZ(); z++)
+    for(int16_t z=region.getLowerCorner().getZ() - 1; z <= region.getUpperCorner().getZ(); z++)
     {
-        for(size_t y = region.getLowerCorner().getY(); y <= region.getUpperCorner().getY(); y++)
+        for(int16_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
         {
-            for(size_t x = region.getLowerCorner().getX(); x <= region.getUpperCorner().getX(); x++)
+            for(int16_t x = region.getLowerCorner().getX() - 1; x <= region.getUpperCorner().getX(); x++)
             {
-                size_t regionZ = z - region.getLowerCorner().getZ();
-                size_t regionX = x - region.getLowerCorner().getX();
+                size_t regionZ = z - region.getLowerCorner().getZ() + 1;
+                size_t regionX = x - region.getLowerCorner().getX() + 1;
                 size_t val = (size_t)(hVals[regionZ][regionX].value);
                 if(y < val)
                 {
                     //rocks all the way down
+                    //put a probability on random air
                     _data->setVoxelAt(x, y, z, 2);
                 }
                 else if(y == val)
@@ -161,6 +213,7 @@ inline void PerlinNoiseMapGen::generate(UInt8Volume* data, PolyVox::Region regio
             }
         }
     }
+    pipeline.freeCache(cache);
 }
 
 /**

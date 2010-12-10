@@ -141,22 +141,21 @@ void
     LoadRequest lreq = any_cast<LoadRequest> (res->getRequest()->getData());
     if (res->succeeded())
     {
-        //cout << "Response success!" << endl;
         VolumePage* page = lreq.page;
         long x, z;
         _unpackIndex(lreq.ogreId, &x, &z);
         
         PageRegion* region = page->getRegion(lreq.ogreId);
-        region->loading = false; //should be aware of variable access. Maybe we should use getter and setters.
         if(!region->deferredUnload)
         {
+            region->loading = false;
             region->mapView.createRegion(page->worldOrigin, lreq.surface);
             region->mapView.finalizeRegion();
             region->mapView.createPhysicsRegion(_phyMgr);
         }
         else
         {
-            _unloadPageRegion(page);
+            _unloadPageRegion(page, lreq.ogreId);
         }
         OGRE_DELETE_T(lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
     }
@@ -222,7 +221,7 @@ void
 void
     VolumeMap::onUpdate(const Ogre::FrameEvent &evt)
 {
-  
+    _processLoadQueue();
 }
 
 /**
@@ -238,8 +237,7 @@ Ogre::PageID
     return _packIndex(x, z);
 }
 
-void
-    VolumeMap::loadPage(Ogre::PageID pageID)
+void VolumeMap::loadPage(Ogre::PageID pageID)
 {
     long x, y;
     _unpackIndex(pageID, &x, &y);
@@ -254,14 +252,35 @@ void
     }
     else
         page = findMe->second;
-    LoadRequest req;
-    req.origin = this;
-    req.page = page;
-    req.page->createRegion(pageID);
-    req.ogreId = pageID;
-    req.surface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
-    Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 0, _FORCE_SYNC);
+    PageRegion* region = page->createRegion(pageID);
+    if(region)
+    {
+        region->loading = true;
+        _loadQueue.push_back(std::make_pair(page, std::make_pair(pageID, region)));
+    }
+}
 
+void
+    VolumeMap::_processLoadQueue()
+{
+    while(!_loadQueue.empty())
+    {
+        std::pair<VolumePage*, std::pair<Ogre::PageID, PageRegion*> > pair = _loadQueue.front();
+        _loadQueue.pop_front();
+        if(!pair.second.second->deferredUnload)
+        {
+            LoadRequest req;
+            req.origin = this;
+            req.page = pair.first;
+            req.ogreId = pair.second.first;
+            req.surface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+            Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 10, _FORCE_SYNC);
+        }
+        else
+        {
+            _unloadPageRegion(pair.first, pair.second.first);
+        }
+    }
 }
 
 void 
@@ -278,17 +297,18 @@ void
     PagesMap::iterator findMe = _pagesMap.find(volumeId);
     if(findMe == _pagesMap.end())
     {
+        //Just ignore it for now. We need to look at Ogre paging system too.
+        //return;
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
             "Trying to unload a page from a non-existent Volume", "VolumeMap::unloadPage");
     }
     PageRegion* region = findMe->second->getRegion(pageID);
     if(region)
     {
-        //Because process response and this is in the same thread, we have sequential guarantee. 
         if(!region->loading)
         {
             region->mapView.unloadRegion(_phyMgr);
-            _unloadPageRegion(findMe->second);        
+            _unloadPageRegion(findMe->second, pageID);        
         }
         else//else deferred unloading to handle response, which unloads right after it loads
             region->deferredUnload = true;
@@ -299,9 +319,9 @@ void
 * \note invalid pointers are not checked!
 **/
 void
-    VolumeMap::_unloadPageRegion(VolumePage* page)
+    VolumeMap::_unloadPageRegion(VolumePage* page, Ogre::PageID regionId)
 { 
-    page->decreaseRegion();
+    page->removeRegion(regionId);
     if(page->isEmpty())
     {
         Ogre::PageID id = page->id;

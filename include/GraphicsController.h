@@ -154,5 +154,11 @@ namespace ZGame
     Ogre::Real _SHC_G[NUM_OF_BANDS*NUM_OF_BANDS];
     Ogre::Real _SHC_B[NUM_OF_BANDS*NUM_OF_BANDS];
     Ogre::Real _timeCount;
+
+    std::vector<Ogre::String> _compositorNames;
+    std::vector<Ogre::String> _postEfxNames;
+    Ogre::String _currentCompositor;
+    Ogre::String _currentPostEfx;
+
   };
 }

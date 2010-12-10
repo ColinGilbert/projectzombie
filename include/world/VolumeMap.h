@@ -108,7 +108,7 @@ namespace ZGame
             public:
 
                 VolumePage(size_t pageSize, size_t pageHeight) :
-                  data(pageSize, pageHeight, pageSize, 32), _regionCount(0)
+                  data(pageSize, pageHeight, pageSize, 32)
                   {
                       data.setBorderValue(0);
                   }
@@ -128,7 +128,6 @@ namespace ZGame
                       createRegion(Ogre::PageID pageId)
                   {
                       REGION_MAP::iterator findMe = _regionMap.find(pageId);
-                      _regionCount++;
                       if(findMe == _regionMap.end())
                       {
                           PageRegion* region = OGRE_NEW_T(PageRegion, Ogre::MEMCATEGORY_GENERAL);
@@ -136,8 +135,11 @@ namespace ZGame
                           _regionMap[pageId] = region;
                           return region;
                       }
-                      
-                      return 0;
+                      OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE,
+                          "Tring to create an exisiting PageRegion in a VolumePage!",
+                          "PageRegion::createRegion");
+                      //if(findMe->second->loading)
+                      //return 0; //Return 0 if this is found. We just don't reload it again.
                   }
                   /** \note We are using hash map right now. In the future we can 
                   switch this to arrays if needed.**/
@@ -152,15 +154,19 @@ namespace ZGame
                       return 0;
                   }
                   void
-                      decreaseRegion()
+                      removeRegion(Ogre::PageID pageId)
                   {
-                      _regionCount--;
+                      REGION_MAP::iterator findMe = _regionMap.find(pageId);
+                      if(findMe != _regionMap.end())
+                      {
+                          OGRE_DELETE_T(findMe->second, PageRegion, Ogre::MEMCATEGORY_GENERAL);
+                          _regionMap.erase(findMe);
+                      }
                   }
                   bool
                       isEmpty()
                   {
-                      assert(_regionCount > -1 && "Volume Region count is less than 0");
-                      return _regionCount == 0;
+                      return (_regionMap.size() == 0);
                   }
                 Ogre::Vector3 worldOrigin;
                   
@@ -169,9 +175,6 @@ namespace ZGame
                     Ogre::STLAllocator<std::pair<const Ogre::PageID, PageRegion*>, Ogre::GeneralAllocPolicy> > REGION_MAP;
                 //typedef Ogre::map<Ogre::PageID, PageRegion*>::type REGION_MAP;
                 REGION_MAP _regionMap;
-                size_t _regionCount;
-                bool _allocated;
-                bool _empty;
             };
 
             struct LoadRequest
@@ -205,9 +208,8 @@ namespace ZGame
             //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
             PagesMap _pagesMap;
             PhysicsManager* _phyMgr;
-            typedef Ogre::deque<Ogre::PageID>::type PageQueue;
-            PageQueue _loadQueue;
-            PageQueue _unloadQueue;
+            typedef Ogre::deque<std::pair<VolumePage*, std::pair<Ogre::PageID, PageRegion* >>>::type LoadQueue;
+            LoadQueue _loadQueue;
 
         private:
             enum VOLUME_MODIFY_MODE
@@ -238,7 +240,9 @@ namespace ZGame
             void
                 _updatePageRegion(long pageX, long pageZ,
                 PageRegion* region, VolumePage* page, Ogre::Vector2 volumeOrigin);
-            void _unloadPageRegion(VolumePage* page);
+            void _unloadPageRegion(VolumePage* page, Ogre::PageID regionId);
+            void
+                _processLoadQueue();
        
         
         };

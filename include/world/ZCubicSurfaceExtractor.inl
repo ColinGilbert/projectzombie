@@ -75,12 +75,12 @@ namespace PolyVox
     {
         using namespace PolyVox;
 
-        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth();
+        const size_t WORLD_BLOCK_WIDTH = _regSizeInVoxels.depth() + 1;
         std::vector<RLE_VEC> rleXs(WORLD_BLOCK_WIDTH); 
         std::vector<RLE_INFO> rleXsInfo(WORLD_BLOCK_WIDTH);
-        int16_t startX = _regSizeInVoxels.getLowerCorner().getX();
+        int16_t startX = _regSizeInVoxels.getLowerCorner().getX() - 1;
             
-        for(int16_t z = _regSizeInVoxels.getLowerCorner().getZ(); z < _regSizeInVoxels.getUpperCorner().getZ(); z++)
+        for(int16_t z = _regSizeInVoxels.getLowerCorner().getZ() - 1; z < _regSizeInVoxels.getUpperCorner().getZ(); z++)
         {
             //Initialize X faces
             for(size_t i = 0; i < WORLD_BLOCK_WIDTH; ++i)
@@ -90,7 +90,7 @@ namespace PolyVox
                     rleXsInfo[i].whichFace, rleXsInfo[i].faceMaterial, X);
             }
 
-            int16_t regZ = z - _regSizeInVoxels.getLowerCorner().getZ();
+            //int16_t regZ = z - _regSizeInVoxels.getLowerCorner().getZ();
 
             for(int16_t y = _regSizeInVoxels.getLowerCorner().getY(); y < _regSizeInVoxels.getUpperCorner().getY(); y++)
             {
@@ -112,12 +112,10 @@ namespace PolyVox
 
                 int16_t regY = y - _regSizeInVoxels.getLowerCorner().getY();
 
-                for(int16_t x = _regSizeInVoxels.getLowerCorner().getX(); x < _regSizeInVoxels.getUpperCorner().getX(); x++)
+                for(int16_t x = _regSizeInVoxels.getLowerCorner().getX() - 1; x < _regSizeInVoxels.getUpperCorner().getX(); x++)
                 {
                     //Start at the lower corner x.
-                    int16_t regX = x - _regSizeInVoxels.getLowerCorner().getX();
-                    if(x == 63 && y == 127 && z == 79)
-                        cout << "stop here" << endl;
+                    int16_t regX = x - _regSizeInVoxels.getLowerCorner().getX() + 1;
                     VoxelType currentMaterial = _volData->getVoxelAt(x, y, z);
                     VoxelType currentMaterialPlusZ = _volData->getVoxelAt(x, y, z+1);
                     VoxelType currentMaterialPlusY = _volData->getVoxelAt(x, y+1, z);

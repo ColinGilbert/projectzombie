@@ -28,6 +28,23 @@ GraphicsController::GraphicsController() :
 _hdrCompositor(0), _WHICH_TONEMAPPER(3), _WHICH_STARTYPE(1), _WHICH_GLARETYPE(1), _AUTO_KEY(0.16),
     _ADAPT_SCALE(3), _GLARE_STRENGTH(0.1), _STAR_STRENGTH(0.1), _skyX(0),_timeCount(0.0f)
 {
+    _compositorNames.push_back("SSAO/HemisphereMC");
+    _compositorNames.push_back("SSAO/Volumetric");
+    _compositorNames.push_back("SSAO/HorizonBased");
+    _compositorNames.push_back("SSAO/Crytek");
+    _compositorNames.push_back("SSAO/CreaseShading");
+    _compositorNames.push_back("SSAO/UnsharpMask");
+    _compositorNames.push_back("SSAO/ShowDepth");
+    _compositorNames.push_back("SSAO/ShowNormals");
+    _compositorNames.push_back("SSAO/ShowViewPos");
+
+    _postEfxNames.push_back("SSAO/Post/NoFilter");
+    _postEfxNames.push_back("SSAO/Post/CrossBilateralFilter");
+    _postEfxNames.push_back("SSAO/Post/SmartBoxFilter");
+    _postEfxNames.push_back("SSAO/Post/BoxFilter");
+
+    _currentCompositor = _compositorNames[0];
+    _currentPostEfx = _postEfxNames[0];
 }
 
 GraphicsController::~GraphicsController()

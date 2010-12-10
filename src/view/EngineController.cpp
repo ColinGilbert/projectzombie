@@ -134,6 +134,7 @@ namespace ZGame
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
     _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Pchaos.log"));
+    _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
     //_root->setWorkQueue(OGRE_NEW Ogre::DefaultWorkQueue("DefaultWorkerQueue"));
 
     if (_root->showConfigDialog())

@@ -54,13 +54,16 @@ void
 void
     VolumeMapView::unloadRegion(PhysicsManager* phyMgr)
 {
-    
+    if(_manual)
+    {
         _manual->detachFromParent();
         _scnMgr->destroyManualObject(_manual);
+        _manual = 0;
         _root->setVisible(false, true);
         if(_phyBody)
             phyMgr->destroyBody(_phyBody);
         _phyBody = 0;
+    }
     
 }
 
