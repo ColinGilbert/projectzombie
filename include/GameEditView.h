@@ -11,7 +11,7 @@
 #include <memory>
 #include <Ogre.h>
 #include <OIS/OIS.h>
-
+#include <ZInitPacket.h>
 namespace ZGame
 {
   class ImposterGen;
@@ -40,7 +40,7 @@ namespace ZGame
 
     //life cycle methods
     bool onUpdate(const Ogre::FrameEvent& evt);
-    bool onInit();
+    bool onInit(ZGame::ZInitPacket initPacket);
     bool onDestroy();
     //control event methods
     //keyboard

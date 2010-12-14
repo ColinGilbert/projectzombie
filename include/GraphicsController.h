@@ -6,7 +6,7 @@
 #include <Ogre.h>
 #include <OIS/OIS.h>
 #include "graphics/HDRCompositor.h"
-
+#include "ZInitPacket.h"
 #include "SkyX/SkyX.h"
 
 #include <memory>
@@ -105,7 +105,7 @@ namespace ZGame
     static const size_t NUM_OF_BANDS = 5;
 
     bool
-    onInit();
+    onInit(ZGame::ZInitPacket packet);
     bool
     onDestroy();
     bool

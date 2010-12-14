@@ -31,7 +31,7 @@ THE SOFTWARE.
 #include "Controller.h"
 #include "world/WorldMap.h"
 #include "world/DummyPageProvider.h"
-
+#include "ZInitPacket.h"
 /**
 *This class defines the world controller.
 *
@@ -52,7 +52,7 @@ namespace ZGame
             ~WorldController();
 
             //implements the LifeCycleEvents
-            bool onInit();
+            bool onInit(ZGame::ZInitPacket initPacket);
             bool onUpdate(const Ogre::FrameEvent &evt);
             bool onDestroy();
             // Temp method for testing

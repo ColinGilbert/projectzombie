@@ -145,6 +145,8 @@ namespace ZGame
 
     int _statsClockVariable;
 
+    ZInitPacket* _initPacket;
+
   };
 
 }

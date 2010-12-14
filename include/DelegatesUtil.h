@@ -58,13 +58,13 @@ namespace ZGame
 
         template<typename T>
         void
-            bindIfOnInit(T* t, LifeCycleObserver& lfcObs,  const typename enable_if<has_on_init<T, bool(T::*)() >::value, T>::type* = 0)
+            bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_init<T, bool(T::*)(ZGame::ZInitPacket initPacket) >::value, T>::type* = 0)
         {
             lfcObs.onInit.bind(t, &T::onInit);
         }
         template<typename T>
         void
-            bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_init<T, bool(T::*)() >::value, T>::type* = 0)
+            bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_init<T, bool(T::*)(ZGame::ZInitPacket initPacket) >::value, T>::type* = 0)
         {
             lfcObs.onInit.clear();
         }
@@ -122,7 +122,7 @@ namespace ZGame
         static void bindAndRegisterLifeCycleObserver(LifeCycleRegister &lfcReg, LifeCycleObserver &lfcObs,
             T& binder, unsigned eventMask = LFC_ON_DESTROY | LFC_ON_INIT | LFC_ON_UPDATE | LFC_ON_RENDER_QUEUE_START)
         {
-            eventMask & LFC_ON_UPDATE ? bindIfOnInit<T>(&binder, lfcObs) : lfcObs.onUpdate.clear();
+            eventMask & LFC_ON_INIT ? bindIfOnInit<T>(&binder, lfcObs) : lfcObs.onUpdate.clear();
             eventMask & LFC_ON_RENDER_QUEUE_START ? bindIfOnRenderQueueStart<T>(&binder, lfcObs) : lfcObs.onRenderQueueStart.clear();
             eventMask & LFC_ON_DESTROY ? bindIfOnDestroy<T>(&binder, lfcObs) : lfcObs.onDestroy.clear();
             eventMask & LFC_ON_UPDATE ? bindIfOnUpdateWithFrame<T>(&binder, lfcObs) : lfcObs.onUpdate.clear();

@@ -7,6 +7,7 @@
 #include <string>
 #include <Ogre.h>
 
+#include "ZInitPacket.h"
 #include "ZException.h"
 
 using ZGame::Exception;
@@ -41,7 +42,7 @@ namespace ZGame
             void prepare(Entities::ZEntityBuffers* entBufs, World::WorldMap* worldMap);
             bool onUpdate(const Ogre::FrameEvent &evt);
             bool onUpdate();
-            bool onInit(void){ return true;}
+            bool onInit(ZGame::ZInitPacket packet){ return true;}
             bool onDestroy(void){ return true;}
             void printKernelTime();
             /** \brief This method will get the position and orientation buffers.**/

@@ -152,10 +152,13 @@ namespace ZGame
 
     cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 
-    _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
+    _initPacket = new ZInitPacket;
+    _initPacket->initialCamera = cam;
+    _initPacket->sceneManager = _scnMgr;
 
+    _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
    
-      //input
+     //input
     _inController.reset(new InputController());
     _inController->onInit(_window);
     injectInputSubject();
@@ -498,8 +501,10 @@ namespace ZGame
         keyReg.injectKeySubj(ks);
         mouseReg.injectMouseSubj(ms);
         logM->logMessage(Ogre::LML_TRIVIAL, "About to update onInit obs");
-        _lfcPump->updateOnItObs(); //pump on init event to observers.
+        
+        _lfcPump->updateOnItObs(*_initPacket); //pump on init event to observers.
 
+        delete _initPacket;
       }
     logM->logMessage(Ogre::LML_NORMAL, "Realizing current state done");
   }

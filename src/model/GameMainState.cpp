@@ -132,7 +132,7 @@ void
 *
 **/
 bool
-    GameMainState::onInit()
+    GameMainState::onInit(ZGame::ZInitPacket initPacket)
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameMainState onInit");
 
@@ -142,7 +142,7 @@ bool
     _entMgr.reset(new Entities::EntitiesManager());
     _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
 
-    _worldController->onInit();
+    _worldController->onInit(initPacket);
     Ogre::LogManager::getSingleton().logMessage("Done creating world");
 
     //createCharacters();
@@ -152,8 +152,6 @@ bool
     _workspace.reset(new ZWorkspace(_entMgr.get(), _rdrEntMgr.get(), getSdkTray(), _zclCtrl.get(), _worldController.get()));
     _workspaceCtrl->setZWorkspaceController(_workspace.get());
     //_entsView->init(_workspace.get());
-
-
     return true;
 }
 

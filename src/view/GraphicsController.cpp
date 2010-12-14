@@ -54,7 +54,7 @@ GraphicsController::~GraphicsController()
 }
 
 bool
-    GraphicsController::onInit()
+    GraphicsController::onInit(ZGame::ZInitPacket packet)
 {
      for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
     {

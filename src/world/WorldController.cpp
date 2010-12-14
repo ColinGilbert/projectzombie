@@ -38,7 +38,7 @@ WorldController::~WorldController()
 
 
 //Life cycle events
-bool WorldController::onInit()
+bool WorldController::onInit(ZGame::ZInitPacket packet)
 {
     _init();
     return true;

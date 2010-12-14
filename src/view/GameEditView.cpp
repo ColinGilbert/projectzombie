@@ -34,7 +34,7 @@ GameEditView::onUpdate(const Ogre::FrameEvent& evt)
 }
 
 bool
-GameEditView::onInit()
+    GameEditView::onInit(ZGame::ZInitPacket initPacket)
 {
   Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
       "in GameEditView::onInit()");

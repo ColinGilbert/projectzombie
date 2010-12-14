@@ -8,9 +8,10 @@
 using namespace std;
 #include <Ogre.h>
 #include "LifeCycleDelegates.h"
-
+#include "ZInitPacket.h"
 namespace ZGame
 {
+    
     class LifeCyclePump
     {
     public:
@@ -20,7 +21,7 @@ namespace ZGame
         void addLifeCycleObserver(const ZGame::LifeCycle::LifeCycleObserver &obs);
 
         //life cycle updates
-        void updateOnItObs();
+        void updateOnItObs(ZGame::ZInitPacket initPacket);
         void updateOnUpdateObs(const Ogre::FrameEvent& evt);
         void updateOnDestroyObs();
         void updateOnRenderQueueStartObs(Ogre::uint8 queueGroupId, 
@@ -32,9 +33,10 @@ namespace ZGame
         typedef std::vector<ZGame::LifeCycle::LifeCycleEvent>::iterator LifeCycleObsItr;
         typedef std::vector<ZGame::LifeCycle::LifeCycleEvent2>::iterator LifeUpdateObsItr;
         typedef std::vector<ZGame::LifeCycle::LifeCycleRdrQueueStart>::iterator LifeRdrQueueStartObsItr;
-        std::vector<ZGame::LifeCycle::LifeCycleEvent> _onInitObs; //on init observers
-        std::vector<ZGame::LifeCycle::LifeCycleEvent2> _onUpdateObs; //on update observers
-        std::vector<ZGame::LifeCycle::LifeCycleEvent> _onDestroyObs; //on destroy observers
+        typedef std::vector<ZGame::LifeCycle::LifeCycleOnInit>::iterator LifeCycleOnInitItr;;
+        std::vector<ZGame::LifeCycle::LifeCycleOnInit> _onInitObs; 
+        std::vector<ZGame::LifeCycle::LifeCycleEvent2> _onUpdateObs; 
+        std::vector<ZGame::LifeCycle::LifeCycleEvent> _onDestroyObs; 
         std::vector<ZGame::LifeCycle::LifeCycleRdrQueueStart> _onRenderQueueStartObs;
 
 

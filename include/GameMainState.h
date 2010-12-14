@@ -56,7 +56,7 @@ namespace ZGame
 
         //life cycle methods
         bool onUpdate(const Ogre::FrameEvent &evt);
-        bool onInit();
+        bool onInit(ZGame::ZInitPacket packet);
         bool onDestroy();
 
         //Mouse events

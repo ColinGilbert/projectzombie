@@ -38,11 +38,11 @@ LifeCyclePump::addLifeCycleObserver(
  * Update onInit() observers
  */
 void
-LifeCyclePump::updateOnItObs()
+LifeCyclePump::updateOnItObs(ZGame::ZInitPacket initPacket)
 {
-  for (LifeCycleObsItr it = _onInitObs.begin(); it != _onInitObs.end(); ++it)
+  for (LifeCycleOnInitItr it = _onInitObs.begin(); it != _onInitObs.end(); ++it)
     {
-      (*it)();
+      (*it)(initPacket);
     }
 }
 /**

@@ -44,7 +44,7 @@ bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
   return true;
 }
 
-bool GameMainMenuState::onInit()
+bool GameMainMenuState::onInit(ZGame::ZInitPacket packet)
 {
   return true;
 }
