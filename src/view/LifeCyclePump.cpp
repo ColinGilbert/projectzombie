@@ -30,6 +30,8 @@ LifeCyclePump::addLifeCycleObserver(
     _onUpdateObs.push_back(obs.onUpdate);
   if (obs.onDestroy)
     _onDestroyObs.push_back(obs.onDestroy);
+  if (obs.onRenderQueueStart)
+      _onRenderQueueStartObs.push_back(obs.onRenderQueueStart);
 }
 
 /**
@@ -64,6 +66,17 @@ LifeCyclePump::updateOnDestroyObs()
   for (LifeCycleObsItr it = _onDestroyObs.begin(); it != _onDestroyObs.end(); ++it)
     {
       (*it)(); //make delegate call
+    }
+}
+
+void
+    LifeCyclePump::updateOnRenderQueueStartObs(Ogre::uint8 queueGroupId,
+    const Ogre::String& invocation, bool& skipThisInvocation)
+{
+    for(LifeRdrQueueStartObsItr it = _onRenderQueueStartObs.begin(); 
+        it != _onRenderQueueStartObs.end(); ++it)
+    {
+        (*it)(queueGroupId, invocation, skipThisInvocation);
     }
 }
 

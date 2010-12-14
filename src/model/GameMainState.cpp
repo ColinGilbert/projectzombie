@@ -73,20 +73,18 @@ void
     GameState::regLfcObsForInjection(lfcReg);
     //this
     LifeCycle::LifeCycleObserver lfcObs;
-    LifeCycle::bindLifeCycleObserver(lfcObs, *this);
-    lfcReg.registerLfcObs(lfcObs);
-
+    LifeCycle::bindAndRegisterLifeCycleObserver<GameMainState>(lfcReg, 
+        lfcObs, *this);
     
     //OpenCLController
-    LifeCycle::bindLifeCycleObserver(lfcObs, *_zclCtrl, LifeCycle::LFC_ON_DESTROY);
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZCL::ZCLController>(lfcReg, 
+        lfcObs, *_zclCtrl, LifeCycle::LFC_ON_DESTROY);
     //world controller
-    LifeCycle::bindLifeCycleObserver(lfcObs, *_worldController, LifeCycle::LFC_ON_DESTROY);
-    lfcReg.registerLfcObs(lfcObs);
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::World::WorldController>(lfcReg, 
+        lfcObs, *_worldController, LifeCycle::LFC_ON_DESTROY);
 
     //control module
-    LifeCycle::bindLifeCycleObserver(lfcObs, *_controlMod);
-    lfcReg.registerLfcObs(lfcObs);
-
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, *_controlMod);
     //Workspace controller
 }
 

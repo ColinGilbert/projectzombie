@@ -23,16 +23,19 @@ namespace ZGame
         void updateOnItObs();
         void updateOnUpdateObs(const Ogre::FrameEvent& evt);
         void updateOnDestroyObs();
+        void updateOnRenderQueueStartObs(Ogre::uint8 queueGroupId, 
+            const Ogre::String& invocation, bool& skipThisInvocation);
         void removeAllObs();
 
     protected:
         //life cycle
         typedef std::vector<ZGame::LifeCycle::LifeCycleEvent>::iterator LifeCycleObsItr;
         typedef std::vector<ZGame::LifeCycle::LifeCycleEvent2>::iterator LifeUpdateObsItr;
+        typedef std::vector<ZGame::LifeCycle::LifeCycleRdrQueueStart>::iterator LifeRdrQueueStartObsItr;
         std::vector<ZGame::LifeCycle::LifeCycleEvent> _onInitObs; //on init observers
         std::vector<ZGame::LifeCycle::LifeCycleEvent2> _onUpdateObs; //on update observers
         std::vector<ZGame::LifeCycle::LifeCycleEvent> _onDestroyObs; //on destroy observers
-
+        std::vector<ZGame::LifeCycle::LifeCycleRdrQueueStart> _onRenderQueueStartObs;
 
 
     };

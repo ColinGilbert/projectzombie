@@ -36,11 +36,9 @@ void
     //This state
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regLfcObsForInjection");
     LifeCycle::LifeCycleObserver lfcObs;
-    LifeCycle::bindLifeCycleObserver(lfcObs, *this);
-    lfcReg.registerLfcObs(lfcObs);
-
-    LifeCycle::bindLifeCycleObserver(lfcObs, _controlMod);
-    lfcReg.registerLfcObs(lfcObs);
+    LifeCycle::bindAndRegisterLifeCycleObserver<GameEditState>(lfcReg, lfcObs, *this);
+   
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, _controlMod);
     
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Out GameEditState regLfcObsForInjection");
 }

@@ -145,8 +145,7 @@ namespace ZGame
       return false;
 
     chooseSceneManager();
-    _scnMgr->setShadowTechnique(Ogre::SHADOWDETAILTYPE_ADDITIVE);
-
+  
     Ogre::Camera* cam = createDefaultCamera();
     Ogre::Viewport* vp = _window->addViewport(cam);
     vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
@@ -172,8 +171,6 @@ namespace ZGame
 
     //load states
     loadStates();
-
-   
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
     lm->setLogDetail(Ogre::LL_NORMAL);
@@ -519,9 +516,7 @@ namespace ZGame
   EngineController::manuallyRegisterNetClient(LifeCycleRegister &lfcReg)
   {
     LifeCycle::LifeCycleObserver lfcObs;
-    LifeCycle::bindLifeCycleObserver(lfcObs, *_netClient.get());
-    lfcReg.registerLfcObs(lfcObs);
-    LifeCycle::clearLfcObs(lfcObs);
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::Networking::NetClientController>(lfcReg, lfcObs, *_netClient.get());
   }
 
 }

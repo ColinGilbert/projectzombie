@@ -26,9 +26,8 @@ void GameMainMenuState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
   //This
   LifeCycle::LifeCycleObserver lfcObs;
-  LifeCycle::bindLifeCycleObserver(lfcObs,*this);
+  LifeCycle::bindAndRegisterLifeCycleObserver<GameMainMenuState>(lfcReg, lfcObs,*this);
   lfcReg.registerLfcObs(lfcObs);
-  LifeCycle::clearLfcObs(lfcObs);
 }
 
 void GameMainMenuState::regKeyObsForInjection(KeyEventRegister &keyReg)

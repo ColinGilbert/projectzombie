@@ -20,6 +20,8 @@ namespace ZGame
 
       typedef FastDelegate<bool(void) > LifeCycleEvent;
       typedef FastDelegate<bool(const Ogre::FrameEvent &evt) > LifeCycleEvent2;
+      typedef FastDelegate<bool(Ogre::uint8 queueGroupId,
+          const Ogre::String& invocation, bool& skipThisInvocation) > LifeCycleRdrQueueStart;
 
       struct LifeCycleObserver
             {
@@ -27,13 +29,14 @@ namespace ZGame
               //LifeCycleEvent onUpdate;
               LifeCycleEvent2 onUpdate;
               LifeCycleEvent onDestroy;
+              LifeCycleRdrQueueStart onRenderQueueStart;
             };
 
       //typedef FastDelegate<void(LifeCycleObserver) > LifeCycleSubject;
       //typedef FastDelegate<void(LifeCycleSubject&) > LifeCycleSubjectInjector;
 
       typedef FastDelegate<void(const LifeCycleObserver&) > LifeCycleSubject;
-      typedef FastDelegate1<LifeCycleSubject& > LifeCycleSubjectInjector;
+      //typedef FastDelegate1<LifeCycleSubject& > LifeCycleSubjectInjector;
 
 
 

@@ -40,8 +40,7 @@ namespace ZGame
         GameState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
     {
         LifeCycle::LifeCycleObserver lfcObs;
-        LifeCycle::bindLifeCycleObserver(lfcObs, *_gfxCtrl);
-        lfcReg.registerLfcObs(lfcObs);
+        LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl);
     }
     void
         GameState::regKeyObsForInjection(KeyEventRegister &keyReg)
