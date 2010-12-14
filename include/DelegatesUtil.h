@@ -58,7 +58,7 @@ namespace ZGame
 
         template<typename T>
         void
-            bindIfOnInit(T* t, LifeCycleObserver& lfcObs,  typename enable_if<has_on_init<T, bool(T::*)() >::value, T>::type* = 0)
+            bindIfOnInit(T* t, LifeCycleObserver& lfcObs,  const typename enable_if<has_on_init<T, bool(T::*)() >::value, T>::type* = 0)
         {
             lfcObs.onInit.bind(t, &T::onInit);
         }
@@ -71,14 +71,16 @@ namespace ZGame
 
         template<typename T>
         void
-            bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs,  typename enable_if<has_on_render_queue_start<T, bool(T::*)() >::value, T>::type* = 0)
+            bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs,  typename enable_if<has_on_render_queue_start<T, 
+                bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0)
         {
             lfcObs.onRenderQueueStart.bind(t, &T::onRenderQueueStart);
         }
 
         template<typename T>
         void
-            bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_render_queue_start<T, bool(T::*)() >::value, T>::type* = 0 )
+            bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_render_queue_start<T, 
+                bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0 )
         {
             lfcObs.onRenderQueueStart.clear();
         }
@@ -99,14 +101,16 @@ namespace ZGame
 
         template<typename T>
         void     
-            bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_update_with_frame<T, bool(T::*)(const Ogre::FrameEvent &evt) >::value, T*>::type = 0)
+            bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_update_with_frame<T, 
+                bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
         {
             lfcObs.onUpdate.bind(t, &T::onUpdate);
         }
 
         template<typename T>
         void
-            bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_update_with_frame<T, bool(T::*)(const Ogre::FrameEvent &evt) >::value, T*>::type = 0)
+            bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_update_with_frame<T, 
+                bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
         {
             lfcObs.onUpdate.clear();
         }
