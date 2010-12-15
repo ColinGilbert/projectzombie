@@ -6,7 +6,6 @@
 */
 
 #include "world/VolumeMapView.h"
-#include "EngineView.h"
 #include <iostream>
 #include <Shapes/OgreBulletCollisionsTrimeshShape.h>
 #include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
@@ -21,9 +20,10 @@ using PolyVox::SurfaceMesh;
 using PolyVox::Vector3DFloat;
 using namespace Ogre;
 
-VolumeMapView::VolumeMapView() : _manual(0), _phyBody(0)
+VolumeMapView::VolumeMapView(Ogre::SceneManager* scnMgr) : 
+    _scnMgr(scnMgr), _manual(0), _phyBody(0),
+        _root(scnMgr->getRootSceneNode()->createChildSceneNode())
 {
-    _initManualObject();
 }
 
 VolumeMapView::~VolumeMapView()
@@ -31,14 +31,7 @@ VolumeMapView::~VolumeMapView()
 
 }
 
-void
-    VolumeMapView::_initManualObject()
-{
-    _scnMgr = EngineView::getSingleton().getSceneManager();
-    _root = _scnMgr->getRootSceneNode()->createChildSceneNode();
-   
 
-}
 
 void
     VolumeMapView::createRegion(const Ogre::Vector3 &origin, PolyVox::SurfaceMesh<PositionMaterial>* mesh)

@@ -20,7 +20,6 @@ using std::endl;
 #include "world/WorldDefs.h"
 #include "world/ZCubicSurfaceExtractor.h"
 #include "world/PhysicsManager.h"
-#include "EngineView.h"
 
 #include <OgreBulletCollisionsRay.h>
 
@@ -45,7 +44,7 @@ using namespace Ogre;
 const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 
 
-VolumeMap::VolumeMap(size_t volSideLenInPages, bool FORCE_SYNC) :
+VolumeMap::VolumeMap(Ogre::SceneManager* scnMgr, size_t volSideLenInPages, bool FORCE_SYNC) : _scnMgr(scnMgr),
 _volSideLenInPages(volSideLenInPages), _volSizeInBlocks(volSideLenInPages*WORLD_BLOCK_WIDTH), _volHeight(WORLD_HEIGHT),
     _FORCE_SYNC(FORCE_SYNC)
 {
@@ -252,7 +251,7 @@ void VolumeMap::loadPage(Ogre::PageID pageID)
     }
     else
         page = findMe->second;
-    PageRegion* region = page->createRegion(pageID);
+    PageRegion* region = page->createRegion(pageID, _scnMgr);
     if(region)
     {
         region->loading = true;

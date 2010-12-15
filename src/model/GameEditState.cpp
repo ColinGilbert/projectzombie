@@ -14,7 +14,6 @@
 #include "EventDelegates.h"
 #include "DelegatesUtil.h" //This is for LifeCycle::bindLifeCycleObserver and etc...
 #include "GraphicsController.h"
-#include "EngineView.h"
 namespace ZGame
 {
     GameEditState::GameEditState() :

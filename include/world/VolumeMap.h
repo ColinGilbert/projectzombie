@@ -45,7 +45,7 @@ namespace ZGame
         class VolumeMap : public Ogre::WorkQueue::RequestHandler, public Ogre::WorkQueue::ResponseHandler
         {
         public:
-            VolumeMap(size_t volSideLenInPages = 3, bool ASYNC = false);
+            VolumeMap(Ogre::SceneManager* scnMgr, size_t volSideLenInPages = 3, bool ASYNC = false);
             virtual
                 ~VolumeMap();
             void
@@ -94,7 +94,7 @@ namespace ZGame
             Ogre::uint16 _workQueueChannel;
             struct PageRegion
             {
-                PageRegion() : loading(false),
+                PageRegion(Ogre::SceneManager* scnMgr) : mapView(scnMgr), loading(false),
                 deferredUnload(false) {}
                 VolumeMapView mapView;
                 bool loading;
@@ -125,12 +125,12 @@ namespace ZGame
                   Ogre::PageID id;
                   PolyVox::UInt8Volume data;
                   PageRegion*
-                      createRegion(Ogre::PageID pageId)
+                      createRegion(Ogre::PageID pageId, Ogre::SceneManager* scnMgr)
                   {
                       REGION_MAP::iterator findMe = _regionMap.find(pageId);
                       if(findMe == _regionMap.end())
                       {
-                          PageRegion* region = OGRE_NEW_T(PageRegion, Ogre::MEMCATEGORY_GENERAL);
+                          PageRegion* region = OGRE_NEW_T(PageRegion, Ogre::MEMCATEGORY_GENERAL)(scnMgr);
                           region->loading = true;
                           _regionMap[pageId] = region;
                           return region;
@@ -192,8 +192,7 @@ namespace ZGame
 
          private:
             
-            //PolyVox::Volume<PolyVox::MaterialDensityPair44> _data;
-            VolumeMapView _view;
+            Ogre::SceneManager* _scnMgr;
             Ogre::uint32 _volSideLenInPages;
             Ogre::uint32 _volSizeInBlocks;
             Ogre::uint32 _volHeight;

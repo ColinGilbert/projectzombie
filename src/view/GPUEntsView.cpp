@@ -8,7 +8,6 @@
 using namespace std;
 #include "GPUEntsView.h"
 #include "GPUEntities.h"
-#include "EngineView.h"
 #include "GPUEntsMeshBuilder.h"
 #include "LifeCycleDelegates.h"
 #include "Imposter.h"

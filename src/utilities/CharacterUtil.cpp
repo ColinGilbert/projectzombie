@@ -3,7 +3,6 @@
 
 #include <Ogre.h>
 
-#include "EngineView.h"
 #include "utilities/CharacterUtil.h"
 #include "CommandController.h"
 #include "command/CommandList.h"
@@ -44,6 +43,13 @@ _dist(_rng,_xDist,_zDist)
     
     cmd.bind(this,&ZGame::Util::CharacterUtil::removeNode);
     cmdCtrl.addCommand(CommandList::NODEREMOVE, cmd.GetMemento());
+}
+
+bool
+    CharacterUtil::onInit(ZGame::ZInitPacket packet)
+{
+    _scnMgr = packet.sceneManager;
+    return true;
 }
 
 void CharacterUtil::setInput()
@@ -116,11 +122,10 @@ bool CharacterUtil::create(const Ogre::StringVector &params)
 bool CharacterUtil::listNodes(const Ogre::StringVector &params)
 {
     using namespace std;
-    Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-
+    
     //Ogre::SceneNode* root = scnMgr->getRootSceneNode();
 
-    Ogre::Node* root = (Ogre::Node*)scnMgr->getRootSceneNode();
+    Ogre::Node* root = (Ogre::Node*)_scnMgr->getRootSceneNode();
     Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
     oss << "listnodes utility: \n";
 
@@ -296,11 +301,10 @@ bool CharacterUtil::createCharFromMesh(const Ogre::StringVector &params)
     //{
     //Now everything is good to go. Create the scene nodes and attach mesh to it.
     oss << "Creating character: " << params[1] << "\n";
-    Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
     Ogre::String nodeName;
     //Ogre::String nodeName = meshName+"NODE";
     Ogre::String entName = "";
-    Ogre::SceneNode* root = scnMgr->getRootSceneNode();
+    Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
     //Ogre::SceneNode* node = root->createChildSceneNode(nodeName);
     Ogre::SceneNode* node;
     if(params.size() == 2) //auto node name.
@@ -316,7 +320,7 @@ bool CharacterUtil::createCharFromMesh(const Ogre::StringVector &params)
     }
     oss << "Created child node in root called: " << node->getName() << "\n";
     entName = meshName + node->getName();
-    Ogre::Entity* entity = scnMgr->createEntity(entName,meshName);
+    Ogre::Entity* entity = _scnMgr->createEntity(entName,meshName);
     //entity->setDisplaySkeleton(true);
     oss << "Created entity: " << entName << "\n";
     //entity->scale(0.0078125,0.0078125,0.0078125);
@@ -377,8 +381,7 @@ CharacterUtil::removeNodeWithName(const Ogre::String &nodeName)
     Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
     oss << "In CharacterUtil::removeNodeWithName" << "\n";
     bool nodeRemoved = true;
-    Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-    Ogre::SceneNode* root = scnMgr->getRootSceneNode();
+    Ogre::SceneNode* root = _scnMgr->getRootSceneNode();
     Ogre::SceneNode* theNode = static_cast<Ogre::SceneNode*>(root->getChild(nodeName));
     if(theNode == 0)
     {
@@ -390,7 +393,7 @@ CharacterUtil::removeNodeWithName(const Ogre::String &nodeName)
     for(size_t i = 0; i < theNode->numAttachedObjects(); ++i)
     {
         ent = static_cast<Ogre::Entity*>(theNode->detachObject(i)); //we have to positive the node only contain entities. That is the assumption right now for testing.
-        scnMgr->destroyEntity(ent);
+        _scnMgr->destroyEntity(ent);
     }
     root->removeAndDestroyChild(theNode->getName());
     oss << "the node is removed!" << "\n";

@@ -11,7 +11,6 @@
 #include "entities/EntitiesManager.h"
 #include "entities/RenderEntitiesManager.h"
 #include "ZWorkspace.h"
-#include "EngineView.h"
 using std::cout;
 using std::endl;
 using ZGame::Entities::EntitiesMenu;
@@ -102,7 +101,7 @@ EntitiesCreateMenu::EntitiesCreateMenu(ZWorkspace* workspace) :
   _createLabel = tray->createLabel(OgreBites::TL_TOPLEFT, "ENTCREATELABEL", "Entity Group Creation.", width);
   _addGroupButton = tray->createButton(OgreBites::TL_TOPLEFT, "ENTADDGROUPBUTTON", "Add A Group", width);
 
-  _cam = EngineView::getSingleton().getCurrentCamera();
+  //_cam = EngineView::getSingleton().getCurrentCamera();
 }
 
 bool

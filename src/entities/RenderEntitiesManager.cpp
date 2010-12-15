@@ -18,14 +18,13 @@ using boost::shared_ptr;
 #include "CommandController.h"
 //#include "command/CommandList.h"
 #include "command/CreateEntCmd.h"
-#include "EngineView.h"
 #include "entities/ZEntity.h"
 #include "entities/InstancedRdrEntitiesBuilder.h"
 using ZGame::COMMAND::CreateRenderEntCmd;
 using namespace ZGame::Entities;
 
 RenderEntitiesManager::RenderEntitiesManager() :
-_scnMgr(EngineView::getSingleton().getSceneManager()), _instMgr(0),
+_scnMgr(0), _instMgr(0),
     _instancesRoot(0)
 {
     GetRenderEntitiesManager dlg;
@@ -40,6 +39,13 @@ _scnMgr(EngineView::getSingleton().getSceneManager()), _instMgr(0),
 #else
     _entNodesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("ENTITIES_ROOT");
 #endif
+}
+
+bool
+    RenderEntitiesManager::onInit(ZGame::ZInitPacket initPacket)
+{
+    _scnMgr = initPacket.sceneManager;
+    return true;
 }
 
 RenderEntitiesManager::~RenderEntitiesManager()

@@ -1,6 +1,7 @@
 #pragma once
 #include "ZPrerequisites.h"
 #include <OIS/OIS.h>
+#include "ZInitPacket.h"
 
 namespace ZGame
 {
@@ -17,7 +18,7 @@ namespace ZGame
     public:
         ZWorkspaceController();
         ~ZWorkspaceController();
-        
+
         /**
         *\brief This method sets the workspace to corresponding to this controller.
         *
@@ -25,10 +26,15 @@ namespace ZGame
         *controller. No checking is done.
         */
         void
-            setZWorkspaceController(ZWorkspace* workspace)
+            setZWorkspace(ZWorkspace* workspace)
         {
             _workspace = workspace;
         }
+
+        bool
+            onInit(ZInitPacket packet);
+
+
 
         bool 
             onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
@@ -42,5 +48,8 @@ namespace ZGame
             onKeyUp(const OIS::KeyEvent &evt);
     private:
         ZWorkspace* _workspace;
+        /* TEMP VARIABLES. The way we are doing input out is not FINISHED*/
+        Ogre::Real _windowHeight;
+        Ogre::Real _windowWidth;
     };
 }

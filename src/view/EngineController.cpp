@@ -4,14 +4,10 @@
  *  Created on: Aug 24, 2008
  *      Author: bey0nd
  */
-//#define OIS_DYNAMIC_LIB
-//#include <string>
 #include <iostream>
 #include <stdexcept>
 using namespace std;
-//#include <Threading/DefaultWorkQueueStandard.h>
 #include "EngineController.h"
-#include "EngineView.h"
 #include "GameStateFactory.h"
 #include "StatesLoader.h"
 #include "InputController.h"
@@ -152,13 +148,9 @@ namespace ZGame
 
     cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 
-    _initPacket = new ZInitPacket;
-    _initPacket->initialCamera = cam;
-    _initPacket->sceneManager = _scnMgr;
-
-    _engineView.reset(new ZGame::EngineView(_window, cam, _scnMgr));
-   
-     //input
+    _initPacket = new ZInitPacket(_scnMgr, cam, _window);
+    
+    //input
     _inController.reset(new InputController());
     _inController->onInit(_window);
     injectInputSubject();

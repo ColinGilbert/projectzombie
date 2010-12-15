@@ -21,7 +21,6 @@ using namespace std;
 #include "ImposterGen.h"
 #include "GPUEntsGenProps.h"
 #include "GPUEntsDistributor.h"
-#include "EngineView.h"
 using namespace ZGame;
 using namespace Ogre;
 

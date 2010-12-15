@@ -7,7 +7,6 @@
 #include <iostream>
 #include <sstream>
 #include "GraphicsController.h"
-#include "EngineView.h"
 #include "CommandController.h"
 #include "command/CommandList.h"
 #include "CommandDelegates.h"
@@ -71,8 +70,8 @@ bool
 
     Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
     lm->logMessage(Ogre::LML_TRIVIAL, "In GraphicsController::onInit()");
-    _scnMgr = EngineView::getSingleton().getSceneManager();
-    _vp = EngineView::getSingleton().getCurrentCamera()->getViewport();
+    _scnMgr = packet.sceneManager;
+    _vp = packet.initialCamera->getViewport();
     lm->logMessage(Ogre::LML_NORMAL, "Adding compositor bloom");
 
     //First build the lights.
@@ -84,25 +83,20 @@ bool
     light->setDirection(lightDir);
     light->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
     light->setSpecularColour(ColourValue(0.1f, 0.1f, 0.1f));
-    
-    
-    //CompositorManager::getSingleton().setCompositorEnabled(_vp,"Bloom",true);
-    _ssaoListener.setCamera(EngineView::getSingleton().getCurrentCamera());
+       
+    _ssaoListener.setCamera(packet.initialCamera);
     Ogre::ColourValue fadeColour(0.109f, 0.417f, 0.625f);
-    //_scnMgr->setFog(Ogre::FOG_LINEAR, fadeColour, 0.0, 500.0f, 600.0f);
     _scnMgr->setFog(Ogre::FOG_NONE);
     _vp->setBackgroundColour(fadeColour);
 
     this->_parseHDRConfig();
 
-    _initHDR();
+    _initHDR(packet.renderWindow, packet.initialCamera);
     _initSSAO();
     _initSkyX();
     _ssaoInstance->setEnabled(true);
     _hdrCompositor->Enable(true);
     _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
-    //_scnMgr->setSkyBox(true, "Examples/MorningSkyBox", 10, true);
-    //_initShadows();
     _scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
     return true;
 }
@@ -191,9 +185,9 @@ void
 }
 
 void
-    GraphicsController::_initHDR()
+    GraphicsController::_initHDR(Ogre::RenderWindow* renderWindow, Ogre::Camera* initialCam)
 {
-    _hdrCompositor = new HDRCompositor(EngineView::getSingleton().renderWindow, EngineView::getSingleton().getCurrentCamera());
+    _hdrCompositor = new HDRCompositor(renderWindow, initialCam);
     ListenerFactoryLogic* logic = new ListenerFactoryLogic;
     logic->setCompositorListener(_hdrCompositor);
 

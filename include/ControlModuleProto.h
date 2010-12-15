@@ -11,6 +11,7 @@
 #define CONTROLMODULEPROTO_H_
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include "ZInitPacket.h"
 namespace ZGame
 {
 
@@ -31,6 +32,9 @@ namespace ZGame
         virtual
             ~ControlModuleProto();
 
+        bool
+            onInit(ZGame::ZInitPacket packet);
+
         //events methods
         bool
             onKeyDown(const OIS::KeyEvent &evt);
@@ -45,16 +49,14 @@ namespace ZGame
         bool
             onUpdate(const Ogre::FrameEvent &evt);
         bool
-            onInit(){return true;}
-        bool
             onDestroy(){return true;}
 
 
         bool attachNode(const Ogre::StringVector &params);
 
-    protected:
+    private:
 
-        Ogre::Vector3 _transVector;
+         Ogre::Vector3 _transVector;
         Ogre::Real _dTrans; //change in translation
         Ogre::Real _transFactor; //translation factor;
         Ogre::Real _rotYaw;
@@ -66,18 +68,9 @@ namespace ZGame
         int _mx;
         int _my;
 
-        enum TransMode
-        {
-            forw, backw, left, right, up, down
-        };
-        bool _transMode[6];
-
         void
             updateTransFactor(Ogre::Real factor);
-        void
-            toggleMode(enum TransMode mode);
-
-    private:
+      
         void printUsage();
 
         Ogre::SceneNode* _lookAtNode;

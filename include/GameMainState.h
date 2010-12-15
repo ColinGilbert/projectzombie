@@ -72,7 +72,7 @@ namespace ZGame
         bool _forward;
         bool _backward;
         Ogre::Real _trans;
-        shared_ptr<ControlModuleProto> _controlMod;
+       
                 
         virtual void
             regLfcObsForInjection(LifeCycleRegister &lfcReg);
@@ -85,8 +85,8 @@ namespace ZGame
 
     private:
     private:
+        std::auto_ptr<ControlModuleProto> _controlMod;
         std::auto_ptr<ZGame::World::WorldController> _worldController;
-        //Utilities for call back execution of commands
         std::auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
         std::auto_ptr<Entities::EntitiesManager> _entMgr;
         std::auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
@@ -94,9 +94,6 @@ namespace ZGame
         std::auto_ptr<Entities::EntitiesView> _entsView;
         std::auto_ptr<ZWorkspace> _workspace;
         std::auto_ptr<ZGame::ZWorkspaceController> _workspaceCtrl;
-        //Graphics stuff.
-        
-
     };
 }
 

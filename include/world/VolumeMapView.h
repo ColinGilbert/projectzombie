@@ -24,7 +24,7 @@ namespace ZGame
         class VolumeMapView
         {
         public:
-            VolumeMapView();
+            VolumeMapView(Ogre::SceneManager* scnMgr);
             virtual
                 ~VolumeMapView();
 
@@ -70,8 +70,6 @@ namespace ZGame
             Ogre::Vector3 _origin; //the origin of this block
             Ogre::SceneManager* _scnMgr;
             OgreBulletDynamics::RigidBody* _phyBody;
-            void
-                _initManualObject();
             /** \brief This method will create a manual mesh from the given PolyVox SurfaceMesh.**/
             void
                 _manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* mesh, Ogre::ManualObject* manual);

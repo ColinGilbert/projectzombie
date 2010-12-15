@@ -8,6 +8,7 @@
 #include <Ogre.h>
 
 #include "GPUEntsDistributor.h"
+#include "ZInitPacket.h"
 
 namespace ZGame
 {
@@ -18,6 +19,9 @@ namespace ZGame
         public:
             CharacterUtil();
             ~CharacterUtil(){}
+
+            bool
+                onInit(ZGame::ZInitPacket initPacket);
 
             void setInput();
 
@@ -34,6 +38,9 @@ namespace ZGame
 
 
         private:
+
+            Ogre::SceneManager* _scnMgr;
+
 
             std::map<Ogre::String,Ogre::SceneNode*> _charNodes;
             typedef std::map<Ogre::String,Ogre::SceneNode*>::iterator CHAR_ITR;

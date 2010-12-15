@@ -11,7 +11,6 @@ using namespace std;
 #include <boost/shared_ptr.hpp>
 #include "GameMainState.h"
 #include "entities/ZEntity.h"
-#include "EngineView.h"
 #include "ControlModuleProto.h"
 #include "world/WorldController.h"
 #include "CommandController.h"
@@ -33,10 +32,9 @@ using ZCL::ZCLController;
 //_cam(0), 
 GameMainState::GameMainState() :
 GameState(), _controlMod(new ControlModuleProto()),
-    _worldController(new World::WorldController()), _charUtil(
-    new Util::CharacterUtil()), _entMgr(0), //Do not initialize them here as services are not up yet when we are creating the GameMainState. This needs to change. i.e: we need to create game main state after ogre initializes.
-    _rdrEntMgr(0), _zclCtrl(new ZCLController()), _entsView(0), _workspace(0),
-    _workspaceCtrl(new ZWorkspaceController())
+    _worldController(new World::WorldController()), _charUtil(new Util::CharacterUtil()),
+    _workspaceCtrl(new ZWorkspaceController()), 
+    _entMgr(new Entities::EntitiesManager()), _rdrEntMgr(new Entities::RenderEntitiesManager())
 {
 
 }
@@ -59,6 +57,7 @@ GameMainState::~GameMainState()
     cout << "ents view reset." << endl;
 }
 
+
 /**
 *This class will register LifeCycle observers (to be later injected into LifeCycle subjects: The Subject Observer pattern.)
 *
@@ -76,16 +75,30 @@ void
     LifeCycle::bindAndRegisterLifeCycleObserver<GameMainState>(lfcReg, 
         lfcObs, *this);
     
+    //render entities
+    LifeCycle::bindAndRegisterLifeCycleObserver<Entities::RenderEntitiesManager>(lfcReg,
+        lfcObs, *_rdrEntMgr, LifeCycle::LFC_ON_INIT);
+    //entities manager
+    LifeCycle::bindAndRegisterLifeCycleObserver<Entities::EntitiesManager>(lfcReg,
+        lfcObs, *_entMgr, LifeCycle::LFC_ON_INIT);
+
     //OpenCLController
     LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZCL::ZCLController>(lfcReg, 
         lfcObs, *_zclCtrl, LifeCycle::LFC_ON_DESTROY);
     //world controller
     LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::World::WorldController>(lfcReg, 
-        lfcObs, *_worldController, LifeCycle::LFC_ON_DESTROY);
+        lfcObs, *_worldController, LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
 
     //control module
-    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, *_controlMod);
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, *_controlMod,
+        LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
     //Workspace controller
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
+        LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
+
+    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::Util::CharacterUtil>(lfcReg, lfcObs, *_charUtil,
+        LifeCycle::LFC_ON_INIT);
+    
 }
 
 /**
@@ -136,22 +149,12 @@ bool
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameMainState onInit");
 
-    //_zclCtrl->init("../scripts/testkernels.cl");
-    Ogre::LogManager::getSingleton().logMessage("Done initializing OpenCL.");
-    //Setup the entities manager.
-    _entMgr.reset(new Entities::EntitiesManager());
-    _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
-
-    _worldController->onInit(initPacket);
-    Ogre::LogManager::getSingleton().logMessage("Done creating world");
-
-    //createCharacters();
     Ogre::LogManager::getSingleton().logMessage("Done creating characters.");
-    //We need to initialize OpenCL after creating the world and entities, as OpenCL requires both entities and world map data to function.
     Ogre::LogManager::getSingleton().logMessage("Intitializing MainGameState SDK Tray.");
-    _workspace.reset(new ZWorkspace(_entMgr.get(), _rdrEntMgr.get(), getSdkTray(), _zclCtrl.get(), _worldController.get()));
-    _workspaceCtrl->setZWorkspaceController(_workspace.get());
-    //_entsView->init(_workspace.get());
+
+    _workspace.reset(new ZWorkspace(initPacket.sceneManager, _entMgr.get(), _rdrEntMgr.get(), getSdkTray(), _zclCtrl.get(), _worldController.get()));
+    _workspaceCtrl->setZWorkspace(_workspace.get());
+
     return true;
 }
 
@@ -178,8 +181,7 @@ bool
     GameMainState::onDestroy()
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameMainState::noDestroy()");
-    _zclCtrl->printKernelTime();
-    _controlMod->onDestroy();
+    //_zclCtrl->printKernelTime();
     return true;
 }
 /**

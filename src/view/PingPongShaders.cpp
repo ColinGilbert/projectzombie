@@ -8,7 +8,6 @@
 #include <cassert>
 #include <stdexcept>
 #include "PingPongShaders.h"
-#include "EngineView.h"
 
 namespace ZGame
 {

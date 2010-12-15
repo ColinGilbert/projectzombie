@@ -21,9 +21,9 @@ namespace ZGame
     {
     public:
 
-        GameStateInfo();
+        GameStateInfo(){}
         virtual
-            ~GameStateInfo();
+            ~GameStateInfo(){}
 
         Ogre::String key;
         Ogre::String gameStateClass;

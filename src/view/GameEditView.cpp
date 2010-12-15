@@ -6,7 +6,6 @@
  */
 #include <Ogre.h>
 #include "GameEditView.h"
-#include "EngineView.h"
 #include "ImposterGen.h"
 #include "Imposter.h"
 #include "ImposterView.h"
@@ -73,30 +72,5 @@ GameEditView::onKeyUp(const OIS::KeyEvent &evt)
 bool
 GameEditView::onKeyDown(const OIS::KeyEvent &evt)
 {
-  using namespace Ogre;
-  Camera* cam = EngineView::getSingleton().getCurrentCamera();
-
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
-      "GameEditView::keyDownEvt");
-  if (evt.key == OIS::KC_W)
-    {
-      cam->moveRelative(Vector3(0.0f, 0.0f, -_dz));
-    }
-  else if (evt.key == OIS::KC_S)
-    {
-      cam->moveRelative(Vector3(0.0f, 0.0f, _dz));
-    }
-  else if (evt.key == OIS::KC_A)
-    {
-      _dz += 1.0;
-    }
-  else if (evt.key == OIS::KC_D)
-    {
-      _dz -= 1.0;
-    }
-  else if(evt.key == OIS::KC_F)
-  {
-    _imposterView->flip();
-  }
   return true;
 }

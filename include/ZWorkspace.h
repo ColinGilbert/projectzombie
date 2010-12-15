@@ -27,7 +27,7 @@ namespace ZGame
   class ZWorkspace
   {
   public:
-    ZWorkspace(Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray,
+    ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray,
         ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl);
     virtual
     ~ZWorkspace();

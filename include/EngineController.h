@@ -29,7 +29,6 @@
 
 namespace ZGame
 {
-  class EngineView;
   class InputController;
   class GameState;
   class GameStateInfo;
@@ -79,15 +78,12 @@ namespace ZGame
     //addMouseObserver(ZGame::EVENT::MouseEvtObserver obs);
     //setters getters
     //Ogre::RenderWindow* getRenderWindow(){return _window.get();}
-  protected:
+  private:
     std::auto_ptr<Ogre::Root> _root;
     Ogre::SceneManager* _scnMgr;
     Ogre::RenderWindow* _window;
     Ogre::Overlay* _debugOverlay;
 
-    std::auto_ptr<ZGame::EngineView> _engineView;
-
-    //boost::shared_ptr<ZGame::InputController> _inController;
     std::auto_ptr<ZGame::InputController> _inController;
     GameStateInfoMap _gameSInfoMap;
 

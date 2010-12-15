@@ -7,7 +7,6 @@
 
 #include "GPUEntsMeshBuilder.h"
 #include "GPUEntsGenProps.h"
-#include "EngineView.h"
 using namespace Ogre;
 
 namespace ZGame

@@ -12,7 +12,6 @@ using namespace std;
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
 #include "PingPongShaders.h"
-#include "EngineView.h"
 
 namespace ZGame
 {

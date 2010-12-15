@@ -12,7 +12,6 @@ using std::endl;
 #include "ControlModuleProto.h"
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
-#include "EngineView.h"
 #include "CommandDelegates.h"
 #include "CommandController.h"
 #include "command/CommandList.h"
@@ -23,51 +22,27 @@ namespace ZGame
     using namespace Ogre;
 
     ControlModuleProto::ControlModuleProto() :
-    _transVector(0.0f, 0.0f, 0.0f), _dTrans(10.0f), _transFactor(1.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(50 * 3.145), _mx_rel(0), _my_rel(0), _cam(
-        EngineView::getSingleton().getCurrentCamera()), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f)
+    _transVector(0.0f, 0.0f, 0.0f), _dTrans(10.0f), _transFactor(1.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(50 * 3.145), _mx_rel(0), _my_rel(0), 
+        _cam(0), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f)
     {
-        // TODO Auto-generated constructor stub
-
-        using COMMAND::CommandList;
-        _cameraNode = EngineView::getSingleton().getSceneManager()->createSceneNode("CAMERA_NODE");
-        _cameraNode->attachObject(_cam);
-
         //Ogre::String CAMERAATTACH("camera_attach");
         ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
         COMMAND::ConsoleCommand cmd;
         //cmd.bind(this,&ZGame::ControlModuleProto::attachNode);
         cmd.bind(this, &ZGame::ControlModuleProto::attachNode);
         cmdCtrl->addCommand(CommandList::CAMERA_ATTACH, cmd.GetMemento());
-        _transMode[forw] = false;
-        _transMode[backw] = false;
-        _transMode[left] = false;
-        _transMode[right] = false;
-        _transMode[up] = false;
-        _transMode[down] = false;
     }
 
     ControlModuleProto::ControlModuleProto(float startTrans) :
-    _transVector(0.0f, 0.0f, 0.0f), _dTrans(startTrans), _transFactor(10.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(0.07f), _cam(
-        EngineView::getSingleton().getCurrentCamera()), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f)
+    _transVector(0.0f, 0.0f, 0.0f), _dTrans(startTrans), _transFactor(10.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(0.07f), 
+        _cam(0), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f)
     {
-        // TODO Auto-generated constructor stub
-
-        using COMMAND::CommandList;
-        _cameraNode = EngineView::getSingleton().getSceneManager()->createSceneNode("CAMERA_NODE");
-        _cameraNode->attachObject(_cam);
-
         //Ogre::String CAMERAATTACH("camera_attach");
         ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
         COMMAND::ConsoleCommand cmd;
         //cmd.bind(this,&ZGame::ControlModuleProto::attachNode);
         cmd.bind(this, &ZGame::ControlModuleProto::attachNode);
         cmdCtrl->addCommand(CommandList::CAMERA_ATTACH, cmd.GetMemento());
-        _transMode[forw] = false;
-        _transMode[backw] = false;
-        _transMode[left] = false;
-        _transMode[right] = false;
-        _transMode[up] = false;
-        _transMode[down] = false;
     }
 
     ControlModuleProto::~ControlModuleProto()
@@ -75,10 +50,14 @@ namespace ZGame
         // TODO Auto-generated destructor stub
     }
 
-    void
-        ControlModuleProto::toggleMode(enum TransMode mode)
+    bool
+        ControlModuleProto::onInit(ZGame::ZInitPacket packet)
     {
-        _transMode[mode] = !_transMode[mode];
+        _cam = packet.initialCamera;
+        using COMMAND::CommandList;
+        _cameraNode = packet.sceneManager->createSceneNode("CAMERA_NODE");
+        _cameraNode->attachObject(_cam);
+        return true;
     }
 
     bool
@@ -103,22 +82,18 @@ namespace ZGame
         else if (evt.key == OIS::KC_A)
         {
             _transVector.x -= _dTrans;
-            toggleMode(left);
         }
         else if (evt.key == OIS::KC_D)
         {
             _transVector.x += _dTrans;
-            toggleMode(right);
         }
         else if (evt.key == OIS::KC_UP)
         {
             _transVector.y += _dTrans;
-            toggleMode(up);
         }
         else if (evt.key == OIS::KC_DOWN)
         {
             _transVector.y -= _dTrans;
-            toggleMode(down);
         }
         else if (evt.key == OIS::KC_U)
         {
@@ -260,54 +235,8 @@ namespace ZGame
     bool
         ControlModuleProto::attachNode(const Ogre::StringVector &params)
     {
-        Ogre::Log::Stream oss = Ogre::LogManager::getSingleton().stream();
-
-        bool fail = true;
-
-        if (params.size() == 2)
-        {
-            oss << "Attaching Camera to node: " << params[1] << "\n";
-            //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL,oss.str());
-            Ogre::SceneManager* scnMgr = EngineView::getSingleton().getSceneManager();
-
-            if (_lookAtNode)
-            {
-                oss << "Removing child! " << _cameraNode->getName() << "\n";
-                _lookAtNode->removeChild(_cameraNode->getName());
-                _cameraNode->setPosition(Ogre::Vector3::ZERO);
-            }
-
-            //Get the specified Node as the LookAtNode.
-            Ogre::SceneNode* root = scnMgr->getRootSceneNode();
-            _lookAtNode = dynamic_cast<Ogre::SceneNode*> (root->getChild(params[1]));
-
-            if (_lookAtNode)
-            {
-                oss << "Adding _cameraNode as a child to _lookAtNode: " << _cameraNode->getName() << "\n";
-
-                _lookAtNode->addChild(_cameraNode);
-
-                //_lookAtNode->scale(0.0078125,0.0078125,0.0078125);
-                _cameraNode->resetOrientation();
-                Ogre::Quaternion rotQuat(Radian(-Ogre::Math::DegreesToRadians(45.0f)), Ogre::Vector3::UNIT_Y);
-                //_cameraNode->setOrientation(rotQuat);
-                //_cameraNode->setPosition(Ogre::Vector3(0.0,0.0,10.0));
-
-                //_cameraNode->yaw(Radian(-Ogre::Math::DegreesToRadians(45.0f)),Ogre::Node::TS_WORLD);
-                _cameraNode->translate(_cameraNode->getLocalAxes(), Ogre::Vector3(0.0, 0.0, 10.0));
-
-                //_cameraNode->setAutoTracking(true,_lookAtNode,Ogre::Vector3::NEGATIVE_UNIT_Z,Ogre::Vector3(0.0,1.0,0.0));
-                //_cameraNode->setFixedYawAxis(true);
-                fail = false;
-            }
-        }
-        else
-        {
-            oss << "camera_attach node_name will attach the scene camera to Ogre::Node node_name" << "\n";
-            oss << "you entered the wrong syntax. " << "\n";
-        }
-
-        return fail;
+    
+        return true;
     }
 
 }

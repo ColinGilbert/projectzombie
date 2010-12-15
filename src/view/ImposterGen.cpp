@@ -18,7 +18,6 @@
 using namespace std;
 #include "Imposter.h"
 #include "ImposterGen.h"
-#include "EngineView.h"
 using namespace ZGame;
 
 const Ogre::Real ZGame::ImposterGen::_NEAR_CLIP = 1.0f;

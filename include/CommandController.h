@@ -18,7 +18,6 @@
 
 #include "fastdelegate/FastDelegate.h"
 #include "command/Command.h"
-#include "EngineView.h"
 #include "Controller.h"
 #include "CommandDelegates.h"
 

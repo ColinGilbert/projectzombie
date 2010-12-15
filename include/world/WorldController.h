@@ -69,7 +69,7 @@ namespace ZGame
         protected:
             
         private:
-            void _init();
+            void _init(ZGame::ZInitPacket packet);
             void _loadWorldMap(WorldMapConfig &config);
         private:
             std::auto_ptr<World::WorldMap > _worldMap;
@@ -79,6 +79,7 @@ namespace ZGame
             DummyPageProvider _pageProvider;
             Ogre::PageManager _pageManager;
             std::auto_ptr<PhysicsManager> _physicsMgr;
+            Ogre::Camera* _cam;
         };
     }
 }

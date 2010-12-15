@@ -134,7 +134,7 @@ namespace ZGame
   private:
     void _initShadows();
     void _initSSAO();
-    void _initHDR();
+    void _initHDR(Ogre::RenderWindow* windowm, Ogre::Camera* initialCam);
     void _parseHDRConfig();
     void _initSkyX();
   private:
