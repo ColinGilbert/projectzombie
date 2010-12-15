@@ -69,36 +69,80 @@ people. Initializing is not really needed. OnDestruction events are still useful
 void
     GameMainState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
-    GameState::regLfcObsForInjection(lfcReg);
-    //this
-    LifeCycle::LifeCycleObserver lfcObs;
-    LifeCycle::bindAndRegisterLifeCycleObserver<GameMainState>(lfcReg, 
-        lfcObs, *this);
-    
-    //render entities
-    LifeCycle::bindAndRegisterLifeCycleObserver<Entities::RenderEntitiesManager>(lfcReg,
-        lfcObs, *_rdrEntMgr, LifeCycle::LFC_ON_INIT);
-    //entities manager
-    LifeCycle::bindAndRegisterLifeCycleObserver<Entities::EntitiesManager>(lfcReg,
-        lfcObs, *_entMgr, LifeCycle::LFC_ON_INIT);
+    try
+    {
+        GameState::regLfcObsForInjection(lfcReg);
+        LifeCycle::LifeCycleObserver lfcObs;
 
-    //OpenCLController
-    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZCL::ZCLController>(lfcReg, 
-        lfcObs, *_zclCtrl, LifeCycle::LFC_ON_DESTROY);
-    //world controller
-    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::World::WorldController>(lfcReg, 
-        lfcObs, *_worldController, LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
+        //this
+        try
+        {
+            LifeCycle::bindAndRegisterLifeCycleObserver<GameMainState>(lfcReg, 
+                lfcObs, *this);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GameMainState", "");
+        }
+        try
+        {
+            //render entities
+            LifeCycle::bindAndRegisterLifeCycleObserver<Entities::RenderEntitiesManager>(lfcReg,
+                lfcObs, *_rdrEntMgr, LifeCycle::LFC_ON_INIT);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in RenderEntitiesManager", "");
+        }
+        
+        try
+        {
+            //OpenCLController
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZCL::ZCLController>(lfcReg, 
+                lfcObs, *_zclCtrl, LifeCycle::LFC_ON_DESTROY);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ZCLController", "");
+        }
+        try
+        {
+            //world controller
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::World::WorldController>(lfcReg, 
+                lfcObs, *_worldController, LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in WorldController", "");
+        }
+        try
+        {
+            //control module
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, *_controlMod,
+                LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ControlModuleProto", "");
+        }
+        try
+        {
+            //Workspace controller
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
+                LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ZWorkspaceController", "");
+        }
+        try
+        {
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::Util::CharacterUtil>(lfcReg, lfcObs, *_charUtil,
+                LifeCycle::LFC_ON_INIT);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in CharacterUtil", "");
+        }
+    }catch(Ogre::Exception e)
+    {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription(),
+            "GameMainState::regLfcObsForInjection");
+    }
 
-    //control module
-    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, *_controlMod,
-        LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
-    //Workspace controller
-    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
-        LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
-
-    LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::Util::CharacterUtil>(lfcReg, lfcObs, *_charUtil,
-        LifeCycle::LFC_ON_INIT);
-    
 }
 
 /**
@@ -164,13 +208,13 @@ bool
     /*
     if (_entMgr->getNumOfEntities() > 0)
     {
-        _entMgr->updateDensityBuffer();
-        _zclCtrl->onUpdate(evt);
-        const float* posBuf = 0;
-        const float* orientBuf = 0;
-        const float* velocityBuf = 0;
-        _zclCtrl->getBuffers(posBuf, orientBuf, velocityBuf);
-        _rdrEntMgr->updateRenderEntities(posBuf, orientBuf, velocityBuf, evt.timeSinceLastFrame);
+    _entMgr->updateDensityBuffer();
+    _zclCtrl->onUpdate(evt);
+    const float* posBuf = 0;
+    const float* orientBuf = 0;
+    const float* velocityBuf = 0;
+    _zclCtrl->getBuffers(posBuf, orientBuf, velocityBuf);
+    _rdrEntMgr->updateRenderEntities(posBuf, orientBuf, velocityBuf, evt.timeSinceLastFrame);
     }
     */
     _worldController->onUpdate(evt);

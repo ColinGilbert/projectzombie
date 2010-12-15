@@ -3,7 +3,8 @@
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
 #include "Controller.h"
-#include "entities/NetworkEntitiesManager.h" 
+#include "entities/NetworkEntitiesManager.h"
+#include "ZInitPacket.h"
 
 namespace ZGame
 {
@@ -71,7 +72,7 @@ namespace ZGame
 
             //LifeCycle functions
             virtual bool 
-                onInit();
+                onInit(ZGame::ZInitPacket packet);
             virtual bool 
                 onUpdate(const Ogre::FrameEvent &evt);
             virtual bool

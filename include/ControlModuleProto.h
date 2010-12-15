@@ -56,7 +56,7 @@ namespace ZGame
 
     private:
 
-         Ogre::Vector3 _transVector;
+        Ogre::Vector3 _transVector;
         Ogre::Real _dTrans; //change in translation
         Ogre::Real _transFactor; //translation factor;
         Ogre::Real _rotYaw;
@@ -70,7 +70,7 @@ namespace ZGame
 
         void
             updateTransFactor(Ogre::Real factor);
-      
+
         void printUsage();
 
         Ogre::SceneNode* _lookAtNode;

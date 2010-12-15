@@ -27,6 +27,7 @@ using namespace std;
 namespace OgreBites
 {
     class SdkTrayManager;
+    
 }
 
 namespace ZGame
@@ -35,7 +36,10 @@ namespace ZGame
     class KeyEventRegister;
     class MouseEventRegister;
     class GraphicsController;
-
+    namespace Gui
+    {
+        class GuiController;
+    }
     class GameState
     {
     public:
@@ -72,6 +76,7 @@ namespace ZGame
     protected:
     private:
         auto_ptr<GraphicsController> _gfxCtrl;
+        auto_ptr<Gui::GuiController> _guiCtrl;
         OgreBites::SdkTrayManager* _tray;
 
     };

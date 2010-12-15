@@ -57,62 +57,70 @@ namespace ZGame
 
 
         template<typename T>
-        void
+        bool
             bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_init<T, bool(T::*)(ZGame::ZInitPacket initPacket) >::value, T>::type* = 0)
         {
             lfcObs.onInit.bind(t, &T::onInit);
+            return true;
         }
         template<typename T>
-        void
+        bool
             bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_init<T, bool(T::*)(ZGame::ZInitPacket initPacket) >::value, T>::type* = 0)
         {
             lfcObs.onInit.clear();
+            return false;
         }
 
         template<typename T>
-        void
+        bool
             bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs,  typename enable_if<has_on_render_queue_start<T, 
-                bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0)
+            bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0)
         {
             lfcObs.onRenderQueueStart.bind(t, &T::onRenderQueueStart);
+            return true;
         }
 
         template<typename T>
-        void
+        bool
             bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_render_queue_start<T, 
-                bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0 )
+            bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0 )
         {
             lfcObs.onRenderQueueStart.clear();
+            return false;
         }
 
         template<typename T>
-        void
+        bool
             bindIfOnDestroy(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_destroy<T, bool(T::*)() >::value, T>::type* = 0)
         {
             lfcObs.onDestroy.bind(t, &T::onDestroy);
+            return true;
         }
 
         template<typename T>
-        void
+        bool
             bindIfOnDestroy(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_destroy<T, bool(T::*)() >::value, T>::type* = 0)
         {
             lfcObs.onDestroy.clear();
+            return false;
         }
 
         template<typename T>
-        void     
+        bool     
             bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_update_with_frame<T, 
-                bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
+            bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
         {
             lfcObs.onUpdate.bind(t, &T::onUpdate);
+            return true;
         }
 
         template<typename T>
-        void
+        bool
             bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_update_with_frame<T, 
-                bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
+            bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
         {
             lfcObs.onUpdate.clear();
+            return false;
         }
         /**
         * This static function will bind LifeCycleObservers given any type. It is fine if the type does not provide all life-cycle functions.
@@ -120,13 +128,40 @@ namespace ZGame
         **/
         template<typename T>
         static void bindAndRegisterLifeCycleObserver(LifeCycleRegister &lfcReg, LifeCycleObserver &lfcObs,
-            T& binder, unsigned eventMask = LFC_ON_DESTROY | LFC_ON_INIT | LFC_ON_UPDATE | LFC_ON_RENDER_QUEUE_START)
+            T& binder, unsigned eventMask = LFC_ON_DESTROY | LFC_ON_INIT | LFC_ON_UPDATE) 
         {
-            eventMask & LFC_ON_INIT ? bindIfOnInit<T>(&binder, lfcObs) : lfcObs.onUpdate.clear();
-            eventMask & LFC_ON_RENDER_QUEUE_START ? bindIfOnRenderQueueStart<T>(&binder, lfcObs) : lfcObs.onRenderQueueStart.clear();
-            eventMask & LFC_ON_DESTROY ? bindIfOnDestroy<T>(&binder, lfcObs) : lfcObs.onDestroy.clear();
-            eventMask & LFC_ON_UPDATE ? bindIfOnUpdateWithFrame<T>(&binder, lfcObs) : lfcObs.onUpdate.clear();
+            using Ogre::Exception;
+            LifeCycle::clearLfcObs(lfcObs);
+            if(eventMask & LFC_ON_INIT) 
+            {
+                if(!bindIfOnInit<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "OnInit is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }    
 
+            if(eventMask & LFC_ON_RENDER_QUEUE_START)
+            {
+                if(!bindIfOnRenderQueueStart<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "On Render Queue Start is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }
+
+            if(eventMask & LFC_ON_DESTROY) 
+            {
+                if(!bindIfOnDestroy<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "onDestroy is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }
+            if(eventMask & LFC_ON_UPDATE)
+            {
+                if(!bindIfOnUpdateWithFrame<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "onUpdate is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }
             lfcReg.registerLfcObs(lfcObs);
         }
     }

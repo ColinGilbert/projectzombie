@@ -1,9 +1,9 @@
 /*
- * GameMainMenuState.cpp
- *
- *  Created on: Sep 5, 2008
- *      Author: bey0nd
- */
+* GameMainMenuState.cpp
+*
+*  Created on: Sep 5, 2008
+*      Author: bey0nd
+*/
 
 #include "GameMainMenuState.h"
 #include "LifeCycleRegister.h"
@@ -24,43 +24,52 @@ GameMainMenuState::~GameMainMenuState()
 
 void GameMainMenuState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
-  //This
-  LifeCycle::LifeCycleObserver lfcObs;
-  LifeCycle::bindAndRegisterLifeCycleObserver<GameMainMenuState>(lfcReg, lfcObs,*this);
-  lfcReg.registerLfcObs(lfcObs);
+    GameState::regLfcObsForInjection(lfcReg);
+    //This
+    LifeCycle::LifeCycleObserver lfcObs;
+    try
+    {
+        LifeCycle::bindAndRegisterLifeCycleObserver<GameMainMenuState>(lfcReg, lfcObs,*this);
+    }catch(Ogre::Exception e)
+    {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GameMainMenuState", 
+            "GameMainMenuState::regLfcObsForInjection");
+    }
+
 }
 
 void GameMainMenuState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
-  //This
-  EVENT::KeyboardEvtObserver keyObs;
-  EVENT::bindKeyObserver(keyObs,*this);
-  keyReg.registerKeyObs(keyObs);
-  EVENT::clearKeyObs(keyObs);
+    GameState::regKeyObsForInjection(keyReg);
+    //This
+    EVENT::KeyboardEvtObserver keyObs;
+    EVENT::bindKeyObserver(keyObs,*this);
+    keyReg.registerKeyObs(keyObs);
+    EVENT::clearKeyObs(keyObs);
 }
 
 bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
 {
-  return true;
+    return true;
 }
 
 bool GameMainMenuState::onInit(ZGame::ZInitPacket packet)
 {
-  return true;
+    return true;
 }
 
 bool GameMainMenuState::onDestroy()
 {
-  return true;
+    return true;
 }
 
 bool GameMainMenuState::onKeyDown(const OIS::KeyEvent &evt)
 {
-  return true;
+    return true;
 }
 
 bool GameMainMenuState::onKeyUp(const OIS::KeyEvent &evt)
 {
-  return true;
+    return true;
 }
 

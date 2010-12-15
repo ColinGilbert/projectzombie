@@ -33,7 +33,8 @@ namespace ZGame
 
         bool
             onInit(ZInitPacket packet);
-
+        bool
+            onDestroy(){return true;}
 
 
         bool 

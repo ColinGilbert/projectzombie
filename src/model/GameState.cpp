@@ -10,11 +10,12 @@
 #include "GameState.h"
 
 #include "GraphicsController.h"
+#include "gui/GuiController.h"
 
 namespace ZGame
 {
 
-    GameState::GameState() : _gfxCtrl(new GraphicsController()),
+    GameState::GameState() : _gfxCtrl(new GraphicsController()), _guiCtrl(new Gui::GuiController()),
         _tray(0)
     {
         // TODO Auto-generated constructor stub
@@ -39,8 +40,16 @@ namespace ZGame
     void
         GameState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
     {
-        LifeCycle::LifeCycleObserver lfcObs;
-        LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl);
+        try
+        {
+            LifeCycle::LifeCycleObserver lfcObs;
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl);
+            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription(),
+                "GameState::regLfcObsForInjection");
+        }
     }
     void
         GameState::regKeyObsForInjection(KeyEventRegister &keyReg)
