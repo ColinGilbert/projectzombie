@@ -39,7 +39,8 @@ namespace ZGame
 
 
 
-  class EngineController : public Ogre::FrameListener, public MainController, public OgreBites::SdkTrayListener
+  class EngineController : public Ogre::FrameListener, public MainController, public OgreBites::SdkTrayListener,
+      public Ogre::RenderQueueListener
   {
   public:
     EngineController();
@@ -72,6 +73,12 @@ namespace ZGame
     onMouseUp(const OIS::MouseEvent &event, const OIS::MouseButtonID id);
     bool
     onMouseDown(const OIS::MouseEvent &event, const OIS::MouseButtonID id);
+
+    virtual void
+        renderQueueStarted(Ogre::uint8 queueGroupdId, const Ogre::String& invocation, bool& skipThisInovcation);
+    //virtual void
+      //  renderQueueEnded(Ogre::uint8 queueGroupdId, const Ogre::String& invocation, bool& skipThisInovcation);
+    
 
     //input observers
     //void
@@ -120,6 +127,7 @@ namespace ZGame
 
     auto_ptr<ZGame::Networking::NetClientController> _netClient;
     auto_ptr<OgreBites::SdkTrayManager> _sdkTrayMgr;
+    Ogre::Viewport* _vp;
 
     Ogre::String _listenerID;
     bool _stillRunning;

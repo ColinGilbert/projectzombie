@@ -129,9 +129,10 @@ bool
     using namespace Ogre;
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
-    _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Pchaos.log"));
+    _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Engine.log"));
     _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
     //_root->setWorkQueue(OGRE_NEW Ogre::DefaultWorkQueue("DefaultWorkerQueue"));
+    Ogre::LogManager::getSingleton().createLog("App.log");
 
     if (_root->showConfigDialog())
     {
@@ -143,10 +144,12 @@ bool
     chooseSceneManager();
 
     Ogre::Camera* cam = createDefaultCamera();
-    Ogre::Viewport* vp = _window->addViewport(cam);
-    vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
+    _vp = _window->addViewport(cam);
+    
+    _vp->setOverlaysEnabled(true);
+    _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
-    cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
+    cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
 
     _initPacket = new ZInitPacket(_scnMgr, cam, _window);
 
@@ -192,7 +195,7 @@ bool
 
     _sdkTrayMgr->hideLoadingBar();
 
-
+    _scnMgr->addRenderQueueListener(this);
 
 
     return true;
@@ -267,6 +270,14 @@ bool
 }
 
 void
+    EngineController::renderQueueStarted(Ogre::uint8 queueGroupId,
+    const Ogre::String& invocation, bool& skipThisInvocation)
+{
+    _lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
+}
+
+
+void
     EngineController::run()
 {
     realizeCurrentState();
@@ -323,6 +334,13 @@ bool
     //console
     if (event.key == OIS::KC_GRAVE)
     {
+        /*
+        if(_vp->getOverlaysEnabled())
+            _vp->setOverlaysEnabled(false); 
+        else
+            _vp->setOverlaysEnabled(true);
+            */
+        
         if (consoleVis)
         {
             //turn off console
@@ -330,6 +348,7 @@ bool
         }
         else
             ogreConsole->setVisible(true);
+            
     }
     else if(event.key == OIS::KC_SYSRQ)
     {

@@ -43,11 +43,24 @@ namespace ZGame
         try
         {
             LifeCycle::LifeCycleObserver lfcObs;
+            try
+            {
             LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl);
-            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl);
+            }catch(Ogre::Exception e)
+            {
+                OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GraphicsController.", "");
+            }
+            try
+            {
+            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_DEFAULT 
+                | LifeCycle::LFC_ON_RENDER_QUEUE_START);
+            }catch(Ogre::Exception e)
+            {
+                OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GuiController", "");
+            }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription(),
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GameState",
                 "GameState::regLfcObsForInjection");
         }
     }

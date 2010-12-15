@@ -35,6 +35,8 @@ namespace ZGame
         static const unsigned int LFC_ON_UPDATE = 0x04;
         static const unsigned int LFC_ON_RENDER_QUEUE_START = 0x08;
 
+        static const unsigned int LFC_DEFAULT = LFC_ON_INIT | LFC_ON_UPDATE | LFC_ON_DESTROY;
+
         static void clearLfcObs(LifeCycleObserver& lfcObs)
         {
             lfcObs.onDestroy.clear();
@@ -128,7 +130,7 @@ namespace ZGame
         **/
         template<typename T>
         static void bindAndRegisterLifeCycleObserver(LifeCycleRegister &lfcReg, LifeCycleObserver &lfcObs,
-            T& binder, unsigned eventMask = LFC_ON_DESTROY | LFC_ON_INIT | LFC_ON_UPDATE) 
+            T& binder, unsigned eventMask = LFC_DEFAULT) 
         {
             using Ogre::Exception;
             LifeCycle::clearLfcObs(lfcObs);
