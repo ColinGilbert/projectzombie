@@ -54,6 +54,9 @@ namespace ZGame
         GameMainState();
         virtual ~GameMainState();
 
+        virtual void
+            getGameStateBootstrapInfo(GameStateBootstrapInfo &info);
+
         //life cycle methods
         bool onUpdate(const Ogre::FrameEvent &evt);
         bool onInit(ZGame::ZInitPacket packet);

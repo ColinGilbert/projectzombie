@@ -25,7 +25,7 @@
  *
  */
 
-#include "RenderInterfaceOgre3D.h"
+#include "gui/RenderInterfaceOgre3D.h"
 #include <Ogre.h>
 
 struct RocketOgre3DVertex

@@ -76,8 +76,8 @@ namespace ZGame
 
     virtual void
         renderQueueStarted(Ogre::uint8 queueGroupdId, const Ogre::String& invocation, bool& skipThisInovcation);
-    //virtual void
-      //  renderQueueEnded(Ogre::uint8 queueGroupdId, const Ogre::String& invocation, bool& skipThisInovcation);
+    virtual void
+        renderQueueEnded(Ogre::uint8 queueGroupdId, const Ogre::String& invocation, bool& skipThisInovcation);
     
 
     //input observers
@@ -121,7 +121,7 @@ namespace ZGame
     realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
 
     Ogre::Camera*
-    createDefaultCamera();
+    createDefaultCamera(Ogre::Vector3 initialPos);
 
   private:
 

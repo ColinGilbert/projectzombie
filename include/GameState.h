@@ -27,7 +27,7 @@ using namespace std;
 namespace OgreBites
 {
     class SdkTrayManager;
-    
+
 }
 
 namespace ZGame
@@ -40,6 +40,17 @@ namespace ZGame
     {
         class GuiController;
     }
+    /**
+    * This class contains information needed to bootstrap the Engine. The system
+    *requires certain bootstrapping information in order to boot various sub systems.
+    *We do this so we can couple this with a state, say to load this information along
+    *with the State description.
+    **/
+    struct GameStateBootstrapInfo
+    {
+        Ogre::Vector3 initalCameraPos;
+    };
+
     class GameState
     {
     public:
@@ -48,9 +59,16 @@ namespace ZGame
         void
             init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
             MouseEventRegister &mouseReg, OgreBites::SdkTrayManager* tray);
+            virtual void
+            getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
+        {
+            info.initalCameraPos = Ogre::Vector3::ZERO;
+        }
     protected:
 
         GameState(); //protected constructor
+
+
 
         virtual void
             GameState::regLfcObsForInjection(LifeCycleRegister &lfcReg);
@@ -58,7 +76,7 @@ namespace ZGame
             GameState::regKeyObsForInjection(KeyEventRegister &keyReg);
         virtual void
             GameState::regMouseObsForInjection(MouseEventRegister &mouseReg);
-        
+
 
 
         GraphicsController*

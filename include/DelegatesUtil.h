@@ -16,8 +16,13 @@ namespace ZGame
 {
     namespace LifeCycle
     {
+        template<bool C, typename T = void>
+        struct enable_if{
+            typedef T type;
+        };
 
-
+        template<typename T>
+        struct enable_if<false, T> {};
 
 #define HAS_MEM_FUNC(func, name)                                        \
     template<typename T, typename Sign>                                 \
@@ -29,12 +34,29 @@ namespace ZGame
         template <typename   > static no  &chk(...);                    \
         static bool const value = sizeof(chk<T>(0)) == sizeof(yes);     \
         }
+#define BIND_IF(bindname, func1, func2, name, sign)   \
+        template<typename T> \
+        bool     \
+            bindname(T* t, LifeCycleObserver& lfcObs, typename enable_if<name<T, \
+            sign >::value, T>::type* = 0)    \
+        {   \
+            func1;  \
+            return true;    \
+        }   \
+        template<typename T>    \
+        bool    \
+            bindname(T* t, LifeCycleObserver& lfcObs, typename enable_if<!name<T,    \
+            sign>::value, T>::type* = 0)    \
+        {   \
+            func2;  \
+            return false;   \
+        }
 
         static const unsigned int LFC_ON_DESTROY = 0x01;
         static const unsigned int LFC_ON_INIT = 0x02;
         static const unsigned int LFC_ON_UPDATE = 0x04;
         static const unsigned int LFC_ON_RENDER_QUEUE_START = 0x08;
-
+     
         static const unsigned int LFC_DEFAULT = LFC_ON_INIT | LFC_ON_UPDATE | LFC_ON_DESTROY;
 
         static void clearLfcObs(LifeCycleObserver& lfcObs)
@@ -44,86 +66,22 @@ namespace ZGame
             lfcObs.onUpdate.clear();
         }
 
-        template<bool C, typename T = void>
-        struct enable_if{
-            typedef T type;
-        };
-
-        template<typename T>
-        struct enable_if<false, T> {};
-
         HAS_MEM_FUNC(onInit, has_on_init);
+        BIND_IF(bindIfOnInit, lfcObs.onInit.bind(t, &T::onInit), lfcObs.onInit.clear(), has_on_init, bool(T::*)(ZGame::ZInitPacket initPacket));
+        
         HAS_MEM_FUNC(onRenderQueueStart, has_on_render_queue_start);
+        BIND_IF(bindIfOnRenderQueueStart, lfcObs.onRenderQueueStart.bind(t, &T::onRenderQueueStart), 
+            lfcObs.onRenderQueueStart.clear(), has_on_render_queue_start, 
+            bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation));
+        
         HAS_MEM_FUNC(onDestroy, has_on_destroy);
+        BIND_IF(bindIfOnDestroy, lfcObs.onDestroy.bind(t, &T::onDestroy), 
+            lfcObs.onDestroy.clear(), has_on_destroy, bool(T::*)());
+        
         HAS_MEM_FUNC(onUpdate, has_on_update_with_frame);
+        BIND_IF(bindIfOnUpdateWithFrame, lfcObs.onUpdate.bind(t, &T::onUpdate), 
+            lfcObs.onUpdate.clear(), has_on_update_with_frame, bool(T::*)(const Ogre::FrameEvent &evt));
 
-
-        template<typename T>
-        bool
-            bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_init<T, bool(T::*)(ZGame::ZInitPacket initPacket) >::value, T>::type* = 0)
-        {
-            lfcObs.onInit.bind(t, &T::onInit);
-            return true;
-        }
-        template<typename T>
-        bool
-            bindIfOnInit(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_init<T, bool(T::*)(ZGame::ZInitPacket initPacket) >::value, T>::type* = 0)
-        {
-            lfcObs.onInit.clear();
-            return false;
-        }
-
-        template<typename T>
-        bool
-            bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs,  typename enable_if<has_on_render_queue_start<T, 
-            bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0)
-        {
-            lfcObs.onRenderQueueStart.bind(t, &T::onRenderQueueStart);
-            return true;
-        }
-
-        template<typename T>
-        bool
-            bindIfOnRenderQueueStart(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_render_queue_start<T, 
-            bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) >::value, T>::type* = 0 )
-        {
-            lfcObs.onRenderQueueStart.clear();
-            return false;
-        }
-
-        template<typename T>
-        bool
-            bindIfOnDestroy(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_destroy<T, bool(T::*)() >::value, T>::type* = 0)
-        {
-            lfcObs.onDestroy.bind(t, &T::onDestroy);
-            return true;
-        }
-
-        template<typename T>
-        bool
-            bindIfOnDestroy(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_destroy<T, bool(T::*)() >::value, T>::type* = 0)
-        {
-            lfcObs.onDestroy.clear();
-            return false;
-        }
-
-        template<typename T>
-        bool     
-            bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<has_on_update_with_frame<T, 
-            bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
-        {
-            lfcObs.onUpdate.bind(t, &T::onUpdate);
-            return true;
-        }
-
-        template<typename T>
-        bool
-            bindIfOnUpdateWithFrame(T* t, LifeCycleObserver& lfcObs, typename enable_if<!has_on_update_with_frame<T, 
-            bool(T::*)(const Ogre::FrameEvent &evt) >::value, T>::type* = 0)
-        {
-            lfcObs.onUpdate.clear();
-            return false;
-        }
         /**
         * This static function will bind LifeCycleObservers given any type. It is fine if the type does not provide all life-cycle functions.
         * \note This function was not written with performance on mind. You should call this function only a few times during initialization.

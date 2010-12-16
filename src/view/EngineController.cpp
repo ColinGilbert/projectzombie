@@ -66,14 +66,14 @@ void
 }
 
 Ogre::Camera*
-    EngineController::createDefaultCamera()
+    EngineController::createDefaultCamera(Ogre::Vector3 initialPos)
 {
     using namespace Ogre;
     //Camera* cam =_scnMgr->createCamera(_window->getName());
     Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setNearClipDistance(0.5f);
     cam->setFarClipDistance(800.0f); //320.0f
-    cam->setPosition(32.0f, 250.0f, 32.0f);
+    cam->setPosition(initialPos);
     //cam->rotate(Vector3(0.0f, 1.0f, 0.0f), Ogre::Radian(-Ogre::Math::PI / 2.0f));
     return cam;
 }
@@ -143,16 +143,6 @@ bool
 
     chooseSceneManager();
 
-    Ogre::Camera* cam = createDefaultCamera();
-    _vp = _window->addViewport(cam);
-    
-    _vp->setOverlaysEnabled(true);
-    _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
-
-    cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
-
-    _initPacket = new ZInitPacket(_scnMgr, cam, _window);
-
     //input
     _inController.reset(new InputController());
     _inController->onInit(_window);
@@ -169,6 +159,9 @@ bool
 
     //load states
     loadStates();
+
+    _initPacket = new ZInitPacket(_scnMgr, 0, _window);
+
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
     lm->setLogDetail(Ogre::LL_NORMAL);
@@ -273,9 +266,15 @@ void
     EngineController::renderQueueStarted(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
-    _lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
+    //_lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
 }
 
+void
+    EngineController::renderQueueEnded(Ogre::uint8 queueGroupId,
+    const Ogre::String& invocation, bool& skipThisInvocation)
+{
+    _lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
+}
 
 void
     EngineController::run()
@@ -482,6 +481,17 @@ void
         if (_curGameState.get() != 0)
             throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState.reset(ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass));
+        GameStateBootstrapInfo info;
+        _curGameState->getGameStateBootstrapInfo(info);
+        Ogre::Camera* cam = createDefaultCamera(info.initalCameraPos);
+        _vp = _window->addViewport(cam);
+
+        _vp->setOverlaysEnabled(true);
+        _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
+
+        cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
+
+        _initPacket->initialCamera = cam;
 
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
@@ -498,7 +508,7 @@ void
         KeyEventRegister keyReg;
         MouseEventRegister mouseReg;
 
-        _curGameState->init(lfcReg, keyReg, mouseReg, _sdkTrayMgr.get());
+        _curGameState->init(lfcReg, keyReg, mouseReg, 0);
         LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Current game state done init.");
         //We manually register the net client for now. We do this
         //since we have not implemented Stateful states. The original

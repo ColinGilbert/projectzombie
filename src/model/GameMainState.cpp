@@ -57,6 +57,13 @@ GameMainState::~GameMainState()
     cout << "ents view reset." << endl;
 }
 
+void
+    GameMainState::getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
+{
+    //Load this from a file.
+    info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
+}
+
 
 /**
 *This class will register LifeCycle observers (to be later injected into LifeCycle subjects: The Subject Observer pattern.)
@@ -235,14 +242,6 @@ bool
 bool
     GameMainState::onMouseMove(const OIS::MouseEvent &evt)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (_sdkTrayMgr->injectMouseMove(evt))
-        return true;
-    if (_sdkTrayMgr->isCursorVisible())
-    {
-        //_entsView->onMouseMove(evt);
-        return true;
-    }
     _controlMod->onMouseMove(evt);
 
     return true;
@@ -251,10 +250,6 @@ bool
 bool
     GameMainState::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (_sdkTrayMgr->injectMouseDown(evt, id))
-        return true;
-    //_entsView->onMouseDown(evt, id);
     _controlMod->onMouseDown(evt, id);
     return true;
 }
@@ -262,28 +257,12 @@ bool
 bool
     GameMainState::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (_sdkTrayMgr->injectMouseUp(evt, id))
-        return true;
-    //_entsView->onMouseUp(evt, id);
     return true;
 }
 
 bool
     GameMainState::onKeyDown(const OIS::KeyEvent &evt)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (evt.key == OIS::KC_TAB)
-    {
-        if (_sdkTrayMgr->areTraysVisible() && _sdkTrayMgr->isCursorVisible())
-        {
-            _sdkTrayMgr->hideAll();
-        }
-        else
-        {
-            _sdkTrayMgr->showAll();
-        }
-    }
     return true;
 }
 

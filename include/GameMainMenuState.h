@@ -30,6 +30,9 @@ namespace ZGame
     bool onKeyUp(const OIS::KeyEvent &evt);
     bool onKeyDown(const OIS::KeyEvent &evt);
 
+    virtual void
+        getGameStateBootstrapInfo(GameStateBootstrapInfo &info);
+
   protected:
     virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
     virtual void regKeyObsForInjection(KeyEventRegister &keyReg);

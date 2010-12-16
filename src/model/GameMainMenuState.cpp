@@ -21,6 +21,13 @@ GameMainMenuState::~GameMainMenuState()
 
 }
 
+void
+    GameMainMenuState::getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
+{
+    info.initalCameraPos = Ogre::Vector3();
+
+}
+
 
 void GameMainMenuState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 {
