@@ -25,7 +25,8 @@ using namespace Ogre;
 
 GraphicsController::GraphicsController() :
 _hdrCompositor(0), _WHICH_TONEMAPPER(3), _WHICH_STARTYPE(1), _WHICH_GLARETYPE(1), _AUTO_KEY(0.16),
-    _ADAPT_SCALE(3), _GLARE_STRENGTH(0.1), _STAR_STRENGTH(0.1), _skyX(0),_timeCount(0.0f)
+    _ADAPT_SCALE(3), _GLARE_STRENGTH(0.1), _STAR_STRENGTH(0.1), _skyX(0),_timeCount(0.0f),_stateOnce(false),
+    _vp(0)
 {
     _compositorNames.push_back("SSAO/HemisphereMC");
     _compositorNames.push_back("SSAO/Volumetric");
@@ -50,6 +51,37 @@ GraphicsController::~GraphicsController()
 {
     cout << "In graphicsController destructor." << endl;
     //delete _hdrCompositor;
+}
+
+bool
+    GraphicsController::onRenderQueueStart(Ogre::uint8 queueGroupId,
+    const Ogre::String& invocation, bool& skipThisInvocation)
+{
+    if(queueGroupId == Ogre::RENDER_QUEUE_OVERLAY && _vp->getOverlaysEnabled())
+    {
+        if(!_stateOnce)
+        {
+            _toggleAllCompositors(false);
+            _stateOnce = !_stateOnce;
+        }
+    }
+    return true;
+}
+
+bool
+    GraphicsController::onRenderQueueEnd(Ogre::uint8 queueGroupId,
+    const Ogre::String& invocation, bool& skipThisInvocation)
+{
+    
+    if(queueGroupId == Ogre::RENDER_QUEUE_OVERLAY && _vp->getOverlaysEnabled())
+    {
+        if(_stateOnce)
+        {
+            _toggleAllCompositors(true);
+            _stateOnce = !_stateOnce;
+        }
+    }
+    return true;
 }
 
 bool
@@ -487,3 +519,24 @@ bool
     return true;
 }
 
+void
+    GraphicsController::_toggleAllCompositors(bool enable)
+{
+    if(enable)
+    {
+        _ssaoInstance->setEnabled(_compositorState[0]); //hardcoded
+        //_bloomInstance->setEnabled(_compositorState[1]);
+        //_hdrCompositor->Enable(_compositorState[2]);
+    }
+    else 
+    {
+        _compositorState[0] = _ssaoInstance->getEnabled();
+        //_compositorState[1] = _bloomInstance->getEnabled();
+        //_compositorState[2] = _hdrCompositor->IsEnabled();
+
+        _ssaoInstance->setEnabled(false); //hardcoded
+        //_bloomInstance->setEnabled(false);
+        //_hdrCompositor->Enable(false);
+
+    }
+}

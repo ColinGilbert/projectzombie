@@ -145,7 +145,7 @@ Rocket::Core::CompiledGeometryHandle RenderInterfaceOgre3D::CompileGeometry(Rock
 	memcpy(ogre_indices, indices, sizeof(unsigned int) * num_indices);
 	index_buffer->unlock();
 
-
+  
 	return reinterpret_cast<Rocket::Core::CompiledGeometryHandle>(geometry);
 }
 
@@ -167,11 +167,12 @@ void RenderInterfaceOgre3D::RenderCompiledGeometry(Rocket::Core::CompiledGeometr
 		// we need to re-specify them.
 		render_system->_setTextureBlendMode(0, colour_blend_mode);
 		render_system->_setTextureBlendMode(0, alpha_blend_mode);
-	}
+   }
 	else
 		render_system->_disableTextureUnit(0);
-
+    
 	render_system->_render(ogre3d_geometry->render_operation);
+    
 }
 
 // Called by Rocket when it wants to release application-compiled geometry.

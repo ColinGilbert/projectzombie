@@ -11,6 +11,8 @@
 #include "EventDelegates.h"
 #include "delegates/EntityDelegates.h"
 #include "LifeCycleRegister.h"
+#include "KeyEventRegister.h"
+#include "MouseEventRegister.h"
 
 namespace ZGame
 {
@@ -56,6 +58,7 @@ namespace ZGame
         static const unsigned int LFC_ON_INIT = 0x02;
         static const unsigned int LFC_ON_UPDATE = 0x04;
         static const unsigned int LFC_ON_RENDER_QUEUE_START = 0x08;
+        static const unsigned int LFC_ON_RENDER_QUEUE_END = 0x10;
      
         static const unsigned int LFC_DEFAULT = LFC_ON_INIT | LFC_ON_UPDATE | LFC_ON_DESTROY;
 
@@ -72,6 +75,11 @@ namespace ZGame
         HAS_MEM_FUNC(onRenderQueueStart, has_on_render_queue_start);
         BIND_IF(bindIfOnRenderQueueStart, lfcObs.onRenderQueueStart.bind(t, &T::onRenderQueueStart), 
             lfcObs.onRenderQueueStart.clear(), has_on_render_queue_start, 
+            bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation));
+
+        HAS_MEM_FUNC(onRenderQueueEnd, has_on_render_queue_end);
+        BIND_IF(bindIfOnRenderQueueEnd, lfcObs.onRenderQueueEnd.bind(t, &T::onRenderQueueEnd),
+            lfcObs.onRenderQueueEnd.clear(), has_on_render_queue_end,
             bool(T::*)(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation));
         
         HAS_MEM_FUNC(onDestroy, has_on_destroy);
@@ -105,6 +113,13 @@ namespace ZGame
                 if(!bindIfOnRenderQueueStart<T>(&binder, lfcObs))
                 {
                     OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "On Render Queue Start is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }
+            if(eventMask & LFC_ON_RENDER_QUEUE_END)
+            {
+                if(!bindIfOnRenderQueueEnd<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "On Render Queue End is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
                 }
             }
 
@@ -142,11 +157,14 @@ namespace ZGame
     namespace EVENT
     {
         template<typename T>
-        static void bindKeyObserver(KeyboardEvtObserver &keyObs,
+        static void bindAndRegisterKeyObserver(KeyEventRegister &keyReg, KeyboardEvtObserver &keyObs,
             T& binder)
         {
             keyObs.kde.bind(&binder,&T::onKeyDown);
             keyObs.kue.bind(&binder,&T::onKeyUp);
+            keyReg.registerKeyObs(keyObs);
+            clearKeyObs(keyObs);
+
         }
         static void clearKeyObs(EVENT::KeyboardEvtObserver &keyObs)
         {
@@ -154,12 +172,14 @@ namespace ZGame
             keyObs.kue.clear();
         }
         template<typename T>
-        static void bindMouseObserver(MouseEvtObserver &mouseObs,
+        static void bindAndRegisterMouseObserver(MouseEventRegister &mouseReg, MouseEvtObserver &mouseObs,
             T& binder)
         {
             mouseObs.mde.bind(&binder,&T::onMouseDown);
             mouseObs.mme.bind(&binder,&T::onMouseMove);
             mouseObs.mue.bind(&binder,&T::onMouseUp);
+            mouseReg.registerMouseObs(mouseObs);
+            clearMouseObs(mouseObs);
         }
         static void clearMouseObs(EVENT::MouseEvtObserver &mouseObs)
         {

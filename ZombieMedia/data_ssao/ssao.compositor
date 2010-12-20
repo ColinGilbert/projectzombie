@@ -10,7 +10,9 @@ compositor ssao
 
         // the scene we want to modulate
         target scene
-        {
+        {	
+	    first_render_queue 10
+	    last_render_queue 90
             input previous
         }
 
@@ -95,6 +97,7 @@ compositor ssao
 
             pass render_quad
             {
+	
                 // just output something, for example, use a modulate
                 // material to just multiply the scene by the ssao
                 material modulate

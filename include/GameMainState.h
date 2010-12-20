@@ -47,7 +47,9 @@ namespace ZGame
         class RenderEntitiesManager;
         class EntitiesView;
     }
-    using std::tr1::shared_ptr;
+
+   
+
     class GameMainState : public ZGame::GameState
     {
     public:
@@ -56,27 +58,11 @@ namespace ZGame
 
         virtual void
             getGameStateBootstrapInfo(GameStateBootstrapInfo &info);
-
-        //life cycle methods
-        bool onUpdate(const Ogre::FrameEvent &evt);
-        bool onInit(ZGame::ZInitPacket packet);
-        bool onDestroy();
-
-        //Mouse events
-        bool onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
-        bool onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
-        bool onMouseMove(const OIS::MouseEvent &evt);
-        //key events
-        bool onKeyDown(const OIS::KeyEvent &evt);
-        bool onKeyUp(const OIS::KeyEvent &evt);
+        virtual void
+            onGuiConfiguration(Gui::GuiController* guiCtrl);
+            
     protected:
-        Ogre::Camera* _cam;
-        Ogre::Real _dz;
-        bool _forward;
-        bool _backward;
-        Ogre::Real _trans;
-       
-                
+
         virtual void
             regLfcObsForInjection(LifeCycleRegister &lfcReg);
         virtual void
@@ -84,19 +70,8 @@ namespace ZGame
         virtual void
             regMouseObsForInjection(MouseEventRegister &mouseReg);
 
-
-
     private:
-    private:
-        std::auto_ptr<ControlModuleProto> _controlMod;
-        std::auto_ptr<ZGame::World::WorldController> _worldController;
-        std::auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
-        std::auto_ptr<Entities::EntitiesManager> _entMgr;
-        std::auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
-        std::auto_ptr<ZCL::ZCLController> _zclCtrl;
-        std::auto_ptr<Entities::EntitiesView> _entsView;
-        std::auto_ptr<ZWorkspace> _workspace;
-        std::auto_ptr<ZGame::ZWorkspaceController> _workspaceCtrl;
+        
     };
 }
 

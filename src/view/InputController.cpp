@@ -35,7 +35,9 @@ bool InputController::onInit(Ogre::RenderWindow* window)
     {
         window->getCustomAttribute("WINDOW",&winHnd);
         paramList.insert(std::make_pair(std::string("w32_mouse"),std::string("DISCL_FOREGROUND") ));
-        paramList.insert(std::make_pair(string("w32_mouse"),string("DISCL_EXCLUSIVE") ));
+        paramList.insert(std::make_pair(string("w32_mouse"),string("DISCL_NONEXCLUSIVE") ));
+          paramList.insert(std::make_pair(std::string("w32_keyboard"),std::string("DISCL_FOREGROUND") ));
+        paramList.insert(std::make_pair(string("w32_keyboard"),string("DISCL_NONEXCLUSIVE") ));
     }
 #elif defined OIS_LINUX_PLATFORM
     {

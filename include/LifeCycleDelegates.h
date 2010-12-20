@@ -32,17 +32,9 @@ namespace ZGame
             LifeCycleEvent2 onUpdate;
             LifeCycleEvent onDestroy;
             LifeCycleRdrQueueStart onRenderQueueStart;
+            LifeCycleRdrQueueStart onRenderQueueEnd;
         };
-
-        //typedef FastDelegate<void(LifeCycleObserver) > LifeCycleSubject;
-        //typedef FastDelegate<void(LifeCycleSubject&) > LifeCycleSubjectInjector;
-
         typedef FastDelegate<void(const LifeCycleObserver&) > LifeCycleSubject;
-        //typedef FastDelegate1<LifeCycleSubject& > LifeCycleSubjectInjector;
-
-
-
-
     }
 }
 

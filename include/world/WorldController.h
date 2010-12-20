@@ -80,6 +80,10 @@ namespace ZGame
             Ogre::PageManager _pageManager;
             std::auto_ptr<PhysicsManager> _physicsMgr;
             Ogre::Camera* _cam;
+
+
+          
+
         };
     }
 }

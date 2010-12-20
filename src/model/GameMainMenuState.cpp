@@ -9,9 +9,11 @@
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
 #include "DelegatesUtil.h"
+#include "gui/GuiController.h"
+#include "gui/MainMenuScreen.h"
 using namespace ZGame;
 
-GameMainMenuState::GameMainMenuState()
+GameMainMenuState::GameMainMenuState() : _mainMenu(0)
 {
 
 }
@@ -24,8 +26,8 @@ GameMainMenuState::~GameMainMenuState()
 void
     GameMainMenuState::getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
 {
-    info.initalCameraPos = Ogre::Vector3();
-
+    info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
+    info.requireWorldController = true;
 }
 
 
@@ -48,11 +50,12 @@ void GameMainMenuState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 void GameMainMenuState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
     GameState::regKeyObsForInjection(keyReg);
-    //This
+    /*
     EVENT::KeyboardEvtObserver keyObs;
     EVENT::bindKeyObserver(keyObs,*this);
     keyReg.registerKeyObs(keyObs);
     EVENT::clearKeyObs(keyObs);
+    */
 }
 
 bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
@@ -78,5 +81,12 @@ bool GameMainMenuState::onKeyDown(const OIS::KeyEvent &evt)
 bool GameMainMenuState::onKeyUp(const OIS::KeyEvent &evt)
 {
     return true;
+}
+
+void
+    GameMainMenuState::onGuiConfiguration(Gui::GuiController* guiCtrl)
+{
+    _mainMenu.reset(new Gui::MainMenuScreen(guiCtrl));
+    _mainMenu->onLoad();
 }
 

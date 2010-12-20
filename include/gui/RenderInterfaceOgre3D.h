@@ -37,6 +37,18 @@
 	@author Peter Curry
  */
 
+class RocketSimpleRenderable : public Ogre::SimpleRenderable
+{
+public:
+    RocketSimpleRenderable() : Ogre::SimpleRenderable()
+    {
+    }
+
+    virtual ~RocketSimpleRenderable()
+    {
+    }
+};
+
 class RenderInterfaceOgre3D : public Rocket::Core::RenderInterface
 {
 	public:
@@ -82,6 +94,8 @@ class RenderInterfaceOgre3D : public Rocket::Core::RenderInterface
 		int scissor_top;
 		int scissor_right;
 		int scissor_bottom;
+
+   
 };
 
 #endif

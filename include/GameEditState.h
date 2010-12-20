@@ -50,6 +50,9 @@ namespace ZGame
     bool
     onKeyDown(const OIS::KeyEvent &evt);
 
+    virtual void
+        onGuiConfiguration(Gui::GuiController* guiCtrl){};
+
   protected:
 
     //boost::shared_ptr<GameEditView> _editView;

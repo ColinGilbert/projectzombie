@@ -21,7 +21,7 @@
 #include "MouseEventRegister.h"
 #include "LifeCycleDelegates.h"
 #include "DelegatesUtil.h"
-
+#include "gui/GuiController.h"
 using namespace std;
 
 namespace OgreBites
@@ -35,21 +35,36 @@ namespace ZGame
     class LifeCycleRegister;
     class KeyEventRegister;
     class MouseEventRegister;
-    class GraphicsController;
-    namespace Gui
-    {
-        class GuiController;
-    }
     /**
     * This class contains information needed to bootstrap the Engine. The system
     *requires certain bootstrapping information in order to boot various sub systems.
     *We do this so we can couple this with a state, say to load this information along
     *with the State description.
     **/
-    struct GameStateBootstrapInfo
+    class GameStateBootstrapInfo
     {
+    public:
+        GameStateBootstrapInfo() :
+            requireRenderEntitiesmanager(false),
+                requireZCLController(false),
+                requireWorldController(false),
+                requireControlModule(false),
+                requireWorkspace(false),
+                requireCharacterUtil(true)
+            {}
         Ogre::Vector3 initalCameraPos;
+        bool requireRenderEntitiesmanager;
+        bool requireZCLController;
+        bool requireWorldController;
+        bool requireControlModule;
+        bool requireWorkspace;
+        bool requireCharacterUtil;
     };
+
+    namespace Gui
+    {
+        GuiController;
+    }
 
     class GameState
     {
@@ -64,11 +79,13 @@ namespace ZGame
         {
             info.initalCameraPos = Ogre::Vector3::ZERO;
         }
+
+            virtual void
+                onGuiConfiguration(Gui::GuiController* guiCtrl) = 0;
+
     protected:
 
         GameState(); //protected constructor
-
-
 
         virtual void
             GameState::regLfcObsForInjection(LifeCycleRegister &lfcReg);
@@ -77,25 +94,8 @@ namespace ZGame
         virtual void
             GameState::regMouseObsForInjection(MouseEventRegister &mouseReg);
 
-
-
-        GraphicsController*
-            getGraphicsController()
-        {
-            return _gfxCtrl.get();
-        }
-
-        OgreBites::SdkTrayManager*
-            getSdkTray()
-        {
-            return _tray;
-        }
-
     protected:
     private:
-        auto_ptr<GraphicsController> _gfxCtrl;
-        auto_ptr<Gui::GuiController> _guiCtrl;
-        OgreBites::SdkTrayManager* _tray;
 
     };
 

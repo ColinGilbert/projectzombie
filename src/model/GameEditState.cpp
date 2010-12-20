@@ -64,15 +64,7 @@ void
     GameEditState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regKeyObsForInjection");
-    GameState::regKeyObsForInjection(keyReg);
-    //This
-    EVENT::KeyboardEvtObserver keyObs;
-    EVENT::bindKeyObserver(keyObs, *this);
-    keyReg.registerKeyObs(keyObs);
-
-    EVENT::bindKeyObserver(keyObs, _controlMod);
-    keyReg.registerKeyObs(keyObs);
-
+   
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regKeyObsForInjection");
 }
 
@@ -80,13 +72,8 @@ void
     GameEditState::regMouseObsForInjection(MouseEventRegister &mouseReg)
 {
     GameState::regMouseObsForInjection(mouseReg);
-    EVENT::MouseEvtObserver mouseObs;
-
-    EVENT::bindMouseObserver(mouseObs, *this);
-    mouseReg.registerMouseObs(mouseObs);
-
-    EVENT::bindMouseObserver(mouseObs, _controlMod);
-    mouseReg.registerMouseObs(mouseObs);
+    
+ 
 }
 
 bool
@@ -115,42 +102,21 @@ bool
 bool
     GameEditState::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (_sdkTrayMgr->injectMouseDown(evt, id))
-        return true;
     return true;
 }
 bool
     GameEditState::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (_sdkTrayMgr->injectMouseUp(evt, id))
-        return true;
     return true;
 }
 bool
     GameEditState::onMouseMove(const OIS::MouseEvent &evt)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (_sdkTrayMgr->injectMouseMove(evt))
-        return true;
     return true;
 }
 bool
     GameEditState::onKeyDown(const OIS::KeyEvent &evt)
 {
-    OgreBites::SdkTrayManager* _sdkTrayMgr = getSdkTray();
-    if (evt.key == OIS::KC_TAB)
-    {
-        if (_sdkTrayMgr->areTraysVisible() && _sdkTrayMgr->isCursorVisible())
-        {
-            _sdkTrayMgr->hideAll();
-        }
-        else
-        {
-            _sdkTrayMgr->showAll();
-        }
-    }
     return true;
 }
 

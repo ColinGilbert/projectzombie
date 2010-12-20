@@ -117,6 +117,10 @@ namespace ZGame
     onKeyDown(const OIS::KeyEvent &evt);
 
     bool adjustShadow(const Ogre::StringVector &params);
+    bool onRenderQueueStart(Ogre::uint8 queueGroupId,
+        const Ogre::String& invocation, bool& skipThisInvocation);
+    bool onRenderQueueEnd(Ogre::uint8 queueGroupId,
+        const Ogre::String& invocation, bool& skipThisInvocation);
 
 
   protected:
@@ -137,7 +141,16 @@ namespace ZGame
     void _initHDR(Ogre::RenderWindow* windowm, Ogre::Camera* initialCam);
     void _parseHDRConfig();
     void _initSkyX();
+    //This is a temp method to disable compositors before rendering of GUI.
+    //We need to do this on a material level, by implementing a custom GEOM method
+    //for GUI so we don't render them to compositors.
+    //This problem is due to libRocket calling _render directly instead of adding
+    //it to an RenderQueue.
+    void _toggleAllCompositors(bool enable);
   private:
+
+    bool _compositorState[3];
+    bool _stateOnce;
     Ogre::SceneManager* _scnMgr;
     Ogre::Viewport* _vp;
     size_t _WHICH_TONEMAPPER;
@@ -159,6 +172,5 @@ namespace ZGame
     std::vector<Ogre::String> _postEfxNames;
     Ogre::String _currentCompositor;
     Ogre::String _currentPostEfx;
-
   };
 }

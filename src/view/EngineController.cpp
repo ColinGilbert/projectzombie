@@ -16,12 +16,32 @@ using namespace std;
 #include "KeyboardPump.h"
 #include "MousePump.h"
 #include "LifeCycleRegister.h"
+#include "LifeCycleDelegates.h"
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
 #include "MessageIdentifiers.h"
 #include "ogreconsole.h"
 #include "CommandController.h"
 #include "DelegatesUtil.h"
+
+#include "GraphicsController.h"
+#include "gui/GuiController.h"
+#include "GameMainState.h"
+#include "entities/ZEntity.h"
+#include "ControlModuleProto.h"
+#include "world/WorldController.h"
+#include "CommandController.h"
+#include "utilities/CharacterUtil.h"
+#include "entities/EntitiesManager.h"
+#include "entities/RenderEntitiesManager.h"
+#include "entities/ZEntityBuilder.h"
+#include "ZCL/ZCLController.h"
+#include "GraphicsController.h"
+#include "entities/EntitiesView.h"
+#include "ZWorkspace.h"
+#include "ZWorkspaceController.h"
+
+
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 static const Ogre::String PlatformPath("configs_windows/");
@@ -187,7 +207,7 @@ bool
     _netClient.reset(new ZGame::Networking::NetClientController());
 
     _sdkTrayMgr->hideLoadingBar();
-
+    _sdkTrayMgr->hideAll();
     _scnMgr->addRenderQueueListener(this);
 
 
@@ -266,14 +286,14 @@ void
     EngineController::renderQueueStarted(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
-    //_lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
+    _lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
 }
 
 void
     EngineController::renderQueueEnded(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
-    _lfcPump->updateOnRenderQueueStartObs(queueGroupId, invocation, skipThisInvocation);
+    _lfcPump->updateOnRenderQueueEndObs(queueGroupId, invocation, skipThisInvocation);
 }
 
 void
@@ -482,6 +502,7 @@ void
             throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState.reset(ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass));
         GameStateBootstrapInfo info;
+
         _curGameState->getGameStateBootstrapInfo(info);
         Ogre::Camera* cam = createDefaultCamera(info.initalCameraPos);
         _vp = _window->addViewport(cam);
@@ -492,6 +513,7 @@ void
         cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
 
         _initPacket->initialCamera = cam;
+        _initPacket->keyboard = _inController->getKeyboard();
 
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
@@ -509,6 +531,9 @@ void
         MouseEventRegister mouseReg;
 
         _curGameState->init(lfcReg, keyReg, mouseReg, 0);
+
+        _initSubSystemsOnLoadState(info, lfcReg, keyReg, mouseReg);
+
         LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Current game state done init.");
         //We manually register the net client for now. We do this
         //since we have not implemented Stateful states. The original
@@ -523,7 +548,14 @@ void
         mouseReg.injectMouseSubj(ms);
         logM->logMessage(Ogre::LML_TRIVIAL, "About to update onInit obs");
 
+        if(!_initPacket->valid())
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Init packet is not valid",
+            "EngineController::realizeCurrentState");
+
         _lfcPump->updateOnItObs(*_initPacket); //pump on init event to observers.
+        //Gui Configuration
+        _curGameState->onGuiConfiguration(_guiCtrl.get());
+
 
         delete _initPacket;
     }
@@ -549,6 +581,147 @@ void
     {
         OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in NetClientController.", "EngineController::manuallyRegisterNetClient");
     }
+}
+
+void
+    EngineController::_initSubSystemsOnLoadState(const ZGame::GameStateBootstrapInfo &info, LifeCycleRegister &lfcReg,
+    KeyEventRegister &keyReg, MouseEventRegister &mouseReg)
+{
+      try
+    {
+        LifeCycle::LifeCycleObserver lfcObs;
+        EVENT::KeyboardEvtObserver keyObs;
+        EVENT::MouseEvtObserver mouseObs;
+
+        try
+        {
+            _gfxCtrl.reset(new GraphicsController());
+            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl,
+                LifeCycle::LFC_DEFAULT);
+            EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_gfxCtrl);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GraphicsController.", "");
+        }
+        try
+        {
+            _guiCtrl.reset(new Gui::GuiController());
+            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_DEFAULT 
+                | LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
+            EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);
+            EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_guiCtrl);
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GuiController", "");
+        }
+        
+        try
+        {
+            if(info.requireRenderEntitiesmanager)
+            {
+                _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
+                //render entities
+                LifeCycle::bindAndRegisterLifeCycleObserver<Entities::RenderEntitiesManager>(lfcReg,
+                    lfcObs, *_rdrEntMgr, LifeCycle::LFC_ON_INIT);
+            }
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in RenderEntitiesManager", "");
+        }
+        
+        try
+        {
+            if(info.requireZCLController)
+            {
+                _zclCtrl.reset(new ZGame::ZCL::ZCLController());
+                //OpenCLController
+                LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZCL::ZCLController>(lfcReg, 
+                    lfcObs, *_zclCtrl, LifeCycle::LFC_ON_DESTROY);
+            }
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ZCLController", "");
+        }
+        try
+        {
+            if(info.requireWorldController)
+            {
+                _worldController.reset(new ZGame::World::WorldController);
+                //world controller
+                LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::World::WorldController>(lfcReg, 
+                    lfcObs, *_worldController);
+            }
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in WorldController", "");
+        }
+        try
+        {
+            //CONTROL MODULE
+            if(info.requireControlModule)
+            {
+                _controlMod.reset(new ZGame::ControlModuleProto());
+                //control module
+                LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, *_controlMod,
+                    LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
+                EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_controlMod);
+                EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_controlMod);
+            }
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ControlModuleProto", "");
+        }
+        try
+        {
+            //WORKSPACE
+            if(info.requireWorkspace)
+            {
+                _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get()));
+                _workspaceCtrl.reset(new ZGame::ZWorkspaceController);
+                _workspaceCtrl->setZWorkspace(_workspace.get());
+                //Workspace controller
+                LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
+                    LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
+                EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_workspaceCtrl);
+                EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_workspaceCtrl);
+
+            }
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ZWorkspaceController", "");
+        }
+        try
+        {
+            if(info.requireCharacterUtil)
+            {
+                _charUtil.reset(new ZGame::Util::CharacterUtil());
+                LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::Util::CharacterUtil>(lfcReg, lfcObs, *_charUtil,
+                    LifeCycle::LFC_ON_INIT);
+            }
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in CharacterUtil", "");
+        }
+    }catch(Ogre::Exception e)
+    {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription(),
+            "EngineController::_initSubSystemOnLoadState");
+    }
+
+}
+
+void
+    EngineController::_removeSubSystemsOnUnloadState()
+{
+    _guiCtrl.reset(0);
+    _gfxCtrl.reset(0);
+    _rdrEntMgr.reset(0);
+    _zclCtrl.reset(0);
+    _worldController.reset(0);
+    _controlMod.reset(0);
+    _workspaceCtrl.reset(0);
+    _workspace.reset(0);
+    _charUtil.reset(0);
 }
 
 }

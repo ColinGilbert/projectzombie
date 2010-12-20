@@ -1,9 +1,9 @@
 /*
- * LifeCyclePump.cpp
- *
- *  Created on: Sep 5, 2008
- *      Author: bey0nd
- */
+* LifeCyclePump.cpp
+*
+*  Created on: Sep 5, 2008
+*      Author: bey0nd
+*/
 #include <iostream>
 using namespace std;
 #include "LifeCyclePump.h"
@@ -17,55 +17,57 @@ LifeCyclePump::LifeCyclePump()
 
 LifeCyclePump::~LifeCyclePump()
 {
-  cout << "In LifeCyclePump::~LifeCyclePump()" << endl;
+    cout << "In LifeCyclePump::~LifeCyclePump()" << endl;
 }
 
 void
-LifeCyclePump::addLifeCycleObserver(
+    LifeCyclePump::addLifeCycleObserver(
     const ZGame::LifeCycle::LifeCycleObserver &obs)
 {
-  if (obs.onInit)
-    _onInitObs.push_back(obs.onInit);
-  if (obs.onUpdate)
-    _onUpdateObs.push_back(obs.onUpdate);
-  if (obs.onDestroy)
-    _onDestroyObs.push_back(obs.onDestroy);
-  if (obs.onRenderQueueStart)
-      _onRenderQueueStartObs.push_back(obs.onRenderQueueStart);
+    if (obs.onInit)
+        _onInitObs.push_back(obs.onInit);
+    if (obs.onUpdate)
+        _onUpdateObs.push_back(obs.onUpdate);
+    if (obs.onDestroy)
+        _onDestroyObs.push_back(obs.onDestroy);
+    if (obs.onRenderQueueStart)
+        _onRenderQueueStartObs.push_back(obs.onRenderQueueStart);
+    if (obs.onRenderQueueEnd)
+        _onRenderQueueEndObs.push_back(obs.onRenderQueueEnd);
 }
 
 /**
- * Update onInit() observers
- */
+* Update onInit() observers
+*/
 void
-LifeCyclePump::updateOnItObs(ZGame::ZInitPacket initPacket)
+    LifeCyclePump::updateOnItObs(ZGame::ZInitPacket initPacket)
 {
-  for (LifeCycleOnInitItr it = _onInitObs.begin(); it != _onInitObs.end(); ++it)
+    for (LifeCycleOnInitItr it = _onInitObs.begin(); it != _onInitObs.end(); ++it)
     {
-      (*it)(initPacket);
+        (*it)(initPacket);
     }
 }
 /**
- * Update onUpdate observers
- */
+* Update onUpdate observers
+*/
 void
-LifeCyclePump::updateOnUpdateObs(const Ogre::FrameEvent& evt)
+    LifeCyclePump::updateOnUpdateObs(const Ogre::FrameEvent& evt)
 {
-  for (LifeUpdateObsItr it = _onUpdateObs.begin(); it != _onUpdateObs.end(); ++it)
+    for (LifeUpdateObsItr it = _onUpdateObs.begin(); it != _onUpdateObs.end(); ++it)
     {
-      //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"upming updates to observers.");
-      (*it)(evt); //make delegate call
+        //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,"upming updates to observers.");
+        (*it)(evt); //make delegate call
     }
 }
 /**
- * Update onDestroy observers.
- */
+* Update onDestroy observers.
+*/
 void
-LifeCyclePump::updateOnDestroyObs()
+    LifeCyclePump::updateOnDestroyObs()
 {
-  for (LifeCycleObsItr it = _onDestroyObs.begin(); it != _onDestroyObs.end(); ++it)
+    for (LifeCycleObsItr it = _onDestroyObs.begin(); it != _onDestroyObs.end(); ++it)
     {
-      (*it)(); //make delegate call
+        (*it)(); //make delegate call
     }
 }
 
@@ -73,7 +75,7 @@ void
     LifeCyclePump::updateOnRenderQueueStartObs(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
-    for(LifeRdrQueueStartObsItr it = _onRenderQueueStartObs.begin(); 
+    for(LifeRdrQueueObsItr it = _onRenderQueueStartObs.begin(); 
         it != _onRenderQueueStartObs.end(); ++it)
     {
         (*it)(queueGroupId, invocation, skipThisInvocation);
@@ -81,9 +83,22 @@ void
 }
 
 void
-LifeCyclePump::removeAllObs()
+    LifeCyclePump::updateOnRenderQueueEndObs(Ogre::uint8 queueGroupId,
+    const Ogre::String& invocation, bool& skipThisInvocation)
 {
-  _onInitObs.clear();
-  _onUpdateObs.clear();
-  _onDestroyObs.clear();
+    for(LifeRdrQueueObsItr it = _onRenderQueueEndObs.begin(); 
+        it != _onRenderQueueEndObs.end(); ++it)
+    {
+        (*it)(queueGroupId, invocation, skipThisInvocation);
+    }
+}
+
+void
+    LifeCyclePump::removeAllObs()
+{
+    _onInitObs.clear();
+    _onUpdateObs.clear();
+    _onDestroyObs.clear();
+    _onRenderQueueStartObs.clear();
+    _onRenderQueueEndObs.clear();
 }

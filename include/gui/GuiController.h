@@ -24,20 +24,16 @@ THE SOFTWARE.
 
 #pragma once
 
-#include <Rocket/Core/String.h>
-#include <Rocket/Core/Context.h>
+#include "gui/GuiPrerequisite.h"
 #include <Ogre.h>
 #include <ZInitPacket.h>
 #include <vector>
 
-class SystemInterfaceOgre3D;
-class RenderInterfaceOgre3D;
 
 namespace ZGame
 {
     namespace Gui
     {
-       
         class GuiController
         {
         public:
@@ -52,17 +48,52 @@ namespace ZGame
                 onRenderQueueStart(Ogre::uint8 queueGroupId,
                 const Ogre::String& invocation, bool& skipThisInvocation);
             bool
+                onRenderQueueEnd(Ogre::uint8 queueGroupId,
+                const Ogre::String& invocation, bool& skipThisInvocation);
+            bool
                 onDestroy();
-        protected:
+            bool
+                onKeyUp(const OIS::KeyEvent &e);
+            bool
+                onKeyDown(const OIS::KeyEvent &e);
+            bool
+                onMouseUp(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+            bool
+                onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+            bool
+                onMouseMove(const OIS::MouseEvent& e);
+            
+            void
+                loadDocumentsWithContext(Rocket::Core::Context* context, 
+               StrToDocumentMap &docMap);
+
+            Rocket::Core::Context* 
+                getGui2d()
+            {
+                return _gui2d;
+            }
+
+
+        
         private:
             void 
                 ConfigureRenderSystem();
             void
                 BuildProjectionMatrix(Ogre::Matrix4& projection_matrix);
 
+            void BuildKeyMaps();
+            int GetKeyModifierState();
+            //This method will create the GUi2D context.
+            void
+                _createGui2d();
+
+            typedef Ogre::map<OIS::KeyCode, Rocket::Core::Input::KeyIdentifier >::type KeyIdentifierMap;
+
+            KeyIdentifierMap key_identifiers;
+
             SystemInterfaceOgre3D* ogre_system;
             RenderInterfaceOgre3D* ogre_renderer;
-            Rocket::Core::Context* context;
+            Rocket::Core::Context* _gui2d;
 
             Rocket::Core::String _data_path;
             Rocket::Core::String FONT_PATH;
@@ -73,6 +104,8 @@ namespace ZGame
             unsigned int _W_HEIGHT;
 
             Ogre::Viewport* _vp;
+
+            OIS::Keyboard* mKeyboard;
 
         };
     }
