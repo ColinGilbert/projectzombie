@@ -8,6 +8,13 @@
 
 //using namespace Ogre;
 //using namespace std;
+
+/**
+* \file Please deprecate this ASAP.
+*
+*
+*/
+
 namespace ZGame
 {
   using namespace std;

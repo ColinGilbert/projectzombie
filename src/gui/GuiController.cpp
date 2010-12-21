@@ -8,7 +8,8 @@ using std::endl;
 
 using namespace ZGame::Gui;
 
-GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0)
+GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0),
+    ogre_system(0), ogre_renderer(0)
 {
     _fontStrVec.push_back("font/Delicious-Roman.otf");
     _fontStrVec.push_back("font/Delicious-Bold.otf");
@@ -18,17 +19,29 @@ GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0
 
 GuiController::~GuiController()
 {
+    Rocket::Core::Shutdown();
+    cout << "GuiController::shutDown()" << endl;
+    delete ogre_system;
+    ogre_system = 0;
+
+    delete ogre_renderer;
+    ogre_renderer = 0;
+
 }
 
 void
     GuiController::_createGui2d()
 {
-    _gui2d = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(_W_WIDTH, _W_HEIGHT));
-    Rocket::Debugger::Initialise(_gui2d);
-    Rocket::Core::ElementDocument* cursor = _gui2d->LoadMouseCursor(_data_path + "common/cursor.rml");
-    if(cursor)
-        cursor->RemoveReference();
-
+    if(!_gui2d)
+    {
+        _gui2d = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(_W_WIDTH, _W_HEIGHT));
+        Rocket::Debugger::Initialise(_gui2d);
+        Rocket::Core::ElementDocument* cursor = _gui2d->LoadMouseCursor(_data_path + "common/cursor.rml");
+        if(cursor)
+            cursor->RemoveReference();
+        return;
+    }
+    return;
 }
 
 /**
@@ -83,23 +96,39 @@ bool
         _W_HEIGHT = initPacket.renderWindow->getHeight();
         _vp = initPacket.initialCamera->getViewport();
 
-
-        ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
-        Rocket::Core::SetRenderInterface(ogre_renderer);
-
-        ogre_system = new SystemInterfaceOgre3D();
-        Rocket::Core::SetSystemInterface(ogre_system);
-
-
-        Rocket::Core::Initialise();
-        Rocket::Controls::Initialise();
-
+        if(ogre_renderer)
+        {
+            Rocket::Core::SetRenderInterface(0);
+            ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
+            Rocket::Core::SetRenderInterface(ogre_renderer);
+        }
+        else
+        {
+            ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
+            Rocket::Core::SetRenderInterface(ogre_renderer);
+        }
+        if(ogre_system)
+        {
+            Rocket::Core::SetSystemInterface(0);
+            ogre_system = new SystemInterfaceOgre3D();
+            Rocket::Core::SetSystemInterface(ogre_system);
+        }
+        else
+        {
+            ogre_system = new SystemInterfaceOgre3D();
+            Rocket::Core::SetSystemInterface(ogre_system);
+            Rocket::Core::Initialise();
+            Rocket::Controls::Initialise();
+             for(std::vector<Rocket::Core::String>::const_iterator iter = _fontStrVec.cbegin(); iter != _fontStrVec.end(); ++iter)
+            {
+                Rocket::Core::FontDatabase::LoadFontFace(_data_path + FONT_PATH + (*iter));
+            }
+            
+        }
+       
         _createGui2d();
 
-        for(std::vector<Rocket::Core::String>::const_iterator iter = _fontStrVec.cbegin(); iter != _fontStrVec.end(); ++iter)
-        {
-            Rocket::Core::FontDatabase::LoadFontFace(_data_path + FONT_PATH + (*iter));
-        }
+
     }catch(Ogre::Exception e)
     {
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, Ogre::String("Failed to initialize Gui system. ").append(e.getDescription()),
@@ -122,18 +151,11 @@ bool
 {
     Ogre::Log::Stream debug = Ogre::LogManager::getSingleton().getLog("App.log")->stream(Ogre::LML_TRIVIAL);
     Ogre::Log::Stream log = Ogre::LogManager::getSingleton().getLog("App.log")->stream();
-
-    debug << "GuiController::onDestroy()\n";
-
     _gui2d->RemoveReference();
-    Rocket::Core::Shutdown();
-    log << "Rocket Core shutdown\n";
-    delete ogre_system;
-    ogre_system = 0;
-
-    delete ogre_renderer;
-    ogre_renderer = 0;
-
+    _gui2d = 0;
+    Rocket::Core::ReleaseTextures();
+    Rocket::Core::ReleaseCompiledGeometries();
+    debug << "GuiController::onDestroy()\n";
     return true;
 }
 

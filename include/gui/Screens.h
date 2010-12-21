@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "gui/GuiController.h"
 namespace ZGame
 {
+    class EngineController;
     namespace Gui
     {
         
@@ -36,21 +37,21 @@ namespace ZGame
         class Screens : Rocket::Core::EventListenerInstancer
         {
         public:
-            Screens(){}
             Screens(GuiController* guiCtrl);
             virtual ~Screens();
 
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value) = 0;
-            virtual void Release() = 0;
+            virtual void Release();
 
         protected:
 
-            void _loadDocuments(StrToDocumentMap &docMap);
-            void _showAllDocs(StrToDocumentMap &docMap);
-            void _hideDoc(Rocket::Core::ElementDocument* theDoc);
-            void _showDoc(Rocket::Core::ElementDocument* theDoc);
-           
+            void p_loadDocuments(StrToDocumentMap &docMap);
+            void p_showAllDocs(StrToDocumentMap &docMap);
+            void p_hideDoc(Rocket::Core::ElementDocument* theDoc);
+            void p_showDoc(Rocket::Core::ElementDocument* theDoc);
+       
+
         private:
             GuiController* _guiCtrl;
         };

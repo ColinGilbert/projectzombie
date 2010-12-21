@@ -30,16 +30,18 @@ PhysicsManager::~PhysicsManager()
     _freeAll();
     _world->setDebugDrawer(0);
     OGRE_DELETE_T(_world, DynamicsWorld, Ogre::MEMCATEGORY_GENERAL);
-    OGRE_DELETE _debugDrawer;
+    delete _debugDrawer;
+    _debugDrawer = 0;
 }
 
 bool
     PhysicsManager::onInit(ZGame::ZInitPacket initPacket)
 {
     _scnMgr = initPacket.sceneManager;
-    _world = OGRE_NEW_T(OgreBulletDynamics::DynamicsWorld(_scnMgr, _bounds, _gravityVector), Ogre::MEMCATEGORY_GENERAL);
+    _world = OGRE_NEW_T(OgreBulletDynamics::DynamicsWorld, Ogre::MEMCATEGORY_GENERAL)(_scnMgr, _bounds, _gravityVector);
    
-    _debugDrawer = OGRE_NEW OgreBulletCollisions::DebugDrawer();
+    //_debugDrawer = OGRE_NEW_T(OgreBulletCollisions::DebugDrawer, Ogre::MEMCATEGORY_GENERAL)();
+    _debugDrawer = new OgreBulletCollisions::DebugDrawer();
     _debugDrawer->setDrawWireframe(true);
     _debugDrawer->setDrawAabb(true);
     

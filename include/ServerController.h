@@ -28,7 +28,8 @@ namespace ZGame
         ServerController();
         virtual
             ~ServerController();
-
+        bool
+            loadStartStates() {return true;}
         //implements virtual method from MainController
         bool onInit();
         void run();

@@ -21,19 +21,21 @@ namespace ZGame
     }
 
     virtual bool
+        loadStartStates() = 0;
+
+    virtual bool
     onInit() = 0;
     virtual void
     run() = 0;
     virtual void
-        onDestroy(){ _commandController->onDestroy();}
+        onDestroy(){}
   protected:
-      MainController():_commandController(new CommandController())
+      MainController()
       {
           std::cout << "In MainController default constructor" << std::endl;
       }
 
-      std::auto_ptr<ZGame::CommandController> _commandController;
-
+  
   };
 }
 

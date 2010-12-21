@@ -41,13 +41,13 @@ namespace ZGame
 
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
-            virtual void Release(){} //do nothing
+            virtual void Release(){};//do nothing
             virtual void ProcessEvent(Rocket::Core::Event& event);
 
         private:
 
             void _buildDocMap();
-
+            
             Ogre::StringVector _docPath;
             StrToDocumentMap _docMap;
         };

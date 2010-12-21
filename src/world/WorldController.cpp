@@ -56,6 +56,7 @@ bool WorldController::onDestroy()
 {
     cout << "WorldController::onDestroy called." << endl;
     cout << "Deleting WorldMap." << endl;
+    _pageManager.removeCamera(_cam);
     _worldMap.reset(0);
     OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
     cout << "WorldController::onDestroy done." << endl;

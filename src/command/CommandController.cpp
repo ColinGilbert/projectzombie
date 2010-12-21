@@ -30,14 +30,28 @@ CommandController* CommandController::getSingletonPtr()
 }
 
 
-CommandController::CommandController() : _svcManager(new ServicesManager())
+CommandController::CommandController()
 {
 }
 
 CommandController::~CommandController()
 {
-    cout << "In CommandController destructor." << endl;
-    delete _svcManager;
+   
+}
+
+/**
+** \note you should refactor the way console and command controller are coupled. The problem 
+* is that CommandController is a singleton. It shouldn't keep track of state like this. The way
+*we're doing it is also because we copy-and-pasta OgreConsole from somewhere. ALL is not lost however,
+*since we are planning to refactor OgreConsole using LibRocket anyway. Many new systems has been implemented
+*since OgreConsole, so use that (the current system patterns).
+**/
+void
+    CommandController::onDestroy()
+{
+     if(_console.get() != 0)
+        _console->shutdown();
+    __cmdMap.clear();
 }
 
 
@@ -51,16 +65,6 @@ OgreConsole*
 CommandController::getConsole()
 { 
     return _console.get(); 
-}
-
-/**
-*precondition Ogre must still be valid at this point. What this means is you want to call this during the onDestroy life cycle. Ogre is guranteed to be still valid during that phase.
-*
-*/
-void CommandController::onDestroy()
-{
-    if(_console.get() != 0)
-        _console->shutdown();
 }
 
 /**

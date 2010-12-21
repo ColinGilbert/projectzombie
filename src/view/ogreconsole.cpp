@@ -77,6 +77,9 @@ void OgreConsole::shutdown(){
 
     OverlayManager::getSingleton().destroyOverlayElement(textbox);
     OverlayManager::getSingleton().destroy(overlay);
+    LogManager::getSingleton().getDefaultLog()->removeListener(this);
+    root->removeFrameListener(this);
+
     //delete rect;
     //delete node;
     //delete textbox;

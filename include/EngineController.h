@@ -116,6 +116,10 @@ namespace ZGame
         virtual void
             renderQueueEnded(Ogre::uint8 queueGroupdId, const Ogre::String& invocation, bool& skipThisInovcation);
 
+        bool
+            executeCmd(const Ogre::StringVector& params);
+        bool
+            loadStartStates();
 
         //input observers
         //void
@@ -135,7 +139,6 @@ namespace ZGame
         //std::auto_ptr<GameStateInfo> _curStateInfo;
         GameStateInfo* _curStateInfo;
         std::auto_ptr<GameState> _curGameState;
-
         //LifeCycle pump
         std::auto_ptr<LifeCyclePump> _lfcPump;
         std::auto_ptr<KeyboardPump> _keyPump;
@@ -188,7 +191,21 @@ namespace ZGame
             LifeCycleRegister &lfcReg, KeyEventRegister &keyReg, MouseEventRegister &mouseReg);
         void
             _removeSubSystemsOnUnloadState();
+        void
+            _initCommands();
+        
+
+        void
+            _switchState(const Ogre::String &state);
+        /** \brief actual method for switching state.**/
+        void
+            _doSwitchingState();
+        
         int _statsClockVariable;
+
+        bool _switchingState;
+        Ogre::String _switchToStateKey;
+        
 
         ZInitPacket* _initPacket;
         auto_ptr<GraphicsController> _gfxCtrl;
@@ -203,6 +220,7 @@ namespace ZGame
         std::auto_ptr<Entities::EntitiesView> _entsView;
         std::auto_ptr<ZWorkspace> _workspace;
         std::auto_ptr<ZGame::ZWorkspaceController> _workspaceCtrl;
+        std::auto_ptr<CommandController> _commandController;
 
     };
 

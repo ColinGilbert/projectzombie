@@ -24,22 +24,28 @@ THE SOFTWARE.
 
 #include "gui/Screens.h"
 #include "gui/GuiController.h"
-
+#include "EngineController.h"
 using namespace ZGame::Gui;
 
 Screens::Screens(GuiController* guiCtrl) : _guiCtrl(guiCtrl)
 {
     //We assume Rocket::Core has been initialized.
     Rocket::Core::Factory::RegisterEventListenerInstancer(this);
-    this->RemoveReference();
 }
 
 Screens::~Screens()
 {
+    Rocket::Core::Factory::RegisterEventListenerInstancer(0);
 }
 
 void
-    Screens::_loadDocuments(StrToDocumentMap &docMap)
+    Screens::Release()
+{
+}
+
+
+void
+    Screens::p_loadDocuments(StrToDocumentMap &docMap)
 {
     assert(_guiCtrl != 0 && "_guiCtrl is not supposed to be null.");
     _guiCtrl->loadDocumentsWithContext(_guiCtrl->getGui2d(), docMap);
@@ -48,7 +54,7 @@ void
 * temp. test method.
 **/
 void
-    Screens::_showAllDocs(StrToDocumentMap &docMap)
+    Screens::p_showAllDocs(StrToDocumentMap &docMap)
 {
     StrToDocumentMap::const_iterator cIter;
     for(cIter = docMap.cbegin(); cIter != docMap.end(); ++cIter)
@@ -58,13 +64,13 @@ void
 }
 
 void
-    Screens::_showDoc(Rocket::Core::ElementDocument* theDoc)
+    Screens::p_showDoc(Rocket::Core::ElementDocument* theDoc)
 {
     theDoc->Show();
 }
 
 void
-    Screens::_hideDoc(Rocket::Core::ElementDocument* theDoc)
+    Screens::p_hideDoc(Rocket::Core::ElementDocument* theDoc)
 {
     theDoc->Hide();
 }

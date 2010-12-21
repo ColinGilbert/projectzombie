@@ -42,7 +42,7 @@ void StatesLoader::loadStates(GameStateInfoMap &stateInfoMap, GameStateInfo &sta
        typeName = i->first;
        archName = i->second;
        cout << "SEC_NAME,TYPENAME,ARCHNAME:" << secName << " " << typeName << " " << archName << endl;
-       
+       //NOTE: This here is F***king wrong. But somehow it works. LOL.
       if(secName.compare("BeginState") == 0)
       {
         startName = archName;

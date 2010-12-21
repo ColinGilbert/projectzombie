@@ -30,7 +30,6 @@ using namespace std;
 #include "entities/ZEntity.h"
 #include "ControlModuleProto.h"
 #include "world/WorldController.h"
-#include "CommandController.h"
 #include "utilities/CharacterUtil.h"
 #include "entities/EntitiesManager.h"
 #include "entities/RenderEntitiesManager.h"
@@ -41,6 +40,8 @@ using namespace std;
 #include "ZWorkspace.h"
 #include "ZWorkspaceController.h"
 
+#include "command/CommandList.h"
+#include "CommandController.h"
 
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -52,8 +53,9 @@ namespace ZGame
 {
 
     EngineController::EngineController() :
-MainController(), _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(new KeyboardPump()), _mousePump(new MousePump()), _curStateInfo(0),
-    _curGameState(0), _statsClockVariable(0), _sdkTrayMgr(0)
+MainController(), _stillRunning(true), _lfcPump(0), _keyPump(0), _mousePump(0), _curStateInfo(0),
+    _curGameState(0), _statsClockVariable(0), _sdkTrayMgr(0), _switchingState(false), _vp(0), _scnMgr(0),
+    _commandController(new CommandController())
 {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -61,6 +63,7 @@ MainController(), _stillRunning(true), _lfcPump(new LifeCyclePump()), _keyPump(n
 
 EngineController::~EngineController()
 {
+
     onDestroy();
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
@@ -89,8 +92,17 @@ Ogre::Camera*
     EngineController::createDefaultCamera(Ogre::Vector3 initialPos)
 {
     using namespace Ogre;
-    //Camera* cam =_scnMgr->createCamera(_window->getName());
-    Camera* cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
+    Camera* cam = 0;
+    try
+    {
+        cam = _scnMgr->getCamera("ENGINE_VIEW_CAMERA"); //_scnMgr->createCamera("ENGINE_VIEW_CAMERA");
+    }catch(Ogre::Exception e)
+    {
+        //Do nothing. I don't really get Ogre's exception system. How do I catch a particular exception. In this case,
+        //we want to do nothing if we do not find the camera. Else throw the error up the chain.
+    }
+    if(cam == 0)
+        cam = _scnMgr->createCamera("ENGINE_VIEW_CAMERA");
     cam->setNearClipDistance(0.5f);
     cam->setFarClipDistance(800.0f); //320.0f
     cam->setPosition(initialPos);
@@ -143,6 +155,24 @@ void
     _sdkTrayMgr.reset(new SdkTrayManager("ZombieTray", _window, _inController->getMouse(), 0));
 }
 
+void
+    EngineController::_initCommands()
+{
+    using ZGame::CommandController;
+    CommandController &cmdCtrl = CommandController::getSingleton();
+    ZGame::COMMAND::ConsoleCommand cmd;
+    cmd.bind(this, &EngineController::executeCmd);
+    cmdCtrl.addCommand(CommandList::ENGINECTRL_CMD, cmd.GetMemento());
+}
+
+bool
+    EngineController::loadStartStates()
+{
+      //load states
+    loadStates();
+    return true;
+}
+
 bool
     EngineController::onInit()
 {
@@ -163,6 +193,8 @@ bool
 
     chooseSceneManager();
 
+    _initCommands();
+
     //input
     _inController.reset(new InputController());
     _inController->onInit(_window);
@@ -177,10 +209,9 @@ bool
     //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
     Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");
 
-    //load states
-    loadStates();
+  
 
-    _initPacket = new ZInitPacket(_scnMgr, 0, _window);
+    
 
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
@@ -269,6 +300,10 @@ bool
 {
     if (!_stillRunning)
         return false;
+    if(_switchingState)
+    {
+        return false;
+    }
     try
     {
         _inController->run();
@@ -300,7 +335,14 @@ void
     EngineController::run()
 {
     realizeCurrentState();
-    _root->startRendering();
+    while(_stillRunning)
+    {
+        _root->startRendering();
+        if(_switchingState)
+        {
+            _doSwitchingState();
+        }
+    }
     //_root->renderOneFrame();
 }
 
@@ -312,8 +354,19 @@ void
     try
     {
         _inController->onDestroy();
+        _inController.reset(0);
         unloadCurrentState();
-
+        _lfcPump.reset(0);
+        _keyPump.reset(0);
+        _mousePump.reset(0);
+        _netClient.reset(0);
+        _sdkTrayMgr.reset(0);
+        _commandController->onDestroy(); //command controller is singleton. It shouldn't have state. This is due to OgreConsole coupling inside CommandController,
+        //which we are going to fix because we are going to refactor OgreConsole into libRocket. The coupling will be terminated.
+        _root.reset(0);
+        _statsClockVariable = 0;
+        _vp = 0;
+        _scnMgr = 0;
     }
     catch (Ogre::Exception e)
     {
@@ -412,7 +465,7 @@ bool
 void
     EngineController::loadStartStateToCurrentState(const Ogre::String curKey)
 {
-    Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In loadStartStateToCurrentstate");
+    //Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In loadStartStateToCurrentstate");
 
     for (ZGame::GameStateInfoMapItr it = _gameSInfoMap.begin(); it != _gameSInfoMap.end(); ++it)
     {
@@ -426,8 +479,6 @@ void
         //_curStateInfo.reset(&it->second);
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
         {
-            _lfcPump->removeAllObs(); //make sure we clear all LFC observers.
-            _keyPump->removeAllObs();
             _curGameState.reset(0); //delete current game state
         }
         else
@@ -449,9 +500,6 @@ void
     {
         if (_curStateInfo->stateType == ZGame::GameStateInfo::STATELESS)
         {
-            if (_curGameState.get() == 0)
-                throw(invalid_argument("Current game state is null when trying to load a new STATELESS current state"));
-            unloadCurrentState();
             //_curStateInfo.reset(&it->second);
             _curStateInfo = &it->second;
         }
@@ -476,6 +524,8 @@ void
     _mousePump->removeAllObs();
     cout << "All observers from mouse pump removed." << endl;
     _curGameState.reset(0);
+    cout << "Reset all modules" << endl;
+    _removeSubSystemsOnUnloadState();
     cout << "--------------------------------------------------------------" << endl;
 }
 /**
@@ -485,12 +535,20 @@ void
     EngineController::realizeCurrentState()
 {
     using namespace ZGame;
+
+    _lfcPump.reset(new LifeCyclePump());
+    _mousePump.reset(new MousePump());
+    _keyPump.reset(new KeyboardPump());
+
     //attach the observers
     Ogre::LogManager* logM = Ogre::LogManager::getSingletonPtr();
     logM->logMessage(Ogre::LML_NORMAL, "In realizeCurrentState");
     logM->logMessage(Ogre::LML_NORMAL, "StateInfo: ");
     logM->logMessage(Ogre::LML_NORMAL, "Key: " + _curStateInfo->key);
     logM->logMessage(Ogre::LML_NORMAL, "Class: " + _curStateInfo->gameStateClass);
+
+    _initPacket = new ZInitPacket(_scnMgr, 0, _window);
+
     if (_curStateInfo->stateType == GameStateInfo::STATEFUL)
     {
         //add to stateful
@@ -502,11 +560,13 @@ void
             throw(invalid_argument("Invalid current game state when realizing new state. Current game state is not null!"));
         _curGameState.reset(ZGame::GameStateFactory::createGameState(_curStateInfo->gameStateClass));
         GameStateBootstrapInfo info;
-
+        //Note: The camera system is not fully implemented, that's why we have this initial camera business.
         _curGameState->getGameStateBootstrapInfo(info);
+        
         Ogre::Camera* cam = createDefaultCamera(info.initalCameraPos);
+        
         _vp = _window->addViewport(cam);
-
+        
         _vp->setOverlaysEnabled(true);
         _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
@@ -605,9 +665,13 @@ void
         }
         try
         {
-            _guiCtrl.reset(new Gui::GuiController());
+            if(_guiCtrl.get() == 0)
+            {
+                _guiCtrl.reset(new Gui::GuiController());
+            }
             LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_DEFAULT 
                 | LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
+
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);
             EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_guiCtrl);
         }catch(Ogre::Exception e)
@@ -713,7 +777,6 @@ void
 void
     EngineController::_removeSubSystemsOnUnloadState()
 {
-    _guiCtrl.reset(0);
     _gfxCtrl.reset(0);
     _rdrEntMgr.reset(0);
     _zclCtrl.reset(0);
@@ -723,5 +786,78 @@ void
     _workspace.reset(0);
     _charUtil.reset(0);
 }
+
+bool
+    EngineController::executeCmd(const Ogre::StringVector& params)
+{
+    const Ogre::String switchState("switchstate");
+    const Ogre::String quit("quit");
+    //the command starts at [1] because [0] contains the "command" key which is engctrl_execute in this case.
+    if(switchState.compare(params[1]) == 0)
+    {
+        if(params.size() == 3)
+            _switchState(params[2]);
+        else
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "the command is invalid. not enough parameters for switchstate", 
+            "EngineController::executeCmd");
+    }
+    else if(quit.compare(params[1]) == 0)
+    {
+        _stillRunning = false;
+    }
+    else
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "the command is invalid.",
+        "EngineController::executeCmd");
+
+    return true;
+}
+
+/**
+* This method will switch the state to the given state in the string state.
+**/
+void
+    EngineController::_switchState(const Ogre::String &state)
+{
+    //The design for this is a bit wonky at the moment as in this method, there is no state value mapping 
+//to the states map. You will have to look at state.cfg to find the values for the actual keys. Do not
+    //mistype them here. And if you add new key values in state.cfg, you will have to update it here also.
+    const Ogre::String menuState("mainmenu");
+    const Ogre::String mainState("maingamestate");
+    const Ogre::String editState("maineditstate");
+
+    if(mainState.compare(state) == 0)
+    {
+        _switchingState = true;
+        _switchToStateKey = "GameMainStateKey";
+        return;
+    }
+    else if(menuState.compare(state) == 0)
+    {
+        _switchingState = true;
+        _switchToStateKey = "GameMainMenuStateKey";
+        return;
+    }
+    else if(editState.compare(state) == 0)
+    {
+        _switchingState = true;
+        _switchToStateKey = "GameEditStateKey";
+        return;
+    }
+    
+    OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "cannot switch to invalid state", 
+        "EngineController::_switchState");
+}
+
+void
+    EngineController::_doSwitchingState()
+{
+    _switchingState = false;
+    unloadCurrentState();
+    onDestroy();
+    onInit();
+    transitionState(_switchToStateKey);
+}
+
+
 
 }

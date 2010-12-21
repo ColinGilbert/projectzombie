@@ -60,7 +60,7 @@ extern "C" {
 
         try
         {
-
+            engineControl->loadStartStates();
             cout << "Finished new EngineController" << endl;
             if (!engineControl->onInit())
                 return 1;

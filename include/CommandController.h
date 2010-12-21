@@ -54,8 +54,7 @@ namespace ZGame
         void addCommand(const COMMAND_KEY &key, const DelegateMemento &memento);
         /** \brief This is a string command specific add command method. This is done to decrease coupling.*/
         void attachConsole(std::auto_ptr<OgreConsole> theConsole);
-        void onDestroy();
-
+   
         OgreConsole* getConsole(); //Precondition: _console must valid!!!
         
         /** \brief This method is called by anyone to execute a Command object.**/
@@ -65,18 +64,17 @@ namespace ZGame
             getSingleton();
         static ZGame::CommandController*
             getSingletonPtr();
+
+        void
+            onDestroy();
+
     protected:
 
     private:
         typedef std::map<Ogre::String, shared_ptr<Command> > CMD_MAP;
         typedef CMD_MAP::iterator MAP_ITER;
         static CMD_MAP __cmdMap;
-        //COMMAND::CommandList* _commandList;
         std::auto_ptr<OgreConsole> _console;
-        //OgreConsole* _console; //we're going to use an naked pointer here.
-        //Command addCommandFactory(const COMMAND_TYPE &type);
-        COMMAND::ServicesManager* _svcManager; //Naked pointer here is fine because it's private and we're going to remember to delete it.
-        
     };
 }
 

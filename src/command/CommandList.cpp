@@ -16,6 +16,7 @@ const COMMAND::COMMAND_KEY CommandList::CAMERA_ATTACH("cameraattach");
 const COMMAND::COMMAND_KEY CommandList::CLIENT_CONNECT("connect");
 const COMMAND::COMMAND_KEY CommandList::CLIENT_DISCONNECT("disconnect");
 const COMMAND::COMMAND_KEY CommandList::GRAPHICS_ADJUSTSHADOW("adjustshadow");
+const COMMAND::COMMAND_KEY CommandList::ENGINECTRL_CMD("enginectrl_cmd");
 
 //const COMMAND::COMMAND_KEY CommandList::NODETEST("nodetest");
 
