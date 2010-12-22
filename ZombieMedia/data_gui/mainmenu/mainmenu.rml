@@ -1,32 +1,27 @@
 <rml>
 	<head>
 		<title>Demo</title>
-		<link type="text/template" href="../common/window.rml" />
+		<link type="text/template" href="../common/blackbarsmenu.rml" />
 		<style>
 			body
 			{
-				width: 300px;
-				height: 225px;
-				
-				margin: auto;
+				width: 100%;
+				height: 100%;
 			}
-			
-			div#title_bar div#icon
-			{
-				display: none;
-			}
-			
-			div#content
-			{
-				text-align: left;
-			}
-		</style>
+			</style>
 	</head>
-	<body template="window">
-	  
-	  <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
-	  <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
-	  <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>
-	  	  
+	<body>
+	  <!-- template="blackbarswindow"> -->
+	  <div class="blackbar">
+	    </div>
+	   <div class="content_bar">
+	     <div class="content_bar_buttons">
+	    <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
+	    <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
+	    <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>
+	    </div>
+	  </div>
+	   <div class="blackbar">
+	     </div>
 	</body>
 </rml>

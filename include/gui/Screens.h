@@ -49,16 +49,9 @@ namespace ZGame
             void
                 onLoad();
 
-
-            Rocket::Core::ElementDocument*
-                getRootDoc()
-            {
-                return _rootDoc;
-            }
-
         protected:
             Screens(GuiController* guiCtrl);
-            
+            GuiController* _guiCtrl;
         private:
 
             virtual StrToDocumentMap& 
@@ -66,8 +59,7 @@ namespace ZGame
             virtual void
                 _afterDocLoadedOnLoad() = 0;
 
-            GuiController* _guiCtrl;
-            Rocket::Core::ElementDocument* _rootDoc;
+
         };
     }
 }

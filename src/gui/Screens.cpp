@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "EngineController.h"
 using namespace ZGame::Gui;
 
-Screens::Screens(GuiController* guiCtrl) : _guiCtrl(guiCtrl), _rootDoc(0)
+Screens::Screens(GuiController* guiCtrl) : _guiCtrl(guiCtrl)
 {
    
 }
@@ -46,8 +46,7 @@ void
     Screens::onLoad()
 {
     StrToDocumentMap& docMap = _buildDocMap();
-    _rootDoc = _guiCtrl->addScreens(_guiCtrl->getGui2d(),
+    _guiCtrl->addScreens(_guiCtrl->getGui2d(),
         this, docMap);
-    _rootDoc->SetOffset(Rocket::Core::Vector2f(420, 420),_rootDoc->GetOffsetParent());
     _afterDocLoadedOnLoad();
 }

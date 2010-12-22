@@ -1,0 +1,14 @@
+<template name="blackbarswindow" content="content">
+<head>
+  <link type="text/rcss" href="../rcss/rkt.rcss"/>
+  <link type="text/rcss" href="../rcss/invader.rcss" />
+</head>
+<body class="blackbarmenu">
+  <div id="top_bar">
+    </div>
+  <!-- <div id="window"> -->   
+    <div id="content_bar">
+      </div>
+  <!-- </div> -->
+</body>
+</template>

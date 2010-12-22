@@ -229,9 +229,8 @@ bool
     lm->logMessage(Ogre::LML_NORMAL, "initializing console.");
     initConsole();
 
-    lm->logMessage(Ogre::LML_NORMAL, "Initializing debug overlay.");
-    _debugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-
+    //_debugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
+    //_debugOverlay->hide();
     //Create the NetClient. Note: This is place-holder code until we get the "service" framework.
     //Everything that uses CommandController depends on Console being initialized. This is bad, need to fix this ASAP.
     //The fix should not be that hard, though. (Requires no major refactoring.)
@@ -567,7 +566,7 @@ void
         
         _vp = _window->addViewport(cam);
         
-        _vp->setOverlaysEnabled(true);
+        _vp->setOverlaysEnabled(false);
         _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
         cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));

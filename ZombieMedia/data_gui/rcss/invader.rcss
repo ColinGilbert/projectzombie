@@ -19,6 +19,60 @@ body.window
 	max-height: 700px;
 }
 
+body.blackbarmenu
+{
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+
+	min-width: 800;
+	max-width: 1920;
+	
+	min-height: 800;
+	max-height: 1080;
+}
+
+div.blackbar
+{
+	z-index: 2;
+
+	padding:0%;
+	background-color:rgba(0,0,0,5);
+	width:100%;
+	height:14.0%;
+
+	/*
+	border-top-width:10px;
+	border-bottom-width:10px;
+	*/
+}
+
+div.bottom_bar
+{
+	z-index: 2;
+	
+}
+
+div.content_bar
+{
+	z-index: 2;
+	padding-top:18.0%;
+	padding-bottom:0px;
+	width:100%;
+	margin:0px;
+	height: 42.0%;
+	text-align: center;
+}
+
+div.content_bar_buttons
+{
+	z-index: 3;
+	padding-top:20%;
+	padding-bottom:0px;
+}
+
 
 
 div#title_bar

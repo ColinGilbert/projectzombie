@@ -97,11 +97,10 @@ void
 }
 
 
-Rocket::Core::ElementDocument*
+void
     GuiController::addScreens(Rocket::Core::Context* context, Screens* screen,
     StrToDocumentMap &docMap)
 {
-    Rocket::Core::ElementDocument* docRoot = 0;
     //For now there is only one map. In future may need to refactor map so also maps to context.
     if(context != 0)
     {
@@ -115,13 +114,10 @@ Rocket::Core::ElementDocument*
 
         _screensMap[screen->getKey()] =  screen;
         //load the maps
-        docRoot = _loadDocumentsWithContext(context, docMap);
+        _loadDocumentsWithContext(context, docMap);
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "context is not valid", "GuiController::addScreens");
-    if(!docRoot)
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "docRoot is null", "GuiController::addScreens");
-    return docRoot;
 }
 
 void
@@ -149,7 +145,7 @@ already contains the string keys, and such keys are valid resource locators to t
 *created document is handled by proxy through Rocket. Thus, we will not be concerned with the management of
 *the created documents. They will be destroyed when the context is destroyed.
 **/
-Rocket::Core::ElementDocument*
+void
     GuiController::_loadDocumentsWithContext(Rocket::Core::Context* context,
     StrToDocumentMap &docMap)
 {
@@ -157,9 +153,6 @@ Rocket::Core::ElementDocument*
     if(docMap.size() == 0)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Trying to load a empty document map",
         "GuiController::loadDocumentWithContext");
-    Rocket::Core::ElementDocument* rootDoc = context->CreateDocument();
-    if(rootDoc)
-        rootDoc->RemoveReference();
     for(; iter != docMap.end(); iter++)
     {
         Rocket::Core::ElementDocument* doc = context->LoadDocument(_data_path + iter->first.c_str());
@@ -168,9 +161,7 @@ Rocket::Core::ElementDocument*
             doc->RemoveReference();
         }
         iter->second = doc;
-        rootDoc->AppendChild(doc);
     }
-    return rootDoc;
 }
 
 bool
@@ -274,7 +265,7 @@ bool
     GuiController::onRenderQueueStart(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
-    if(queueGroupId == Ogre::RENDER_QUEUE_OVERLAY && _vp->getOverlaysEnabled())
+    if(queueGroupId == Ogre::RENDER_QUEUE_OVERLAY)
     {
         _gui2d->Update();
         ConfigureRenderSystem();

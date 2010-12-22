@@ -45,7 +45,7 @@ namespace ZGame
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void Release();
 
-            Rocket::Core::ElementDocument*
+            void
                 addScreens(Rocket::Core::Context* context, 
                 Screens* screen, StrToDocumentMap &docMap);
             void
@@ -96,7 +96,7 @@ namespace ZGame
             void
                 _createGui2d();
 
-            Rocket::Core::ElementDocument*
+            void
                 _loadDocumentsWithContext(Rocket::Core::Context* context, 
                 StrToDocumentMap &docMap);
 
