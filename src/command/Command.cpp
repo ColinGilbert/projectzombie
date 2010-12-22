@@ -1,9 +1,16 @@
 #include "command/Command.h"
 #include "CommandDelegates.h" //for ConsoleCommand
+#include "CommandController.h"
 
 using namespace ZGame::COMMAND;
 //using namespace fastdelegate;
 using fastdelegate::DelegateMemento;
+
+void
+    Command::executeThis()
+{
+    CommandController::getSingleton().executeCmd(*this);
+}
 
 StringCommand::StringCommand(const COMMAND_KEY &key, int numOfParams) : Command(key) //_params(numOfParams)
 {

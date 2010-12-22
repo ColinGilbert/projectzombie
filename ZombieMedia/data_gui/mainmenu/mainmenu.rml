@@ -24,9 +24,9 @@
 	</head>
 	<body template="window">
 	  
-	  <button type="button" id="start_button" onclick="controller" action="start" >Start / Continue</button>
-	  <button type="button" id="load_button" onclick="controller" action="load">Load </button>
-	  <button type="button" id="quit_button" onclick="controller" action="quit">Quit </button>
+	  <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
+	  <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
+	  <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>
 	  	  
 	</body>
 </rml>

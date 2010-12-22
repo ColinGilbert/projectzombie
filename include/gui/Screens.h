@@ -37,23 +37,37 @@ namespace ZGame
         class Screens : Rocket::Core::EventListenerInstancer
         {
         public:
-            Screens(GuiController* guiCtrl);
             virtual ~Screens();
 
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value) = 0;
             virtual void Release();
 
+            virtual const Rocket::Core::String& 
+                getKey() = 0;
+
+            void
+                onLoad();
+
+
+            Rocket::Core::ElementDocument*
+                getRootDoc()
+            {
+                return _rootDoc;
+            }
+
         protected:
-
-            void p_loadDocuments(StrToDocumentMap &docMap);
-            void p_showAllDocs(StrToDocumentMap &docMap);
-            void p_hideDoc(Rocket::Core::ElementDocument* theDoc);
-            void p_showDoc(Rocket::Core::ElementDocument* theDoc);
-       
-
+            Screens(GuiController* guiCtrl);
+            
         private:
+
+            virtual StrToDocumentMap& 
+                _buildDocMap() = 0;
+            virtual void
+                _afterDocLoadedOnLoad() = 0;
+
             GuiController* _guiCtrl;
+            Rocket::Core::ElementDocument* _rootDoc;
         };
     }
 }

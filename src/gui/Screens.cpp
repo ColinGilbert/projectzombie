@@ -27,15 +27,14 @@ THE SOFTWARE.
 #include "EngineController.h"
 using namespace ZGame::Gui;
 
-Screens::Screens(GuiController* guiCtrl) : _guiCtrl(guiCtrl)
+Screens::Screens(GuiController* guiCtrl) : _guiCtrl(guiCtrl), _rootDoc(0)
 {
-    //We assume Rocket::Core has been initialized.
-    Rocket::Core::Factory::RegisterEventListenerInstancer(this);
+   
 }
 
 Screens::~Screens()
 {
-    Rocket::Core::Factory::RegisterEventListenerInstancer(0);
+   
 }
 
 void
@@ -43,34 +42,12 @@ void
 {
 }
 
-
 void
-    Screens::p_loadDocuments(StrToDocumentMap &docMap)
+    Screens::onLoad()
 {
-    assert(_guiCtrl != 0 && "_guiCtrl is not supposed to be null.");
-    _guiCtrl->loadDocumentsWithContext(_guiCtrl->getGui2d(), docMap);
-}
-/**
-* temp. test method.
-**/
-void
-    Screens::p_showAllDocs(StrToDocumentMap &docMap)
-{
-    StrToDocumentMap::const_iterator cIter;
-    for(cIter = docMap.cbegin(); cIter != docMap.end(); ++cIter)
-    {
-        cIter->second->Show();
-    }
-}
-
-void
-    Screens::p_showDoc(Rocket::Core::ElementDocument* theDoc)
-{
-    theDoc->Show();
-}
-
-void
-    Screens::p_hideDoc(Rocket::Core::ElementDocument* theDoc)
-{
-    theDoc->Hide();
+    StrToDocumentMap& docMap = _buildDocMap();
+    _rootDoc = _guiCtrl->addScreens(_guiCtrl->getGui2d(),
+        this, docMap);
+    _rootDoc->SetOffset(Rocket::Core::Vector2f(420, 420),_rootDoc->GetOffsetParent());
+    _afterDocLoadedOnLoad();
 }

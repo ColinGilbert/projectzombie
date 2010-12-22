@@ -71,6 +71,9 @@ namespace ZGame
                 return nullMemento;
             }
 
+            void
+                executeThis();
+
             
         protected:
             const 

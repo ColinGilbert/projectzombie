@@ -1,6 +1,7 @@
 #include "gui/GuiController.h"
 #include "gui/RenderInterfaceOgre3D.h"
 #include "gui/SystemInterfaceOgre3D.h"
+#include "gui/Screens.h"
 #include <iostream>
 
 using std::cout; 
@@ -21,10 +22,10 @@ GuiController::~GuiController()
 {
     Rocket::Core::Shutdown();
     cout << "GuiController::shutDown()" << endl;
-    delete ogre_system;
+    OGRE_DELETE_T(ogre_system, SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
     ogre_system = 0;
 
-    delete ogre_renderer;
+    OGRE_DELETE_T(ogre_renderer, RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
     ogre_renderer = 0;
 
 }
@@ -44,15 +45,121 @@ void
     return;
 }
 
+Rocket::Core::EventListener*
+    GuiController::InstanceEventListener(const Rocket::Core::String& value)
+{
+    Rocket::Core::EventListener* retList = 0;
+    Rocket::Core::EventListener* temp = 0;
+    bool continueCheck = false;
+    //iterate through the screens and ask it for event listeners based on passed in string.
+    //NOTE: There should be a one-to-one mapping of value to a corresponding event listener.
+    //Thus if we detect that this is false here, we need to throw exception.
+    //SUPER WARNING: Actually, this won't work 100%. Because ASSUMING that this method is invoked by
+    //Rocket::Core on loadDocument, but inserting sceen into screen map is done per screen, and is 
+    //accomplished right before calling loadDocuments. So EventListener residing in different screens
+    //cannot be checked for this one-to-one constraint. Becareful about naming these values in the view
+    //layer. THIS CAN BE FIXED by decoupling loading document and adding screens. For now, it should work
+    //because we assume the only OTHER screen is a persistence screen which is automatically loaded by
+    //gui controller. Thus that screen will be in the screensMap and will be validated here.
+    for(SCREENS_MAP::const_iterator cIter = _screensMap.begin();
+        cIter != _screensMap.end(); ++cIter)
+    {
+        if(!continueCheck)
+        {
+            retList = cIter->second->InstanceEventListener(value);
+            if(retList)
+            {
+                continueCheck = true;
+            }
+        }
+        else
+        {
+            temp = cIter->second->InstanceEventListener(value);
+            if(temp)
+                OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "one-to-one mapping constraint failed",
+                "GuiController::InstanceEventListener");
+        }
+    }
+
+    
+
+    return retList;
+}
+
+void
+    GuiController::Release()
+{
+    for(SCREENS_MAP::const_iterator cIter = _screensMap.begin();
+        cIter != _screensMap.end(); ++cIter)
+    {
+        cIter->second->Release();
+    }
+}
+
+
+Rocket::Core::ElementDocument*
+    GuiController::addScreens(Rocket::Core::Context* context, Screens* screen,
+    StrToDocumentMap &docMap)
+{
+    Rocket::Core::ElementDocument* docRoot = 0;
+    //For now there is only one map. In future may need to refactor map so also maps to context.
+    if(context != 0)
+    {
+        if(screen == 0)
+           OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Screen is invalid",
+            "GuiController::addScreen");
+ 
+        if(screen->getKey().Empty())
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "The key to the screen is invalid",
+            "GuiController::addScreen");
+
+        _screensMap[screen->getKey()] =  screen;
+        //load the maps
+        docRoot = _loadDocumentsWithContext(context, docMap);
+    }
+    else
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "context is not valid", "GuiController::addScreens");
+    if(!docRoot)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "docRoot is null", "GuiController::addScreens");
+    return docRoot;
+}
+
+void
+    GuiController::removeScreens(Rocket::Core::Context* context, const Rocket::Core::String &key)
+{
+    if(context != 0)
+    {
+        if(key.Empty())
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "cannot remove screen with empty key", 
+            "GuiController::removeScreens");
+        SCREENS_MAP::iterator findMe = _screensMap.find(key);
+        if(findMe == _screensMap.end())
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "cannot find screen with specified key",
+            "GuiController::removeScreens");
+        _screensMap.erase(findMe);
+    }
+    else
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "context is not valid", "GuiController::addScreens");
+}
+
 /**
 *This method will load documents in a string to document map. Here the assumption is that the map 
-already contains the string keys, and such keys are valid resource locators to the documents.
+already contains the string keys, and such keys are valid resource locators to the documents. This method
+*will also return an ElementDocument containing all the documents being loaded. The reference of the 
+*created document is handled by proxy through Rocket. Thus, we will not be concerned with the management of
+*the created documents. They will be destroyed when the context is destroyed.
 **/
-void
-    GuiController::loadDocumentsWithContext(Rocket::Core::Context* context,
+Rocket::Core::ElementDocument*
+    GuiController::_loadDocumentsWithContext(Rocket::Core::Context* context,
     StrToDocumentMap &docMap)
 {
     StrToDocumentMap::iterator iter = docMap.begin();
+    if(docMap.size() == 0)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Trying to load a empty document map",
+        "GuiController::loadDocumentWithContext");
+    Rocket::Core::ElementDocument* rootDoc = context->CreateDocument();
+    if(rootDoc)
+        rootDoc->RemoveReference();
     for(; iter != docMap.end(); iter++)
     {
         Rocket::Core::ElementDocument* doc = context->LoadDocument(_data_path + iter->first.c_str());
@@ -61,7 +168,9 @@ void
             doc->RemoveReference();
         }
         iter->second = doc;
+        rootDoc->AppendChild(doc);
     }
+    return rootDoc;
 }
 
 bool
@@ -99,23 +208,23 @@ bool
         if(ogre_renderer)
         {
             Rocket::Core::SetRenderInterface(0);
-            ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
+            ogre_renderer = OGRE_NEW_T(RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)(_W_WIDTH, _W_HEIGHT);
             Rocket::Core::SetRenderInterface(ogre_renderer);
         }
         else
         {
-            ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
+            ogre_renderer = OGRE_NEW_T(RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)(_W_WIDTH, _W_HEIGHT);
             Rocket::Core::SetRenderInterface(ogre_renderer);
         }
         if(ogre_system)
         {
             Rocket::Core::SetSystemInterface(0);
-            ogre_system = new SystemInterfaceOgre3D();
+            ogre_system = OGRE_NEW_T(SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)();
             Rocket::Core::SetSystemInterface(ogre_system);
         }
         else
         {
-            ogre_system = new SystemInterfaceOgre3D();
+            ogre_system = OGRE_NEW_T(SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)();
             Rocket::Core::SetSystemInterface(ogre_system);
             Rocket::Core::Initialise();
             Rocket::Controls::Initialise();
@@ -125,9 +234,10 @@ bool
             }
             
         }
-       
+        //We assume Rocket::Core has been initialized.
+        Rocket::Core::Factory::RegisterEventListenerInstancer(this);
         _createGui2d();
-
+   
 
     }catch(Ogre::Exception e)
     {
@@ -151,6 +261,7 @@ bool
 {
     Ogre::Log::Stream debug = Ogre::LogManager::getSingleton().getLog("App.log")->stream(Ogre::LML_TRIVIAL);
     Ogre::Log::Stream log = Ogre::LogManager::getSingleton().getLog("App.log")->stream();
+     Rocket::Core::Factory::RegisterEventListenerInstancer(0);
     _gui2d->RemoveReference();
     _gui2d = 0;
     Rocket::Core::ReleaseTextures();

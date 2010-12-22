@@ -28,29 +28,35 @@ THE SOFTWARE.
 using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
-MainMenuScreen::MainMenuScreen(GuiController* guiCtrl) : Screens(guiCtrl)
+MainMenuScreen::MainMenuScreen(GuiController* guiCtrl) : Screens(guiCtrl),
+    _key("_MAINMENUSCREEN_KEY_")
 {
     _docPath.push_back("mainmenu/mainmenu.rml");
-    _buildDocMap();
 }
 
 MainMenuScreen::~MainMenuScreen()
 {
 }
 
-void
-    MainMenuScreen::onLoad()
-{
-    p_loadDocuments(_docMap);
-    p_showAllDocs(_docMap);
-}
-
-void
+StrToDocumentMap&
     MainMenuScreen::_buildDocMap()
 {
     for(size_t i=0; i < _docPath.size(); ++i)
     {
         _docMap[_docPath[i]] = static_cast<Rocket::Core::ElementDocument*>(0);
+    }
+    return _docMap;
+}
+
+void
+    MainMenuScreen::_afterDocLoadedOnLoad()
+{
+    //Docs show have been loaded by now. Show it.
+    for(StrToDocumentMap::const_iterator cIter = _docMap.begin();
+        cIter != _docMap.end();
+        ++cIter)
+    {
+        cIter->second->Show();
     }
 }
 
@@ -59,11 +65,15 @@ void
 Rocket::Core::EventListener*
     MainMenuScreen::InstanceEventListener(const Rocket::Core::String& value)
 {
-    Rocket::Core::String ctrlStr("controller");
+    Rocket::Core::String ctrlStr("MainMenuController");
     if(ctrlStr == value) //where is stringCompare???
     {
         cout << "In place event instancer controller is found" << endl;
         return this;
+    }
+    else
+    {
+        cout << "In place event string passed through is: " << value.CString() << endl;
     }
     return 0;
 }
@@ -90,22 +100,17 @@ void
             COMMAND::StringCommand cmdStart(COMMAND::CommandList::ENGINECTRL_CMD, 2);
             cmdStart.push_back("switchstate");
             cmdStart.push_back("mainmenu");
-
-            CommandController::getSingleton().executeCmd(cmdStart);
-
+            cmdStart.executeThis();
         }
         else if(actionStr == load)
         {
             
         }
         else if(actionStr == quit)
-        {
-            
+        {          
             COMMAND::StringCommand cmdQuit(COMMAND::CommandList::ENGINECTRL_CMD);
             cmdQuit.push_back("quit");
-
-            CommandController::getSingleton().executeCmd(cmdQuit);
-
+            cmdQuit.executeThis();
         }
 
     }

@@ -28,17 +28,28 @@ THE SOFTWARE.
 #include <Ogre.h>
 #include <ZInitPacket.h>
 #include <vector>
-
+#include <utility>
 
 namespace ZGame
 {
     namespace Gui
     {
-        class GuiController
+        class Screens;
+        class GuiController : Rocket::Core::EventListenerInstancer
         {
         public:
             GuiController();
             ~GuiController();
+
+            virtual Rocket::Core::EventListener*
+                InstanceEventListener(const Rocket::Core::String& value);
+            virtual void Release();
+
+            Rocket::Core::ElementDocument*
+                addScreens(Rocket::Core::Context* context, 
+                Screens* screen, StrToDocumentMap &docMap);
+            void
+                removeScreens(Rocket::Core::Context* context, const Rocket::Core::String &key);
 
             bool
                 onInit(ZGame::ZInitPacket initPacket);
@@ -63,9 +74,7 @@ namespace ZGame
             bool
                 onMouseMove(const OIS::MouseEvent& e);
             
-            void
-                loadDocumentsWithContext(Rocket::Core::Context* context, 
-               StrToDocumentMap &docMap);
+          
 
             Rocket::Core::Context* 
                 getGui2d()
@@ -87,6 +96,10 @@ namespace ZGame
             void
                 _createGui2d();
 
+            Rocket::Core::ElementDocument*
+                _loadDocumentsWithContext(Rocket::Core::Context* context, 
+                StrToDocumentMap &docMap);
+
             typedef Ogre::map<OIS::KeyCode, Rocket::Core::Input::KeyIdentifier >::type KeyIdentifierMap;
 
             KeyIdentifierMap key_identifiers;
@@ -106,6 +119,9 @@ namespace ZGame
             Ogre::Viewport* _vp;
 
             OIS::Keyboard* mKeyboard;
+
+            typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+            SCREENS_MAP _screensMap;
 
         };
     }
