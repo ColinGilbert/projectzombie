@@ -1,30 +1,22 @@
 <rml>
   <head>
     <title>debugmain</title>
-    <link type="text/template" href="../common/window.rml" />
+    
+    <link type="text/template" href="../common/blackbarsmenu.rml" />
+		<link type="text/rcss" href="../rcss/rkt.rcss"/>
+		<link type="text/rcss" href="../rcss/invader.rcss" />
     <style>
       body
 			{
-				width: 800px;
-				height: 600px;
+				width: 100%;
+				height: 100%;
+			}
 				
-				margin: auto;
-			}
-			
-			div#title_bar div#icon
-			{
-				display: none;
-			}
-			
-			div#content
-			{
-				text-align: left;
-			}
 		</style>
   </head>
-  <body template="window">
-    <p>This is a test, 1, 2, 3.</p>
-    <p>Some more test</p>
+  <body template="blackbarswindow">
+	<button type="button" id="graphics" onclick="DebugControllere" action="debug" >Graphical Adjustments</button>
+	<button type="button" id="back" onclick="DebugControllere" action"back" >Back</button>
     </body>
 </rml>
     

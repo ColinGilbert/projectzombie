@@ -47,7 +47,7 @@ void
     show();
     //Add persistent menus
     StrToDocumentMap::iterator findMe = _docMap.find(_docPath[0]);
-    Rocket::Core::Element* content = findMe->second->GetElementById("content_bar");
+    Rocket::Core::Element* content = findMe->second->GetElementById("content_bar_buttons");
     
     if(content)
         _guiCtrl->addPersistentScreenButtons(content);

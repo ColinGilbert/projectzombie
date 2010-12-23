@@ -11,7 +11,8 @@ using std::endl;
 using namespace ZGame::Gui;
 
 GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0),
-    ogre_system(0), ogre_renderer(0), _debugScreen(0)
+    ogre_system(0), ogre_renderer(0), _debugScreen(0), _isFirstScreenAdded(false),
+    _transitionLock(false)
 {
     _fontStrVec.push_back("font/Delicious-Roman.otf");
     _fontStrVec.push_back("font/Delicious-Bold.otf");
@@ -28,7 +29,6 @@ GuiController::~GuiController()
 
     OGRE_DELETE_T(ogre_renderer, RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
     ogre_renderer = 0;
-
 }
 
 void
@@ -82,7 +82,7 @@ Rocket::Core::EventListener*
         }
     }
 
-    
+
 
     return retList;
 }
@@ -126,16 +126,35 @@ void
 }
 
 void
-    GuiController::addScreens(Rocket::Core::Context* context, Screens* screen,
+    GuiController::pushScreenTransition(const Rocket::Core::String &key)
+{
+    //Make sure we have at least one element on the queue.
+    if(_screenTransitionQueue.size() < 1)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "transition queue is empty",
+        "GuiController::pushScreen");
+    Rocket::Core::String pushFrom = _screenTransitionQueue.back();
+    _screenTransitionQueue.push_back(key);
+    SCREENS_MAP::iterator findMeFrom = _screensMap.find(pushFrom);
+     SCREENS_MAP::iterator findMeTo = _screensMap.find(key);
+    if(findMeFrom == _screensMap.end() || findMeTo == _screensMap.end())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "push screen transition invalid transition keys",
+        "GuiController::pushScreenTransition");
+    _transTranslate.pushTransition(findMeFrom->second, findMeTo->second);
+    _transitionLock = true;
+
+}
+
+void
+    GuiController::_addScreen(Rocket::Core::Context* context, Screens* screen,
     StrToDocumentMap &docMap)
 {
     //For now there is only one map. In future may need to refactor map so also maps to context.
     if(context != 0)
     {
         if(screen == 0)
-           OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Screen is invalid",
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Screen is invalid",
             "GuiController::addScreen");
- 
+
         if(screen->getKey().Empty())
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "The key to the screen is invalid",
             "GuiController::addScreen");
@@ -146,6 +165,19 @@ void
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "context is not valid", "GuiController::addScreens");
+}
+
+void
+    GuiController::addScreens(Rocket::Core::Context* context, Screens* screen,
+    StrToDocumentMap &docMap)
+{
+    _addScreen(context, screen, docMap);
+    //Everything should be valid here.
+    if(!_isFirstScreenAdded)
+    {
+        _screenTransitionQueue.push_back(screen->getKey());
+        _isFirstScreenAdded = false;
+    }
 }
 
 void
@@ -247,11 +279,11 @@ bool
             Rocket::Core::SetSystemInterface(ogre_system);
             Rocket::Core::Initialise();
             Rocket::Controls::Initialise();
-             for(std::vector<Rocket::Core::String>::const_iterator iter = _fontStrVec.cbegin(); iter != _fontStrVec.end(); ++iter)
+            for(std::vector<Rocket::Core::String>::const_iterator iter = _fontStrVec.cbegin(); iter != _fontStrVec.end(); ++iter)
             {
                 Rocket::Core::FontDatabase::LoadFontFace(_data_path + FONT_PATH + (*iter));
             }
-            
+
         }
         //We assume Rocket::Core has been initialized.
         Rocket::Core::Factory::RegisterEventListenerInstancer(this);
@@ -263,7 +295,7 @@ bool
 
         _persistScreens.push_back(_debugScreen.get());
 
-   
+
 
     }catch(Ogre::Exception e)
     {
@@ -279,6 +311,12 @@ bool
 bool
     GuiController::onUpdate(const Ogre::FrameEvent &evt)
 {
+    if(_transitionLock)
+    {
+        _transTranslate.step(evt.timeSinceLastFrame);
+        if(_transTranslate.isDone())
+            _transitionLock = false;
+    }
     return true;
 }
 
@@ -287,11 +325,17 @@ bool
 {
     Ogre::Log::Stream debug = Ogre::LogManager::getSingleton().getLog("App.log")->stream(Ogre::LML_TRIVIAL);
     Ogre::Log::Stream log = Ogre::LogManager::getSingleton().getLog("App.log")->stream();
-     Rocket::Core::Factory::RegisterEventListenerInstancer(0);
+    Rocket::Core::Factory::RegisterEventListenerInstancer(0);
     _gui2d->RemoveReference();
     _gui2d = 0;
     Rocket::Core::ReleaseTextures();
     Rocket::Core::ReleaseCompiledGeometries();
+    _isFirstScreenAdded = false;
+    _persistScreens.clear();
+    _rootScreen = "";
+    _debugScreen.reset(0);
+    _screenTransitionQueue.clear();
+    _transitionLock = false;
     debug << "GuiController::onDestroy()\n";
     return true;
 }
@@ -300,6 +344,7 @@ bool
     GuiController::onRenderQueueStart(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
+    
     if(queueGroupId == Ogre::RENDER_QUEUE_OVERLAY)
     {
         _gui2d->Update();

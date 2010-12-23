@@ -23,51 +23,68 @@ THE SOFTWARE.
 **/
 
 #pragma once
-
+#include <algorithm>
 #include "gui/GuiPrerequisite.h"
-#include "gui/Screens.h"
 namespace ZGame
 {
     namespace Gui
     {
 
-
-
         class ScreenTransition
         {
         public:
-           
 
+            ~ScreenTransition(){}
             virtual void
                 step(float dt) = 0;
             virtual bool
-                isDone();
+                isDone() = 0;
 
         protected:
-             ScreenTransition(SCREENS_MAP* screenMap, const Rocket::Core::String& transitionToKey)
-                : _screenMap(screenMap), _transToKey(transitionToKey)
+            ScreenTransition()
             {
 
             }
-            SCREENS_MAP* _screenMap;
-            Rocket::Core::String _transToKey;
+
         };
-        class ScreenTransitionTranslate : ScreenTransition
+        class ScreenTransitionTranslate : public ScreenTransition
         {
-            ScreenTransitionTranslate(SCREENS_MAP* screenMap, 
-                const Rocket::Core::String& transitionToKey) : ScreenTransition(screenMap, transitionToKey),isDone(false)
+        public:
+            ScreenTransitionTranslate() : ScreenTransition(),
+                _isDone(true), _allocatedTimeInSecs(1.0f), _accumulatedT(0.0f)
             {
+            }
+            ~ScreenTransitionTranslate()
+            {
+            }
+
+            virtual bool
+                isDone()
+            {
+                return _isDone;
             }
 
             virtual void
-                step(float dt)
-            {
-            }
+                step(float dt);
 
+            void
+                pushTransition(Gui::Screens* from, Gui::Screens* to);
+
+
+            void
+                popTransition(Screens* from, Screens* to);
         private:
-            bool isDone;
-            std::vector<Screens*> _visibleScreens;
-      
+            bool _isDone;
+            StrToDocumentMap* _fromDocs;
+            StrToDocumentMap* _toDocs;
+            Screens* _from;
+            Screens* _to;
+            Ogre::Vector2 _totalOffset;
+            Ogre::Vector2 _accumulatedOffset;
+            Ogre::Real _accumulatedT;
+            Ogre::Real _allocatedTimeInSecs;
+
+
         };
     }
 }

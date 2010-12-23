@@ -42,8 +42,21 @@ void
     DebugScreen::_afterDocLoadedOnLoad()
 {
     //Do nothing. This screen remains hidden on load.
-    hide();
+    show();
     p_setName(_docMap[_docPath[0]]->GetTitle());
+    
+    //translate offscreen into place
+    for(StrToDocumentMap::iterator iter = _docMap.begin();
+        iter != _docMap.end(); iter++)
+    {
+        Rocket::Core::Element* offsetParent = iter->second->GetOffsetParent();
+        if(!offsetParent)
+            cout << "Not offset parent" << endl;
+        //transform offscreen. Assuming that all root documents are the have same extents. 
+        float width = iter->second->GetClientWidth();
+        cout << "toDocs client width: " << width << endl;
+        iter->second->SetOffset(Rocket::Core::Vector2f(width, 0.0f), offsetParent, true);
+    }
 }
 
 Rocket::Core::EventListener*
@@ -72,9 +85,12 @@ void
     cout << "Event Element id: " << el->GetId().CString() << endl;
     const Rocket::Core::String actionStr(el->GetAttribute<Rocket::Core::String>("action", ""));
     cout << "Event Element action: " << actionStr.CString() << endl;
+   
     if(!actionStr.Empty())
     {
-
+        const Rocket::Core::String switchTo("switchto");
+        if(switchTo == actionStr)
+            _guiCtrl->pushScreenTransition(getKey());
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Action string is empty",

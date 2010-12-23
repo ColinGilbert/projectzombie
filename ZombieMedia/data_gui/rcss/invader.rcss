@@ -21,6 +21,7 @@ body.window
 
 body.blackbarmenu
 {
+	z-index: 3;
 	position: absolute;
 	top: 0px;
 	bottom: 0px;
@@ -41,7 +42,7 @@ div.blackbar
 	padding:0%;
 	background-color:rgba(0,0,0,5);
 	width:100%;
-	height:14.0%;
+	height:12.0%;
 
 	/*
 	border-top-width:10px;
@@ -62,13 +63,13 @@ div.content_bar
 	padding-bottom:0px;
 	width:100%;
 	margin:0px;
-	height: 42.0%;
+	height: 40.0%;
 	text-align: center;
 }
 
 div.content_bar_buttons
 {
-	z-index: 3;
+	z-index: 5;
 	padding-top:20%;
 	padding-bottom:0px;
 }

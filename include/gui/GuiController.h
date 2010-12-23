@@ -29,7 +29,7 @@ THE SOFTWARE.
 #include <ZInitPacket.h>
 #include <vector>
 #include <utility>
-
+#include <gui/ScreenXForm.h>
 namespace ZGame
 {
     namespace Gui
@@ -51,6 +51,13 @@ namespace ZGame
                 Screens* screen, StrToDocumentMap &docMap);
             void
                 removeScreens(Rocket::Core::Context* context, const Rocket::Core::String &key);
+
+            /** \brief This method will transition to the screen given by key.**/
+            void
+                pushScreenTransition(const Rocket::Core::String &key);
+            void
+                popScreenTransition(); 
+
 
             bool
                 onInit(ZGame::ZInitPacket initPacket);
@@ -74,8 +81,8 @@ namespace ZGame
                 onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id);
             bool
                 onMouseMove(const OIS::MouseEvent& e);
-            
-          
+
+
 
             Rocket::Core::Context* 
                 getGui2d()
@@ -89,8 +96,13 @@ namespace ZGame
             void
                 addPersistentScreenButtons(Rocket::Core::Element* el);
 
-        
+
         private:
+
+            void
+                _addScreen(Rocket::Core::Context* context, Screens* screen,
+                StrToDocumentMap &docMap);
+
             void 
                 ConfigureRenderSystem();
             void
@@ -118,7 +130,7 @@ namespace ZGame
             Rocket::Core::String FONT_PATH;
 
             std::vector<Rocket::Core::String> _fontStrVec;
-            
+
             unsigned int _W_WIDTH;
             unsigned int _W_HEIGHT;
 
@@ -126,11 +138,18 @@ namespace ZGame
 
             OIS::Keyboard* mKeyboard;
 
-            
-            SCREENS_MAP _screensMap;
-            std::vector<Screens*> _persistScreens;
-            std::auto_ptr<DebugScreen> _debugScreen;
 
+            SCREENS_MAP _screensMap;
+            
+            Ogre::vector<Screens*>::type _persistScreens;
+            Rocket::Core::String _rootScreen;
+            bool _isFirstScreenAdded;
+            std::auto_ptr<DebugScreen> _debugScreen;
+            
+            Ogre::deque<Rocket::Core::String>::type _screenTransitionQueue;
+
+            bool _transitionLock;
+            Gui::ScreenTransitionTranslate _transTranslate;
 
         };
     }

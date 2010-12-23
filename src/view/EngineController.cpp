@@ -668,8 +668,8 @@ void
             {
                 _guiCtrl.reset(new Gui::GuiController());
             }
-            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_DEFAULT 
-                | LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
+            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_DEFAULT |
+                LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
 
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);
             EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_guiCtrl);
