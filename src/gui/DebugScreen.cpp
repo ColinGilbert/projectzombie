@@ -28,9 +28,9 @@ THE SOFTWARE.
 using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
-DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen"),
-    _key("_DEBUGSCREEN_KEY_"), _ctrlStr("DebugController")
+DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen"),_ctrlStr("DebugController")
 {
+    p_setKey("_DEBUGSCREEN_KEY_");
     _docPath.push_back("debug/debugmain.rml");
 }
 
@@ -45,7 +45,7 @@ void
     show();
     p_setName(_docMap[_docPath[0]]->GetTitle());
     
-    //translate offscreen into place
+    //translate offscreen into place. Note: We don't know why this won't work in ScreenXForm.
     for(StrToDocumentMap::iterator iter = _docMap.begin();
         iter != _docMap.end(); iter++)
     {
@@ -89,8 +89,15 @@ void
     if(!actionStr.Empty())
     {
         const Rocket::Core::String switchTo("switchto");
+        const Rocket::Core::String switchBack("switchback");
+        const Rocket::Core::String graphics("graphics");
         if(switchTo == actionStr)
             _guiCtrl->pushScreenTransition(getKey());
+        if(switchBack == actionStr)
+            _guiCtrl->popScreenTransition();
+        //if(graphics == actionStr)
+            
+        
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Action string is empty",

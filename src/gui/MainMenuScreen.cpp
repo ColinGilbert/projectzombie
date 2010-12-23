@@ -29,8 +29,9 @@ using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
 MainMenuScreen::MainMenuScreen(GuiController* guiCtrl) : Screens(guiCtrl, "MainMenuScreen"),
-    _key("_MAINMENUSCREEN_KEY_"), _ctrlStr("MainMenuController")
+    _ctrlStr("MainMenuController")
 {
+    p_setKey("__MainMenuScreenKey__");
     _docPath.push_back("mainmenu/mainmenu.rml");
 }
 

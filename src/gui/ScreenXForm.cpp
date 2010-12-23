@@ -28,18 +28,25 @@ using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
 void
+    ScreenTransitionTranslate::_resetParams()
+{
+    _isDone = false;
+    _accumulatedT = 0.0f;
+
+}
+
+void
     ScreenTransitionTranslate::pushTransition(Screens* from, Screens* to)
 {
     //We will assume offset parent fills the screen. That is, absolute offset left and
     //offsetLeft (from offset parent) are the same. This is not 100%
     //true. The fix is to accumlate offsets all the way up to root document. 
-    _isDone = false;
-    _accumulatedT = 0.0f;
+    _resetParams();
     _fromDocs = &(from->getDocumentMap());
     _toDocs = &(to->getDocumentMap());
      _from = from;
     _to = to;
-    _to->show();
+    _to->show(); //We should not be responsible for showing here. It should be down upstreams.
     //Here we wrongly assume the iterator is the "root" document. This needs to be fixed
     //but for now we just assume this.
     if(_fromDocs->size() > 0)
@@ -47,29 +54,26 @@ void
         StrToDocumentMap::iterator first = _fromDocs->begin();
         _totalOffset = Ogre::Vector2(-first->second->GetClientWidth(), 0.0f);
         _accumulatedOffset = Ogre::Vector2(first->second->GetAbsoluteLeft(), 0.0f);//here assume it's going to be zero for now.
+        _negate = 1;
     }
-    //translate offscreen into place
-    /*
-    for(StrToDocumentMap::iterator iter = _toDocs->begin();
-        iter != _toDocs->end(); iter++)
-    {
-        Rocket::Core::Element* offsetParent = iter->second->GetOffsetParent();
-        if(!offsetParent)
-            cout << "Not offset parent" << endl;
-        //transform offscreen. Assuming that all root documents are the have same extents. 
-        float width = iter->second->GetClientWidth();
-        cout << "toDocs client width: " << width << endl;
-        cout << "left offset " << iter->second->GetOffsetLeft() << endl;
-        iter->second->SetOffset(Rocket::Core::Vector2f(-width, 0.0f), offsetParent, true);
-    }*/
-            
-
-   
 }
 
 void
     ScreenTransitionTranslate::popTransition(Screens* from, Screens* to)
 {
+    _resetParams();
+    _fromDocs = &(from->getDocumentMap());
+    _toDocs = &(to->getDocumentMap());
+    _from = from;
+    _to = to;
+    _from->show();
+    if(_fromDocs->size() > 0)
+    {
+        StrToDocumentMap::iterator first = _fromDocs->begin();
+        _totalOffset = Ogre::Vector2(first->second->GetClientWidth(), 0.0f);
+        _accumulatedOffset = Ogre::Vector2(first->second->GetAbsoluteLeft(), 0.0f);
+        _negate = -1;
+    }
 }
 
 void
@@ -96,7 +100,7 @@ void
     {
         Rocket::Core::Element* offsetParent = iter->second->GetOffsetParent();
         float width = iter->second->GetClientWidth();
-        iter->second->SetOffset(Rocket::Core::Vector2f(_accumulatedOffset.x + width, _accumulatedOffset.y),
+        iter->second->SetOffset(Rocket::Core::Vector2f(_accumulatedOffset.x + _negate*width, _accumulatedOffset.y),
             offsetParent);
     }
    

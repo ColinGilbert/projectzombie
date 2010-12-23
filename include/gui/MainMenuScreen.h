@@ -36,12 +36,6 @@ namespace ZGame
             MainMenuScreen(GuiController* guiCtrl);
             virtual ~MainMenuScreen();
 
-         
-            virtual const Rocket::Core::String&
-                getKey()
-            {
-                return _key;
-            }
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void Release(){};//do nothing
@@ -65,8 +59,6 @@ namespace ZGame
                 _afterDocLoadedOnLoad();
             
             Ogre::StringVector _docPath;
-            
-            Rocket::Core::String _key;
             Rocket::Core::String _ctrlStr;
         };
     }

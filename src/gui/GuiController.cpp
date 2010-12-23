@@ -12,7 +12,7 @@ using namespace ZGame::Gui;
 
 GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0),
     ogre_system(0), ogre_renderer(0), _debugScreen(0), _isFirstScreenAdded(false),
-    _transitionLock(false)
+    _transitionLock(false), _eventListenerRegistered(false)
 {
     _fontStrVec.push_back("font/Delicious-Roman.otf");
     _fontStrVec.push_back("font/Delicious-Bold.otf");
@@ -133,15 +133,34 @@ void
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "transition queue is empty",
         "GuiController::pushScreen");
     Rocket::Core::String pushFrom = _screenTransitionQueue.back();
-    _screenTransitionQueue.push_back(key);
     SCREENS_MAP::iterator findMeFrom = _screensMap.find(pushFrom);
      SCREENS_MAP::iterator findMeTo = _screensMap.find(key);
     if(findMeFrom == _screensMap.end() || findMeTo == _screensMap.end())
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "push screen transition invalid transition keys",
         "GuiController::pushScreenTransition");
+    _screenTransitionQueue.push_back(key);
     _transTranslate.pushTransition(findMeFrom->second, findMeTo->second);
     _transitionLock = true;
 
+}
+
+void
+    GuiController::popScreenTransition()
+{
+    if(_screenTransitionQueue.size() == 0)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "no more screens to transit to",
+        "GuiController::popScreenTransition");
+    Rocket::Core::String popFrom = _screenTransitionQueue.back();
+    //Key here should be valid because we should pushed a valid key.
+    _screenTransitionQueue.pop_back();
+    Rocket::Core::String popTo = _screenTransitionQueue.back();
+    SCREENS_MAP::iterator findMeFrom = _screensMap.find(popFrom);
+     SCREENS_MAP::iterator findMeTo = _screensMap.find(popTo);
+     if(findMeFrom == _screensMap.end() || findMeTo == _screensMap.end())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "push screen transition invalid transition keys",
+        "GuiController::pushScreenTransition");
+     _transTranslate.popTransition(findMeFrom->second, findMeTo->second);
+     _transitionLock = true;
 }
 
 void
@@ -286,7 +305,16 @@ bool
 
         }
         //We assume Rocket::Core has been initialized.
-        Rocket::Core::Factory::RegisterEventListenerInstancer(this);
+        if(_eventListenerRegistered)
+        {
+            Rocket::Core::Factory::RegisterEventListenerInstancer(0);
+            Rocket::Core::Factory::RegisterEventListenerInstancer(this);
+        }
+        else
+        {
+            Rocket::Core::Factory::RegisterEventListenerInstancer(this);
+            _eventListenerRegistered = true;
+        }
         _createGui2d();
 
         //Load any persistence screens.
@@ -336,6 +364,7 @@ bool
     _debugScreen.reset(0);
     _screenTransitionQueue.clear();
     _transitionLock = false;
+    _screensMap.clear();
     debug << "GuiController::onDestroy()\n";
     return true;
 }

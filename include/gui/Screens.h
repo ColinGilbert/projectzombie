@@ -58,8 +58,14 @@ namespace ZGame
                 InstanceEventListener(const Rocket::Core::String& value) = 0;
             virtual void Release();
             virtual void ProcessEvent(Rocket::Core::Event& event) = 0;
-            virtual const Rocket::Core::String& 
-                getKey() = 0;
+            Rocket::Core::String& 
+                getKey()
+            {
+                if(_key.Empty())
+                    OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
+                    "Screen key is empty", "Screens::getKey");
+                return _key;
+            }
             void
                 onLoad();
             virtual const Rocket::Core::String&
@@ -89,7 +95,7 @@ namespace ZGame
                 show()
             {
                 std::for_each(_docMap.begin(), _docMap.end(), Screens::s_docShow);
-                setVisible(false);
+                setVisible(true);
             }
             void
                 hide()
@@ -110,14 +116,25 @@ namespace ZGame
             {
                 _name = name;
             }
+
+            void
+                p_setKey(const Rocket::Core::String& key)
+            {
+                _key = key;
+            }
+            
+
            
         private:
             Rocket::Core::String _name;
+            Rocket::Core::String _key;
             bool _visible;
             virtual 
                 const Ogre::StringVector& _getDocPath() = 0;
             virtual void
                 _afterDocLoadedOnLoad() = 0;
+            
+
         };
     }
 }

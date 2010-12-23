@@ -83,6 +83,10 @@ namespace ZGame
             Ogre::Vector2 _accumulatedOffset;
             Ogre::Real _accumulatedT;
             Ogre::Real _allocatedTimeInSecs;
+            int _negate;
+
+            void
+                _resetParams();
 
 
         };

@@ -150,7 +150,7 @@ namespace ZGame
 
             bool _transitionLock;
             Gui::ScreenTransitionTranslate _transTranslate;
-
+            bool _eventListenerRegistered;
         };
     }
 }

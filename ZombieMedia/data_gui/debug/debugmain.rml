@@ -15,8 +15,8 @@
 		</style>
   </head>
   <body template="blackbarswindow">
-	<button type="button" id="graphics" onclick="DebugControllere" action="debug" >Graphical Adjustments</button>
-	<button type="button" id="back" onclick="DebugControllere" action"back" >Back</button>
+	<button type="button" id="graphics" onclick="DebugController" action="graphics" >Graphics</button>
+	<button type="button" id="back" onclick="DebugController" action="switchback" >Back</button>
     </body>
 </rml>
     
