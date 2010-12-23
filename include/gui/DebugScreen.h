@@ -24,27 +24,47 @@ THE SOFTWARE.
 
 #pragma once
 
-#include <Ogre.h>
-#include <OIS/OIS.h>
-#include <Rocket/Core.h>
-#include <Rocket/Controls.h>
-#include <Rocket/Debugger.h>
-#include <Rocket/Core/RenderInterface.h>
-#include <Rocket/Core/String.h>
-#include <Rocket/Core/Context.h>
-
-
-class SystemInterfaceOgre3D;
-class RenderInterfaceOgre3D;
+#include "gui/GuiPrerequisite.h"
+#include "gui/Screens.h"
 
 namespace ZGame
 {
     namespace Gui
     {
-        class GuiController;
-        class Screens;
-        typedef std::pair<Ogre::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
-        typedef std::map<Ogre::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
-        typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+        class DebugScreen : public Screens
+        {
+        public:
+            DebugScreen(GuiController* guiCtrl);
+            virtual ~DebugScreen();
+
+            virtual const Rocket::Core::String&
+                getKey()
+            {
+                return _key;
+            }
+            virtual Rocket::Core::EventListener*
+                InstanceEventListener(const Rocket::Core::String& value);
+            virtual void Release(){}; //do nothing
+            virtual void ProcessEvent(Rocket::Core::Event& event);
+            virtual const Rocket::Core::String&
+                getControllerString()
+            {
+                return _ctrlStr;
+            }
+
+
+        protected:
+        private:
+            const Ogre::StringVector& 
+                _getDocPath()
+            {
+                return _docPath;
+            }
+            virtual void
+                _afterDocLoadedOnLoad();
+            Ogre::StringVector _docPath;
+            Rocket::Core::String _key;
+            Rocket::Core::String _ctrlStr;
+        };
     }
 }

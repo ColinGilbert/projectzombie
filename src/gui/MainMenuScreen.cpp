@@ -28,8 +28,8 @@ THE SOFTWARE.
 using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
-MainMenuScreen::MainMenuScreen(GuiController* guiCtrl) : Screens(guiCtrl),
-    _key("_MAINMENUSCREEN_KEY_")
+MainMenuScreen::MainMenuScreen(GuiController* guiCtrl) : Screens(guiCtrl, "MainMenuScreen"),
+    _key("_MAINMENUSCREEN_KEY_"), _ctrlStr("MainMenuController")
 {
     _docPath.push_back("mainmenu/mainmenu.rml");
 }
@@ -38,26 +38,23 @@ MainMenuScreen::~MainMenuScreen()
 {
 }
 
-StrToDocumentMap&
-    MainMenuScreen::_buildDocMap()
-{
-    for(size_t i=0; i < _docPath.size(); ++i)
-    {
-        _docMap[_docPath[i]] = static_cast<Rocket::Core::ElementDocument*>(0);
-    }
-    return _docMap;
-}
+
 
 void
     MainMenuScreen::_afterDocLoadedOnLoad()
 {
-    //Docs show have been loaded by now. Show it.
-    for(StrToDocumentMap::const_iterator cIter = _docMap.begin();
-        cIter != _docMap.end();
-        ++cIter)
-    {
-        cIter->second->Show();
-    }
+    p_setName(_docMap[_docPath[0]]->GetTitle()); //set the root document name
+    show();
+    //Add persistent menus
+    StrToDocumentMap::iterator findMe = _docMap.find(_docPath[0]);
+    Rocket::Core::Element* content = findMe->second->GetElementById("content_bar");
+    
+    if(content)
+        _guiCtrl->addPersistentScreenButtons(content);
+    else
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "content_bar not found",
+        "MainMenuScreen::_afterDocLoadedOnLoad");
+
 }
 
 
@@ -65,10 +62,9 @@ void
 Rocket::Core::EventListener*
     MainMenuScreen::InstanceEventListener(const Rocket::Core::String& value)
 {
-    Rocket::Core::String ctrlStr("MainMenuController");
-    if(ctrlStr == value) //where is stringCompare???
+    if(_ctrlStr == value) //where is stringCompare???
     {
-        cout << "In place event instancer controller is found" << endl;
+        cout << "In place MainMenuController controller is found" << endl;
         return this;
     }
     else
@@ -83,6 +79,7 @@ void
 {
     Rocket::Core::Element* el = event.GetCurrentElement();
     Rocket::Core::Element* tel = event.GetTargetElement();
+    cout << "MainMenuScreen::ProcessEvent" << endl;
     cout << "Event Tag: " << el->GetTagName().CString() << endl;
     cout << "Event Type: " << event.GetType().CString() << endl;
     cout << "Event Element id: " << el->GetId().CString() << endl;

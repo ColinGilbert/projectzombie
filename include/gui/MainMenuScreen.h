@@ -30,7 +30,7 @@ namespace ZGame
 {
     namespace Gui
     {
-        class MainMenuScreen : public Screens, public Rocket::Core::EventListener
+        class MainMenuScreen : public Screens
         {
         public:
             MainMenuScreen(GuiController* guiCtrl);
@@ -46,17 +46,28 @@ namespace ZGame
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void Release(){};//do nothing
             virtual void ProcessEvent(Rocket::Core::Event& event);
+            virtual const Rocket::Core::String&
+                getControllerString()
+            {
+                return _ctrlStr;
+            }
+         
+        protected:
+
 
         private:
-
+            const Ogre::StringVector&
+                _getDocPath()
+            {
+                return _docPath;
+            }
             virtual void
                 _afterDocLoadedOnLoad();
-
-            virtual StrToDocumentMap& _buildDocMap();
             
             Ogre::StringVector _docPath;
-            StrToDocumentMap _docMap;
+            
             Rocket::Core::String _key;
+            Rocket::Core::String _ctrlStr;
         };
     }
 }

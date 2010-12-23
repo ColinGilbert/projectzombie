@@ -35,6 +35,7 @@ namespace ZGame
     namespace Gui
     {
         class Screens;
+        class DebugScreen;
         class GuiController : Rocket::Core::EventListenerInstancer
         {
         public:
@@ -81,7 +82,12 @@ namespace ZGame
             {
                 return _gui2d;
             }
-
+            /**
+            *\brief This method is a utility method which will add persistent
+            *controllers buttons to any element. 
+            **/
+            void
+                addPersistentScreenButtons(Rocket::Core::Element* el);
 
         
         private:
@@ -120,8 +126,11 @@ namespace ZGame
 
             OIS::Keyboard* mKeyboard;
 
-            typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+            
             SCREENS_MAP _screensMap;
+            std::vector<Screens*> _persistScreens;
+            std::auto_ptr<DebugScreen> _debugScreen;
+
 
         };
     }

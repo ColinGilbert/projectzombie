@@ -27,7 +27,8 @@ THE SOFTWARE.
 #include "EngineController.h"
 using namespace ZGame::Gui;
 
-Screens::Screens(GuiController* guiCtrl) : _guiCtrl(guiCtrl)
+Screens::Screens(GuiController* guiCtrl, const Rocket::Core::String &name) : _guiCtrl(guiCtrl), _name(name),
+    _visible(false)
 {
    
 }
@@ -45,8 +46,22 @@ void
 void
     Screens::onLoad()
 {
-    StrToDocumentMap& docMap = _buildDocMap();
+    const Ogre::StringVector& docPath = _getDocPath();
+    if(docPath.empty())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Document path is empty",
+        "Screens::onLoad");
+    StrToDocumentMap& docMap = p_buildDocMap(docPath);
     _guiCtrl->addScreens(_guiCtrl->getGui2d(),
         this, docMap);
     _afterDocLoadedOnLoad();
+}
+
+StrToDocumentMap&
+    Screens::p_buildDocMap(const Ogre::StringVector& path)
+{
+    for(size_t i=0; i < path.size(); ++i)
+    {
+        _docMap[path[i]] = static_cast<Rocket::Core::ElementDocument*>(0);
+    }
+    return _docMap;
 }

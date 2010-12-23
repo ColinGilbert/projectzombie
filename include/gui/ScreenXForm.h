@@ -24,27 +24,50 @@ THE SOFTWARE.
 
 #pragma once
 
-#include <Ogre.h>
-#include <OIS/OIS.h>
-#include <Rocket/Core.h>
-#include <Rocket/Controls.h>
-#include <Rocket/Debugger.h>
-#include <Rocket/Core/RenderInterface.h>
-#include <Rocket/Core/String.h>
-#include <Rocket/Core/Context.h>
-
-
-class SystemInterfaceOgre3D;
-class RenderInterfaceOgre3D;
-
+#include "gui/GuiPrerequisite.h"
+#include "gui/Screens.h"
 namespace ZGame
 {
     namespace Gui
     {
-        class GuiController;
-        class Screens;
-        typedef std::pair<Ogre::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
-        typedef std::map<Ogre::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
-        typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+
+
+
+        class ScreenTransition
+        {
+        public:
+           
+
+            virtual void
+                step(float dt) = 0;
+            virtual bool
+                isDone();
+
+        protected:
+             ScreenTransition(SCREENS_MAP* screenMap, const Rocket::Core::String& transitionToKey)
+                : _screenMap(screenMap), _transToKey(transitionToKey)
+            {
+
+            }
+            SCREENS_MAP* _screenMap;
+            Rocket::Core::String _transToKey;
+        };
+        class ScreenTransitionTranslate : ScreenTransition
+        {
+            ScreenTransitionTranslate(SCREENS_MAP* screenMap, 
+                const Rocket::Core::String& transitionToKey) : ScreenTransition(screenMap, transitionToKey),isDone(false)
+            {
+            }
+
+            virtual void
+                step(float dt)
+            {
+            }
+
+        private:
+            bool isDone;
+            std::vector<Screens*> _visibleScreens;
+      
+        };
     }
 }

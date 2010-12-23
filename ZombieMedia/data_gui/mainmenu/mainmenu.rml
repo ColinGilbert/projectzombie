@@ -15,7 +15,7 @@
 	  <div class="blackbar">
 	    </div>
 	   <div class="content_bar">
-	     <div class="content_bar_buttons">
+	     <div id="content_bar" class="content_bar_buttons">
 	    <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
 	    <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
 	    <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>

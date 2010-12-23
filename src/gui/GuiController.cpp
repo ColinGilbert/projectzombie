@@ -2,6 +2,7 @@
 #include "gui/RenderInterfaceOgre3D.h"
 #include "gui/SystemInterfaceOgre3D.h"
 #include "gui/Screens.h"
+#include "gui/DebugScreen.h"
 #include <iostream>
 
 using std::cout; 
@@ -10,7 +11,7 @@ using std::endl;
 using namespace ZGame::Gui;
 
 GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0),
-    ogre_system(0), ogre_renderer(0)
+    ogre_system(0), ogre_renderer(0), _debugScreen(0)
 {
     _fontStrVec.push_back("font/Delicious-Roman.otf");
     _fontStrVec.push_back("font/Delicious-Bold.otf");
@@ -96,6 +97,33 @@ void
     }
 }
 
+void
+    GuiController::addPersistentScreenButtons(Rocket::Core::Element* el)
+{
+    if(!el)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Element is not valid",
+        "GuiController::addPersistenceControllerButton");
+    for(size_t i = 0; i < _persistScreens.size(); ++i)
+    {
+        Rocket::Core::XMLAttributes attributes;
+        attributes.Set("type", "button");
+        //WARNING: ID here is not unique.
+        attributes.Set("id", 
+            _persistScreens[i]->getControllerString() + _persistScreens[i]->getKey());
+        attributes.Set("onclick", _persistScreens[i]->getControllerString());
+        attributes.Set("action", "switchto");
+        Rocket::Core::Element* button_el = Rocket::Core::Factory::InstanceElement(el,
+            "button",
+            "button",
+            attributes);
+        button_el->SetInnerRML(_persistScreens[i]->getName());
+        if(button_el)
+        {
+            el->AppendChild(button_el);
+            button_el->RemoveReference();
+        }
+    }
+}
 
 void
     GuiController::addScreens(Rocket::Core::Context* context, Screens* screen,
@@ -228,6 +256,13 @@ bool
         //We assume Rocket::Core has been initialized.
         Rocket::Core::Factory::RegisterEventListenerInstancer(this);
         _createGui2d();
+
+        //Load any persistence screens.
+        _debugScreen.reset(new DebugScreen(this));
+        _debugScreen->onLoad();
+
+        _persistScreens.push_back(_debugScreen.get());
+
    
 
     }catch(Ogre::Exception e)
