@@ -48,7 +48,7 @@ namespace ZGame
 
             void
                 addScreens(Rocket::Core::Context* context, 
-                Screens* screen, StrToDocumentMap &docMap);
+                Screens* screen);
             void
                 removeScreens(Rocket::Core::Context* context, const Rocket::Core::String &key);
 
@@ -100,8 +100,7 @@ namespace ZGame
         private:
 
             void
-                _addScreen(Rocket::Core::Context* context, Screens* screen,
-                StrToDocumentMap &docMap);
+                _addScreen(Rocket::Core::Context* context, Screens* screen);
 
             void 
                 ConfigureRenderSystem();

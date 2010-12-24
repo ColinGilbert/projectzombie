@@ -15,8 +15,22 @@
 		</style>
   </head>
   <body template="blackbarswindow">
-	<button type="button" id="graphics" onclick="DebugController" action="graphics" >Graphics</button>
-	<button type="button" id="back" onclick="DebugController" action="switchback" >Back</button>
+    <div class="content_bar_top" id="content_bar2">
+      <div class="content_left">
+	<button type="button" id="graphics" onclick="DebugController" action="graphics" >Graphics</button><br />
+	<button type="button" id="back" onclick="DebugController" action="switchback" >Back</button><br />
+	<button type="button" id="more" >Test1</button><br />
+	<button type="button" id="more2">Test2</button><br />
+      </div>
+      <div class="content_right">
+	<p>
+In 1984 the European Journal of Physics (5:25–32) published P.R. Girard’s essay "The quaternion group and modern physics". It "shows how various physical covariance groups: SO(3), the Lorentz group, the general relativity group, the Clifford algebra SU(2) and the conformal group can be easily related to the quaternion group". Girard begins by discussing group representations and by representing some space groups of crystallography. He proceeds to kinematics of rigid body motion. Next he uses complex quaternions (biquaternions) to represent the Lorentz group of special relativity, including the Thomas precession. He cites five authors, beginning with Ludwik Silberstein that use a potential function of one quaternion variable to express Maxwell’s equations in a single differential equation. Concerning general relativity, he expresses the Runge-Lenz vector. He mentions the Clifford biquaternions (split-biquaternions) as an instance of Clifford algebra. Finally, invoking the reciprocal of a biquaternion, Girard describes conformal maps on spacetime. Among the fifty references he includes Alexander Macfarlane and his Bulletin of the Quaternion Society.
+
+A more personal view was written by Jim Lambek in 1995. In the Mathematical Intelligencer (17(4):7) he contributed "If Hamilton Had Prevailed: Quaternions in Physics" which recalls the use of biquaternions: "My own interest as a graduate student was raised by the inspiring book by Silberstein". He concludes saying "I firmly believe that quaternions can supply a shortcut for pure mathematicians who wish to familiarize themselves with certain aspects of theoretical physics."
+	</p>
+
+      </div>
+    </div>
     </body>
 </rml>
     

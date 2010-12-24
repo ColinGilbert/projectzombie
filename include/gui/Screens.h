@@ -1,4 +1,3 @@
-#pragma once
 /**
 Permission is hereby granted by Fdastero LLC, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +21,19 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
+#pragma once
 #include <algorithm>
 #include <utility>
 #include "gui/GuiPrerequisite.h"
 #include "gui/GuiController.h"
+#include "gui/DocumentManager.h"
 namespace ZGame
 {
 
     class EngineController;
     namespace Gui
     {
-
+      
         /**
         * This class represents the concept of Screens. A Screen is a ADT for a collection
         *of libRocket documents.
@@ -58,7 +59,7 @@ namespace ZGame
                 InstanceEventListener(const Rocket::Core::String& value) = 0;
             virtual void Release();
             virtual void ProcessEvent(Rocket::Core::Event& event) = 0;
-            Rocket::Core::String& 
+            const Rocket::Core::String& 
                 getKey()
             {
                 if(_key.Empty())
@@ -74,12 +75,6 @@ namespace ZGame
             const Rocket::Core::String&
                 getName(){ return _name;}
 
-            StrToDocumentMap&
-                getDocumentMap()
-            {
-                return _docMap;
-            }
-
             bool
                 getVisible()
             {
@@ -94,23 +89,29 @@ namespace ZGame
             void
                 show()
             {
-                std::for_each(_docMap.begin(), _docMap.end(), Screens::s_docShow);
+                StrToDocumentMap docMap = _docManager->getAll();
+                std::for_each(docMap.begin(), docMap.end(), Screens::s_docShow);
                 setVisible(true);
             }
             void
                 hide()
-            {
-                std::for_each(_docMap.begin(), _docMap.end(), Screens::s_docHide);
+            {   
+                StrToDocumentMap docMap = _docManager->getAll();
+                std::for_each(docMap.begin(), docMap.end(), Screens::s_docHide);
                 setVisible(false);
+            }
+
+            DocumentManager*
+                getDocManager()
+            {
+                return _docManager.get();
             }
 
         protected:
             Screens(GuiController* guiCtrl, const Rocket::Core::String &name);
             GuiController* _guiCtrl;
-            StrToDocumentMap _docMap;
-
-            StrToDocumentMap& 
-                p_buildDocMap(const Ogre::StringVector& path);
+            std::auto_ptr<DocumentManager> _docManager;
+         
             void
                 p_setName(const Rocket::Core::String& name)
             {

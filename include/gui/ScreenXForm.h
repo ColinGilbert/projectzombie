@@ -77,8 +77,7 @@ namespace ZGame
             bool _isDone;
             StrToDocumentMap* _fromDocs;
             StrToDocumentMap* _toDocs;
-            Screens* _from;
-            Screens* _to;
+            
             Ogre::Vector2 _totalOffset;
             Ogre::Vector2 _accumulatedOffset;
             Ogre::Real _accumulatedT;

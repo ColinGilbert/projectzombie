@@ -1,4 +1,4 @@
-<template name="blackbarswindow" content="content_bar_buttons">
+<template name="blackbarswindow" content="content_">
 <head>
   <link type="text/rcss" href="../rcss/rkt.rcss"/>
   <link type="text/rcss" href="../rcss/invader.rcss" />
@@ -6,9 +6,7 @@
 <body class="blackbarmenu">
   <div class="blackbar">
   </div>
-  <div class="content_bar">
-    <div class="content_bar_buttons" id="content_bar_buttons">    
-      </div>
+  <div class="content_bar" id="content_">
   </div>
   <div class="blackbar">
   </div>

@@ -44,18 +44,18 @@ MainMenuScreen::~MainMenuScreen()
 void
     MainMenuScreen::_afterDocLoadedOnLoad()
 {
-    p_setName(_docMap[_docPath[0]]->GetTitle()); //set the root document name
+    _docManager->defineRoot(_docPath[0].c_str()); //define the root document to be first document in doc path. 
+    p_setName(_docManager->getRootDocument()->GetTitle()); //set the root document name
     show();
     //Add persistent menus
-    StrToDocumentMap::iterator findMe = _docMap.find(_docPath[0]);
-    Rocket::Core::Element* content = findMe->second->GetElementById("content_bar_buttons");
+    Rocket::Core::Element* content = _docManager->get(_docPath[0].c_str())->GetElementById("content_bar");
     
     if(content)
         _guiCtrl->addPersistentScreenButtons(content);
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "content_bar not found",
         "MainMenuScreen::_afterDocLoadedOnLoad");
-
+    _docPath.clear(); //Do not expect to use this again. It's private!
 }
 
 

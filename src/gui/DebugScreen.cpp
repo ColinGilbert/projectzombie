@@ -42,12 +42,15 @@ void
     DebugScreen::_afterDocLoadedOnLoad()
 {
     //Do nothing. This screen remains hidden on load.
+    _docManager->defineRoot(_docPath[0].c_str());
+    p_setName(_docManager->getRootDocument()->GetTitle());
+    
     show();
-    p_setName(_docMap[_docPath[0]]->GetTitle());
     
     //translate offscreen into place. Note: We don't know why this won't work in ScreenXForm.
-    for(StrToDocumentMap::iterator iter = _docMap.begin();
-        iter != _docMap.end(); iter++)
+    StrToDocumentMap& docMap = _docManager->getAll();
+    for(StrToDocumentMap::iterator iter = docMap.begin();
+        iter != docMap.end(); iter++)
     {
         Rocket::Core::Element* offsetParent = iter->second->GetOffsetParent();
         if(!offsetParent)
@@ -57,6 +60,7 @@ void
         cout << "toDocs client width: " << width << endl;
         iter->second->SetOffset(Rocket::Core::Vector2f(width, 0.0f), offsetParent, true);
     }
+    _docPath.clear();
 }
 
 Rocket::Core::EventListener*

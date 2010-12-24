@@ -42,11 +42,9 @@ void
     //offsetLeft (from offset parent) are the same. This is not 100%
     //true. The fix is to accumlate offsets all the way up to root document. 
     _resetParams();
-    _fromDocs = &(from->getDocumentMap());
-    _toDocs = &(to->getDocumentMap());
-     _from = from;
-    _to = to;
-    _to->show(); //We should not be responsible for showing here. It should be down upstreams.
+    _fromDocs = &(from->getDocManager()->getAll());
+    _toDocs = &(to->getDocManager()->getAll());
+    to->show(); //We should not be responsible for showing here. It should be down upstreams.
     //Here we wrongly assume the iterator is the "root" document. This needs to be fixed
     //but for now we just assume this.
     if(_fromDocs->size() > 0)
@@ -62,11 +60,9 @@ void
     ScreenTransitionTranslate::popTransition(Screens* from, Screens* to)
 {
     _resetParams();
-    _fromDocs = &(from->getDocumentMap());
-    _toDocs = &(to->getDocumentMap());
-    _from = from;
-    _to = to;
-    _from->show();
+    _fromDocs = &(from->getDocManager()->getAll());
+    _toDocs = &(to->getDocManager()->getAll());
+    from->show();
     if(_fromDocs->size() > 0)
     {
         StrToDocumentMap::iterator first = _fromDocs->begin();
@@ -80,13 +76,17 @@ void
     ScreenTransitionTranslate::step(float dt)
 {
     Ogre::Real tempT = dt / _allocatedTimeInSecs;
-
-     _accumulatedT += tempT;
-    if(_accumulatedT > 1.0f)
+    Ogre::Real newAcT = _accumulatedT + tempT;
+    if(newAcT > 1.0f)
     {
         _isDone = true;
-        return;
+        //make up the final difference exactly.
+        tempT = 1.0f - _accumulatedT;
+        _accumulatedT += tempT;
     }
+    else
+        _accumulatedT += tempT;
+    
     for(StrToDocumentMap::iterator iter = _fromDocs->begin();
         iter != _fromDocs->end(); ++iter)
     {

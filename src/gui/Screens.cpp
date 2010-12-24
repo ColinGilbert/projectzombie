@@ -25,10 +25,11 @@ THE SOFTWARE.
 #include "gui/Screens.h"
 #include "gui/GuiController.h"
 #include "EngineController.h"
+#include "gui/DocumentManager.h"
 using namespace ZGame::Gui;
 
 Screens::Screens(GuiController* guiCtrl, const Rocket::Core::String &name) : _guiCtrl(guiCtrl), _name(name),
-    _visible(false)
+    _visible(false), _docManager(new DocumentManager())
 {
    
 }
@@ -50,18 +51,9 @@ void
     if(docPath.empty())
         OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Document path is empty",
         "Screens::onLoad");
-    StrToDocumentMap& docMap = p_buildDocMap(docPath);
+    _docManager->define(docPath);
     _guiCtrl->addScreens(_guiCtrl->getGui2d(),
-        this, docMap);
+        this);
     _afterDocLoadedOnLoad();
 }
 
-StrToDocumentMap&
-    Screens::p_buildDocMap(const Ogre::StringVector& path)
-{
-    for(size_t i=0; i < path.size(); ++i)
-    {
-        _docMap[path[i]] = static_cast<Rocket::Core::ElementDocument*>(0);
-    }
-    return _docMap;
-}

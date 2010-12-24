@@ -13,8 +13,10 @@
 			</style>
 	</head>
 	<body template="blackbarswindow">
-	    <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
-	    <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
-	    <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>
+	      <div class="content_bar_bottom" id="content_bar">
+	      	   <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
+	    	   <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
+		   <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>	
+	      </div>
 	</body>
 </rml>

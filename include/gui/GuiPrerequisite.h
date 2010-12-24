@@ -43,8 +43,8 @@ namespace ZGame
     {
         class GuiController;
         class Screens;
-        typedef std::pair<Ogre::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
-        typedef std::map<Ogre::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
+        typedef std::pair<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
+        typedef std::map<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
         typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
     }
 }

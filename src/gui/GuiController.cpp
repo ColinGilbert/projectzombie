@@ -133,8 +133,8 @@ void
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "transition queue is empty",
         "GuiController::pushScreen");
     Rocket::Core::String pushFrom = _screenTransitionQueue.back();
-    SCREENS_MAP::iterator findMeFrom = _screensMap.find(pushFrom);
-     SCREENS_MAP::iterator findMeTo = _screensMap.find(key);
+    SCREENS_MAP::iterator findMeFrom = _screensMap.find(pushFrom.CString());
+    SCREENS_MAP::iterator findMeTo = _screensMap.find(key.CString());
     if(findMeFrom == _screensMap.end() || findMeTo == _screensMap.end())
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "push screen transition invalid transition keys",
         "GuiController::pushScreenTransition");
@@ -154,8 +154,8 @@ void
     //Key here should be valid because we should pushed a valid key.
     _screenTransitionQueue.pop_back();
     Rocket::Core::String popTo = _screenTransitionQueue.back();
-    SCREENS_MAP::iterator findMeFrom = _screensMap.find(popFrom);
-     SCREENS_MAP::iterator findMeTo = _screensMap.find(popTo);
+    SCREENS_MAP::iterator findMeFrom = _screensMap.find(popFrom.CString());
+    SCREENS_MAP::iterator findMeTo = _screensMap.find(popTo.CString());
      if(findMeFrom == _screensMap.end() || findMeTo == _screensMap.end())
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "push screen transition invalid transition keys",
         "GuiController::pushScreenTransition");
@@ -164,8 +164,7 @@ void
 }
 
 void
-    GuiController::_addScreen(Rocket::Core::Context* context, Screens* screen,
-    StrToDocumentMap &docMap)
+    GuiController::_addScreen(Rocket::Core::Context* context, Screens* screen)
 {
     //For now there is only one map. In future may need to refactor map so also maps to context.
     if(context != 0)
@@ -180,17 +179,16 @@ void
 
         _screensMap[screen->getKey()] =  screen;
         //load the maps
-        _loadDocumentsWithContext(context, docMap);
+        _loadDocumentsWithContext(context, screen->getDocManager()->getAll());
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "context is not valid", "GuiController::addScreens");
 }
 
 void
-    GuiController::addScreens(Rocket::Core::Context* context, Screens* screen,
-    StrToDocumentMap &docMap)
+    GuiController::addScreens(Rocket::Core::Context* context, Screens* screen)
 {
-    _addScreen(context, screen, docMap);
+    _addScreen(context, screen);
     //Everything should be valid here.
     if(!_isFirstScreenAdded)
     {
@@ -234,7 +232,7 @@ void
         "GuiController::loadDocumentWithContext");
     for(; iter != docMap.end(); iter++)
     {
-        Rocket::Core::ElementDocument* doc = context->LoadDocument(_data_path + iter->first.c_str());
+        Rocket::Core::ElementDocument* doc = context->LoadDocument(_data_path + iter->first);
         if(doc)
         {
             doc->RemoveReference();
