@@ -28,10 +28,14 @@ THE SOFTWARE.
 using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
-DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen"),_ctrlStr("DebugController")
+DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen"),_ctrlStr("DebugController"),
+    _curMenu(0)
 {
     p_setKey("_DEBUGSCREEN_KEY_");
     _docPath.push_back("debug/debugmain.rml");
+    //Note: We do this because we couldn't get update StyleProperty to work. Undefined symbols.
+    //It's not exported out fro LibRocket. It's not in public includes.
+    _docPath.push_back("debug/graphics.rml");
 }
 
 DebugScreen::~DebugScreen()
@@ -44,9 +48,9 @@ void
     //Do nothing. This screen remains hidden on load.
     _docManager->defineRoot(_docPath[0].c_str());
     p_setName(_docManager->getRootDocument()->GetTitle());
-    
-    show();
-    
+   
+    hide();
+   
     //translate offscreen into place. Note: We don't know why this won't work in ScreenXForm.
     StrToDocumentMap& docMap = _docManager->getAll();
     for(StrToDocumentMap::iterator iter = docMap.begin();
@@ -60,7 +64,6 @@ void
         cout << "toDocs client width: " << width << endl;
         iter->second->SetOffset(Rocket::Core::Vector2f(width, 0.0f), offsetParent, true);
     }
-    _docPath.clear();
 }
 
 Rocket::Core::EventListener*
@@ -95,15 +98,52 @@ void
         const Rocket::Core::String switchTo("switchto");
         const Rocket::Core::String switchBack("switchback");
         const Rocket::Core::String graphics("graphics");
+        const Rocket::Core::String more("more");
+        const Rocket::Core::String more2("more2");
         if(switchTo == actionStr)
             _guiCtrl->pushScreenTransition(getKey());
         if(switchBack == actionStr)
             _guiCtrl->popScreenTransition();
-        //if(graphics == actionStr)
+        if(graphics == actionStr)
+        {
+           
+            //Rocket::Core::Element* menu = 
+                //_docManager->get(_docPath[1].c_str())->GetElementById("body_content")->Clone();
+            _showMenu(_docManager->getRootDocument()->GetElementById("graphics_menu"));
+        }
+        if(more == actionStr)
+        {
+            _showMenu(_docManager->getRootDocument()->GetElementById("test1_menu"));
+        }
+        if(more2 == actionStr)
+        {
+            _showMenu(_docManager->getRootDocument()->GetElementById("test2_menu"));
+        }
             
         
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Action string is empty",
         "DebugScreen::ProcessEvent");
+}
+/**
+* This method shows a menu and hides the current meu.
+*
+* \note We do it this way because we could get set local style property to work yet. Ask forums.
+**/
+void
+    DebugScreen::_showMenu(Rocket::Core::Element* menu)
+{
+    if(!menu)
+    {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "menu is not valid",
+            "DebugScreen::_showMenu");
+    }
+    Rocket::Core::ElementDocument* doc = _docManager->getRootDocument();
+    Rocket::Core::Element* theMenu = doc->GetElementById("content_area");
+    //find menu
+    Rocket::Core::String menuInnerRml;
+    menu->GetInnerRML(menuInnerRml);
+    theMenu->SetInnerRML(menuInnerRml);
+    
 }

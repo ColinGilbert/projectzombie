@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include <Rocket/Core/Context.h>
 
 
+
 class SystemInterfaceOgre3D;
 class RenderInterfaceOgre3D;
 

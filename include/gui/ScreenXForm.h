@@ -50,14 +50,8 @@ namespace ZGame
         class ScreenTransitionTranslate : public ScreenTransition
         {
         public:
-            ScreenTransitionTranslate() : ScreenTransition(),
-                _isDone(true), _allocatedTimeInSecs(1.0f), _accumulatedT(0.0f)
-            {
-            }
-            ~ScreenTransitionTranslate()
-            {
-            }
-
+            ScreenTransitionTranslate();
+            ~ScreenTransitionTranslate();
             virtual bool
                 isDone()
             {
@@ -75,8 +69,8 @@ namespace ZGame
                 popTransition(Screens* from, Screens* to);
         private:
             bool _isDone;
-            StrToDocumentMap* _fromDocs;
-            StrToDocumentMap* _toDocs;
+            Rocket::Core::ElementDocument* _fromDocs;
+            Rocket::Core::ElementDocument* _toDocs;
             
             Ogre::Vector2 _totalOffset;
             Ogre::Vector2 _accumulatedOffset;

@@ -73,6 +73,7 @@ div.content_bar_top
 {
 	z-index: 5;
 	margin-top:-70%;
+	height: 100%;
 	text-align: left;
 }
 
@@ -86,11 +87,23 @@ div.content_right
 {
 	z-index: 5;
 	width: 80%;
-	
+	height: 160%;
 	left:30%;
 	margin-left:3.0%;
 	float:left;
 	background-color:rgba(255, 0, 0, 10);
+}
+
+div.content_area
+{
+	z_index: 5;
+	
+	
+}
+
+div.hidden
+{
+	display: none;
 }
 
 
@@ -319,7 +332,7 @@ dataselect selectarrow
 	height: 37px;
 	
 	icon-decorator: image;
-	icon-image: invader.tga 307px 192px 337px 229px;
+	icon-image: ../img/invader.tga 307px 192px 337px 229px;
 }
 
 select selectarrow:hover,

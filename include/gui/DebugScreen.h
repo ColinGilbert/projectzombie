@@ -60,6 +60,11 @@ namespace ZGame
                 _afterDocLoadedOnLoad();
             Ogre::StringVector _docPath;
             Rocket::Core::String _ctrlStr;
+
+            Rocket::Core::Element* _curMenu;
+            void
+                _showMenu(Rocket::Core::Element* menu);
+
         };
     }
 }

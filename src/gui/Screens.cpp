@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "gui/GuiController.h"
 #include "EngineController.h"
 #include "gui/DocumentManager.h"
+#include <ElementStyle.h>
 using namespace ZGame::Gui;
 
 Screens::Screens(GuiController* guiCtrl, const Rocket::Core::String &name) : _guiCtrl(guiCtrl), _name(name),
@@ -37,6 +38,25 @@ Screens::Screens(GuiController* guiCtrl, const Rocket::Core::String &name) : _gu
 Screens::~Screens()
 {
    
+}
+
+void
+    Screens::s_showElement(Rocket::Core::Element* el)
+{
+    if(!el)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,"Element is not valid",
+        "Screens::s_showElement");
+    //el->GetStyle()->SetProperty("visibility", "visible");
+    //el->GetStyle()->SetProperty("display", "none");
+}
+void
+    Screens::s_hideElement(Rocket::Core::Element* el)
+{
+    if(!el)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,"Element is not valid",
+        "Screens::s_hideElement");
+    //el->GetStyle()->SetProperty("visibility", "hidden");
+    //el->GetStyle()->SetProperty("display", "block");
 }
 
 void

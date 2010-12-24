@@ -17,19 +17,45 @@
   <body template="blackbarswindow">
     <div class="content_bar_top" id="content_bar2">
       <div class="content_left">
-	<button type="button" id="graphics" onclick="DebugController" action="graphics" >Graphics</button><br />
+	<button type="button" id="graphics" onmouseover="DebugController" action="graphics" >Graphics</button><br />	
+	<button type="button" id="more" onmouseover="DebugController" action="more">Test1</button><br />
+	<button type="button" id="more2" onmouseover="DebugController" action="more2">Test2</button><br />
 	<button type="button" id="back" onclick="DebugController" action="switchback" >Back</button><br />
-	<button type="button" id="more" >Test1</button><br />
-	<button type="button" id="more2">Test2</button><br />
       </div>
       <div class="content_right">
-	<p>
+	<div id="content_area">
+	  </div>
+      </div>
+    </div>
+    <div class="hidden" id="graphics_menu">
+           	<p>
 In 1984 the European Journal of Physics (5:25–32) published P.R. Girard’s essay "The quaternion group and modern physics". It "shows how various physical covariance groups: SO(3), the Lorentz group, the general relativity group, the Clifford algebra SU(2) and the conformal group can be easily related to the quaternion group". Girard begins by discussing group representations and by representing some space groups of crystallography. He proceeds to kinematics of rigid body motion. Next he uses complex quaternions (biquaternions) to represent the Lorentz group of special relativity, including the Thomas precession. He cites five authors, beginning with Ludwik Silberstein that use a potential function of one quaternion variable to express Maxwell’s equations in a single differential equation. Concerning general relativity, he expresses the Runge-Lenz vector. He mentions the Clifford biquaternions (split-biquaternions) as an instance of Clifford algebra. Finally, invoking the reciprocal of a biquaternion, Girard describes conformal maps on spacetime. Among the fifty references he includes Alexander Macfarlane and his Bulletin of the Quaternion Society.
 
 A more personal view was written by Jim Lambek in 1995. In the Mathematical Intelligencer (17(4):7) he contributed "If Hamilton Had Prevailed: Quaternions in Physics" which recalls the use of biquaternions: "My own interest as a graduate student was raised by the inspiring book by Silberstein". He concludes saying "I firmly believe that quaternions can supply a shortcut for pure mathematicians who wish to familiarize themselves with certain aspects of theoretical physics."
 	</p>
+		<input type="checkbox">check me</input> <input type="radio">radio me</input><br />
+		<input type="checkbox">check me</input> <input type="radio">radio</input><br />
+		<select name="selectme">
+		  <option value="1"></option>
+		</select>
+    </div>
+    <div class="hidden" id="test1_menu">
+      <p>
+      In a phase space, every degree of freedom or parameter of the system is represented as an axis of a multidimensional space; a one-dimensional system is called a phase line, while a two-dimensional system is called a phase plane. For every possible state of the system, or allowed combination of values of the system's parameters, a point is plotted in the multidimensional space. Often this succession of plotted points is analogous to the system's state evolving over time. In the end, the phase diagram represents all that the system can be, and its shape can easily elucidate qualities of the system that might not be obvious otherwise. A phase space may contain very many dimensions. For instance, a gas containing many molecules may require a separate dimension for each particle's x, y and z positions and momenta as well as any number of other properties.
+      </p>
+    </div>
+    <div class="hidden" id="test2_menu">
+      <p>
+      Cascading Style Sheets (CSS) is a style sheet language used to describe the presentation semantics (the look and formatting) of a document written in a markup language. Its most common application is to style web pages written in HTML and XHTML, but the language can also be applied to any kind of XML document, including SVG and XUL.
 
-      </div>
+CSS is designed primarily to enable the separation of document content (written in HTML or a similar markup language) from document presentation, including elements such as the layout, colors, and fonts.[1] This separation can improve content accessibility, provide more flexibility and control in the specification of presentation characteristics, enable multiple pages to share formatting, and reduce complexity and repetition in the structural content (such as by allowing for tableless web design). CSS can also allow the same markup page to be presented in different styles for different rendering methods, such as on-screen, in print, by voice (when read out by a speech-based browser or screen reader) and on Braille-based, tactile devices. While the author of a document typically links that document to a CSS style sheet, readers can use a different style sheet, perhaps one on their own computer, to override the one the author has specified.
+
+CSS specifies a priority scheme to determine which style rules apply if more than one rule matches against a particular element. In this so-called cascade, priorities or weights are calculated and assigned to rules, so that the results are predictable.
+
+The CSS specifications are maintained by the World Wide Web Consortium (W3C). Internet media type (MIME type) text/css is registered for use with CSS by RFC 2318 (March 1998).
+
+The popularity of CSS as a design tool has increased steadily and is now regarded as the premier system for website design.[citation needed]
+      </p>
     </div>
     </body>
 </rml>
