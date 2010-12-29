@@ -1,14 +1,9 @@
 #ifndef _ZGAME_CHARUTIL_H
 #define _ZGAME_CHARUTIL_H
 
-#include <iostream>
-#include <map>
-
+#include "ZPrerequisites.h"
 #include <boost/random.hpp>
-#include <Ogre.h>
-
 #include "GPUEntsDistributor.h"
-#include "ZInitPacket.h"
 
 namespace ZGame
 {
@@ -21,7 +16,7 @@ namespace ZGame
             ~CharacterUtil(){}
 
             bool
-                onInit(ZGame::ZInitPacket initPacket);
+                onInit(ZGame::ZInitPacket *initPacket);
 
             void setInput();
 

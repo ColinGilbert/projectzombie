@@ -9,7 +9,6 @@
 #include <Ogre.h>
 #include <OgreBulletDynamicsRigidBody.h>
 #include <OgreBulletCollisions.h>
-#include "ZInitPacket.h"
 //#include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
 
 namespace ZGame
@@ -24,7 +23,7 @@ namespace ZGame
             virtual 
                 ~PhysicsManager();
             bool
-                onInit(ZGame::ZInitPacket initPacket);
+                onInit(ZGame::ZInitPacket *initPacket);
             bool
                 onDestroy();
             bool

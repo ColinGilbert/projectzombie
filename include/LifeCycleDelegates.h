@@ -18,7 +18,7 @@ namespace ZGame
     {
         using namespace fastdelegate;
         typedef FastDelegate<bool(void) > LifeCycleEvent;
-        typedef FastDelegate<bool(ZGame::ZInitPacket initPacket) > LifeCycleOnInit;
+        typedef FastDelegate<bool(ZGame::ZInitPacket *initPacket) > LifeCycleOnInit;
         
         typedef FastDelegate<bool(const Ogre::FrameEvent &evt) > LifeCycleEvent2;
       

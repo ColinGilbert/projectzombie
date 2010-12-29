@@ -19,6 +19,7 @@ using std::cerr;
 #include "entities/EntitiesManager.h"
 #include "world/WorldMap.h"
 #include "world/WorldScale.h"
+#include "ZInitPacket.h"
 
 using namespace ZGame;
 
@@ -81,6 +82,7 @@ ZCLController::FileToString(const string fileName)
         f.close();
       throw except;
     }
+  return 0;
 }
 
 /**

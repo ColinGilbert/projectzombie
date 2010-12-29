@@ -23,6 +23,7 @@ using namespace std;
 #include "ogreconsole.h"
 #include "CommandController.h"
 #include "DelegatesUtil.h"
+#include "net/NetClientController.h"
 
 #include "GraphicsController.h"
 #include "gui/GuiController.h"
@@ -611,7 +612,7 @@ void
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Init packet is not valid",
             "EngineController::realizeCurrentState");
 
-        _lfcPump->updateOnItObs(*_initPacket); //pump on init event to observers.
+        _lfcPump->updateOnItObs(_initPacket); //pump on init event to observers.
         //Gui Configuration
         _curGameState->onGuiConfiguration(_guiCtrl.get());
 

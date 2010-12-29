@@ -9,6 +9,7 @@ using std::cout; using std::endl;
 #include "world/VolumeMap.h"
 #include "world/VolumeMapPaging.h"
 
+#include "ZInitPacket.h"
 
 using namespace Ogre;
 //#include "cologre.h"
@@ -37,7 +38,7 @@ WorldController::~WorldController()
 
 
 //Life cycle events
-bool WorldController::onInit(ZGame::ZInitPacket packet)
+bool WorldController::onInit(ZGame::ZInitPacket *packet)
 {
     _init(packet);
     return true;
@@ -69,12 +70,12 @@ bool WorldController::onDestroy()
 *\note We're putting some world load stuff in the init function because we're testing. When we get to implementing this fully we nee to have people call
 *the controller method to accomplish loading the world. ie. to do the world controller thing.
 */
-void WorldController::_init(ZGame::ZInitPacket packet)
+void WorldController::_init(ZGame::ZInitPacket *packet)
 {
     WorldConfig config;
     config.load();
-    _scnMgr = packet.sceneManager;
-    _cam = packet.initialCamera;
+    _scnMgr = packet->sceneManager;
+    _cam = packet->initialCamera;
     _physicsMgr.reset(new PhysicsManager());
     _physicsMgr->onInit(packet);
     _loadWorldMap(config.getWorldMapConfig());

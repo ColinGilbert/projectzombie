@@ -20,6 +20,10 @@ using boost::shared_ptr;
 #include "command/CreateEntCmd.h"
 #include "entities/ZEntity.h"
 #include "entities/InstancedRdrEntitiesBuilder.h"
+
+#include "ZInitPacket.h"
+
+
 using ZGame::COMMAND::CreateRenderEntCmd;
 using namespace ZGame::Entities;
 
@@ -42,9 +46,9 @@ _scnMgr(0), _instMgr(0),
 }
 
 bool
-    RenderEntitiesManager::onInit(ZGame::ZInitPacket initPacket)
+    RenderEntitiesManager::onInit(ZGame::ZInitPacket *initPacket)
 {
-    _scnMgr = initPacket.sceneManager;
+    _scnMgr = initPacket->sceneManager;
     return true;
 }
 

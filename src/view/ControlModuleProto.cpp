@@ -5,16 +5,18 @@
 *      Author: bey0nd
 */
 
-#include <sstream>
-#include <iostream>
-using std::cout;
-using std::endl;
+
 #include "ControlModuleProto.h"
+#include "ZInitPacket.h"
 #include "EventDelegates.h"
 #include "LifeCycleDelegates.h"
 #include "CommandDelegates.h"
 #include "CommandController.h"
 #include "command/CommandList.h"
+
+using std::cout;
+using std::endl;
+
 
 namespace ZGame
 {
@@ -51,11 +53,11 @@ namespace ZGame
     }
 
     bool
-        ControlModuleProto::onInit(ZGame::ZInitPacket packet)
+        ControlModuleProto::onInit(ZGame::ZInitPacket *packet)
     {
-        _cam = packet.initialCamera;
+        _cam = packet->initialCamera;
         using COMMAND::CommandList;
-        _cameraNode = packet.sceneManager->createSceneNode("CAMERA_NODE");
+        _cameraNode = packet->sceneManager->createSceneNode("CAMERA_NODE");
         _cameraNode->attachObject(_cam);
         return true;
     }

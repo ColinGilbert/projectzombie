@@ -70,7 +70,7 @@ namespace ZGame
         }
 
         HAS_MEM_FUNC(onInit, has_on_init);
-        BIND_IF(bindIfOnInit, lfcObs.onInit.bind(t, &T::onInit), lfcObs.onInit.clear(), has_on_init, bool(T::*)(ZGame::ZInitPacket initPacket));
+        BIND_IF(bindIfOnInit, lfcObs.onInit.bind(t, &T::onInit), lfcObs.onInit.clear(), has_on_init, bool(T::*)(ZGame::ZInitPacket *initPacket));
         
         HAS_MEM_FUNC(onRenderQueueStart, has_on_render_queue_start);
         BIND_IF(bindIfOnRenderQueueStart, lfcObs.onRenderQueueStart.bind(t, &T::onRenderQueueStart), 

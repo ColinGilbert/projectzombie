@@ -207,7 +207,7 @@ namespace ZGame
 
         }
         //Lifecycle methods
-        bool NetClientController::onInit(ZGame::ZInitPacket packet)
+        bool NetClientController::onInit(ZGame::ZInitPacket* packet)
         {
             //DO not foget to call onInit in base class. We need base class to do things for us.
             assert(NetController::onInit() && "Base class NetController failed onInit. Cannot continue!");

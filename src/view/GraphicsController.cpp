@@ -4,9 +4,9 @@
 *  Created on: Aug 20, 2010
 *      Author: beyzend
 */
-#include <iostream>
-#include <sstream>
+
 #include "GraphicsController.h"
+#include "ZInitPacket.h"
 #include "CommandController.h"
 #include "command/CommandList.h"
 #include "CommandDelegates.h"
@@ -14,11 +14,6 @@
 #include "graphics/SunSH.h"
 using std::cout;
 using std::endl;
-//#include "ogre/SSAOLogic.h"
-//#include "ogre/DeferredLightCP.h"
-//#include "ogre/GBufferSchemeHandler.h"
-//#include "ogre/NullSchemeHandler.h"
-
 
 using ZGame::GraphicsController;
 using namespace Ogre;
@@ -85,7 +80,7 @@ bool
 }
 
 bool
-    GraphicsController::onInit(ZGame::ZInitPacket packet)
+    GraphicsController::onInit(ZGame::ZInitPacket* packet)
 {
      for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
     {
@@ -102,8 +97,8 @@ bool
 
     Ogre::LogManager* lm = Ogre::LogManager::getSingletonPtr();
     lm->logMessage(Ogre::LML_TRIVIAL, "In GraphicsController::onInit()");
-    _scnMgr = packet.sceneManager;
-    _vp = packet.initialCamera->getViewport();
+    _scnMgr = packet->sceneManager;
+    _vp = packet->initialCamera->getViewport();
     lm->logMessage(Ogre::LML_NORMAL, "Adding compositor bloom");
 
     //First build the lights.
@@ -116,14 +111,14 @@ bool
     light->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
     light->setSpecularColour(ColourValue(0.1f, 0.1f, 0.1f));
        
-    _ssaoListener.setCamera(packet.initialCamera);
+    _ssaoListener.setCamera(packet->initialCamera);
     Ogre::ColourValue fadeColour(0.109f, 0.417f, 0.625f);
     _scnMgr->setFog(Ogre::FOG_NONE);
     _vp->setBackgroundColour(fadeColour);
 
     this->_parseHDRConfig();
 
-    _initHDR(packet.renderWindow, packet.initialCamera);
+    _initHDR(packet->renderWindow, packet->initialCamera);
     _initSSAO();
     _initSkyX();
     _ssaoInstance->setEnabled(true);

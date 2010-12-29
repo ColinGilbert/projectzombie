@@ -33,7 +33,7 @@ namespace ZGame
     bool
     onUpdate(const Ogre::FrameEvent& evt);
     bool
-    onInit();
+    onInit(ZGame::ZInitPacket* initPacket);
     bool
     onDestroy();
 

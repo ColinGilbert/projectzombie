@@ -7,6 +7,7 @@
 #include "CommandController.h"
 #include "command/CommandList.h"
 #include "CommandDelegates.h"
+#include "ZInitPacket.h"
 
 
 using namespace ZGame::Util;
@@ -46,9 +47,9 @@ _dist(_rng,_xDist,_zDist)
 }
 
 bool
-    CharacterUtil::onInit(ZGame::ZInitPacket packet)
+    CharacterUtil::onInit(ZGame::ZInitPacket *packet)
 {
-    _scnMgr = packet.sceneManager;
+    _scnMgr = packet->sceneManager;
     return true;
 }
 

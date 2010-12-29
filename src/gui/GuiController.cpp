@@ -1,9 +1,9 @@
 #include "gui/GuiController.h"
+#include <ZInitPacket.h>
 #include "gui/RenderInterfaceOgre3D.h"
 #include "gui/SystemInterfaceOgre3D.h"
 #include "gui/Screens.h"
 #include "gui/DebugScreen.h"
-#include <iostream>
 
 using std::cout; 
 using std::endl;
@@ -242,7 +242,7 @@ void
 }
 
 bool
-    GuiController::onInit(ZGame::ZInitPacket initPacket)
+    GuiController::onInit(ZGame::ZInitPacket *initPacket)
 {
     using Ogre::ResourceGroupManager;
     Ogre::Log::Stream debug = Ogre::LogManager::getSingleton().getLog("App.log")->stream(Ogre::LML_TRIVIAL);
@@ -250,7 +250,7 @@ bool
 
     debug << "in GuiController onInit\n";
 
-    mKeyboard = initPacket.keyboard;
+    mKeyboard = initPacket->keyboard;
 
     try
     {
@@ -269,9 +269,9 @@ bool
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Rocket resource location for data root was not found!",
             "GuiController::onInit");
         //rocket initialization
-        _W_WIDTH = initPacket.renderWindow->getWidth();
-        _W_HEIGHT = initPacket.renderWindow->getHeight();
-        _vp = initPacket.initialCamera->getViewport();
+        _W_WIDTH = initPacket->renderWindow->getWidth();
+        _W_HEIGHT = initPacket->renderWindow->getHeight();
+        _vp = initPacket->initialCamera->getViewport();
 
         if(ogre_renderer)
         {

@@ -3,13 +3,9 @@
  * \file This file defines a controller for controlling application graphical state.
  */
 
-#include <Ogre.h>
-#include <OIS/OIS.h>
+#include "ZPrerequisites.h"
 #include "graphics/HDRCompositor.h"
-#include "ZInitPacket.h"
 #include "SkyX/SkyX.h"
-
-#include <memory>
 
 namespace ZGame
 {
@@ -105,7 +101,7 @@ namespace ZGame
     static const size_t NUM_OF_BANDS = 5;
 
     bool
-    onInit(ZGame::ZInitPacket packet);
+    onInit(ZGame::ZInitPacket* packet);
     bool
     onDestroy();
     bool

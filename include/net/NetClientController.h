@@ -72,7 +72,7 @@ namespace ZGame
 
             //LifeCycle functions
             virtual bool 
-                onInit(ZGame::ZInitPacket packet);
+                onInit(ZGame::ZInitPacket* packet);
             virtual bool 
                 onUpdate(const Ogre::FrameEvent &evt);
             virtual bool

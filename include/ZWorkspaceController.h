@@ -1,11 +1,9 @@
 #pragma once
 #include "ZPrerequisites.h"
-#include <OIS/OIS.h>
-#include "ZInitPacket.h"
 
 namespace ZGame
 {
-    class ZWorkspace;
+    
     /**
     * This class defines a controller object corresponding to ZWorkspace. The main purpose of this
     *class is a controller abstraction for ZWorkspace, in that it delegate certain control events
@@ -26,13 +24,13 @@ namespace ZGame
         *controller. No checking is done.
         */
         void
-            setZWorkspace(ZWorkspace* workspace)
+            setZWorkspace(ZWorkspace *workspace)
         {
             _workspace = workspace;
         }
 
         bool
-            onInit(ZInitPacket packet);
+            onInit(ZInitPacket *packet);
         bool
             onDestroy(){return true;}
 

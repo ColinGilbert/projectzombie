@@ -24,14 +24,11 @@ THE SOFTWARE.
 
 #pragma once
 
-#include <memory>
-#include <Ogre.h>
-#include <OgreTerrain.h>
-#include <OgreTerrainGroup.h>
+#include "ZPrerequisites.h"
 #include "Controller.h"
 #include "world/WorldMap.h"
 #include "world/DummyPageProvider.h"
-#include "ZInitPacket.h"
+
 /**
 *This class defines the world controller.
 *
@@ -41,10 +38,7 @@ namespace ZGame
 {
     namespace World
     {
-        class VolumeMap;
-        class VolumeMapPaging;
-        struct WorldMapConfig;
-        class PhysicsManager;
+        
         class WorldController
         {
         public:
@@ -52,7 +46,7 @@ namespace ZGame
             ~WorldController();
 
             //implements the LifeCycleEvents
-            bool onInit(ZGame::ZInitPacket initPacket);
+            bool onInit(ZGame::ZInitPacket *initPacket);
             bool onUpdate(const Ogre::FrameEvent &evt);
             bool onDestroy();
             // Temp method for testing
@@ -69,7 +63,7 @@ namespace ZGame
         protected:
             
         private:
-            void _init(ZGame::ZInitPacket packet);
+            void _init(ZGame::ZInitPacket *packet);
             void _loadWorldMap(WorldMapConfig &config);
         private:
             std::auto_ptr<World::WorldMap > _worldMap;

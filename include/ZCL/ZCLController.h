@@ -1,30 +1,13 @@
 #pragma once
-#include <iostream>
-#include <sstream>
-#include <exception>
-#include <vector>
-#include <vector>
-#include <string>
-#include <Ogre.h>
 
-#include "ZInitPacket.h"
-#include "ZException.h"
-
+#include "ZPrerequisites.h"
+#include "ZException.h" 
 using ZGame::Exception;
-
 #include "utilities/cl.hpp"
 #include "utilities/Timer.h"
 
 namespace ZGame
 {
-    namespace Entities
-    {
-        struct ZEntityBuffers;
-    }
-    namespace World
-    {
-        class WorldMap;
-    }
     namespace ZCL
     {
         /**
@@ -42,7 +25,7 @@ namespace ZGame
             void prepare(Entities::ZEntityBuffers* entBufs, World::WorldMap* worldMap);
             bool onUpdate(const Ogre::FrameEvent &evt);
             bool onUpdate();
-            bool onInit(ZGame::ZInitPacket packet){ return true;}
+            bool onInit(ZGame::ZInitPacket *packet){ return true;}
             bool onDestroy(void){ return true;}
             void printKernelTime();
             /** \brief This method will get the position and orientation buffers.**/

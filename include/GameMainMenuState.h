@@ -7,20 +7,12 @@
 
 #ifndef GAMEMAINMENUSTATE_H_
 #define GAMEMAINMENUSTATE_H_
-#include <OIS/OIS.h>
-#include <Ogre.h>
+#include "ZPrerequisites.h"
+
 #include "GameState.h"
 
 namespace ZGame
 {
-    class LifeCycleRegister;
-    class KeyEventRegister;
-
-    namespace Gui
-    {
-        class MainMenuScreen;
-    };
-
     class GameMainMenuState : public GameState
     {
     public:
@@ -29,7 +21,7 @@ namespace ZGame
 
         //life cycle methods
         bool onUpdate(const Ogre::FrameEvent& evt);
-        bool onInit(ZGame::ZInitPacket packet);
+        bool onInit(ZGame::ZInitPacket *packet);
         bool onDestroy();
 
         //control methods

@@ -9,10 +9,7 @@
 
 //#include <string>
 
-#include <vector>
-#include <Ogre.h>
-#include <OIS/OIS.h>
-#include <SdkTrays.h>
+#include "ZPrerequisites.h"
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/xtime.hpp>
@@ -25,57 +22,10 @@
 #include "MainController.h"
 #include "RakNetworkFactory.h"
 #include "RakPeerInterface.h"
-#include "net/NetClientController.h"
+
 
 namespace ZGame
 {
-    class InputController;
-    class GameState;
-    class GameStateInfo;
-    class LifeCyclePump;
-    class KeyboardPump;
-    class MousePump;
-    class CommandController; //This is a service that should exist for all permuation of the Controller.
-
-    class GPUEntities;
-    class GPUEntsView;
-    class LifeCycleRegister;
-    class KeyEventRegister;
-    class MouseEventRegister;
-    class ControlModuleProto;
-    class WhiteNoiseView;
-    class GPUEntsControl;
-    class ZWorkspace;
-    class ZWorkspaceController;
-
-    class GameStateBootstrapInfo;
-
-    class GraphicsController;
-    namespace Gui
-    {
-        class GuiController;
-    }
-
-
-    namespace ZCL
-    {
-        class ZCLController; 
-    }
-    namespace World
-    {
-        class WorldController;
-    }
-    namespace Util
-    {
-        class CharacterUtil;
-    }
-    namespace Entities
-    {
-        class EntitiesManager;
-        class RenderEntitiesManager;
-        class EntitiesView;
-    }
-
     class EngineController : public Ogre::FrameListener, public MainController, public OgreBites::SdkTrayListener,
         public Ogre::RenderQueueListener
     {

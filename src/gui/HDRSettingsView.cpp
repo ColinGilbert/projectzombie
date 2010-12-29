@@ -3,7 +3,7 @@
 
 using namespace ZGame::Gui;
 
-HDRSettingsView::HDRSettingsView(HDRCompositor* compositor) : _DIV_CLASS("")
+HDRSettingsView::HDRSettingsView(HDRCompositor* compositor) : _DIV_CLASS(""), _rootElement(0)
 {
     _generateElement();
 }
@@ -12,13 +12,16 @@ HDRSettingsView::~HDRSettingsView()
 {
 }
 
-void
+Rocket::Core::Element*
     HDRSettingsView::getViewElement()
 {
+    if(_rootElement)
+        return _rootElement;
+    OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "_rootElement is null", "HDRSettingsView::getViewElement");
 }
 
 void
-    HDRSettingsView::updateElement(Rocket::Core::Element* actionElement)
+    HDRSettingsView::actionElementUpdate(Rocket::Core::Element* actionElement)
 {
 }
 
@@ -45,13 +48,13 @@ void
 
     std::vector<SELECT_OPT> optPairsVec;
 
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_NONE", "0");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LINEAR", "1");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDS", "2");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LOG", "3");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_ADAPTLOG", "4");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDLOCAL", "5");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_COUNT", "6");
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_NONE", "0"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LINEAR", "1"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDS", "2"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LOG", "3"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_ADAPTLOG", "4"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDLOCAL", "5"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_COUNT", "6"));
 
     _constructSelectInput(toneMapperSelect, optPairsVec);
 
@@ -62,8 +65,8 @@ void
         "select", "select", attri);
 
     optPairsVec.clear();
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_NONE", "0");
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_BLUR", "1");
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_NONE", "0"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_BLUR", "1"));
 
     _constructSelectInput(glareType, optPairsVec);
 }

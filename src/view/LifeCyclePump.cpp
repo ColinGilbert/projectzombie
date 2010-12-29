@@ -40,7 +40,7 @@ void
 * Update onInit() observers
 */
 void
-    LifeCyclePump::updateOnItObs(ZGame::ZInitPacket initPacket)
+    LifeCyclePump::updateOnItObs(ZGame::ZInitPacket *initPacket)
 {
     for (LifeCycleOnInitItr it = _onInitObs.begin(); it != _onInitObs.end(); ++it)
     {

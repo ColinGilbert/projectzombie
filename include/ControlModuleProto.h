@@ -7,23 +7,14 @@
 *      Author: bey0nd
 */
 
-#ifndef CONTROLMODULEPROTO_H_
-#define CONTROLMODULEPROTO_H_
-#include <Ogre.h>
-#include <OIS/OIS.h>
-#include "ZInitPacket.h"
+#pragma once
+
+#include "ZPrerequisites.h"
+
 namespace ZGame
 {
 
-    namespace EVENT
-    {
-        struct KeyboardEvtObserver;
-        struct MouseEvtObserver;
-    }
-    namespace LifeCycle
-    {
-        struct LifeCycleObserver;
-    }
+   
     class ControlModuleProto 
     {
     public:
@@ -33,7 +24,7 @@ namespace ZGame
             ~ControlModuleProto();
 
         bool
-            onInit(ZGame::ZInitPacket packet);
+            onInit(ZGame::ZInitPacket *packet);
 
         //events methods
         bool
@@ -84,7 +75,4 @@ namespace ZGame
         void _doMouseMove(Ogre::Real dt);
 
     };
-
 }
-
-#endif /* CONTROLMODULEPROTO_H_ */

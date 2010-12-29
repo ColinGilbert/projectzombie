@@ -21,7 +21,7 @@ namespace ZGame
         void addLifeCycleObserver(const ZGame::LifeCycle::LifeCycleObserver &obs);
 
         //life cycle updates
-        void updateOnItObs(ZGame::ZInitPacket initPacket);
+        void updateOnItObs(ZGame::ZInitPacket *initPacket);
         void updateOnUpdateObs(const Ogre::FrameEvent& evt);
         void updateOnDestroyObs();
         void updateOnRenderQueueStartObs(Ogre::uint8 queueGroupId, 

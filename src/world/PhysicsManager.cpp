@@ -1,4 +1,5 @@
 #include "world/PhysicsManager.h"
+#include "ZInitPacket.h"
 #include <Shapes/OgreBulletCollisionsConvexHullShape.h>
 #include <Shapes/OgreBulletCollisionsBoxShape.h>
 #include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
@@ -35,9 +36,9 @@ PhysicsManager::~PhysicsManager()
 }
 
 bool
-    PhysicsManager::onInit(ZGame::ZInitPacket initPacket)
+    PhysicsManager::onInit(ZGame::ZInitPacket *initPacket)
 {
-    _scnMgr = initPacket.sceneManager;
+    _scnMgr = initPacket->sceneManager;
     _world = OGRE_NEW_T(OgreBulletDynamics::DynamicsWorld, Ogre::MEMCATEGORY_GENERAL)(_scnMgr, _bounds, _gravityVector);
    
     //_debugDrawer = OGRE_NEW_T(OgreBulletCollisions::DebugDrawer, Ogre::MEMCATEGORY_GENERAL)();

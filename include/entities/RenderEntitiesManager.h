@@ -4,15 +4,12 @@
 * \file This file will define class for functions which manages Render Entities.
 */
 
-#include <vector>
+#include "ZPrerequisites.h"
 
 using std::vector;
 
-#include <Ogre.h>
-
 #include "entities/EntitiesDefs.h"
 #include "delegates/EntityDelegates.h"
-#include "ZInitPacket.h"
 
 using ZGame::Entities::ZENTITY_VEC;
 namespace ZGame
@@ -35,7 +32,7 @@ namespace ZGame
                 return this;
             }
             bool
-                onInit(ZInitPacket packet);
+                onInit(ZInitPacket *packet);
             /**
             *This method will create a RenderEntity in the system. This method is hooked to the Command and Control system. Therefore we will register it to the CommandController.
             *

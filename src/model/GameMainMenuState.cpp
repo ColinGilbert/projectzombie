@@ -6,11 +6,10 @@
 */
 
 #include "GameMainMenuState.h"
-#include "LifeCycleRegister.h"
-#include "KeyEventRegister.h"
-#include "DelegatesUtil.h"
 #include "gui/GuiController.h"
 #include "gui/MainMenuScreen.h"
+#include "ZInitPacket.h"
+
 using namespace ZGame;
 
 GameMainMenuState::GameMainMenuState() : _mainMenu(0)
@@ -63,7 +62,7 @@ bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
     return true;
 }
 
-bool GameMainMenuState::onInit(ZGame::ZInitPacket packet)
+bool GameMainMenuState::onInit(ZGame::ZInitPacket *packet)
 {
     return true;
 }

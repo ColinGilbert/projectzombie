@@ -46,13 +46,6 @@ void
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GameEditState", "");
         }
-        try
-        {
-            LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ControlModuleProto>(lfcReg, lfcObs, _controlMod);
-        }catch(Ogre::Exception e)
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ControlModuleProto", "");
-        }
     }catch(Ogre::Exception e)
     {
         OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription(), "GameEditState::regLfcObsForInjection");
@@ -77,7 +70,7 @@ void
 }
 
 bool
-    GameEditState::onInit()
+    GameEditState::onInit(ZGame::ZInitPacket *initPacket)
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameEditState::onInit");
 

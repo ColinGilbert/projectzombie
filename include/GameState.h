@@ -15,7 +15,7 @@
 #include <vector>
 #include <memory>
 
-#include <OIS/OIS.h>
+
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
@@ -32,11 +32,6 @@ namespace OgreBites
 
 namespace ZGame
 {
-    class LifeCycleRegister;
-    class KeyEventRegister;
-    class MouseEventRegister;
-    class EngineController;
-
     /**
     * This class contains information needed to bootstrap the Engine. The system
     *requires certain bootstrapping information in order to boot various sub systems.
@@ -63,10 +58,7 @@ namespace ZGame
         bool requireCharacterUtil;
     };
 
-    namespace Gui
-    {
-        GuiController;
-    }
+    
 
     class GameState
     {

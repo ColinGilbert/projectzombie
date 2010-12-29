@@ -1,7 +1,7 @@
 #include "ZWorkspace.h"
 #include "ZWorkspaceController.h"
 #include "world/WorldController.h"
-#include <iostream>
+#include "ZInitPacket.h"
 using std::cout;
 using std::endl;
 using namespace ZGame;
@@ -15,13 +15,13 @@ ZWorkspaceController::~ZWorkspaceController()
 }
 
 bool
-    ZWorkspaceController::onInit(ZInitPacket packet)
+    ZWorkspaceController::onInit(ZInitPacket *packet)
 {
     //Note: We are not finished with implementing this so right now it looks actualy.
     //By thtat I mean we should minimize dependencies between this and anything view related.
     //i.e. we should need to get window height and width here.
-    _windowHeight = packet.initialCamera->getViewport()->getActualHeight();
-    _windowWidth = packet.initialCamera->getViewport()->getActualWidth();
+    _windowHeight = packet->initialCamera->getViewport()->getActualHeight();
+    _windowWidth = packet->initialCamera->getViewport()->getActualWidth();
 
     return true;
 }

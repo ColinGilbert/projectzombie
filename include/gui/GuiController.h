@@ -24,12 +24,10 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "ZPrerequisites.h"
 #include "gui/GuiPrerequisite.h"
-#include <Ogre.h>
-#include <ZInitPacket.h>
-#include <vector>
-#include <utility>
-#include <gui/ScreenXForm.h>
+
+#include "gui/ScreenXForm.h"
 namespace ZGame
 {
     namespace Gui
@@ -60,7 +58,7 @@ namespace ZGame
 
 
             bool
-                onInit(ZGame::ZInitPacket initPacket);
+                onInit(ZGame::ZInitPacket *initPacket);
             bool
                 onUpdate(const Ogre::FrameEvent &evt);
             bool
