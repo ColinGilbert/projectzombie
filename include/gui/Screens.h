@@ -128,6 +128,9 @@ namespace ZGame
                 _key = key;
             }
             
+            void
+                p_showMenu(Rocket::Core::Element* menu, Rocket::Core::Element** currentMenu);
+
 
            
         private:

@@ -21,51 +21,49 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
-
 #pragma once
 
 #include "gui/GuiPrerequisite.h"
-#include "gui/Screens.h"
+#include <vector>
+#include <utility>
+class HDRCompositor;
 
 namespace ZGame
 {
+    
     namespace Gui
     {
-        class DebugScreen : public Screens
+        /** 
+        *THis class is a view on the settings for HDR. 
+        *
+        */
+        class HDRSettingsView
         {
         public:
-            DebugScreen(GuiController* guiCtrl);
-            virtual ~DebugScreen();
+            HDRSettingsView(HDRCompositor* compoistor);
+            ~HDRSettingsView();
 
-           
-            virtual Rocket::Core::EventListener*
-                InstanceEventListener(const Rocket::Core::String& value);
-            virtual void Release(){}; //do nothing
-            virtual void ProcessEvent(Rocket::Core::Event& event);
-            virtual const Rocket::Core::String&
-                getControllerString()
-            {
-                return _ctrlStr;
-            }
+            /** This method will return an element containing the view of HDRSettings.**/
+            void getViewElement();
 
+            /** \brief This method is called by a controller on an action string corresponding to this view,
+            and the Element passed in is the Element of the corresponding action. **/
+            void updateElement(Rocket::Core::Element* actionElement);
 
-        protected:
         private:
-            const Ogre::StringVector& 
-                _getDocPath()
-            {
-                return _docPath;
-            }
-            virtual void
-                _afterDocLoadedOnLoad();
+            Rocket::Core::String _DIV_CLASS; //class for the div element.
+            void
+                _generateElement();
+
+            Rocket::Core::Element* _rootElement;
+
+            typedef std::pair<Rocket::Core::String, Rocket::Core::String> SELECT_OPT;
 
             void
-                _onRangeChange(Rocket::Controls::ElementFormControlInput* rangeEl);
+                _constructSelectInput(Rocket::Core::Element* select, std::vector<SELECT_OPT>& 
+                optionPairsVec);
 
-            Ogre::StringVector _docPath;
-            Rocket::Core::String _ctrlStr;
-
-            Rocket::Core::Element* _curMenu;
         };
+
     }
 }

@@ -100,24 +100,28 @@ void
         const Rocket::Core::String graphics("graphics");
         const Rocket::Core::String more("more");
         const Rocket::Core::String more2("more2");
+        const Rocket::Core::String scroll("scroll");
         if(switchTo == actionStr)
             _guiCtrl->pushScreenTransition(getKey());
         if(switchBack == actionStr)
             _guiCtrl->popScreenTransition();
         if(graphics == actionStr)
         {
-           
-            //Rocket::Core::Element* menu = 
-                //_docManager->get(_docPath[1].c_str())->GetElementById("body_content")->Clone();
-            _showMenu(_docManager->getRootDocument()->GetElementById("graphics_menu"));
+            p_showMenu(_docManager->getRootDocument()->GetElementById("graphics_menu"), &_curMenu);
         }
         if(more == actionStr)
         {
-            _showMenu(_docManager->getRootDocument()->GetElementById("test1_menu"));
+            p_showMenu(_docManager->getRootDocument()->GetElementById("test1_menu"), &_curMenu);
         }
         if(more2 == actionStr)
         {
-            _showMenu(_docManager->getRootDocument()->GetElementById("test2_menu"));
+            p_showMenu(_docManager->getRootDocument()->GetElementById("test2_menu"), &_curMenu);
+        }
+        if(scroll == actionStr)
+        {
+            //Grab the element and do something.
+            cout << "Range bar on Change" << endl;
+            _onRangeChange(static_cast<Rocket::Controls::ElementFormControlInput*>(event.GetCurrentElement()));
         }
             
         
@@ -126,24 +130,9 @@ void
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Action string is empty",
         "DebugScreen::ProcessEvent");
 }
-/**
-* This method shows a menu and hides the current meu.
-*
-* \note We do it this way because we could get set local style property to work yet. Ask forums.
-**/
+
 void
-    DebugScreen::_showMenu(Rocket::Core::Element* menu)
+    DebugScreen::_onRangeChange(Rocket::Controls::ElementFormControlInput* rangeEl)
 {
-    if(!menu)
-    {
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "menu is not valid",
-            "DebugScreen::_showMenu");
-    }
-    Rocket::Core::ElementDocument* doc = _docManager->getRootDocument();
-    Rocket::Core::Element* theMenu = doc->GetElementById("content_area");
-    //find menu
-    Rocket::Core::String menuInnerRml;
-    menu->GetInnerRML(menuInnerRml);
-    theMenu->SetInnerRML(menuInnerRml);
-    
+    cout << "val" << rangeEl->GetValue().CString() << endl;
 }

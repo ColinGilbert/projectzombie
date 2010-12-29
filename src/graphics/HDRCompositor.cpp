@@ -36,7 +36,7 @@ HDRCompositor::HDRCompositor(RenderWindow* win, Camera* cam) : m_Scales(7)
 	m_HDRTechnique = NULL;
 
 	m_ToneMapper = TM_NONE;
-	m_GlareType = GT_NONE;
+	m_GlareType = GT_BLUR;
 	m_GlareStrength = 1.f;
 	m_StarType = ST_NONE;
 	m_StarStrength = 1.f;

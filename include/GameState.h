@@ -83,7 +83,8 @@ namespace ZGame
         }
 
             virtual void
-                onGuiConfiguration(Gui::GuiController* guiCtrl) = 0;
+                onGuiConfiguration(Gui::GuiController* guiCtrl){};
+         
 
     protected:
 

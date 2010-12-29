@@ -46,8 +46,8 @@ void
     if(!el)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,"Element is not valid",
         "Screens::s_showElement");
-    //el->GetStyle()->SetProperty("visibility", "visible");
-    //el->GetStyle()->SetProperty("display", "none");
+    el->SetProperty("visibility", "visible");
+    el->SetProperty("display", "block");
 }
 void
     Screens::s_hideElement(Rocket::Core::Element* el)
@@ -55,8 +55,8 @@ void
     if(!el)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,"Element is not valid",
         "Screens::s_hideElement");
-    //el->GetStyle()->SetProperty("visibility", "hidden");
-    //el->GetStyle()->SetProperty("display", "block");
+    el->SetProperty("visibility", "hidden");
+    el->SetProperty("display", "none");
 }
 
 void
@@ -77,3 +77,23 @@ void
     _afterDocLoadedOnLoad();
 }
 
+/**
+* This method shows a menu and hides the current meu.
+*
+* \note We do it this way because we could get set local style property to work yet. Ask forums.
+**/
+void
+    Screens::p_showMenu(Rocket::Core::Element* menu, Rocket::Core::Element** currentMenu)
+{
+    if(!menu)
+    {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "menu is not valid",
+            "DebugScreen::_showMenu");
+    }
+    if(*currentMenu)
+    {
+        s_hideElement(*currentMenu);
+    }   
+    s_showElement(menu);
+    *currentMenu = menu;
+}
