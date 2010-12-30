@@ -51,15 +51,10 @@ void
 {
     cout << "Number of tabs: " << tab->GetNumTabs() << endl;
     //Set the panel
-    tab->SetTab(0, "Tab One");
-    Rocket::Core::Element* el = Rocket::Core::Factory::InstanceElement(0,
-        "p", "p", Rocket::Core::XMLAttributes());
-    el->SetInnerRML("Hello world");
-    tab->SetPanel(0, el);
-    el->RemoveReference();
-    tab->SetTab(1, "Tab Two");
-    tab->SetPanel(1, "<p>Hello world to you too.</p>");
-    //tab->SetPanel(0, _hdrView->getViewElement());
+    tab->SetTab(HDR_HIGH, "HDR_HIGH");
+    tab->SetPanel(HDR_HIGH, _hdrView->getViewElement());
+    tab->SetTab(HDR_LOW, "HDR_LOW");
+    tab->SetPanel(HDR_LOW, "Hdr Low quality stuff should go here.");
 }
 
 void

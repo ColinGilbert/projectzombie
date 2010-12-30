@@ -13,13 +13,13 @@ HDRSettingsView::~HDRSettingsView()
 }
 
 Rocket::Core::Element*
-    HDRSettingsView::getViewElement(Rocket::Controls::ElementTabSet* parent)
+    HDRSettingsView::getViewElement()
 {
     if(_rootElement)
         return _rootElement;
     else
     {
-        _generateElement(parent);
+        _generateElement();
         return _rootElement;
     }
 }
@@ -30,14 +30,14 @@ void
 }
 
 void
-    HDRSettingsView::_generateElement(Rocket::Controls::ElementTabSet* parent)
+    HDRSettingsView::_generateElement()
 {
     using Rocket::Core::Factory;
     using Rocket::Core::Element;
 
 
     //Generate the parent.
-    _rootElement = Rocket::Core::Factory::InstanceElement(parent, //root
+    _rootElement = Rocket::Core::Factory::InstanceElement(0, //root
         "div", "div", Rocket::Core::XMLAttributes()); //plain ol' div tag.
     
     //generate form control

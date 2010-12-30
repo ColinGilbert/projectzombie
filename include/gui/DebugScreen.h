@@ -54,7 +54,7 @@ namespace ZGame
 
             enum TAB_NUM
             {
-                HDR_HIGH=0
+                HDR_HIGH=0, HDR_LOW
             };
 
             const Ogre::StringVector& 

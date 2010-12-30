@@ -45,7 +45,7 @@ namespace ZGame
 
             /** This method will return an element containing the view of HDRSettings.**/
             Rocket::Core::Element* 
-                getViewElement(Rocket::Controls::ElementTabSet* parent);
+                getViewElement();
 
             /** \brief This method is called by a controller on an action string corresponding to this view,
             and the Element passed in is the Element of the corresponding action. **/
@@ -54,7 +54,7 @@ namespace ZGame
         private:
             Rocket::Core::String _DIV_CLASS; //class for the div element.
             void
-                _generateElement(Rocket::Controls::ElementTabSet* parent);
+                _generateElement();
 
             Rocket::Core::Element* _rootElement;
 
