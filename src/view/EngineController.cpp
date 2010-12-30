@@ -547,7 +547,7 @@ void
     logM->logMessage(Ogre::LML_NORMAL, "Key: " + _curStateInfo->key);
     logM->logMessage(Ogre::LML_NORMAL, "Class: " + _curStateInfo->gameStateClass);
 
-    _initPacket = new ZInitPacket(_scnMgr, 0, _window);
+   
 
     if (_curStateInfo->stateType == GameStateInfo::STATEFUL)
     {
@@ -572,9 +572,6 @@ void
 
         cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
 
-        _initPacket->initialCamera = cam;
-        _initPacket->keyboard = _inController->getKeyboard();
-
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
         lcs.bind(_lfcPump.get(), &LifeCyclePump::addLifeCycleObserver);
@@ -594,6 +591,12 @@ void
 
         _initSubSystemsOnLoadState(info, lfcReg, keyReg, mouseReg);
 
+        _initPacket = new ZInitPacket(&info, _scnMgr, cam, _window,
+            _inController->getKeyboard(), _workspaceCtrl.get(), 
+            _gfxCtrl.get(), _guiCtrl.get());
+
+
+
         LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "Current game state done init.");
         //We manually register the net client for now. We do this
         //since we have not implemented Stateful states. The original
@@ -612,9 +615,11 @@ void
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Init packet is not valid",
             "EngineController::realizeCurrentState");
 
-        _lfcPump->updateOnItObs(_initPacket); //pump on init event to observers.
         //Gui Configuration
+         _guiCtrl->onInit(_initPacket); //manual init GUI controller;
         _curGameState->onGuiConfiguration(_guiCtrl.get());
+        _lfcPump->updateOnItObs(_initPacket); //pump on init event to observers.
+        
 
 
         delete _initPacket;
@@ -669,7 +674,7 @@ void
             {
                 _guiCtrl.reset(new Gui::GuiController());
             }
-            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_DEFAULT |
+            LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY |
                 LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
 
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);

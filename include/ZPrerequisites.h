@@ -15,12 +15,35 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 
-
-
-
-
 namespace ZGame
 {
+    /**
+    * This class contains information needed to bootstrap the Engine. The system
+    *requires certain bootstrapping information in order to boot various sub systems.
+    *We do this so we can couple this with a state, say to load this information along
+    *with the State description.
+    **/
+    class GameStateBootstrapInfo
+    {
+    public:
+        GameStateBootstrapInfo() :
+            requireRenderEntitiesmanager(false),
+                requireZCLController(false),
+                requireWorldController(false),
+                requireControlModule(false),
+                requireWorkspace(false),
+                requireCharacterUtil(true)
+            {}
+        Ogre::Vector3 initalCameraPos;
+        bool requireRenderEntitiesmanager;
+        bool requireZCLController;
+        bool requireWorldController;
+        bool requireControlModule;
+        bool requireWorkspace;
+        bool requireCharacterUtil;
+    };
+   
+
     struct ZInitPacket;
     class LifeCycleRegister;
     class KeyEventRegister;
