@@ -64,7 +64,6 @@ namespace ZGame
 
             Ogre::StringVector _docPath;
             Rocket::Core::String _ctrlStr;
-
             Rocket::Core::Element* _curMenu;
         };
     }

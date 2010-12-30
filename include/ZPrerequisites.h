@@ -81,6 +81,7 @@ namespace ZGame
 
         class GuiController;
         class MainMenuScreen;
+        class HDRSettingsView;
     }
 
     namespace ZCL

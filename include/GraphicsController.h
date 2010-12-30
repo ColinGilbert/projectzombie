@@ -129,7 +129,8 @@ namespace ZGame
     Ogre::CompositorInstance* _bloomInstance;
     shadowListener _shadowListener;
     ssaoListener _ssaoListener;
-    HDRCompositor* _hdrCompositor;
+    std::auto_ptr<HDRCompositor> _hdrCompositor;
+    std::auto_ptr<ListenerFactoryLogic> _logic;
 
   private:
     void _initShadows();
@@ -168,5 +169,8 @@ namespace ZGame
     std::vector<Ogre::String> _postEfxNames;
     Ogre::String _currentCompositor;
     Ogre::String _currentPostEfx;
+
+    std::auto_ptr<Gui::HDRSettingsView> _hdrSettingsView;
+
   };
 }

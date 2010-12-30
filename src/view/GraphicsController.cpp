@@ -12,6 +12,8 @@
 #include "CommandDelegates.h"
 #include "graphics/PreethamSH.h"
 #include "graphics/SunSH.h"
+#include "gui/HDRSettingsView.h"
+
 using std::cout;
 using std::endl;
 
@@ -21,7 +23,7 @@ using namespace Ogre;
 GraphicsController::GraphicsController() :
 _hdrCompositor(0), _WHICH_TONEMAPPER(3), _WHICH_STARTYPE(1), _WHICH_GLARETYPE(1), _AUTO_KEY(0.16),
     _ADAPT_SCALE(3), _GLARE_STRENGTH(0.1), _STAR_STRENGTH(0.1), _skyX(0),_timeCount(0.0f),_stateOnce(false),
-    _vp(0)
+    _vp(0), _hdrSettingsView(0)
 {
     _compositorNames.push_back("SSAO/HemisphereMC");
     _compositorNames.push_back("SSAO/Volumetric");
@@ -131,25 +133,14 @@ bool
 void
     GraphicsController::_initSkyX()
 {
-
-
-    SkyX::SkyX* sx = new SkyX::SkyX(_scnMgr, _vp->getCamera());
-    _skyX.reset(sx);
-
+    _skyX.reset(new SkyX::SkyX(_scnMgr, _vp->getCamera()));
+    
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
     SkyXOptions.EastPosition = Ogre::Vector2(1, 0);
     _skyX->getAtmosphereManager()->setOptions(SkyXOptions);
     _skyX->setLightingMode(SkyX::SkyX::LM_LDR);
     _skyX->create();
-
-    //Add ground atomospheric scattering pass to our terrain.
-    //_skyX->getGPUManager()->addGroundPass(
-      //  static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-        //getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
-    //_skyX->getCloudsManager()->add(SkyX::CloudLayer::Options());
-    
-
 }
 
 /**
@@ -214,9 +205,9 @@ void
 void
     GraphicsController::_initHDR(Ogre::RenderWindow* renderWindow, Ogre::Camera* initialCam)
 {
-    _hdrCompositor = new HDRCompositor(renderWindow, initialCam);
-    ListenerFactoryLogic* logic = new ListenerFactoryLogic;
-    logic->setCompositorListener(_hdrCompositor);
+    _hdrCompositor.reset(new HDRCompositor(renderWindow, initialCam));
+    _logic.reset(new ListenerFactoryLogic);
+    _logic->setCompositorListener(_hdrCompositor.get());
 
     //Ogre::CompositorManager::getSingleton().registerCompositorLogic("HDR", logic);
     cout << "Finished registering logic for HDR." << endl;
@@ -318,11 +309,7 @@ bool
     GraphicsController::onUpdate(const Ogre::FrameEvent &evt)
 {
     using namespace Ogre;
-    
-
-    
-
-    
+        
     //Update HDR
     _hdrCompositor->SetFrameTime(evt.timeSinceLastFrame);
 
@@ -330,19 +317,9 @@ bool
     //Compute theta and phi and get turbulence
     Vector3 xyz = -_skyX->getAtmosphereManager()->getSunDirection();
     
-    //xyz.normalise();
-    
-
-    
     Ogre::Radian theta = Math::ACos(xyz.y);
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
     
-    //if(phi.valueRadians() < 0.0f)
-        //phi=  Ogre::Radian(phi.valueRadians() + Math::PI * 2.0f);
-
-
-    //xyz.dotProduct(Ogre::Vector3::UNIT_Y) < 0.0f ? theta = Math::PI - theta : theta = theta;
-    //theta = Ogre::Radian(Math::PI - theta.valueRadians());
     Real turbulence = 3.5;
 #if 1
     //_SHC_R[0] = 1.0f; _SHC_G[0] = 1.0f; _SHC_G[
@@ -430,6 +407,8 @@ bool
 bool
     GraphicsController::onDestroy()
 {
+    _logic.reset(0);
+    _hdrCompositor.reset(0);
     return true;
 }
 
@@ -492,7 +471,6 @@ void
 {
     _ssaoInstance = Ogre::CompositorManager::getSingleton().addCompositor(_vp, "ssao");
     _ssaoInstance->addListener(&_ssaoListener);
-
 }
 
 bool

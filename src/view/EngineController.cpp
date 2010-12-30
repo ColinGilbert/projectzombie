@@ -616,12 +616,12 @@ void
             "EngineController::realizeCurrentState");
 
         //Gui Configuration
-         _guiCtrl->onInit(_initPacket); //manual init GUI controller;
+        _gfxCtrl->onInit(_initPacket); 
+        _guiCtrl->onInit(_initPacket); //manual init GUI controller;
+
         _curGameState->onGuiConfiguration(_guiCtrl.get());
         _lfcPump->updateOnItObs(_initPacket); //pump on init event to observers.
         
-
-
         delete _initPacket;
     }
     logM->logMessage(Ogre::LML_NORMAL, "Realizing current state done");
@@ -662,7 +662,7 @@ void
         {
             _gfxCtrl.reset(new GraphicsController());
             LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl,
-                LifeCycle::LFC_DEFAULT);
+                LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_gfxCtrl);
         }catch(Ogre::Exception e)
         {
