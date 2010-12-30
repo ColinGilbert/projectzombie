@@ -12,7 +12,6 @@
 #include "CommandDelegates.h"
 #include "graphics/PreethamSH.h"
 #include "graphics/SunSH.h"
-#include "gui/HDRSettingsView.h"
 
 using std::cout;
 using std::endl;
@@ -23,7 +22,7 @@ using namespace Ogre;
 GraphicsController::GraphicsController() :
 _hdrCompositor(0), _WHICH_TONEMAPPER(3), _WHICH_STARTYPE(1), _WHICH_GLARETYPE(1), _AUTO_KEY(0.16),
     _ADAPT_SCALE(3), _GLARE_STRENGTH(0.1), _STAR_STRENGTH(0.1), _skyX(0),_timeCount(0.0f),_stateOnce(false),
-    _vp(0), _hdrSettingsView(0)
+    _vp(0)
 {
     _compositorNames.push_back("SSAO/HemisphereMC");
     _compositorNames.push_back("SSAO/Volumetric");

@@ -66,6 +66,7 @@ EngineController::~EngineController()
 {
 
     onDestroy();
+    _commandController.reset(0);
     // TODO Auto-generated destructor stub
     _gameSInfoMap.clear();
     cout << "EngineController destructor" << "\n";
@@ -362,7 +363,8 @@ void
         _netClient.reset(0);
         _sdkTrayMgr.reset(0);
         _commandController->onDestroy(); //command controller is singleton. It shouldn't have state. This is due to OgreConsole coupling inside CommandController,
-        //which we are going to fix because we are going to refactor OgreConsole into libRocket. The coupling will be terminated.
+        _gfxCtrl.reset(0);
+        _guiCtrl.reset(0);
         _root.reset(0);
         _statsClockVariable = 0;
         _vp = 0;

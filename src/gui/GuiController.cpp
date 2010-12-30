@@ -4,7 +4,7 @@
 #include "gui/SystemInterfaceOgre3D.h"
 #include "gui/Screens.h"
 #include "gui/DebugScreen.h"
-
+#include "GraphicsController.h"
 using std::cout; 
 using std::endl;
 
@@ -302,21 +302,25 @@ bool
             }
 
         }
+
+        Rocket::Core::Factory::RegisterEventListenerInstancer(this);
+
+        /*
         //We assume Rocket::Core has been initialized.
         if(_eventListenerRegistered)
         {
-            Rocket::Core::Factory::RegisterEventListenerInstancer(0);
+            //Rocket::Core::Factory::RegisterEventListenerInstancer(0);
             Rocket::Core::Factory::RegisterEventListenerInstancer(this);
         }
         else
         {
             Rocket::Core::Factory::RegisterEventListenerInstancer(this);
             _eventListenerRegistered = true;
-        }
+        }*/
         _createGui2d();
 
         //Load any persistence screens.
-        _debugScreen.reset(new DebugScreen(this));
+        _debugScreen.reset(new DebugScreen(this, initPacket->gfxCtrl->getHdrCompositor()));
         _debugScreen->onLoad();
 
         _persistScreens.push_back(_debugScreen.get());
@@ -351,7 +355,6 @@ bool
 {
     Ogre::Log::Stream debug = Ogre::LogManager::getSingleton().getLog("App.log")->stream(Ogre::LML_TRIVIAL);
     Ogre::Log::Stream log = Ogre::LogManager::getSingleton().getLog("App.log")->stream();
-    Rocket::Core::Factory::RegisterEventListenerInstancer(0);
     _gui2d->RemoveReference();
     _gui2d = 0;
     Rocket::Core::ReleaseTextures();

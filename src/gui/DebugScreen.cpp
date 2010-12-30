@@ -25,11 +25,15 @@ THE SOFTWARE.
 #include <iostream>
 #include "command/Command.h"
 #include "command/CommandList.h"
+#include "gui/HDRSettingsView.h"
+#include "graphics/HDRCompositor.h"
+
 using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
-DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen"),_ctrlStr("DebugController"),
-    _curMenu(0)
+DebugScreen::DebugScreen(GuiController* guiCtrl,
+    HDRCompositor* hdrCompositor) : Screens(guiCtrl, "DebugScreen"), _ctrlStr("DebugController"),
+    _curMenu(0), _hdrView(new HDRSettingsView(hdrCompositor)), _TAB_ID("GRAPHICS_TAB")
 {
     p_setKey("_DEBUGSCREEN_KEY_");
     _docPath.push_back("debug/debugmain.rml");
@@ -43,6 +47,22 @@ DebugScreen::~DebugScreen()
 }
 
 void
+    DebugScreen::_loadHdrHighPanel(Rocket::Controls::ElementTabSet* tab)
+{
+    cout << "Number of tabs: " << tab->GetNumTabs() << endl;
+    //Set the panel
+    tab->SetTab(0, "Tab One");
+    Rocket::Core::Element* el = Rocket::Core::Factory::InstanceElement(0,
+        "p", "p", Rocket::Core::XMLAttributes());
+    el->SetInnerRML("Hello world");
+    tab->SetPanel(0, el);
+    el->RemoveReference();
+    tab->SetTab(1, "Tab Two");
+    tab->SetPanel(1, "<p>Hello world to you too.</p>");
+    //tab->SetPanel(0, _hdrView->getViewElement());
+}
+
+void
     DebugScreen::_afterDocLoadedOnLoad()
 {
     //Do nothing. This screen remains hidden on load.
@@ -51,6 +71,12 @@ void
    
     hide();
    
+    Rocket::Controls::ElementTabSet* tab = static_cast<Rocket::Controls::ElementTabSet*>(_docManager->getRootDocument()->GetElementById(_TAB_ID));
+    if(tab)
+        _loadHdrHighPanel(tab);
+    else
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Tab not found!", "DebugScreen::_afterDocLoadedOnLoad()");
+
     //translate offscreen into place. Note: We don't know why this won't work in ScreenXForm.
     StrToDocumentMap& docMap = _docManager->getAll();
     for(StrToDocumentMap::iterator iter = docMap.begin();

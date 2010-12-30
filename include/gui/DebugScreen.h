@@ -34,7 +34,7 @@ namespace ZGame
         class DebugScreen : public Screens
         {
         public:
-            DebugScreen(GuiController* guiCtrl);
+            DebugScreen(GuiController* guiCtrl, HDRCompositor* hdrCompositor);
             virtual ~DebugScreen();
 
            
@@ -51,6 +51,12 @@ namespace ZGame
 
         protected:
         private:
+
+            enum TAB_NUM
+            {
+                HDR_HIGH=0
+            };
+
             const Ogre::StringVector& 
                 _getDocPath()
             {
@@ -58,13 +64,19 @@ namespace ZGame
             }
             virtual void
                 _afterDocLoadedOnLoad();
+            /** \brief This method loads the panel for Hdr High.**/
+            void
+                _loadHdrHighPanel(Rocket::Controls::ElementTabSet* tab);
 
             void
                 _onRangeChange(Rocket::Controls::ElementFormControlInput* rangeEl);
 
             Ogre::StringVector _docPath;
             Rocket::Core::String _ctrlStr;
+            Rocket::Core::String _TAB_ID;
             Rocket::Core::Element* _curMenu;
+            std::auto_ptr<Gui::HDRSettingsView> _hdrView;
+
         };
     }
 }

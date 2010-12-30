@@ -15,6 +15,9 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 
+
+class HDRCompositor;
+
 namespace ZGame
 {
     /**
@@ -65,6 +68,8 @@ namespace ZGame
     class GPUEntsControl;
     class ZWorkspace;
     class ZWorkspaceController;
+
+    
 
 
     class GraphicsController;
