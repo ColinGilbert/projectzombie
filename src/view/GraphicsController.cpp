@@ -119,9 +119,10 @@ bool
 
     this->_parseHDRConfig();
 
-    _initHDR(packet->renderWindow, packet->initialCamera);
+    
     _initSSAO();
     _initSkyX();
+    _initHDR(packet->renderWindow, packet->initialCamera);
     _ssaoInstance->setEnabled(true);
     _hdrCompositor->Enable(true);
     _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
@@ -205,8 +206,8 @@ void
     GraphicsController::_initHDR(Ogre::RenderWindow* renderWindow, Ogre::Camera* initialCam)
 {
     _hdrCompositor.reset(new HDRCompositor(renderWindow, initialCam));
-    _logic.reset(new ListenerFactoryLogic);
-    _logic->setCompositorListener(_hdrCompositor.get());
+    //_logic.reset(new ListenerFactoryLogic);
+    //_logic->setCompositorListener(_hdrCompositor.get());
 
     //Ogre::CompositorManager::getSingleton().registerCompositorLogic("HDR", logic);
     cout << "Finished registering logic for HDR." << endl;
@@ -227,7 +228,7 @@ void
     _hdrCompositor->SetGlarePasses(2);
     _hdrCompositor->SetGlareStrength(_GLARE_STRENGTH);
     _hdrCompositor->SetStarStrength(_STAR_STRENGTH);
-    _hdrCompositor->Create();
+    _hdrCompositor->update(); //dirtied so we need to update.
     cout << "Done enabling HDR." << endl;
 }
 
@@ -303,6 +304,13 @@ bool
 {
     return true;
 }
+
+bool GraphicsController::onFrameStarted(const Ogre::FrameEvent& evt)
+{
+    _hdrCompositor->update(); //need to call this during the frame started phase.
+    return true;
+}
+
 
 bool
     GraphicsController::onUpdate(const Ogre::FrameEvent &evt)

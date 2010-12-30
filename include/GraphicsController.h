@@ -127,6 +127,10 @@ namespace ZGame
             return _hdrCompositor.get();
         }
 
+        bool
+            onFrameStarted(const Ogre::FrameEvent& evt);
+
+
     protected:
 
     private:

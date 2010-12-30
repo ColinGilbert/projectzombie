@@ -181,7 +181,8 @@ public:
   SetToneMapper(const TONEMAPPER ToneMapper)
   {
     m_ToneMapper = ToneMapper;
-    Create();
+    _isDirty = true;
+   //Create();
   }
 
   GLARETYPE
@@ -193,7 +194,8 @@ public:
   SetGlareType(const GLARETYPE GlareType)
   {
     m_GlareType = GlareType;
-    Create();
+    _isDirty = true;
+    //Create();
   }
 
   float
@@ -216,7 +218,8 @@ public:
   SetGlarePasses(const float Passes)
   {
     m_GlarePasses = Passes;
-    Create();
+    _isDirty = true;
+    //Create();
   }
 
   STARTYPE
@@ -228,7 +231,8 @@ public:
   SetStarType(const STARTYPE StarType)
   {
     m_StarType = StarType;
-    Create();
+    _isDirty = true;
+    //Create();
   }
 
   float
@@ -251,7 +255,8 @@ public:
   SetStarPasses(const float Passes)
   {
     m_StarPasses = Passes;
-    Create();
+    _isDirty = true;
+    //Create();
   }
 
   bool
@@ -263,7 +268,8 @@ public:
   SetAutoKeying(const bool AutoKeying)
   {
     m_AutoKeying = AutoKeying;
-    Create();
+    _isDirty = true;
+    //Create();
   }
 
   bool
@@ -275,7 +281,8 @@ public:
   SetLumAdapdation(bool LumAdaptation)
   {
     m_LumAdaption = LumAdaptation;
-    Create();
+    _isDirty = true;
+    //Create();
   }
 
   float
@@ -356,6 +363,8 @@ public:
   static String
   StarTypeToString(const STARTYPE StarType);
 
+  void update();
+
  
 private:
 
@@ -390,4 +399,8 @@ private:
 
   void
   BuildGaussStarV(float* out, float rho, float strength);
+
+  bool
+      _isDirty;
+
 };

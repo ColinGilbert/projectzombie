@@ -73,6 +73,9 @@ EngineController::~EngineController()
 
 }
 
+
+
+
 void
     EngineController::transitionState(const Ogre::String key)
 {
@@ -294,6 +297,13 @@ void
     }
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+}
+
+bool
+    EngineController::frameStarted(const Ogre::FrameEvent &evt)
+{
+    _lfcPump->updateOnFrameStarted(evt);
+    return true;
 }
 
 bool
@@ -664,7 +674,7 @@ void
         {
             _gfxCtrl.reset(new GraphicsController());
             LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl,
-                LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY);
+                LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY | LifeCycle::LFC_ON_FRAME_STARTED);
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_gfxCtrl);
         }catch(Ogre::Exception e)
         {

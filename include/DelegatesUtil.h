@@ -54,11 +54,16 @@ namespace ZGame
             return false;   \
         }
 
-        static const unsigned int LFC_ON_DESTROY = 0x01;
-        static const unsigned int LFC_ON_INIT = 0x02;
-        static const unsigned int LFC_ON_UPDATE = 0x04;
-        static const unsigned int LFC_ON_RENDER_QUEUE_START = 0x08;
-        static const unsigned int LFC_ON_RENDER_QUEUE_END = 0x10;
+#define BIT(x) (1<<(x))
+        //Fuuuuuuu why didn't we use Enum to begin with? Let's try to refactor this asap.
+        static const unsigned int LFC_ON_DESTROY = BIT(1);
+        static const unsigned int LFC_ON_INIT = BIT(2);
+        static const unsigned int LFC_ON_UPDATE = BIT(3);
+        static const unsigned int LFC_ON_RENDER_QUEUE_START = BIT(5);
+        static const unsigned int LFC_ON_RENDER_QUEUE_END = BIT(6);
+        static const unsigned int LFC_ON_FRAME_STARTED = BIT(7);
+        static const unsigned int LFC_ON_FRAME_ENDED = BIT(8);
+        
      
         static const unsigned int LFC_DEFAULT = LFC_ON_INIT | LFC_ON_UPDATE | LFC_ON_DESTROY;
 
@@ -89,6 +94,14 @@ namespace ZGame
         HAS_MEM_FUNC(onUpdate, has_on_update_with_frame);
         BIND_IF(bindIfOnUpdateWithFrame, lfcObs.onUpdate.bind(t, &T::onUpdate), 
             lfcObs.onUpdate.clear(), has_on_update_with_frame, bool(T::*)(const Ogre::FrameEvent &evt));
+
+        HAS_MEM_FUNC(onFrameStarted, has_on_frame_started);
+        BIND_IF(bindIfOnFrameStarted, lfcObs.onFrameStarted.bind(t, &T::onFrameStarted),
+            lfcObs.onFrameStarted.clear(), has_on_frame_started, bool(T::*)(const Ogre::FrameEvent &evt));
+
+        HAS_MEM_FUNC(onFrameEnded, has_on_frame_ended);
+        BIND_IF(bindIfOnFrameEnded, lfcObs.onFrameEnded.bind(t, &T::onFrameEnded),
+            lfcObs.onFrameEnded.clear(), has_on_frame_ended, bool(T::*)(const Ogre::FrameEvent &evt));
 
         /**
         * This static function will bind LifeCycleObservers given any type. It is fine if the type does not provide all life-cycle functions.
@@ -137,6 +150,21 @@ namespace ZGame
                     OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "onUpdate is not implemented", "DeletatesUtil::bindAndRegisterLifeCycleObserver");
                 }
             }
+            if(eventMask & LFC_ON_FRAME_STARTED)
+            {
+                if(!bindIfOnFrameStarted<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "onFrameStarted is not implemented", "DelegatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }
+            if(eventMask & LFC_ON_FRAME_ENDED)
+            {
+                if(!bindIfOnFrameEnded<T>(&binder, lfcObs))
+                {
+                    OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "onFrameEnded is not implemented", "DelegatesUtil::bindAndRegisterLifeCycleObserver");
+                }
+            }
+
             lfcReg.registerLfcObs(lfcObs);
         }
     }
@@ -163,8 +191,6 @@ namespace ZGame
             keyObs.kde.bind(&binder,&T::onKeyDown);
             keyObs.kue.bind(&binder,&T::onKeyUp);
             keyReg.registerKeyObs(keyObs);
-            clearKeyObs(keyObs);
-
         }
         static void clearKeyObs(EVENT::KeyboardEvtObserver &keyObs)
         {
@@ -179,7 +205,6 @@ namespace ZGame
             mouseObs.mme.bind(&binder,&T::onMouseMove);
             mouseObs.mue.bind(&binder,&T::onMouseUp);
             mouseReg.registerMouseObs(mouseObs);
-            clearMouseObs(mouseObs);
         }
         static void clearMouseObs(EVENT::MouseEvtObserver &mouseObs)
         {

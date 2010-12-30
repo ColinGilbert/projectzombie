@@ -27,7 +27,7 @@
 
 using std::cout;
 using std::endl;
-HDRCompositor::HDRCompositor(RenderWindow* win, Camera* cam) : m_Scales(7)
+HDRCompositor::HDRCompositor(RenderWindow* win, Camera* cam) : m_Scales(7), _isDirty(false)
 {
 	m_Window = win;
 	m_Cam = cam;
@@ -310,7 +310,7 @@ void HDRCompositor::Create(void)
     cout << "Final rendering!" << endl;
 	
 	 Viewport* const vp = m_Window->getViewport(0);
-    Ogre::CompositorInstance* const instance = CompositorManager::getSingleton().addCompositor(vp, "HDR", 0);
+    Ogre::CompositorInstance* instance = CompositorManager::getSingleton().addCompositor(vp, "HDR", 0);
    
 	if(instance)
 		instance->addListener(this);
@@ -986,3 +986,15 @@ void HDRCompositor::BuildGaussStarV(float* out,float rho,float strength)
 		out[i*4+2] /= totalWeight/strength;
 }
 
+/**
+* This method is called to update this Compositor. If the compositor is dirtied (changed) you need to call this.
+**/
+void
+    HDRCompositor::update()
+{
+    if(_isDirty)
+    {
+        Create();
+        _isDirty = false;
+    }
+}

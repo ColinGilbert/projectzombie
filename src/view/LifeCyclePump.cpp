@@ -7,6 +7,7 @@
 #include <iostream>
 using namespace std;
 #include "LifeCyclePump.h"
+#include "ZInitPacket.h"
 
 using namespace ZGame;
 
@@ -34,6 +35,10 @@ void
         _onRenderQueueStartObs.push_back(obs.onRenderQueueStart);
     if (obs.onRenderQueueEnd)
         _onRenderQueueEndObs.push_back(obs.onRenderQueueEnd);
+    if(obs.onFrameStarted)
+        _onFrameStartedObs.push_back(obs.onFrameStarted);
+    if(obs.onFrameEnded)
+        _onFrameEndedObs.push_back(obs.onFrameEnded);
 }
 
 /**
@@ -94,6 +99,27 @@ void
 }
 
 void
+    LifeCyclePump::updateOnFrameStarted(const Ogre::FrameEvent& evt)
+{
+    for(LifeFrameStartedItr it = _onFrameStartedObs.begin();
+        it != _onFrameStartedObs.end(); ++it)
+    {
+        (*it)(evt);
+    }
+}
+
+void
+    LifeCyclePump::updateOnFrameEnded(const Ogre::FrameEvent& evt)
+{
+    for(LifeFrameEndedItr it = _onFrameEndedObs.begin();
+        it != _onFrameEndedObs.end(); ++it)
+    {
+        (*it)(evt);
+    }
+}
+
+
+void
     LifeCyclePump::removeAllObs()
 {
     _onInitObs.clear();
@@ -102,3 +128,5 @@ void
     _onRenderQueueStartObs.clear();
     _onRenderQueueEndObs.clear();
 }
+
+
