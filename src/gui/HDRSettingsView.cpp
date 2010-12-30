@@ -63,10 +63,11 @@ void
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_NONE", "0"));
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LINEAR", "1"));
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDS", "2"));
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LOG", "3"));
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_ADAPTLOG", "4"));
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDLOCAL", "5"));
-    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_COUNT", "6"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDSMOD", "3"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_LOG", "4"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_ADAPTLOG", "5"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDLOCAL", "6"));
+    optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_COUNT", "7"));
 
     _constructSelectInput(toneMapperSelect, optPairsVec);
 
@@ -101,10 +102,11 @@ void
         {
             cout << "Option selected: " << option->GetValue().CString() << endl;
             //Assuming if within bounds the option is correct.
-            Ogre::uint8 optionNum;
+            int optionNum;
             std::istringstream iss(option->GetValue().CString());
             iss >> optionNum;
-            _theCompositor->SetToneMapper(static_cast<HDRCompositor::TONEMAPPER>(optionNum));
+            cout << "OptionNum: " << optionNum << endl;
+            _theCompositor->SetToneMapper((HDRCompositor::TONEMAPPER)optionNum);
         }
         else
         {
@@ -119,10 +121,10 @@ void
         {
             cout << "Option selected: " << option->GetValue().CString() << endl;
             //Assuming if within bounds the option is correct.
-            Ogre::uint8 optionNum;
+            int optionNum;
             std::istringstream iss(option->GetValue().CString());
             iss >> optionNum;
-            _theCompositor->SetGlareType(static_cast<HDRCompositor::GLARETYPE>(optionNum));
+            _theCompositor->SetGlareType((HDRCompositor::GLARETYPE)optionNum);
         }
         else
         {

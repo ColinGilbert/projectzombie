@@ -34,7 +34,10 @@ namespace ZGame
         virtual
             ~EngineController();
 
-        bool frameStarted(const Ogre::FrameEvent &evt);
+        bool 
+            frameStarted(const Ogre::FrameEvent &evt);
+        bool
+            frameEnded(const Ogre::FrameEvent &evt);
         bool
             frameRenderingQueued(const Ogre::FrameEvent &evt);
         void

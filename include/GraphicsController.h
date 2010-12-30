@@ -128,7 +128,7 @@ namespace ZGame
         }
 
         bool
-            onFrameStarted(const Ogre::FrameEvent& evt);
+            onFrameEnded(const Ogre::FrameEvent& evt);
 
 
     protected:

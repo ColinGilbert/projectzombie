@@ -305,7 +305,7 @@ bool
     return true;
 }
 
-bool GraphicsController::onFrameStarted(const Ogre::FrameEvent& evt)
+bool GraphicsController::onFrameEnded(const Ogre::FrameEvent& evt)
 {
     _hdrCompositor->update(); //need to call this during the frame started phase.
     return true;

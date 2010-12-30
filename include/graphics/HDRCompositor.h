@@ -180,6 +180,7 @@ public:
   void
   SetToneMapper(const TONEMAPPER ToneMapper)
   {
+      cout << "ToneMapper in SetToneMapper: " << ToneMapper << endl;
     m_ToneMapper = ToneMapper;
     _isDirty = true;
    //Create();

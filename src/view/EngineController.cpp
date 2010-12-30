@@ -307,6 +307,13 @@ bool
 }
 
 bool
+    EngineController::frameEnded(const Ogre::FrameEvent &evt)
+{
+    _lfcPump->updateOnFrameEnded(evt);
+    return true;
+}
+
+bool
     EngineController::frameRenderingQueued(const Ogre::FrameEvent &evt)
 {
     if (!_stillRunning)
@@ -674,7 +681,7 @@ void
         {
             _gfxCtrl.reset(new GraphicsController());
             LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::GraphicsController>(lfcReg, lfcObs, *_gfxCtrl,
-                LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY | LifeCycle::LFC_ON_FRAME_STARTED);
+                LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY | LifeCycle::LFC_ON_FRAME_ENDED);
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_gfxCtrl);
         }catch(Ogre::Exception e)
         {

@@ -65,11 +65,11 @@ void HDRCompositor::Release(void)
 	if(!m_Compositor.isNull())
 	{
 		Viewport *vp = m_Window->getViewport(0);
-		CompositorManager::getSingleton().removeCompositor(vp,"HDR");
+		CompositorManager::getSingleton().removeCompositor(vp,"HDR_NEW");
 
 		m_Compositor->removeAllTechniques();
 
-		CompositorManager::getSingleton().remove("HDR");
+		CompositorManager::getSingleton().remove("HDR_NEW");
 	}
 }
 
@@ -77,7 +77,7 @@ void HDRCompositor::Enable(const bool Enable)
 {
 	Viewport* const vp = m_Window->getViewport(0);
 
-	CompositorManager::getSingleton().setCompositorEnabled(vp, "HDR", Enable);
+	CompositorManager::getSingleton().setCompositorEnabled(vp, "HDR_NEW", Enable);
 	
 	m_Enable = Enable;
 }
@@ -273,7 +273,7 @@ void HDRCompositor::Create(void)
     cout << "Cpmpositor instance set." << endl;
 	Release();
     cout << "Done releasing." << endl;
-	m_Compositor = CompositorManager::getSingleton().create("HDR", "PROJECT_ZOMBIE");
+	m_Compositor = CompositorManager::getSingleton().create("HDR_NEW", "PROJECT_ZOMBIE");
     cout << "Done creating compositor." << endl;
 	m_HDRTechnique = m_Compositor->createTechnique();
     cout << "Done creating technique." << endl;
@@ -309,12 +309,12 @@ void HDRCompositor::Create(void)
 	FinalRendering();
     cout << "Final rendering!" << endl;
 	
-	 Viewport* const vp = m_Window->getViewport(0);
-    Ogre::CompositorInstance* instance = CompositorManager::getSingleton().addCompositor(vp, "HDR", 0);
+    Viewport* vp = m_Cam->getViewport();//m_Window->getViewport(0);
+    Ogre::CompositorInstance* instance = CompositorManager::getSingleton().addCompositor(vp, "HDR_NEW");
    
 	if(instance)
 		instance->addListener(this);
-    //Ogre::CompositorManager::getSingleton().addCompositor(vp, "HDR", 0);
+    //Ogre::CompositorManager::getSingleton().addCompositor(vp, "HDR_NEW", 0);
 	notifyViewportSize(vp->getActualWidth(), vp->getActualHeight());
     cout << "View port notified." << endl;
     cout << "VP: " << vp << endl;
