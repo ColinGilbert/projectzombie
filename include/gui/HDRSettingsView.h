@@ -66,6 +66,9 @@ namespace ZGame
 
             HDRCompositor* _theCompositor;
 
+            Rocket::Core::String _TONE_MAPPER_SELECT_ID;
+            Rocket::Core::String _GLARE_TYPE_SELECT_ID;
+
         };
 
     }

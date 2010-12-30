@@ -181,7 +181,7 @@ public:
   SetToneMapper(const TONEMAPPER ToneMapper)
   {
     m_ToneMapper = ToneMapper;
-    //Create();
+    Create();
   }
 
   GLARETYPE

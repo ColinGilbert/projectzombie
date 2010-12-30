@@ -4,7 +4,8 @@
 using namespace ZGame::Gui;
 
 HDRSettingsView::HDRSettingsView(HDRCompositor* compositor) : _theCompositor(compositor),
-    _DIV_CLASS(""), _rootElement(0)
+    _DIV_CLASS(""), _rootElement(0), _TONE_MAPPER_SELECT_ID("tone_mapper_select_id"),
+    _GLARE_TYPE_SELECT_ID("glare_type_select_id")
 {
 }
 
@@ -24,11 +25,9 @@ Rocket::Core::Element*
     }
 }
 
-void
-    HDRSettingsView::actionElementUpdate(Rocket::Core::Element* actionElement)
-{
-}
-
+/**
+* \note We decided to generate the entire form in code because we didn't want to mess with dataselect for this simple select.
+**/
 void
     HDRSettingsView::_generateElement()
 {
@@ -49,8 +48,10 @@ void
     inputForm->RemoveReference();
     attri.Clear();
     //generate TONEMAPPER drop down
-    attri.Set("id", "tone_mapper_select_id");
-    attri.Set("name", "tonemapper select");
+    attri.Set("id", _TONE_MAPPER_SELECT_ID);
+    attri.Set("name", "Tone Mapper Select");
+    attri.Set("onchange", "DebugController");
+    attri.Set("action", "hdrHighSettingsSelect");
     Element* toneMapperSelect = Factory::InstanceElement(inputForm,
         "select", "select", attri);
     inputForm->AppendChild(toneMapperSelect);
@@ -70,8 +71,10 @@ void
     _constructSelectInput(toneMapperSelect, optPairsVec);
 
     //Generate GLARETYPE drop down
-    attri.Set("id", "glare_type_select_id");
-    attri.Set("name", "glare_type_select");
+    attri.Set("id", _GLARE_TYPE_SELECT_ID);
+    attri.Set("name", "Glare Type Select");
+    attri.Set("onchange", "DebugController");
+    attri.Set("action", "hdrHighSettingsSelect");
     Element* glareType = Factory::InstanceElement(inputForm, 
         "select", "select", attri);
     inputForm->AppendChild(glareType);
@@ -82,6 +85,56 @@ void
 
     _constructSelectInput(glareType, optPairsVec);
     
+}
+
+void
+    HDRSettingsView::actionElementUpdate(Rocket::Core::Element* actionElement)
+{
+   
+    cout << "actionElement id: " << actionElement->GetId().CString() << endl;
+    if(_TONE_MAPPER_SELECT_ID == actionElement->GetId())
+    {
+
+        Rocket::Controls::ElementFormControlSelect *select = static_cast<Rocket::Controls::ElementFormControlSelect*>(actionElement);
+        Rocket::Controls::SelectOption* option = select->GetOption(select->GetSelection());
+        if(option)
+        {
+            cout << "Option selected: " << option->GetValue().CString() << endl;
+            //Assuming if within bounds the option is correct.
+            Ogre::uint8 optionNum;
+            std::istringstream iss(option->GetValue().CString());
+            iss >> optionNum;
+            _theCompositor->SetToneMapper(static_cast<HDRCompositor::TONEMAPPER>(optionNum));
+        }
+        else
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Option index out of bound", "HdrSettingsView::actionElementUpdate");
+        }
+    }
+    else if(_GLARE_TYPE_SELECT_ID == actionElement->GetId())
+    {
+        Rocket::Controls::ElementFormControlSelect *select = static_cast<Rocket::Controls::ElementFormControlSelect*>(actionElement);
+        Rocket::Controls::SelectOption* option = select->GetOption(select->GetSelection());
+        if(option)
+        {
+            cout << "Option selected: " << option->GetValue().CString() << endl;
+            //Assuming if within bounds the option is correct.
+            Ogre::uint8 optionNum;
+            std::istringstream iss(option->GetValue().CString());
+            iss >> optionNum;
+            _theCompositor->SetGlareType(static_cast<HDRCompositor::GLARETYPE>(optionNum));
+        }
+        else
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Option index out of bound", "HdrSettingsView::actionElementUpdate");
+        }
+    }
+    else
+    {
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid action element passed in",
+            "HDRSettingsView::actionElementUpdate");
+    }
+
 }
 
 void

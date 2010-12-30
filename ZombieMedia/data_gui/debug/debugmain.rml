@@ -25,7 +25,7 @@
       <div class="content_right">
 	<div id="content_area">
 	  <div class="hidden" id="graphics_menu">
-	    <tabset id="GRAPHICS_TAB">
+	    <tabset id="GRAPHICS_TAB"> <!-- We decided to procedurally build the entire thing in code, because we didn't want to use dataselect just for this simple thing.-->
             </tabset>
           </div>
 

@@ -318,7 +318,7 @@ void HDRCompositor::Create(void)
 	notifyViewportSize(vp->getActualWidth(), vp->getActualHeight());
     cout << "View port notified." << endl;
     cout << "VP: " << vp << endl;
-	//Enable(m_Enable);
+	Enable(m_Enable);
 }
 
 void HDRCompositor::CreateTextureDef(const String name,const unsigned int width,const unsigned int height,const Ogre::PixelFormat format)

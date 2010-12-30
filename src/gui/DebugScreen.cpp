@@ -122,6 +122,7 @@ void
         const Rocket::Core::String more("more");
         const Rocket::Core::String more2("more2");
         const Rocket::Core::String scroll("scroll");
+        const Rocket::Core::String hdrHighSettingsSelect("hdrHighSettingsSelect");
         if(switchTo == actionStr)
             _guiCtrl->pushScreenTransition(getKey());
         if(switchBack == actionStr)
@@ -143,6 +144,10 @@ void
             //Grab the element and do something.
             cout << "Range bar on Change" << endl;
             _onRangeChange(static_cast<Rocket::Controls::ElementFormControlInput*>(event.GetCurrentElement()));
+        }
+        if(hdrHighSettingsSelect == actionStr)
+        {
+            _hdrView->actionElementUpdate(event.GetCurrentElement());
         }
             
         
