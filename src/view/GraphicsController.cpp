@@ -224,8 +224,8 @@ void
     _hdrCompositor->SetLumAdapdation(true);
     //_hdrCompositor->set
     _hdrCompositor->SetAdaptationScale(_ADAPT_SCALE);
-    _hdrCompositor->SetStarPasses(4);
-    _hdrCompositor->SetGlarePasses(2);
+    _hdrCompositor->SetStarPasses(4); //was 4
+    _hdrCompositor->SetGlarePasses(2); //was 2
     _hdrCompositor->SetGlareStrength(_GLARE_STRENGTH);
     _hdrCompositor->SetStarStrength(_STAR_STRENGTH);
     _hdrCompositor->update(); //dirtied so we need to update.

@@ -41,11 +41,11 @@ HDRCompositor::HDRCompositor(RenderWindow* win, Camera* cam) : m_Scales(7), _isD
 	m_StarType = ST_NONE;
 	m_StarStrength = 1.f;
 	m_AutoKeying = false;
-	m_LumAdaption = false;
+	m_LumAdaption = true; //was false
 	m_Key = 0.2f;
-	m_AdaptationScale = 1;
+	m_AdaptationScale = 1.0; //was one
 	m_DebugRendertarget = 0;
-	m_BrightPassOffset = 1.0f;
+	m_BrightPassOffset = 1.0; //was 1
 	m_BrightPassThresshold = 3.0f;
 	m_E = 0.05;
 	m_Phi = 8;
