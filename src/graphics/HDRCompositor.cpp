@@ -310,7 +310,7 @@ void HDRCompositor::Create(void)
     cout << "Final rendering!" << endl;
 	
     Viewport* vp = m_Cam->getViewport();//m_Window->getViewport(0);
-    Ogre::CompositorInstance* instance = CompositorManager::getSingleton().addCompositor(vp, "HDR_NEW");
+    Ogre::CompositorInstance* instance = CompositorManager::getSingleton().addCompositor(vp, "HDR_NEW", 0);
    
 	if(instance)
 		instance->addListener(this);

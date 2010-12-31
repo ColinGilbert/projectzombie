@@ -53,13 +53,13 @@ void
     _resetParams();
     _fromDocs = from->getDocManager()->getRootDocument();
     _toDocs = to->getDocManager()->getRootDocument();
-  
+
     _toDocs->Show();
 
     _totalOffset = Ogre::Vector2(-_fromDocs->GetClientWidth(), 0.0f);
     _accumulatedOffset = Ogre::Vector2(_fromDocs->GetAbsoluteLeft(), 0.0f);//here assume it's going to be zero for now.
     _negate = 1;
- 
+
 }
 
 void
@@ -72,7 +72,7 @@ void
     _totalOffset = Ogre::Vector2(_fromDocs->GetClientWidth(), 0.0f);
     _accumulatedOffset = Ogre::Vector2(_fromDocs->GetAbsoluteLeft(), 0.0f);
     _negate = -1;
-    
+
 }
 
 void
@@ -86,20 +86,21 @@ void
         //make up the final difference exactly.
         tempT = 1.0f - _accumulatedT;
         _accumulatedT += tempT;
+        _fromDocs->Hide();
     }
     else
         _accumulatedT += tempT;
 
-  
-        Rocket::Core::Element* offsetParent = _fromDocs->GetOffsetParent();
-        _accumulatedOffset += _totalOffset * tempT;
-        _fromDocs->SetOffset(Rocket::Core::Vector2f(_accumulatedOffset.x, _accumulatedOffset.y),
-            offsetParent);
-  
-        offsetParent = _toDocs->GetOffsetParent();
-        float width = _fromDocs->GetClientWidth();
-        _toDocs->SetOffset(Rocket::Core::Vector2f(_accumulatedOffset.x + _negate*width, _accumulatedOffset.y),
-            offsetParent);
-    
+
+    Rocket::Core::Element* offsetParent = _fromDocs->GetOffsetParent();
+    _accumulatedOffset += _totalOffset * tempT;
+    _fromDocs->SetOffset(Rocket::Core::Vector2f(_accumulatedOffset.x, _accumulatedOffset.y),
+        offsetParent);
+
+    offsetParent = _toDocs->GetOffsetParent();
+    float width = _fromDocs->GetClientWidth();
+    _toDocs->SetOffset(Rocket::Core::Vector2f(_accumulatedOffset.x + _negate*width, _accumulatedOffset.y),
+        offsetParent);
+
 
 }
