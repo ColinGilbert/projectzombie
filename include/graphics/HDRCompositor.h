@@ -155,6 +155,7 @@ public:
   HDRCompositor(RenderWindow* win, Camera* cam);
   ~HDRCompositor(void)
   {
+      Release();
   }
 
    void

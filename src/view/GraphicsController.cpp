@@ -416,6 +416,8 @@ bool
 {
     _logic.reset(0);
     _hdrCompositor.reset(0);
+    _skyX.reset(0);
+    Ogre::CompositorManager::getSingleton().removeCompositor(_vp, "ssao");
     return true;
 }
 

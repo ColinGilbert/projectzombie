@@ -56,10 +56,13 @@ namespace ZGame
     EngineController::EngineController() :
 MainController(), _stillRunning(true), _lfcPump(0), _keyPump(0), _mousePump(0), _curStateInfo(0),
     _curGameState(0), _statsClockVariable(0), _sdkTrayMgr(0), _switchingState(false), _vp(0), _scnMgr(0),
-    _commandController(new CommandController())
+    _commandController(new CommandController()), _startEngine(true)
 {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
+
+
+
 }
 
 EngineController::~EngineController()
@@ -155,8 +158,7 @@ void
 {
     using namespace Ogre;
     using namespace OgreBites;
-    //bootstrap Sdk resources.
-    loadAssets(PlatformPath + "bootstrap.cfg");
+   
     _sdkTrayMgr.reset(new SdkTrayManager("ZombieTray", _window, _inController->getMouse(), 0));
 }
 
@@ -173,7 +175,7 @@ void
 bool
     EngineController::loadStartStates()
 {
-      //load states
+    //load states
     loadStates();
     return true;
 }
@@ -184,17 +186,32 @@ bool
     using namespace Ogre;
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
-    _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Engine.log"));
-    _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
-    //_root->setWorkQueue(OGRE_NEW Ogre::DefaultWorkQueue("DefaultWorkerQueue"));
-    Ogre::LogManager::getSingleton().createLog("App.log");
-
-    if (_root->showConfigDialog())
+   
+     _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Engine.log"));
+     _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
+     //Note: We should pass in a stream to this which appends to App.log.
+     Ogre::LogManager::getSingleton().createLog("App.log");
+     if(_startEngine) 
     {
-        _window = _root->initialise(true);
+     
+     if (_root->showConfigDialog())
+     {
+         _window = _root->initialise(true);
+     }
+     else
+         return false;
+     _startEngine = false;
     }
     else
-        return false;
+    {
+        if(_root->restoreConfig())
+        {
+            _window = _root->initialise(true);
+        }
+        else
+            return false;
+    }
+
 
     chooseSceneManager();
 
@@ -205,19 +222,15 @@ bool
     _inController->onInit(_window);
     injectInputSubject();
 
+     //bootstrap Sdk resources.
+    loadAssets(PlatformPath + "bootstrap.cfg");
     loadSdkTrays();
-    //turn off loading bar
     _sdkTrayMgr->showLoadingBar();
 
     loadAssets(PlatformPath + "resources.cfg");
 
     //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
     Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");
-
-  
-
-    
-
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
     lm->setLogDetail(Ogre::LL_NORMAL);
@@ -232,13 +245,9 @@ bool
 
     //let's init the console now.
     lm->logMessage(Ogre::LML_NORMAL, "initializing console.");
+
     initConsole();
 
-    //_debugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-    //_debugOverlay->hide();
-    //Create the NetClient. Note: This is place-holder code until we get the "service" framework.
-    //Everything that uses CommandController depends on Console being initialized. This is bad, need to fix this ASAP.
-    //The fix should not be that hard, though. (Requires no major refactoring.)
     _netClient.reset(new ZGame::Networking::NetClientController());
 
     _sdkTrayMgr->hideLoadingBar();
@@ -427,11 +436,11 @@ bool
     {
         /*
         if(_vp->getOverlaysEnabled())
-            _vp->setOverlaysEnabled(false); 
+        _vp->setOverlaysEnabled(false); 
         else
-            _vp->setOverlaysEnabled(true);
-            */
-        
+        _vp->setOverlaysEnabled(true);
+        */
+
         if (consoleVis)
         {
             //turn off console
@@ -439,7 +448,7 @@ bool
         }
         else
             ogreConsole->setVisible(true);
-            
+
     }
     else if(event.key == OIS::KC_SYSRQ)
     {
@@ -566,7 +575,7 @@ void
     logM->logMessage(Ogre::LML_NORMAL, "Key: " + _curStateInfo->key);
     logM->logMessage(Ogre::LML_NORMAL, "Class: " + _curStateInfo->gameStateClass);
 
-   
+
 
     if (_curStateInfo->stateType == GameStateInfo::STATEFUL)
     {
@@ -581,11 +590,11 @@ void
         GameStateBootstrapInfo info;
         //Note: The camera system is not fully implemented, that's why we have this initial camera business.
         _curGameState->getGameStateBootstrapInfo(info);
-        
+
         Ogre::Camera* cam = createDefaultCamera(info.initalCameraPos);
-        
+
         _vp = _window->addViewport(cam);
-        
+
         _vp->setOverlaysEnabled(false);
         _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
@@ -640,7 +649,7 @@ void
 
         _curGameState->onGuiConfiguration(_guiCtrl.get());
         _lfcPump->updateOnItObs(_initPacket); //pump on init event to observers.
-        
+
         delete _initPacket;
     }
     logM->logMessage(Ogre::LML_NORMAL, "Realizing current state done");
@@ -671,7 +680,7 @@ void
     EngineController::_initSubSystemsOnLoadState(const ZGame::GameStateBootstrapInfo &info, LifeCycleRegister &lfcReg,
     KeyEventRegister &keyReg, MouseEventRegister &mouseReg)
 {
-      try
+    try
     {
         LifeCycle::LifeCycleObserver lfcObs;
         EVENT::KeyboardEvtObserver keyObs;
@@ -702,7 +711,7 @@ void
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GuiController", "");
         }
-        
+
         try
         {
             if(info.requireRenderEntitiesmanager)
@@ -716,7 +725,7 @@ void
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in RenderEntitiesManager", "");
         }
-        
+
         try
         {
             if(info.requireZCLController)
@@ -843,7 +852,7 @@ void
     EngineController::_switchState(const Ogre::String &state)
 {
     //The design for this is a bit wonky at the moment as in this method, there is no state value mapping 
-//to the states map. You will have to look at state.cfg to find the values for the actual keys. Do not
+    //to the states map. You will have to look at state.cfg to find the values for the actual keys. Do not
     //mistype them here. And if you add new key values in state.cfg, you will have to update it here also.
     const Ogre::String menuState("mainmenu");
     const Ogre::String mainState("maingamestate");
@@ -867,7 +876,7 @@ void
         _switchToStateKey = "GameEditStateKey";
         return;
     }
-    
+
     OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "cannot switch to invalid state", 
         "EngineController::_switchState");
 }
@@ -876,9 +885,10 @@ void
     EngineController::_doSwitchingState()
 {
     _switchingState = false;
-    unloadCurrentState();
     onDestroy();
-    onInit();
+    if(!onInit())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Failed to reinitialize engine!",
+        "EngineController::_doSwitchingState");
     transitionState(_switchToStateKey);
 }
 
