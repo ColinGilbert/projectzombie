@@ -64,7 +64,7 @@ bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)
 
 bool GameMainMenuState::onInit(ZGame::ZInitPacket *packet)
 {
-    _mainMenu.reset(new Gui::MainMenuScreen(packet->guiCtrl));
+    _mainMenu = static_cast<Gui::MainMenuScreen*>(packet->guiCtrl->getScreen("MainMenuScreen"));
     _mainMenu->onLoad();
     return true;
 }

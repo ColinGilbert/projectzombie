@@ -40,6 +40,9 @@ namespace ZGame
             GuiController();
             ~GuiController();
 
+
+            Screens* getScreen(const Rocket::Core::String &key);
+
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void Release();
@@ -80,8 +83,6 @@ namespace ZGame
             bool
                 onMouseMove(const OIS::MouseEvent& e);
 
-
-
             Rocket::Core::Context* 
                 getGui2d()
             {
@@ -93,6 +94,10 @@ namespace ZGame
             **/
             void
                 addPersistentScreenButtons(Rocket::Core::Element* el);
+
+            void
+                loadDocumentsWithContext(Rocket::Core::Context* context, 
+                StrToDocumentMap &docMap);
 
 
         private:
@@ -111,9 +116,7 @@ namespace ZGame
             void
                 _createGui2d();
 
-            void
-                _loadDocumentsWithContext(Rocket::Core::Context* context, 
-                StrToDocumentMap &docMap);
+            
 
             typedef Ogre::map<OIS::KeyCode, Rocket::Core::Input::KeyIdentifier >::type KeyIdentifierMap;
 
@@ -141,8 +144,8 @@ namespace ZGame
             Ogre::vector<Screens*>::type _persistScreens;
             Rocket::Core::String _rootScreen;
             bool _isFirstScreenAdded;
-            std::auto_ptr<DebugScreen> _debugScreen;
-            
+            //std::auto_ptr<DebugScreen> _debugScreen;
+            DebugScreen* _debugScreen;
             Ogre::deque<Rocket::Core::String>::type _screenTransitionQueue;
 
             bool _transitionLock;

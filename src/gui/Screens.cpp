@@ -72,8 +72,8 @@ void
         OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Document path is empty",
         "Screens::onLoad");
     _docManager->define(docPath);
-    _guiCtrl->addScreens(_guiCtrl->getGui2d(),
-        this);
+    _guiCtrl->loadDocumentsWithContext(_guiCtrl->getGui2d(),
+        _docManager->getAll());
     _afterDocLoadedOnLoad();
 }
 

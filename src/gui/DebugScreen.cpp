@@ -31,11 +31,10 @@ THE SOFTWARE.
 using std::cout; using std::endl;
 using namespace ZGame::Gui;
 
-DebugScreen::DebugScreen(GuiController* guiCtrl,
-    HDRCompositor* hdrCompositor) : Screens(guiCtrl, "DebugScreen"), _ctrlStr("DebugController"),
-    _curMenu(0), _hdrView(new HDRSettingsView(hdrCompositor)), _TAB_ID("GRAPHICS_TAB")
+DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen"), _ctrlStr("DebugController"),
+    _curMenu(0), _hdrView(0), _TAB_ID("GRAPHICS_TAB")
 {
-    p_setKey("_DEBUGSCREEN_KEY_");
+    p_setKey("DebugScreen");
     _docPath.push_back("debug/debugmain.rml");
     //Note: We do this because we couldn't get update StyleProperty to work. Undefined symbols.
     //It's not exported out fro LibRocket. It's not in public includes.
@@ -46,9 +45,22 @@ DebugScreen::~DebugScreen()
 {
 }
 
+void 
+    DebugScreen::setHdrCompositor(HDRCompositor* hdrCompositor)
+{
+    if(!_hdrView.get())
+    {
+        _hdrView.reset(new HDRSettingsView(hdrCompositor));
+    }
+}
+
+
 void
     DebugScreen::_loadHdrHighPanel(Rocket::Controls::ElementTabSet* tab)
 {
+    if(!_hdrView.get())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "HDRView was no set",
+        "DebugScreen::_loadHdrHighPanel");
     cout << "Number of tabs: " << tab->GetNumTabs() << endl;
     //Set the panel
     tab->SetTab(HDR_HIGH, "HDR_HIGH");
@@ -63,9 +75,9 @@ void
     //Do nothing. This screen remains hidden on load.
     _docManager->defineRoot(_docPath[0].c_str());
     p_setName(_docManager->getRootDocument()->GetTitle());
-   
+
     hide();
-   
+
     Rocket::Controls::ElementTabSet* tab = static_cast<Rocket::Controls::ElementTabSet*>(_docManager->getRootDocument()->GetElementById(_TAB_ID));
     if(tab)
         _loadHdrHighPanel(tab);
@@ -113,7 +125,7 @@ void
     cout << "Event Element id: " << el->GetId().CString() << endl;
     const Rocket::Core::String actionStr(el->GetAttribute<Rocket::Core::String>("action", ""));
     cout << "Event Element action: " << actionStr.CString() << endl;
-   
+
     if(!actionStr.Empty())
     {
         const Rocket::Core::String switchTo("switchto");
@@ -149,8 +161,8 @@ void
         {
             _hdrView->actionElementUpdate(event.GetCurrentElement());
         }
-            
-        
+
+
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Action string is empty",

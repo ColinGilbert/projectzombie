@@ -31,7 +31,7 @@ using namespace ZGame::Gui;
 MainMenuScreen::MainMenuScreen(GuiController* guiCtrl) : Screens(guiCtrl, "MainMenuScreen"),
     _ctrlStr("MainMenuController")
 {
-    p_setKey("__MainMenuScreenKey__");
+    p_setKey("MainMenuScreen");
     _docPath.push_back("mainmenu/mainmenu.rml");
 }
 

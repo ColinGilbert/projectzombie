@@ -34,10 +34,10 @@ namespace ZGame
         class DebugScreen : public Screens
         {
         public:
-            DebugScreen(GuiController* guiCtrl, HDRCompositor* hdrCompositor);
+            DebugScreen(GuiController* guiCtrl);
             virtual ~DebugScreen();
 
-           
+            void setHdrCompositor(HDRCompositor* hdrCompositor);
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void Release(){}; //do nothing

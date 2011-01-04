@@ -22,29 +22,28 @@ THE SOFTWARE.
 *email: llwijk@gmail.com
 **/
 
-/*
-* GameStateFactory.h
-*
-*  Created on: Aug 28, 2008
-*      Author: bey0nd
-*/
+#pragma once
 
-#ifndef GAMESTATEFACTORY_H_
-#define GAMESTATEFACTORY_H_
+#include "gui/GuiPrerequisite.h"
 
-//#include <string>
-#include <Ogre.h>
+
 namespace ZGame
 {
-    class GameState;
-    class GameStateFactory
+    namespace Gui
     {
-    public:
-        GameStateFactory();
-        virtual
-            ~GameStateFactory();
+        class ScreensFactory
+        {
+        public:
+            static Screens* 
+                createScreens(const Rocket::Core::String &screensClass,
+                GuiController* guiCtrl);
 
-        static GameState* createGameState(const Ogre::String gameStateClass);
-    };
+            virtual ~ScreensFactory();
+
+        protected:
+
+            ScreensFactory();
+
+        };
+    }
 }
-#endif /* GAMESTATEFACTORY_H_ */

@@ -37,8 +37,8 @@ namespace ZGame
         virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);
         virtual void regKeyObsForInjection(KeyEventRegister &keyReg);
     private:
-        auto_ptr<Gui::MainMenuScreen> _mainMenu;
-
+        //auto_ptr<Gui::MainMenuScreen> _mainMenu;
+        Gui::MainMenuScreen* _mainMenu;
     };
 }
 

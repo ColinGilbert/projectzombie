@@ -21,30 +21,30 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
+#include "gui/SceensFactory.h"
+#include "gui/DebugScreen.h"
+#include "gui/MainMenuScreen.h"
 
-/*
-* GameStateFactory.h
-*
-*  Created on: Aug 28, 2008
-*      Author: bey0nd
-*/
+using namespace ZGame::Gui;
 
-#ifndef GAMESTATEFACTORY_H_
-#define GAMESTATEFACTORY_H_
-
-//#include <string>
-#include <Ogre.h>
-namespace ZGame
+Screens*
+    ScreensFactory::createScreens(const Rocket::Core::String &screensClass,
+    GuiController* guiCtrl)
 {
-    class GameState;
-    class GameStateFactory
-    {
-    public:
-        GameStateFactory();
-        virtual
-            ~GameStateFactory();
+    using Rocket::Core::String;
 
-        static GameState* createGameState(const Ogre::String gameStateClass);
-    };
+    const String MainMenuScreen("MainMenuScreen");
+    const String DebugScreen("DebugScreen");
+
+    if(MainMenuScreen == screensClass)
+    {
+        return new Gui::MainMenuScreen(guiCtrl);
+    }
+    else if(DebugScreen == screensClass)
+    {
+        return new Gui::DebugScreen(guiCtrl);
+    }
+
+    return 0;
+
 }
-#endif /* GAMESTATEFACTORY_H_ */

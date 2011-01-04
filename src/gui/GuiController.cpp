@@ -5,6 +5,7 @@
 #include "gui/Screens.h"
 #include "gui/DebugScreen.h"
 #include "GraphicsController.h"
+#include "gui/SceensFactory.h"
 using std::cout; 
 using std::endl;
 
@@ -29,6 +30,25 @@ GuiController::~GuiController()
 
     OGRE_DELETE_T(ogre_renderer, RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
     ogre_renderer = 0;
+}
+
+Screens*
+    GuiController::getScreen(const Rocket::Core::String &key)
+{
+    //first try to find it in the map.
+    SCREENS_MAP::iterator findMe = _screensMap.find(key);
+    if(findMe != _screensMap.end())
+    {
+        return findMe->second;
+    }
+    //try to create it.
+    Screens *screen = ScreensFactory::createScreens(key, this);
+
+    if(!screen)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "invalid screen key", "GuiController::getScreen");
+    
+    addScreens(this->getGui2d(), screen);
+    return screen;
 }
 
 void
@@ -178,8 +198,6 @@ void
             "GuiController::addScreen");
 
         _screensMap[screen->getKey()] =  screen;
-        //load the maps
-        _loadDocumentsWithContext(context, screen->getDocManager()->getAll());
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "context is not valid", "GuiController::addScreens");
@@ -223,7 +241,7 @@ already contains the string keys, and such keys are valid resource locators to t
 *the created documents. They will be destroyed when the context is destroyed.
 **/
 void
-    GuiController::_loadDocumentsWithContext(Rocket::Core::Context* context,
+    GuiController::loadDocumentsWithContext(Rocket::Core::Context* context,
     StrToDocumentMap &docMap)
 {
     StrToDocumentMap::iterator iter = docMap.begin();
@@ -305,25 +323,18 @@ bool
 
         Rocket::Core::Factory::RegisterEventListenerInstancer(this);
 
-        /*
-        //We assume Rocket::Core has been initialized.
-        if(_eventListenerRegistered)
-        {
-            //Rocket::Core::Factory::RegisterEventListenerInstancer(0);
-            Rocket::Core::Factory::RegisterEventListenerInstancer(this);
-        }
-        else
-        {
-            Rocket::Core::Factory::RegisterEventListenerInstancer(this);
-            _eventListenerRegistered = true;
-        }*/
         _createGui2d();
 
         //Load any persistence screens.
-        _debugScreen.reset(new DebugScreen(this, initPacket->gfxCtrl->getHdrCompositor()));
+        _debugScreen = static_cast<DebugScreen*>(ScreensFactory::createScreens("DebugScreen", this));
+        _debugScreen->setHdrCompositor(initPacket->gfxCtrl->getHdrCompositor());
         _debugScreen->onLoad();
-
-        _persistScreens.push_back(_debugScreen.get());
+        /*
+        *For now this part is hacky. We need to add screen after the "root" screen has been added. This is so because we're doing pop transition wrong right now doing it this
+        *way gets you the correct result. We need to fix pop/push transition first, then change this to get correct behavior.
+        */
+        addScreens(this->getGui2d(), _debugScreen);
+        _persistScreens.push_back(_debugScreen);
 
 
 
@@ -362,9 +373,13 @@ bool
     _isFirstScreenAdded = false;
     _persistScreens.clear();
     _rootScreen = "";
-    _debugScreen.reset(0);
     _screenTransitionQueue.clear();
     _transitionLock = false;
+    for(SCREENS_MAP::iterator iter = _screensMap.begin(); iter != _screensMap.end(); ++iter)
+    {
+        //shoudl call factory to delete
+        delete iter->second;
+    }
     _screensMap.clear();
     debug << "GuiController::onDestroy()\n";
     return true;
