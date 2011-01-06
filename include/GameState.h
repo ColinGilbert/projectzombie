@@ -12,30 +12,21 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
+#include "ZPrerequisites.h"
 
-
+//NEED to put out this lifecycle register no forward declare fire later.
 #include "LifeCycleRegister.h"
 #include "KeyEventRegister.h"
 #include "MouseEventRegister.h"
 #include "LifeCycleDelegates.h"
 #include "DelegatesUtil.h"
-#include "gui/GuiController.h"
+
 using namespace std;
 
-namespace OgreBites
-{
-    class SdkTrayManager;
 
-}
 
 namespace ZGame
 {
-    
-
-    
-
     class GameState
     {
     public:
@@ -44,15 +35,19 @@ namespace ZGame
         void
             init(LifeCycleRegister &lfcReg, KeyEventRegister &keyReg,
             MouseEventRegister &mouseReg, OgreBites::SdkTrayManager* tray);
-            virtual void
+        virtual void
             getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
         {
             info.initalCameraPos = Ogre::Vector3::ZERO;
         }
 
-            virtual void
-                onGuiConfiguration(Gui::GuiController* guiCtrl){};
-         
+        virtual void
+            onGuiConfiguration(Gui::GuiController* guiCtrl){};
+
+        virtual void
+            onWorldControllerConfiguration(World::WorldController* worldCtrl){};
+
+
 
     protected:
 

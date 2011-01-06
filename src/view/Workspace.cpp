@@ -79,7 +79,7 @@ void
 ZWorkspace::buildGroups()
 {
   _entMgr->buildGroups();
-  _zclCtrl->prepare(_entMgr->getEntBuffers(), _worldCtrl->getWorldMap());
+  //_zclCtrl->prepare(_entMgr->getEntBuffers(), _worldCtrl->getWorldMap());
 }
 
 void

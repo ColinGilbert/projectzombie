@@ -17,14 +17,14 @@ using namespace Ogre;
 #include "world/WorldConfig.h"
 #include "world/PhysicsManager.h"
 #include "world/WorldDefs.h"
-
+#include "world/WorldConfig.h"
 
 using namespace ZGame;
 using namespace ZGame::World;
 
 WorldController::WorldController() :
-_worldMap(0), _scnMgr(0), _volumePaging(0),
-    _physicsMgr(0)
+_scnMgr(0), _volumePaging(0),
+    _physicsMgr(0), _worldConfig(0)
 {
     //init();
 
@@ -58,7 +58,6 @@ bool WorldController::onDestroy()
     cout << "WorldController::onDestroy called." << endl;
     cout << "Deleting WorldMap." << endl;
     _pageManager.removeCamera(_cam);
-    _worldMap.reset(0);
     OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
     cout << "WorldController::onDestroy done." << endl;
     return true;
@@ -73,15 +72,28 @@ bool WorldController::onDestroy()
 */
 void WorldController::_init(ZGame::ZInitPacket *packet)
 {
-    WorldConfig config;
-    config.load();
+    if(_worldConfig.get() == 0)
+    {
+        _worldConfig.reset(new WorldConfig());
+        _worldConfig->load(); //default world.cfg
+    }
+    
     _scnMgr = packet->sceneManager;
     _cam = packet->initialCamera;
     _physicsMgr.reset(new PhysicsManager());
     _physicsMgr->onInit(packet);
-    _loadWorldMap(config.getWorldMapConfig());
+    _loadWorldMap(_worldConfig->getWorldMapConfig());
     //log->logMessage(Ogre::LML_TRIVIAL,"Out WorldController::init().");
+    _worldConfig.reset(0);
 }
+
+void
+    WorldController::setWorldConfiguration(std::auto_ptr<WorldConfig> worldConfig)
+{
+    _worldConfig = worldConfig;
+}
+
+
 
 void 
     WorldController::_loadWorldMap(WorldMapConfig &config)

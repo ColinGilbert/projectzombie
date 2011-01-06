@@ -123,7 +123,7 @@ void
         {
             COMMAND::StringCommand cmdStart(COMMAND::CommandList::ENGINECTRL_CMD);
             cmdStart.push_back("switchstate");
-            cmdStart.push_back("mainmenu");
+            cmdStart.push_back("maineditstate");
             cmdStart.executeThis();
         }
         else if(actionStr == quit)

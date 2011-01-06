@@ -16,7 +16,15 @@
 #include <OgreTerrainGroup.h>
 
 
+
+
 class HDRCompositor;
+
+namespace OgreBites
+{
+    class SdkTrayManager;
+
+}
 
 namespace ZGame
 {
@@ -93,10 +101,6 @@ namespace ZGame
     {
         class ZCLController; 
     }
-    namespace World
-    {
-        class WorldController;
-    }
     namespace Util
     {
         class CharacterUtil;
@@ -110,11 +114,13 @@ namespace ZGame
     }
     namespace World
     {
-        class WorldMap;
         class VolumeMap;
         class VolumeMapPaging;
+        class WorldMap;
         struct WorldMapConfig;
+        class WorldConfig;
         class PhysicsManager;
+        class WorldController;
     }
 
      namespace EVENT

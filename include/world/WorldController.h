@@ -25,8 +25,6 @@ THE SOFTWARE.
 #pragma once
 
 #include "ZPrerequisites.h"
-#include "Controller.h"
-#include "world/WorldMap.h"
 #include "world/DummyPageProvider.h"
 
 /**
@@ -53,12 +51,8 @@ namespace ZGame
             void addBlock(Ogre::Real cursorX, Ogre::Real cursorY);
             void removeBlock(Ogre::Real cursorX, Ogre::Real cursorY);
 
-            /** \brief This method will return a world map. \note Do not call while WorldController has not be initialized.**/
-            WorldMap* getWorldMap()
-            {
-                assert(_worldMap.get() && "Class invariance failed. Trying to get a null WorldMap from WorldController.");
-                return _worldMap.get();
-            }         
+            void
+                setWorldConfiguration(std::auto_ptr<WorldConfig> worldConfig);
 
         protected:
             
@@ -66,7 +60,6 @@ namespace ZGame
             void _init(ZGame::ZInitPacket *packet);
             void _loadWorldMap(WorldMapConfig &config);
         private:
-            std::auto_ptr<World::WorldMap > _worldMap;
             std::auto_ptr<VolumeMap > _volumeMap;
             VolumeMapPaging* _volumePaging;
             Ogre::SceneManager* _scnMgr;
@@ -74,6 +67,7 @@ namespace ZGame
             Ogre::PageManager _pageManager;
             std::auto_ptr<PhysicsManager> _physicsMgr;
             Ogre::Camera* _cam;
+            std::auto_ptr<WorldConfig> _worldConfig;
 
 
           

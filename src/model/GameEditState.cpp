@@ -14,6 +14,10 @@
 #include "EventDelegates.h"
 #include "DelegatesUtil.h" //This is for LifeCycle::bindLifeCycleObserver and etc...
 #include "GraphicsController.h"
+#include "gui/GuiController.h"
+#include "world/WorldController.h"
+#include "world/WorldConfig.h"
+
 namespace ZGame
 {
     GameEditState::GameEditState() :
@@ -57,7 +61,7 @@ void
     GameEditState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regKeyObsForInjection");
-   
+
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL, "In GameEditState regKeyObsForInjection");
 }
 
@@ -65,8 +69,8 @@ void
     GameEditState::regMouseObsForInjection(MouseEventRegister &mouseReg)
 {
     GameState::regMouseObsForInjection(mouseReg);
-    
- 
+
+
 }
 
 bool
@@ -118,6 +122,29 @@ bool
 {
     return true;
 }
+
+void
+    GameEditState::getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
+{
+    info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
+    info.requireWorldController = true;
+    info.requireControlModule = true;
+    info.requireWorkspace = true;
+}
+
+void
+    GameEditState::onGuiConfiguration(Gui::GuiController* guiCtrl)
+{
+}
+
+void
+    GameEditState::onWorldControllerConfiguration(World::WorldController* worldCtrl)
+{
+    std::auto_ptr<World::WorldConfig> worldConfig(new World::WorldConfig);
+    worldConfig->load("world.cfg");
+    worldCtrl->setWorldConfiguration(worldConfig);
+}
+
 
 }
 

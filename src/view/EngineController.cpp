@@ -617,7 +617,7 @@ void
 
         _curGameState->init(lfcReg, keyReg, mouseReg, 0);
 
-        _initSubSystemsOnLoadState(info, lfcReg, keyReg, mouseReg);
+        _initSubSystemsOnLoadState(info, lfcReg, keyReg, mouseReg, *_curGameState.get());
 
         _initPacket = new ZInitPacket(&info, _scnMgr, cam, _window,
             _inController->getKeyboard(), _workspaceCtrl.get(), 
@@ -678,7 +678,7 @@ void
 
 void
     EngineController::_initSubSystemsOnLoadState(const ZGame::GameStateBootstrapInfo &info, LifeCycleRegister &lfcReg,
-    KeyEventRegister &keyReg, MouseEventRegister &mouseReg)
+    KeyEventRegister &keyReg, MouseEventRegister &mouseReg, GameState &gameState)
 {
     try
     {
@@ -707,6 +707,9 @@ void
 
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);
             EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_guiCtrl);
+
+            gameState.onGuiConfiguration(_guiCtrl.get());
+
         }catch(Ogre::Exception e)
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GuiController", "");
@@ -747,6 +750,8 @@ void
                 //world controller
                 LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::World::WorldController>(lfcReg, 
                     lfcObs, *_worldController);
+
+                gameState.onWorldControllerConfiguration(_worldController.get());
             }
         }catch(Ogre::Exception e)
         {

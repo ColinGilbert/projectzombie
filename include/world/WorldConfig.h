@@ -31,7 +31,7 @@ namespace ZGame
                 return _worldMapConfig;
             }
 
-            void load()
+            void load(Ogre::String fileName = "world.cfg")
             {
                 using namespace Ogre;
                 Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "------------------------------------");
@@ -39,7 +39,7 @@ namespace ZGame
                 Ogre::Log::Stream logs = Ogre::LogManager::getSingleton().getDefaultLog()->stream(Ogre::LML_TRIVIAL);
                
                 ConfigFile cf;
-                cf.load("world.cfg");
+                cf.load(fileName);
                 ConfigFile::SectionIterator seci = cf.getSectionIterator();
                 String secName, typeName, archName;
                 std::istringstream instream;

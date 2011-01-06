@@ -1,9 +1,9 @@
 /*
- * GameEditState.h
- *
- *  Created on: Aug 28, 2008
- *      Author: bey0nd
- */
+* GameEditState.h
+*
+*  Created on: Aug 28, 2008
+*      Author: bey0nd
+*/
 
 #pragma once
 #include <memory>
@@ -18,56 +18,62 @@ using namespace std;
 using namespace Ogre;
 namespace ZGame
 {
-  class GameEditView;
-  class LifeCycleRegister;
-  class KeyEventRegister;
-  class GraphicsController;
-  class GameEditState : public ZGame::GameState
-  {
-  public:
-    GameEditState();
-    virtual
-    ~GameEditState();
+    class GameEditView;
+    class LifeCycleRegister;
+    class KeyEventRegister;
+    class GraphicsController;
+    class GameEditState : public ZGame::GameState
+    {
+    public:
+        GameEditState();
+        virtual
+            ~GameEditState();
 
-    //life cycle methods
-    bool
-    onUpdate(const Ogre::FrameEvent& evt);
-    bool
-    onInit(ZGame::ZInitPacket* initPacket);
-    bool
-    onDestroy();
+        //life cycle methods
+        bool
+            onUpdate(const Ogre::FrameEvent& evt);
+        bool
+            onInit(ZGame::ZInitPacket* initPacket);
+        bool
+            onDestroy();
 
-    bool
-    onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
-    bool
-    onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
-    bool
-    onMouseMove(const OIS::MouseEvent &evt);
+        bool
+            onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+        bool
+            onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
+        bool
+            onMouseMove(const OIS::MouseEvent &evt);
 
-    //control methods
-    bool
-    onKeyUp(const OIS::KeyEvent &evt);
-    bool
-    onKeyDown(const OIS::KeyEvent &evt);
+        //control methods
+        bool
+            onKeyUp(const OIS::KeyEvent &evt);
+        bool
+            onKeyDown(const OIS::KeyEvent &evt);
 
-    virtual void
-        onGuiConfiguration(Gui::GuiController* guiCtrl){};
+        virtual void
+            onGuiConfiguration(Gui::GuiController* guiCtrl);
 
-  protected:
+        virtual void
+            onWorldControllerConfiguration(World::WorldController* worldCtrl);
 
-    //boost::shared_ptr<GameEditView> _editView;
-    virtual void
-    regLfcObsForInjection(LifeCycleRegister &lfcReg);
-    virtual void
-    regKeyObsForInjection(KeyEventRegister &keyReg);
-    virtual void
-    regMouseObsForInjection(MouseEventRegister &mouseReg);
+        virtual void
+            getGameStateBootstrapInfo(GameStateBootstrapInfo &info);
 
-   
+    protected:
 
-  private:
-    ZGame::ControlModuleProto _controlMod;
- 
+        //boost::shared_ptr<GameEditView> _editView;
+        virtual void
+            regLfcObsForInjection(LifeCycleRegister &lfcReg);
+        virtual void
+            regKeyObsForInjection(KeyEventRegister &keyReg);
+        virtual void
+            regMouseObsForInjection(MouseEventRegister &mouseReg);
 
-  };
+
+
+    private:
+        ZGame::ControlModuleProto _controlMod;
+
+
+    };
 }

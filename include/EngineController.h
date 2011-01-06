@@ -165,7 +165,8 @@ namespace ZGame
 
         void
             _initSubSystemsOnLoadState(const ZGame::GameStateBootstrapInfo &info, 
-            LifeCycleRegister &lfcReg, KeyEventRegister &keyReg, MouseEventRegister &mouseReg);
+            LifeCycleRegister &lfcReg, KeyEventRegister &keyReg, MouseEventRegister &mouseReg,
+            GameState &gameState);
         void
             _removeSubSystemsOnUnloadState();
         void
