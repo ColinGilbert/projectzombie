@@ -47,6 +47,9 @@ namespace ZGame
         virtual void
             onWorldControllerConfiguration(World::WorldController* worldCtrl){};
 
+        virtual void
+            onCinematicControllerConfiguration(World::CinematicController* cineCtrl){};
+
 
 
     protected:

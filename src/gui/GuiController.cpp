@@ -61,6 +61,7 @@ void
         Rocket::Core::ElementDocument* cursor = _gui2d->LoadMouseCursor(_data_path + "common/cursor.rml");
         if(cursor)
             cursor->RemoveReference();
+        cursor->Show();
         return;
     }
     return;

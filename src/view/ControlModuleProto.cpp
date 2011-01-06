@@ -25,7 +25,8 @@ namespace ZGame
 
     ControlModuleProto::ControlModuleProto() :
     _transVector(0.0f, 0.0f, 0.0f), _dTrans(10.0f), _transFactor(1.0), _rotYaw(0.0f), _rotPitch(0.0f), _rotFactor(50 * 3.145), _mx_rel(0), _my_rel(0), 
-        _cam(0), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f)
+        _cam(0), _lookAtNode(0), _cameraNode(0), _camLocalZOffset(40.0f), _zoomFactor(0.1f),
+        _disable(false)
     {
         //Ogre::String CAMERAATTACH("camera_attach");
         ZGame::CommandController* cmdCtrl = ZGame::CommandController::getSingletonPtr();
@@ -195,27 +196,25 @@ namespace ZGame
     bool
         ControlModuleProto::onUpdate(const Ogre::FrameEvent &evt)
     {
-        //if(_theNode)
-        //_theNode->moveRelative(_transVector);
-        //_theNode->translate(_theNode->getPosition()+_transVector);
-        //_cam->moveRelative(_transVector);
-
-        if (_lookAtNode)
+        if(!_disable)
         {
-
-            _lookAtNode->translate(_lookAtNode->getOrientation() * _transVector);
-            //then rotate about lookatNode
-            _cameraNode->setPosition(Ogre::Vector3::ZERO);
-            _cameraNode->translate(_cameraNode->getLocalAxes(), Ogre::Vector3(0.0, 0.0, _camLocalZOffset));
-            _doMouseMove(evt.timeSinceLastEvent);
-
-        }
-        else
-        {
-            if(evt.timeSinceLastFrame < 0.05)
+            if (_lookAtNode)
             {
-                _cam->moveRelative(_transVector * evt.timeSinceLastFrame);
-                _doMouseMove(evt.timeSinceLastFrame);
+
+                _lookAtNode->translate(_lookAtNode->getOrientation() * _transVector);
+                //then rotate about lookatNode
+                _cameraNode->setPosition(Ogre::Vector3::ZERO);
+                _cameraNode->translate(_cameraNode->getLocalAxes(), Ogre::Vector3(0.0, 0.0, _camLocalZOffset));
+                _doMouseMove(evt.timeSinceLastEvent);
+
+            }
+            else
+            {
+                if(evt.timeSinceLastFrame < 0.05)
+                {
+                    _cam->moveRelative(_transVector * evt.timeSinceLastFrame);
+                    _doMouseMove(evt.timeSinceLastFrame);
+                }
             }
         }
         return true;
@@ -237,8 +236,21 @@ namespace ZGame
     bool
         ControlModuleProto::attachNode(const Ogre::StringVector &params)
     {
-    
+
         return true;
     }
+
+    bool
+        ControlModuleProto::isEnabled()
+    {
+        return !_disable;
+    }
+
+    void
+        ControlModuleProto::disable(bool tf)
+    {
+        _disable = tf;
+    }
+
 
 }

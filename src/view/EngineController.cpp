@@ -41,6 +41,9 @@ using namespace std;
 #include "ZWorkspace.h"
 #include "ZWorkspaceController.h"
 
+#include "world/CinematicController.h"
+#include "world/CinematicManager.h"
+
 #include "command/CommandList.h"
 #include "CommandController.h"
 
@@ -56,7 +59,7 @@ namespace ZGame
     EngineController::EngineController() :
 MainController(), _stillRunning(true), _lfcPump(0), _keyPump(0), _mousePump(0), _curStateInfo(0),
     _curGameState(0), _statsClockVariable(0), _sdkTrayMgr(0), _switchingState(false), _vp(0), _scnMgr(0),
-    _commandController(new CommandController()), _startEngine(true)
+    _commandController(new CommandController()), _startEngine(true), _cineController(0)
 {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
@@ -158,7 +161,7 @@ void
 {
     using namespace Ogre;
     using namespace OgreBites;
-   
+
     _sdkTrayMgr.reset(new SdkTrayManager("ZombieTray", _window, _inController->getMouse(), 0));
 }
 
@@ -186,21 +189,21 @@ bool
     using namespace Ogre;
     cout << "EngineController::onInit()" << endl;
     //_root = new Ogre::Root("plugins.cfg");
-   
-     _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Engine.log"));
-     _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
-     //Note: We should pass in a stream to this which appends to App.log.
-     Ogre::LogManager::getSingleton().createLog("App.log");
-     if(_startEngine) 
+
+    _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Engine.log"));
+    _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
+    //Note: We should pass in a stream to this which appends to App.log.
+    Ogre::LogManager::getSingleton().createLog("App.log");
+    if(_startEngine) 
     {
-     
-     if (_root->showConfigDialog())
-     {
-         _window = _root->initialise(true);
-     }
-     else
-         return false;
-     _startEngine = false;
+
+        if (_root->showConfigDialog())
+        {
+            _window = _root->initialise(true);
+        }
+        else
+            return false;
+        _startEngine = false;
     }
     else
     {
@@ -222,7 +225,7 @@ bool
     _inController->onInit(_window);
     injectInputSubject();
 
-     //bootstrap Sdk resources.
+    //bootstrap Sdk resources.
     loadAssets(PlatformPath + "bootstrap.cfg");
     loadSdkTrays();
     _sdkTrayMgr->showLoadingBar();
@@ -389,6 +392,7 @@ void
         _netClient.reset(0);
         _sdkTrayMgr.reset(0);
         _commandController->onDestroy(); //command controller is singleton. It shouldn't have state. This is due to OgreConsole coupling inside CommandController,
+        _cineController.reset(0);
         _gfxCtrl.reset(0);
         _guiCtrl.reset(0);
         _root.reset(0);
@@ -427,20 +431,14 @@ bool
 bool
     EngineController::onKeyDown(const OIS::KeyEvent &event)
 {
-    //We assume here the ogre console exists (has been created and attached to CommandController). This SHOULD be the case for EngineController, because we
+    //We assume here the ogre console exists (has been created and attached to CommandController). 
+    //This SHOULD be the case for EngineController, because we
     //created the console in the initialization code in this controller.
     OgreConsole* ogreConsole = CommandController::getSingleton().getConsole();
     bool consoleVis = ogreConsole->isVisible();
     //console
     if (event.key == OIS::KC_GRAVE)
     {
-        /*
-        if(_vp->getOverlaysEnabled())
-        _vp->setOverlaysEnabled(false); 
-        else
-        _vp->setOverlaysEnabled(true);
-        */
-
         if (consoleVis)
         {
             //turn off console
@@ -448,15 +446,23 @@ bool
         }
         else
             ogreConsole->setVisible(true);
-
     }
     else if(event.key == OIS::KC_SYSRQ)
     {
         _window->writeContentsToTimestampedFile("zombie_shot",".png");
     }
-
+    else if(event.key == OIS::KC_TAB)
+    {
+        //if(_controlMod.get() != 0)
+        if(_controlMod->isEnabled())
+        {
+            _controlMod->disable(true);
+        }
+        else
+            _controlMod->disable(false);
+    }
     ogreConsole->onKeyPressed(event);
-    //OgreConsole::getSingleton().onKeyPressed(event);
+    
     if (!consoleVis)
     {
         _keyPump->updateKeyDownObs(event);
@@ -591,14 +597,13 @@ void
         //Note: The camera system is not fully implemented, that's why we have this initial camera business.
         _curGameState->getGameStateBootstrapInfo(info);
 
-        Ogre::Camera* cam = createDefaultCamera(info.initalCameraPos);
+        //Ogre::Camera* cam = createDefaultCamera(info.initalCameraPos);
 
-        _vp = _window->addViewport(cam);
+        //_vp = _window->addViewport(cam);
+        //_vp->setOverlaysEnabled(true);
+        //_vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
 
-        _vp->setOverlaysEnabled(false);
-        _vp->setBackgroundColour(Ogre::ColourValue(0.3f, 0.0f, 0.0f));
-
-        cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
+        //cam->setAspectRatio(Real(_vp->getActualWidth()) / Real(_vp->getActualHeight()));
 
         //LifeCycleSubject
         LifeCycle::LifeCycleSubject lcs; //life cycle subject
@@ -619,7 +624,8 @@ void
 
         _initSubSystemsOnLoadState(info, lfcReg, keyReg, mouseReg, *_curGameState.get());
 
-        _initPacket = new ZInitPacket(&info, _scnMgr, cam, _window,
+        _initPacket = new ZInitPacket(&info, _scnMgr, _cineController->getCinematicManager()->getRootCam(), 
+            _window,
             _inController->getKeyboard(), _workspaceCtrl.get(), 
             _gfxCtrl.get(), _guiCtrl.get());
 
@@ -714,6 +720,19 @@ void
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GuiController", "");
         }
+
+        try
+        {
+            std::auto_ptr<World::CinematicManager> cineMgr(new World::CinematicManager(_scnMgr));
+            _cineController.reset(new World::CinematicController(cineMgr, _window));
+            gameState.onCinematicControllerConfiguration(_cineController.get());
+            _vp = _cineController->getViewport();
+        }catch(Ogre::Exception e)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in CinematicController",
+                "");
+        }
+
 
         try
         {

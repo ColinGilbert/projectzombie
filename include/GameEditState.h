@@ -59,6 +59,9 @@ namespace ZGame
         virtual void
             getGameStateBootstrapInfo(GameStateBootstrapInfo &info);
 
+        virtual void
+            onCinematicControllerConfiguration(World::CinematicController* cineCtrl);
+
     protected:
 
         //boost::shared_ptr<GameEditView> _editView;

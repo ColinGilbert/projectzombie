@@ -45,6 +45,10 @@ namespace ZGame
 
         bool attachNode(const Ogre::StringVector &params);
 
+        bool
+            isEnabled();
+        void
+            disable(bool tf);
     private:
 
         Ogre::Vector3 _transVector;
@@ -73,6 +77,7 @@ namespace ZGame
         //Clean up the lookat and camera nodes.
         void cleanUpNodes();
         void _doMouseMove(Ogre::Real dt);
-
+        bool _disable;
+             
     };
 }

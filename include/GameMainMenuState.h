@@ -32,6 +32,8 @@ namespace ZGame
             getGameStateBootstrapInfo(GameStateBootstrapInfo &info);
         virtual void
             onGuiConfiguration(Gui::GuiController* guiCtrl);
+        virtual void
+            onCinematicControllerConfiguration(World::CinematicController* cineCtrl);
 
     protected:
         virtual void regLfcObsForInjection(LifeCycleRegister &lfcReg);

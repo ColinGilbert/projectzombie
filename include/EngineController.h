@@ -199,6 +199,7 @@ namespace ZGame
         std::auto_ptr<ZWorkspace> _workspace;
         std::auto_ptr<ZGame::ZWorkspaceController> _workspaceCtrl;
         std::auto_ptr<CommandController> _commandController;
+        std::auto_ptr<World::CinematicController> _cineController;
 
         bool _startEngine;
 
