@@ -57,9 +57,19 @@ namespace ZGame
             }
             virtual void
                 _afterDocLoadedOnLoad();
+
+            void
+                _displayEditorMenu();
+
             
             Ogre::StringVector _docPath;
             Rocket::Core::String _ctrlStr;
+
+            typedef Ogre::deque<Rocket::Core::Element*>::type EL_STACK;
+
+            EL_STACK _elStack;
+
+
         };
     }
 }

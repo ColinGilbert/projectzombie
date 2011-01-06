@@ -336,7 +336,7 @@ bool
         addScreens(this->getGui2d(), _debugScreen);
         _persistScreens.push_back(_debugScreen);
 
-
+        BuildKeyMaps();
 
     }catch(Ogre::Exception e)
     {
@@ -506,11 +506,12 @@ bool
     GuiController::onKeyDown(const OIS::KeyEvent& e)
 {
     Rocket::Core::Input::KeyIdentifier key_identifier = key_identifiers[e.key];
-
+    cout << "GuiController::onKeyDown" << endl;
     // Toggle the debugger on a shift-~ press.
     if (key_identifier == Rocket::Core::Input::KI_OEM_3 &&
         (GetKeyModifierState() & Rocket::Core::Input::KM_SHIFT))
     {
+        cout << "Rocket Debugger setVisible" << endl;
         Rocket::Debugger::SetVisible(!Rocket::Debugger::IsVisible());
         return true;
     }

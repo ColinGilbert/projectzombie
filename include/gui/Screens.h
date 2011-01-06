@@ -56,7 +56,6 @@ namespace ZGame
             static void s_showElement(Rocket::Core::Element* el);
             static void s_hideElement(Rocket::Core::Element* el);
 
-
             virtual ~Screens();
 
             virtual Rocket::Core::EventListener*

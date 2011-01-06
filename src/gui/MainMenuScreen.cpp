@@ -55,7 +55,9 @@ void
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "content_bar not found",
         "MainMenuScreen::_afterDocLoadedOnLoad");
-    _docPath.clear(); //Do not expect to use this again. It's private!
+
+    _elStack.push_back(content);
+
 }
 
 
@@ -92,6 +94,9 @@ void
         const Rocket::Core::String start("start");
         const Rocket::Core::String load("load");
         const Rocket::Core::String quit("quit");
+        const Rocket::Core::String editor("editor");
+        const Rocket::Core::String back("back");
+        const Rocket::Core::String startEditor("start_editor");
 
         if(actionStr == start)
         {
@@ -104,6 +109,23 @@ void
         {
             
         }
+        else if(actionStr == editor)
+        {
+            _displayEditorMenu();
+        }
+        else if(actionStr == back)
+        {
+            s_hideElement(_elStack.back());
+            _elStack.pop_back();
+            s_showElement(_elStack.back());
+        }
+        else if(actionStr == startEditor)
+        {
+            COMMAND::StringCommand cmdStart(COMMAND::CommandList::ENGINECTRL_CMD);
+            cmdStart.push_back("switchstate");
+            cmdStart.push_back("mainmenu");
+            cmdStart.executeThis();
+        }
         else if(actionStr == quit)
         {          
             COMMAND::StringCommand cmdQuit(COMMAND::CommandList::ENGINECTRL_CMD);
@@ -114,4 +136,17 @@ void
     }
     else
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Action string is empty.", "MainMenuScreen::ProcessEvent");
+}
+
+void
+    MainMenuScreen::_displayEditorMenu()
+{
+    Rocket::Core::Element* menu = _docManager->getRootDocument()->GetElementById("editor_menu");
+
+    if(!menu)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Editor menu not found",
+        "MainMenuScreen::_displayEditorMenu");
+    s_hideElement(_elStack.back());
+    s_showElement(menu);
+    _elStack.push_back(menu);
 }

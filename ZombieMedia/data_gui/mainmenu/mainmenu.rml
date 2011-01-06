@@ -16,7 +16,20 @@
 	      <div class="content_bar_bottom" id="content_bar">
 	      	   <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
 	    	   <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>
+		   <button type="button" id="editor_button" onclick="MainMenuController" action="editor">Editor </button>
 		   <button type="button" id="quit_button" onclick="MainMenuController" action="quit">Quit </button>	
 	      </div>
+	      <div class="hidden" id="editor_menu">
+		<div class="content_bar_top">
+		  <p>THERE is supposed to be a FORM here where you can input initial values for editor. For now, we will use read 
+		  those values from a config file, instead.</p>
+		  <button type="button" id="start_editor_button" onclick="MainMenuController" action="start_editor">Start</button>
+		  <button type="button" id="back_button" onclick="MainMenuController" action="back" >Back</button>
+		  <form id="editor_form">
+		    
+		  </form>
+		</div>
+	      </div>
+
 	</body>
 </rml>
