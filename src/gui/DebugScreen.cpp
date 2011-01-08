@@ -36,9 +36,6 @@ DebugScreen::DebugScreen(GuiController* guiCtrl) : Screens(guiCtrl, "DebugScreen
 {
     p_setKey("DebugScreen");
     _docPath.push_back("debug/debugmain.rml");
-    //Note: We do this because we couldn't get update StyleProperty to work. Undefined symbols.
-    //It's not exported out fro LibRocket. It's not in public includes.
-    _docPath.push_back("debug/graphics.rml");
 }
 
 DebugScreen::~DebugScreen()
@@ -104,7 +101,6 @@ Rocket::Core::EventListener*
 {
     if(_ctrlStr == value)
     {
-        cout << "In place DebugController is found" << endl;
         return this;
     }
     else
@@ -118,14 +114,7 @@ void
     DebugScreen::ProcessEvent(Rocket::Core::Event& event)
 {
     Rocket::Core::Element* el = event.GetCurrentElement();
-    Rocket::Core::Element* tel = event.GetTargetElement();
-    cout << "DebugScreen::ProcessEvent" << endl;
-    cout << "Event Tag: " << el->GetTagName().CString() << endl;
-    cout << "Event Type: " << event.GetType().CString() << endl;
-    cout << "Event Element id: " << el->GetId().CString() << endl;
     const Rocket::Core::String actionStr(el->GetAttribute<Rocket::Core::String>("action", ""));
-    cout << "Event Element action: " << actionStr.CString() << endl;
-
     if(!actionStr.Empty())
     {
         const Rocket::Core::String switchTo("switchto");

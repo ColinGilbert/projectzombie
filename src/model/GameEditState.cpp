@@ -18,10 +18,11 @@
 #include "world/WorldController.h"
 #include "world/WorldConfig.h"
 #include "world/CinematicController.h"
+#include "gui/EditorScreen.h"
 namespace ZGame
 {
     GameEditState::GameEditState() :
-GameState() , _controlMod(50.0f)
+GameState() , _controlMod(50.0f), _editorScreen(0)
 
 {
     // TODO Auto-generated constructor stub
@@ -77,7 +78,9 @@ bool
     GameEditState::onInit(ZGame::ZInitPacket *initPacket)
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameEditState::onInit");
-
+    _editorScreen = static_cast<Gui::EditorScreen*>(initPacket->guiCtrl->getScreen("EditorScreen"));
+    _editorScreen->onLoad();
+    _editorScreen->show();
     return true;
 }
 
@@ -127,7 +130,7 @@ void
     GameEditState::getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
 {
     info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
-    info.requireWorldController = true;
+    //info.requireWorldController = true;
     info.requireControlModule = true;
     info.requireWorkspace = true;
 }
@@ -154,10 +157,7 @@ void
     cams.push_back(std::make_pair<Ogre::String, CinematicController::CAM_INIT_STATE>("ORTHOGRAPHIC",
         std::make_pair<Ogre::Vector3, Ogre::Quaternion>( Ogre::Vector3(32.0f, 250.0f, 32.0f), Ogre::Quaternion() ) ) );
     cineCtrl->loadCameras(cams, 0);
-
 }
-
-
 
 }
 

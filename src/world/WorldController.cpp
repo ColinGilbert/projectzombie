@@ -72,19 +72,18 @@ bool WorldController::onDestroy()
 */
 void WorldController::_init(ZGame::ZInitPacket *packet)
 {
-    if(_worldConfig.get() == 0)
-    {
-        _worldConfig.reset(new WorldConfig());
-        _worldConfig->load(); //default world.cfg
-    }
-    
     _scnMgr = packet->sceneManager;
     _cam = packet->initialCamera;
     _physicsMgr.reset(new PhysicsManager());
     _physicsMgr->onInit(packet);
-    _loadWorldMap(_worldConfig->getWorldMapConfig());
-    //log->logMessage(Ogre::LML_TRIVIAL,"Out WorldController::init().");
-    _worldConfig.reset(0);
+    
+    if(_worldConfig.get() == 0)
+    {
+        _worldConfig.reset(new World::WorldConfig());
+        _worldConfig->load();
+        _loadWorldMap(_worldConfig->getWorldMapConfig());
+        _worldConfig.reset(0);
+    }
 }
 
 void
@@ -113,10 +112,6 @@ void
         config.unloadRadius, config.minx, config.miny, 
         config.maxx, config.maxy, 
         _scnMgr);
-     //_volumePaging->createWorldSection(world, _volumeMap.get(), 320.0, 
-        //_volumeMap->getRegionsHalfWidth(), -32768, -32768, 32768, 32768, EngineView::getSingleton().getSceneManager());
-        //384.0, -2300, -2300, 2300, 2300, EngineView::getSingleton().getSceneManager());
-
 }
 
 void

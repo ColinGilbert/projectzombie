@@ -92,6 +92,8 @@ void
 
 }
 
+
+
 void
     GameMainMenuState::onCinematicControllerConfiguration(World::CinematicController* cineCtrl)
 {
@@ -99,6 +101,6 @@ void
     //Create the cameras;
     std::vector<CinematicController::CAM_PAIR> cams;
     cams.push_back(std::make_pair<Ogre::String, CinematicController::CAM_INIT_STATE>("PERSPECTIVE",
-        std::make_pair<Ogre::Vector3, Ogre::Quaternion>( Ogre::Vector3(32.0f, 1000.0f, 32.0f), Ogre::Quaternion() ) ) );
+        std::make_pair<Ogre::Vector3, Ogre::Quaternion>( Ogre::Vector3(32.0f, 128.0f, 32.0f), Ogre::Quaternion() ) ) );
     cineCtrl->loadCameras(cams, 0);
 }

@@ -76,6 +76,7 @@ namespace ZGame
 
     private:
         ZGame::ControlModuleProto _controlMod;
+        Gui::EditorScreen* _editorScreen;
 
 
     };

@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "gui/SceensFactory.h"
 #include "gui/DebugScreen.h"
 #include "gui/MainMenuScreen.h"
+#include "gui/EditorScreen.h"
 
 using namespace ZGame::Gui;
 
@@ -35,6 +36,7 @@ Screens*
 
     const String MainMenuScreen("MainMenuScreen");
     const String DebugScreen("DebugScreen");
+    const String EditorScreen("EditorScreen");
 
     if(MainMenuScreen == screensClass)
     {
@@ -43,6 +45,10 @@ Screens*
     else if(DebugScreen == screensClass)
     {
         return new Gui::DebugScreen(guiCtrl);
+    }
+    else if(EditorScreen == screensClass)
+    {
+        return new Gui::EditorScreen(guiCtrl);
     }
 
     return 0;

@@ -56,14 +56,13 @@ namespace ZGame
             {
                 HDR_HIGH=0, HDR_LOW
             };
-
-            const Ogre::StringVector& 
+            virtual void
+                _afterDocLoadedOnLoad();
+            const Ogre::StringVector&
                 _getDocPath()
             {
                 return _docPath;
             }
-            virtual void
-                _afterDocLoadedOnLoad();
             /** \brief This method loads the panel for Hdr High.**/
             void
                 _loadHdrHighPanel(Rocket::Controls::ElementTabSet* tab);

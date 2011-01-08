@@ -35,13 +35,13 @@ bool
     //Depending on mode.
     if(id == OIS::MouseButtonID::MB_Left)
     {
-        _workspace->getWorldController()->addBlock(evt.state.X.abs / _windowWidth, 
-            evt.state.Y.abs / _windowHeight);
+        //_workspace->getWorldController()->addBlock(evt.state.X.abs / _windowWidth, 
+            //evt.state.Y.abs / _windowHeight);
     }
     else if(id == OIS::MouseButtonID::MB_Right)
     {
-        _workspace->getWorldController()->removeBlock(evt.state.X.abs / _windowWidth,
-            evt.state.Y.abs / _windowHeight);
+        //_workspace->getWorldController()->removeBlock(evt.state.X.abs / _windowWidth,
+            //evt.state.Y.abs / _windowHeight);
     }
     return true;
 }
