@@ -797,7 +797,8 @@ void
             //WORKSPACE
             if(info.requireWorkspace)
             {
-                _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get()));
+                _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get(),
+                    _cineController.get()));
                 _workspaceCtrl.reset(new ZGame::ZWorkspaceController);
                 _workspaceCtrl->setZWorkspace(_workspace.get());
                 //Workspace controller

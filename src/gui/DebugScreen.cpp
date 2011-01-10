@@ -43,11 +43,11 @@ DebugScreen::~DebugScreen()
 }
 
 void 
-    DebugScreen::setHdrCompositor(HDRCompositor* hdrCompositor)
+    DebugScreen::setHDRSettingsView(std::auto_ptr<HDRSettingsView> hdrView)
 {
     if(!_hdrView.get())
     {
-        _hdrView.reset(new HDRSettingsView(hdrCompositor));
+        _hdrView = hdrView;
     }
 }
 
@@ -55,9 +55,7 @@ void
 void
     DebugScreen::_loadHdrHighPanel(Rocket::Controls::ElementTabSet* tab)
 {
-    if(!_hdrView.get())
-        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "HDRView was no set",
-        "DebugScreen::_loadHdrHighPanel");
+    
     cout << "Number of tabs: " << tab->GetNumTabs() << endl;
     //Set the panel
     tab->SetTab(HDR_HIGH, "HDR_HIGH");
@@ -69,6 +67,11 @@ void
 void
     DebugScreen::_afterDocLoadedOnLoad()
 {
+    //Check for validity of modules that one is REQUIRED to set for this class to be valid.
+    if(!_hdrView.get())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "HDRView was no set",
+        "DebugScreen::_loadHdrHighPanel");
+
     //Do nothing. This screen remains hidden on load.
     _docManager->defineRoot(_docPath[0].c_str());
     p_setName(_docManager->getRootDocument()->GetTitle());

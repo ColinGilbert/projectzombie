@@ -6,6 +6,7 @@
 #include "gui/DebugScreen.h"
 #include "GraphicsController.h"
 #include "gui/SceensFactory.h"
+#include "gui/HDRSettingsView.h"
 using std::cout; 
 using std::endl;
 
@@ -328,7 +329,7 @@ bool
 
         //Load any persistence screens.
         _debugScreen = static_cast<DebugScreen*>(ScreensFactory::createScreens("DebugScreen", this));
-        _debugScreen->setHdrCompositor(initPacket->gfxCtrl->getHdrCompositor());
+        _debugScreen->setHDRSettingsView(std::auto_ptr<Gui::HDRSettingsView>(new HDRSettingsView(initPacket->gfxCtrl->getHdrCompositor())));
         _debugScreen->onLoad();
         /*
         *For now this part is hacky. We need to add screen after the "root" screen has been added. This is so because we're doing pop transition wrong right now doing it this

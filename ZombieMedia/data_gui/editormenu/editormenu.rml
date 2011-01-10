@@ -19,7 +19,11 @@
       <tabset class="colored">
 	<tab>Project</tab>
 	<panel>
-	  Project settings go here
+	  <div text-align="center">
+	  <button type="button" class="small" id="new_project" onclick="EditorController" action="newProject" >New Project</button>
+	  <button type="button" class="small" id="load_project" onclick="EditorController" action="loadProject" >Load Project</button>
+	  <button type="button" class="small" id="quit" onclick="EditorController" action="quit" >Quit</button>
+	  </div>
 	</panel>
 	<tab>World</tab>
 	<panel>

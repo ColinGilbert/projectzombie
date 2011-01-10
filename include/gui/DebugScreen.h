@@ -37,7 +37,7 @@ namespace ZGame
             DebugScreen(GuiController* guiCtrl);
             virtual ~DebugScreen();
 
-            void setHdrCompositor(HDRCompositor* hdrCompositor);
+            void setHDRSettingsView(std::auto_ptr<Gui::HDRSettingsView> hdrSettings);
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void Release(){}; //do nothing

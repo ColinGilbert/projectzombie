@@ -29,6 +29,13 @@ namespace ZGame
             _workspace = workspace;
         }
 
+        ZWorkspace*
+            getZWorkspace()
+        {
+            return _workspace;
+        }
+
+
         bool
             onInit(ZInitPacket *packet);
         bool

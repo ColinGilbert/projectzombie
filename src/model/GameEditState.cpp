@@ -130,7 +130,7 @@ void
     GameEditState::getGameStateBootstrapInfo(GameStateBootstrapInfo &info)
 {
     info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
-    //info.requireWorldController = true;
+    info.requireWorldController = true;
     info.requireControlModule = true;
     info.requireWorkspace = true;
 }

@@ -269,6 +269,25 @@ input.submit
 
 
 
+button.small,
+input.submit
+{
+	display: inline-block;
+
+	width: 7em;
+	height: 2em;
+
+	padding-top: 8px;
+	vertical-align: -18px;
+
+	font-size: 12;
+	text-align: center;
+	tab-index: auto;
+
+	background-decorator: image;
+	background-image: ../img/invader.tga 247px 0px 406px 45px;
+}
+
 button,
 input.submit
 {
@@ -753,7 +772,7 @@ tabset.colored tabs
 /* Force each tab to only take up 50 pixels across the tabs element. */
 tabset.colored tab
 {
-	width: 50px;
+	width: 75px;
 	margin-right: 0.5em;
 	background-color: #FF7400;
 }

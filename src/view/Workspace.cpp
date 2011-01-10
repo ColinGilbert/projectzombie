@@ -18,9 +18,10 @@ using ZGame::ZWorkspace;
 size_t ZWorkspace::_ID = 0;
 
 ZWorkspace::ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray, ZCL::ZCLController* zclCtrl,
-    World::WorldController* worldCtrl) : _scnMgr(scnMgr),
+    World::WorldController* worldCtrl, World::CinematicController* cineCtrl) : _scnMgr(scnMgr),
     _entMgr(entMgr), _rdrEntMgr(rdrEntMgr), _tray(sdkTray),
-    _zclCtrl(zclCtrl), _worldCtrl(worldCtrl), _workspaceRoot(scnMgr->getRootSceneNode()->createChildSceneNode("WorkspaceNode"))
+    _zclCtrl(zclCtrl), _worldCtrl(worldCtrl), _workspaceRoot(scnMgr->getRootSceneNode()->createChildSceneNode("WorkspaceNode")),
+    _cineCtrl(cineCtrl)
 {
 }
 

@@ -12,7 +12,7 @@
 			}
 			</style>
 	</head>
-	<body template="blackbarswindow">
+	<body template="blackbarswindow" class="editorbody">
 	      <div class="content_bar_bottom" id="content_bar">
 	      	   <button type="button" id="start_button" onclick="MainMenuController" action="start" >Start / Continue</button>
 	    	   <button type="button" id="load_button" onclick="MainMenuController" action="load">Load </button>

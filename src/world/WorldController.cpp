@@ -76,14 +76,14 @@ void WorldController::_init(ZGame::ZInitPacket *packet)
     _cam = packet->initialCamera;
     _physicsMgr.reset(new PhysicsManager());
     _physicsMgr->onInit(packet);
-    
+
     if(_worldConfig.get() == 0)
     {
         _worldConfig.reset(new World::WorldConfig());
         _worldConfig->load();
-        _loadWorldMap(_worldConfig->getWorldMapConfig());
-        _worldConfig.reset(0);
     }
+    _loadWorldMap(_worldConfig->getWorldMapConfig());
+    _worldConfig.reset(0);
 }
 
 void

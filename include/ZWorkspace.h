@@ -48,7 +48,8 @@ namespace ZGame
     {
     public:
         ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray,
-            ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl);
+            ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl,
+            World::CinematicController* cineCtrl);
         virtual
             ~ZWorkspace();
 
@@ -97,6 +98,13 @@ namespace ZGame
             return _worldCtrl;
         }
 
+        World::CinematicController*
+            getCinematicController()
+        {
+            return _cineCtrl;
+        }
+
+
     protected:
 
     private:
@@ -110,6 +118,7 @@ namespace ZGame
         ZCL::ZCLController* _zclCtrl;
         World::WorldController* _worldCtrl;
         World::PhysicsManager* _phyMgr;
+        World::CinematicController* _cineCtrl;
 
     private:
         void
