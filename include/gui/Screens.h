@@ -59,7 +59,8 @@ namespace ZGame
             virtual ~Screens();
 
             virtual Rocket::Core::EventListener*
-                InstanceEventListener(const Rocket::Core::String& value) = 0;
+                InstanceEventListener(const Rocket::Core::String& value);
+
             virtual void Release();
             virtual void ProcessEvent(Rocket::Core::Event& event) = 0;
             const Rocket::Core::String& 
@@ -130,6 +131,9 @@ namespace ZGame
             void
                 p_showMenu(Rocket::Core::Element* menu, Rocket::Core::Element** currentMenu);
 
+            void
+                p_registerEventInstancer(Rocket::Core::EventListenerInstancer* inst);
+
 
            
         private:
@@ -140,7 +144,10 @@ namespace ZGame
                 const Ogre::StringVector& _getDocPath() = 0;
             virtual void
                 _afterDocLoadedOnLoad() = 0;
-            
+
+            typedef Ogre::map<Rocket::Core::EventListenerInstancer*, Rocket::Core::EventListenerInstancer*>::type EVT_INSTANCER_MAP;
+
+            EVT_INSTANCER_MAP _evtInstancerMap;
 
         };
     }

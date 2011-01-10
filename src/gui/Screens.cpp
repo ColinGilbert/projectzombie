@@ -78,6 +78,28 @@ void
 }
 
 /**
+*This method implements a general version of InstanceEventListener. Typically, a Screens sub-class will implement virtual method
+*IntanceEventListener. They can then call the super class version of this method for generalized handling of inmstancing event listeners.
+*The use case for this scenerio is to have any abitrary view within Screens to be able to handle their own events with their own 
+*event listeners (via a Custom Event Controller map in *.rml files) if they so chooses.
+*
+**/
+Rocket::Core::EventListener*
+    Screens::InstanceEventListener(const Rocket::Core::String& value)
+{
+    Rocket::Core::EventListener* listener = 0;
+    for(EVT_INSTANCER_MAP::iterator iter = _evtInstancerMap.begin();
+        iter != _evtInstancerMap.end(); ++iter)
+    {
+        listener = iter->second->InstanceEventListener(value);
+        if(listener)
+            return listener;
+    }
+
+    return listener;    
+}
+
+/**
 * This method shows a menu and hides the current meu.
 *
 * \note We do it this way because we could get set local style property to work yet. Ask forums.
@@ -96,4 +118,13 @@ void
     }   
     s_showElement(menu);
     *currentMenu = menu;
+}
+
+void
+    Screens::p_registerEventInstancer(Rocket::Core::EventListenerInstancer* inst)
+{
+    if(!inst)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "null pointer for inst", "Screens::p_registerEventInstancer");
+
+    _evtInstancerMap[inst] = inst;
 }

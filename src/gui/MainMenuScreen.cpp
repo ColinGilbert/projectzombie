@@ -74,7 +74,7 @@ Rocket::Core::EventListener*
     {
         cout << "In place event string passed through is: " << value.CString() << endl;
     }
-    return 0;
+    return Screens::InstanceEventListener(value);
 }
 
 void

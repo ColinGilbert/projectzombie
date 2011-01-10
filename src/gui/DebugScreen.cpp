@@ -106,11 +106,7 @@ Rocket::Core::EventListener*
     {
         return this;
     }
-    else
-    {
-        cout << "In place controller string passed through is: " << value.CString() << endl;
-    }
-    return 0;
+    return Screens::InstanceEventListener(value);
 }
 
 void
