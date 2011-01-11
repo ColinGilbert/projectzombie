@@ -46,7 +46,7 @@ CAMERA_ID
     cam->setOrientation(initialOrient);
     cam->setAspectRatio(windowW / windowH);
     _camsVec.push_back(cam);
-    return _camsVec.size();
+    return _camsVec.size()-1;
 }
 
 CAMERA_ID
@@ -62,7 +62,7 @@ CAMERA_ID
     cam->setPosition(initialPos);
     cam->setOrientation(initialOrient);
     _camsVec.push_back(cam);
-    return _camsVec.size();
+    return _camsVec.size()-1;
 }
 
 void

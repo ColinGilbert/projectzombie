@@ -19,6 +19,9 @@
 #include "world/WorldConfig.h"
 #include "world/CinematicController.h"
 #include "gui/EditorScreen.h"
+#include "gui/CineView.h"
+#include "ZWorkspaceController.h"
+#include "ZWorkspace.h"
 namespace ZGame
 {
     GameEditState::GameEditState() :
@@ -78,6 +81,10 @@ bool
     GameEditState::onInit(ZGame::ZInitPacket *initPacket)
 {
     Ogre::LogManager::getSingleton().logMessage(Ogre::LML_NORMAL, "In GameEditState::onInit");
+
+    //Here we will manually set the various views on editor screen. This is how we're doing this now, maybe in the future
+    //we will have a more generalized way of adding views to screens.
+    std::auto_ptr<Gui::CineView> cineView(new Gui::CineView(initPacket->workspaceCtrl->getZWorkspace()->getCinematicController()));
     _editorScreen = static_cast<Gui::EditorScreen*>(initPacket->guiCtrl->getScreen("EditorScreen"));
     _editorScreen->onLoad();
     _editorScreen->show();

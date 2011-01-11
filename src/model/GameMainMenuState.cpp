@@ -51,12 +51,6 @@ void GameMainMenuState::regLfcObsForInjection(LifeCycleRegister &lfcReg)
 void GameMainMenuState::regKeyObsForInjection(KeyEventRegister &keyReg)
 {
     GameState::regKeyObsForInjection(keyReg);
-    /*
-    EVENT::KeyboardEvtObserver keyObs;
-    EVENT::bindKeyObserver(keyObs,*this);
-    keyReg.registerKeyObs(keyObs);
-    EVENT::clearKeyObs(keyObs);
-    */
 }
 
 bool GameMainMenuState::onUpdate(const Ogre::FrameEvent& evt)

@@ -27,56 +27,30 @@ THE SOFTWARE.
 #include "gui/GuiPrerequisite.h"
 #include <vector>
 #include <utility>
-#include "gui/GuiView.h"
-
-
-class HDRCompositor;
 
 namespace ZGame
 {
-    
     namespace Gui
     {
-        /** 
-        *THis class is a view on the settings for HDR. 
-        *
-        */
-        class HDRSettingsView : public GuiView
+        /**
+        *This is the super class for Gui based View classes. 
+        **/
+        class GuiView
         {
         public:
-            HDRSettingsView(HDRCompositor* compoistor);
-            virtual ~HDRSettingsView();
-
-            /** This method will return an element containing the view of HDRSettings.**/
-            virtual Rocket::Core::Element* 
-                getViewElement();
-
-            /** \brief This method is called by a controller on an action string corresponding to this view,
-            and the Element passed in is the Element of the corresponding action. **/
-            virtual void actionElementUpdate(Rocket::Core::Element* actionElement);
-
             virtual VIEW_KEY
-                getKey()
-            {
-                return _KEY;
-            }
+                getKey() = 0;
+            virtual Rocket::Core::Element*
+                getViewElement() = 0;
+            virtual void 
+                actionElementUpdate(Rocket::Core::Element* actionElement){}
+            virtual ~GuiView(){}
 
+        protected:
+            GuiView(){}
+            
 
         private:
-            Rocket::Core::String _DIV_CLASS; //class for the div element.
-            void
-                _generateElement();
-
-            Rocket::Core::Element* _rootElement;
-
-            HDRCompositor* _theCompositor;
-
-            Rocket::Core::String _TONE_MAPPER_SELECT_ID;
-            Rocket::Core::String _GLARE_TYPE_SELECT_ID;
-
-            VIEW_KEY _KEY;
-
         };
-
     }
 }

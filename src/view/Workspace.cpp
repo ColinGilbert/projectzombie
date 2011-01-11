@@ -10,6 +10,7 @@
 #include "ZCL/ZCLController.h"
 #include "world/WorldController.h"
 #include "world/PhysicsManager.h"
+#include "world/CinematicController.h"
 #include <sstream>
 
 using namespace ZGame;

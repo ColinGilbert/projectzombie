@@ -22,57 +22,47 @@ THE SOFTWARE.
 **/
 
 #include "ZPrerequisites.h"
+#include "gui/GuiPrerequisite.h"
+#include "gui/GuiView.h"
 
 namespace ZGame
 {
-    namespace World
+    namespace Gui
     {
-        class CinematicController
+        class CineView : public GuiView, public Rocket::Core::EventListenerInstancer, public Rocket::Core::EventListener
         {
         public:
+            CineView(World::CinematicController* cineCtrl);
+            virtual ~CineView();
+            //interface methods for GuiView
+            /** \brief This method will returns the Rocket based element representing this view.**/
+            virtual Rocket::Core::Element*
+                getViewElement();
+            
 
-            typedef std::pair<Ogre::Vector3, Ogre::Quaternion> CAM_INIT_STATE;
-            typedef std::pair<Ogre::String, CAM_INIT_STATE> CAM_PAIR;
+            //Interfaces for events
+            virtual Rocket::Core::EventListener*
+                InstanceEventListener(const Rocket::Core::String& value);
+            virtual void
+                Release(){}
+            virtual void
+                ProcessEvent(Rocket::Core::Event& event);
 
-            CinematicController(std::auto_ptr<CinematicManager> cineMgr,
-                Ogre::RenderWindow* rendWin);
-            virtual ~CinematicController();
-
-            void
-                loadCameras(std::vector<CAM_PAIR> camStates, size_t rootCamIdx);
-
-            CinematicManager*
-                getCinematicManager()
+            VIEW_KEY
+                getKey()
             {
-                return _cineMgr.get();
-            }
-
-            const Ogre::vector<ZCameraInfo>::type&
-                getCameraInfos()
-            {
-                return _camInfoVec;
-            }
-
-
-
-            Ogre::Viewport*
-                getViewport()
-            {
-                if(!_vp)
-                    OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Viewport is null",
-                    "CinematicController::getViewport");
-                return _vp;
+                return _key;
             }
 
         protected:
         private:
+            World::CinematicController* _cineCtrl;
+            Rocket::Core::String _ctrlStr;
+            Rocket::Core::Element* _rootElement;
+            VIEW_KEY _key;
 
-            std::auto_ptr<CinematicManager> _cineMgr;
-            typedef Ogre::vector<ZCameraInfo>::type CAM_VEC;
-            CAM_VEC _camInfoVec;
-
-            Ogre::RenderWindow* _rendWin;
-            Ogre::Viewport* _vp;
+            void
+                _generateRootElement();
         };
     }
 }

@@ -43,8 +43,12 @@ namespace ZGame
 {
     namespace Gui
     {
+        typedef Rocket::Core::String VIEW_KEY;
+        typedef std::pair<Rocket::Core::String, Rocket::Core::String> SELECT_OPT;
         class GuiController;
+        class CineView;
         class Screens;
+        class HDRSettingsView;
         typedef std::pair<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
         typedef std::map<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
         typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;

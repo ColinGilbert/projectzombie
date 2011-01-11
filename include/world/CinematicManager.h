@@ -43,6 +43,12 @@ namespace ZGame
                 const Ogre::Vector3 &initialPos,
                 const Ogre::Quaternion &initialOrient);
 
+            Ogre::Camera*
+                getCamera(CAMERA_ID id)
+            {
+                return _camsVec[id];
+            }
+
             void
                 setRootCam(CAMERA_ID id);
             Ogre::Camera*

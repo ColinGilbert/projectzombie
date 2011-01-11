@@ -25,58 +25,30 @@ THE SOFTWARE.
 **/
 
 #include "gui/GuiPrerequisite.h"
-#include <vector>
-#include <utility>
-#include "gui/GuiView.h"
-
-
-class HDRCompositor;
 
 namespace ZGame
 {
-    
     namespace Gui
     {
-        /** 
-        *THis class is a view on the settings for HDR. 
-        *
-        */
-        class HDRSettingsView : public GuiView
+        class GuiUtils
         {
         public:
-            HDRSettingsView(HDRCompositor* compoistor);
-            virtual ~HDRSettingsView();
-
-            /** This method will return an element containing the view of HDRSettings.**/
-            virtual Rocket::Core::Element* 
-                getViewElement();
-
-            /** \brief This method is called by a controller on an action string corresponding to this view,
-            and the Element passed in is the Element of the corresponding action. **/
-            virtual void actionElementUpdate(Rocket::Core::Element* actionElement);
-
-            virtual VIEW_KEY
-                getKey()
+            static void
+                ConstructSelectInput(Rocket::Core::Element* select, std::vector<SELECT_OPT>& 
+                optionPairsVec)
             {
-                return _KEY;
+                for(size_t i = 0; i < optionPairsVec.size(); ++i)
+                {
+                    //Here we are going to assume first is name, and second is value.
+                    Rocket::Core::XMLAttributes attri;
+                    attri.Set("name", optionPairsVec[i].first);
+                    attri.Set("value", optionPairsVec[i].second);
+                    Rocket::Core::Element* el = Rocket::Core::Factory::InstanceElement(select, "option", "option", attri);
+                    el->SetInnerRML(optionPairsVec[i].first);
+                    select->AppendChild(el);
+                    el->RemoveReference();
+                }
             }
-
-
-        private:
-            Rocket::Core::String _DIV_CLASS; //class for the div element.
-            void
-                _generateElement();
-
-            Rocket::Core::Element* _rootElement;
-
-            HDRCompositor* _theCompositor;
-
-            Rocket::Core::String _TONE_MAPPER_SELECT_ID;
-            Rocket::Core::String _GLARE_TYPE_SELECT_ID;
-
-            VIEW_KEY _KEY;
-
         };
-
     }
 }

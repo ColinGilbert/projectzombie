@@ -45,19 +45,24 @@ void
     for(size_t i=0; i < camStates.size(); ++i)
     {
         CAM_PAIR pair = camStates[i];
+        CAMERA_ID camId;
+       
         if(pers.compare(pair.first) == 0)
         {
-            _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
+            camId = _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
                 pair.second.first, pair.second.second);
         }
         else if(ortho.compare(pair.first) == 0)
         {
-            _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
+            camId = _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
                 pair.second.first, pair.second.second);
         }
         else
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid camera type: must be PERSPECTIVE or ORTHOGRAPHIC",
             "CinematicController::loadCameras");
+         //WOW this piece of code smells.
+        _camInfoVec.push_back(ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName()));
+
     }
     _cineMgr->setRootCam(rootCamIdx);
     _vp = _rendWin->addViewport(_cineMgr->getRootCam());

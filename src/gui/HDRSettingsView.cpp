@@ -1,11 +1,12 @@
 #include "gui/HDRSettingsView.h"
 #include "graphics/HDRCompositor.h"
+#include "gui/GuiUtils.h"
 
 using namespace ZGame::Gui;
 
 HDRSettingsView::HDRSettingsView(HDRCompositor* compositor) : _theCompositor(compositor),
     _DIV_CLASS(""), _rootElement(0), _TONE_MAPPER_SELECT_ID("tone_mapper_select_id"),
-    _GLARE_TYPE_SELECT_ID("glare_type_select_id")
+    _GLARE_TYPE_SELECT_ID("glare_type_select_id"), _KEY("HDRSettingsView")
 {
 }
 
@@ -52,6 +53,7 @@ void
     attri.Set("name", "Tone Mapper Select");
     attri.Set("onchange", "DebugController");
     attri.Set("action", "hdrHighSettingsSelect");
+
     Element* toneMapperSelect = Factory::InstanceElement(inputForm,
         "select", "select", attri);
     inputForm->AppendChild(toneMapperSelect);
@@ -69,7 +71,7 @@ void
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDLOCAL", "6"));
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_COUNT", "7"));
 
-    _constructSelectInput(toneMapperSelect, optPairsVec);
+    GuiUtils::ConstructSelectInput(toneMapperSelect, optPairsVec);
 
     //Generate GLARETYPE drop down
     attri.Set("id", _GLARE_TYPE_SELECT_ID);
@@ -84,7 +86,7 @@ void
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_NONE", "0"));
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_BLUR", "1"));
 
-    _constructSelectInput(glareType, optPairsVec);
+    GuiUtils::ConstructSelectInput(glareType, optPairsVec);
     
 }
 
@@ -138,23 +140,4 @@ void
     }
 
 }
-
-void
-    HDRSettingsView::_constructSelectInput(Rocket::Core::Element* select, 
-    std::vector<SELECT_OPT>& optionPairsVec)
-{
-    for(size_t i = 0; i < optionPairsVec.size(); ++i)
-    {
-        //Here we are going to assume first is name, and second is value.
-        Rocket::Core::XMLAttributes attri;
-        attri.Set("name", optionPairsVec[i].first);
-        attri.Set("value", optionPairsVec[i].second);
-        Rocket::Core::Element* el = Rocket::Core::Factory::InstanceElement(select, "option", "option", attri);
-        el->SetInnerRML(optionPairsVec[i].first);
-        select->AppendChild(el);
-        el->RemoveReference();
-    }
-}
-
-
 

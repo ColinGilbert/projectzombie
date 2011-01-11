@@ -21,8 +21,8 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
-
 #pragma once
+
 
 #include "gui/GuiPrerequisite.h"
 #include "gui/Screens.h"
@@ -31,49 +31,39 @@ namespace ZGame
 {
     namespace Gui
     {
-        class DebugScreen : public Screens
+        class EditorScreen : public Screens
         {
         public:
-            DebugScreen(GuiController* guiCtrl);
-            virtual ~DebugScreen();
+            EditorScreen(GuiController* guiCtrl);
+            virtual ~EditorScreen();
 
-            void setHDRSettingsView(std::auto_ptr<Gui::HDRSettingsView> hdrSettings);
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
-            virtual void Release(){}; //do nothing
-            virtual void ProcessEvent(Rocket::Core::Event& event);
+            virtual void Release(){};
+            virtual void ProcessEvent(Rocket::Core::Event& evt);
             virtual const Rocket::Core::String&
                 getControllerString()
             {
                 return _ctrlStr;
             }
+            void
+                setCineView(std::auto_ptr<Gui::CineView> cineView);
         protected:
         private:
-
-            enum TAB_NUM
-            {
-                HDR_HIGH=0, HDR_LOW
-            };
-            virtual void
-                _afterDocLoadedOnLoad();
             const Ogre::StringVector&
                 _getDocPath()
             {
                 return _docPath;
             }
-            /** \brief This method loads the panel for Hdr High.**/
-            void
-                _loadHdrHighPanel(Rocket::Controls::ElementTabSet* tab);
-
-            void
-                _onRangeChange(Rocket::Controls::ElementFormControlInput* rangeEl);
+            virtual void
+                _afterDocLoadedOnLoad();
 
             Ogre::StringVector _docPath;
             Rocket::Core::String _ctrlStr;
-            Rocket::Core::String _TAB_ID;
-            Rocket::Core::Element* _curMenu;
-            std::auto_ptr<Gui::HDRSettingsView> _hdrView;
+
+            std::auto_ptr<Gui::CineView> _cineView;
 
         };
     }
 }
+
