@@ -34,7 +34,7 @@ namespace ZGame
         {
         public:
             static void
-                ConstructSelectInput(Rocket::Core::Element* select, std::vector<SELECT_OPT>& 
+                ConstructSelectOptions(Rocket::Core::Element* select, std::vector<SELECT_OPT>& 
                 optionPairsVec)
             {
                 for(size_t i = 0; i < optionPairsVec.size(); ++i)
@@ -49,6 +49,17 @@ namespace ZGame
                     el->RemoveReference();
                 }
             }
+            static Rocket::Core::Element*
+                ConstructSelectInput(Rocket::Core::XMLAttributes& attri, 
+                Rocket::Core::Element* parentForm)
+            {
+                Rocket::Core::Element* select = Rocket::Core::Factory::InstanceElement(parentForm, "select", "select", attri);
+                parentForm->AppendChild(select);
+                select->RemoveReference();
+                return select;
+            }
+
+
         };
     }
 }

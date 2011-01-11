@@ -42,5 +42,5 @@ Rocket::Core::Element*
 void
     CineView::_generateRootElement()
 {
-
+    using Rocket::Core::Factory;
 }

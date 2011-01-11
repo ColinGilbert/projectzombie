@@ -54,10 +54,8 @@ void
     attri.Set("onchange", "DebugController");
     attri.Set("action", "hdrHighSettingsSelect");
 
-    Element* toneMapperSelect = Factory::InstanceElement(inputForm,
-        "select", "select", attri);
-    inputForm->AppendChild(toneMapperSelect);
-    toneMapperSelect->RemoveReference();
+
+    Element* toneMapperSelect = GuiUtils::ConstructSelectInput(attri, inputForm);
     attri.Clear();
 
     std::vector<SELECT_OPT> optPairsVec;
@@ -71,22 +69,19 @@ void
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_REINHARDLOCAL", "6"));
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("TM_COUNT", "7"));
 
-    GuiUtils::ConstructSelectInput(toneMapperSelect, optPairsVec);
+    GuiUtils::ConstructSelectOptions(toneMapperSelect, optPairsVec);
 
     //Generate GLARETYPE drop down
     attri.Set("id", _GLARE_TYPE_SELECT_ID);
     attri.Set("name", "Glare Type Select");
     attri.Set("onchange", "DebugController");
     attri.Set("action", "hdrHighSettingsSelect");
-    Element* glareType = Factory::InstanceElement(inputForm, 
-        "select", "select", attri);
-    inputForm->AppendChild(glareType);
-    glareType->RemoveReference();
+    Element* glareType = GuiUtils::ConstructSelectInput(attri, inputForm);
     optPairsVec.clear();
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_NONE", "0"));
     optPairsVec.push_back(std::make_pair<Rocket::Core::String, Rocket::Core::String>("GT_BLUR", "1"));
 
-    GuiUtils::ConstructSelectInput(glareType, optPairsVec);
+    GuiUtils::ConstructSelectOptions(glareType, optPairsVec);
     
 }
 
