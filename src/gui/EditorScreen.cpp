@@ -41,6 +41,7 @@ void
     _elementIsValid(panel);
     panel = tab->GetElementById("view_panel");
     _elementIsValid(panel);
+    panel->AppendChild(_cineView->getViewElement());
     panel = tab->GetElementById("physics_panel");
     _elementIsValid(panel);
     panel = tab->GetElementById("materials_panel");
@@ -62,11 +63,7 @@ void
     //We will implement global view control in Screens super-class. For now just test it.
     Rocket::Controls::ElementTabSet* tab = static_cast<Rocket::Controls::ElementTabSet*>(_docManager->getRootDocument()
         ->GetElementById("main_tabs"));
-
-    Rocket::Core::Element* panel = tab->GetElementById("view_panel");
-    //if(panel)
-        //panel->AppendChild(_cineView->getViewElement());
-
+    _buildEditorTab(tab);
 
     hide();
 

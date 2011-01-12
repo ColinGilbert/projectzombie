@@ -46,7 +46,7 @@ namespace ZGame
                     Rocket::Core::Element* el = Rocket::Core::Factory::InstanceElement(select, "option", "option", attri);
                     el->SetInnerRML(optionPairsVec[i].first);
                     select->AppendChild(el);
-                    //el->RemoveReference();
+                    el->RemoveReference();
                 }
             }
             static Rocket::Core::Element*
@@ -55,7 +55,7 @@ namespace ZGame
             {
                 Rocket::Core::Element* select = Rocket::Core::Factory::InstanceElement(parentForm, "select", "select", attri);
                 parentForm->AppendChild(select);
-                //select->RemoveReference();
+                select->RemoveReference();
                 return select;
             }
 
