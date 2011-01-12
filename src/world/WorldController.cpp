@@ -24,7 +24,7 @@ using namespace ZGame::World;
 
 WorldController::WorldController() :
 _scnMgr(0), _volumePaging(0),
-    _physicsMgr(0), _worldConfig(0)
+    _physicsMgr(0), _worldConfig(0), _viewport(0)
 {
     //init();
 
@@ -58,6 +58,7 @@ bool WorldController::onDestroy()
     cout << "WorldController::onDestroy called." << endl;
     cout << "Deleting WorldMap." << endl;
     _pageManager.removeCamera(_cam);
+    _viewport->removeListener(this);
     OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
     cout << "WorldController::onDestroy done." << endl;
     return true;
@@ -74,6 +75,8 @@ void WorldController::_init(ZGame::ZInitPacket *packet)
 {
     _scnMgr = packet->sceneManager;
     _cam = packet->initialCamera;
+    _viewport = _cam->getViewport();
+    _viewport->addListener(this);
     _physicsMgr.reset(new PhysicsManager());
     _physicsMgr->onInit(packet);
 
@@ -135,4 +138,18 @@ void
     rayTo = _cam->getCameraToViewportRay(cursorX, cursorY);
     Ogre::Real searchDistance = 10.0f;
     _volumeMap->removeBlock(rayTo, searchDistance);
+}
+
+void
+    WorldController::viewportCameraChanged(Ogre::Viewport* viewport)
+{
+    Ogre::Camera* tempCam = viewport->getCamera();
+
+    //Here we assume pageManager always has a single camera and it is _cam.
+    if(!_pageManager.hasCamera(tempCam))
+    {
+        _pageManager.removeCamera(_cam);
+        _pageManager.addCamera(tempCam);
+    }
+    _cam = tempCam;
 }

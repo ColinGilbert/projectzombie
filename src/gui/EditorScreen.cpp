@@ -41,7 +41,6 @@ void
     _elementIsValid(panel);
     panel = tab->GetElementById("view_panel");
     _elementIsValid(panel);
-    panel->AppendChild(_cineView->getViewElement());
     panel = tab->GetElementById("physics_panel");
     _elementIsValid(panel);
     panel = tab->GetElementById("materials_panel");
@@ -65,8 +64,8 @@ void
         ->GetElementById("main_tabs"));
 
     Rocket::Core::Element* panel = tab->GetElementById("view_panel");
-    if(panel)
-        panel->AppendChild(_cineView->getViewElement());
+    //if(panel)
+        //panel->AppendChild(_cineView->getViewElement());
 
 
     hide();

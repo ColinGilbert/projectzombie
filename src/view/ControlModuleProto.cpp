@@ -56,10 +56,17 @@ namespace ZGame
     bool
         ControlModuleProto::onInit(ZGame::ZInitPacket *packet)
     {
+        
         _cam = packet->initialCamera;
+        //Add This to the viewport as a listener.
+        //Note: Camera has a getViewport, which points to the LAST viewport associated with the camera.
+        //And this last viewport is not guaranteed to be the viewport that we are registering as a listener
+        //to. So we need to remember the viewport which we registered to, so we can unregister laster.
+        _viewport = _cam->getViewport();
+        _viewport->addListener(this);
         using COMMAND::CommandList;
         _cameraNode = packet->sceneManager->createSceneNode("CAMERA_NODE");
-        _cameraNode->attachObject(_cam);
+        //_cameraNode->attachObject(_cam);
         return true;
     }
 
@@ -145,6 +152,13 @@ namespace ZGame
             _zoomFactor -= 0.5f;
             _camLocalZOffset = Math::Exp(_zoomFactor);
         }
+        return true;
+    }
+
+    bool
+        ControlModuleProto::onDestroy()
+    {
+        _viewport->removeListener(this);
         return true;
     }
 
@@ -252,5 +266,10 @@ namespace ZGame
         _disable = tf;
     }
 
+    void
+        ControlModuleProto::viewportCameraChanged(Ogre::Viewport* viewport)
+    {
+        _cam = viewport->getCamera();
+    }
 
 }

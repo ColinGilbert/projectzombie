@@ -37,7 +37,7 @@ namespace ZGame
     namespace World
     {
         
-        class WorldController
+        class WorldController : Ogre::Viewport::Listener
         {
         public:
             WorldController();
@@ -54,6 +54,16 @@ namespace ZGame
             void
                 setWorldConfiguration(std::auto_ptr<WorldConfig> worldConfig);
 
+            //Viewport listener
+            virtual void
+                viewportCameraChanged(Ogre::Viewport* viewport);
+            virtual void
+                viewportDimensionsChanged(Ogre::Viewport* viewport){}
+            virtual void
+                viewportDestroyed(Ogre::Viewport* viewport){}
+
+
+
         protected:
             
         private:
@@ -67,10 +77,8 @@ namespace ZGame
             Ogre::PageManager _pageManager;
             std::auto_ptr<PhysicsManager> _physicsMgr;
             Ogre::Camera* _cam;
+            Ogre::Viewport* _viewport;
             std::auto_ptr<WorldConfig> _worldConfig;
-
-
-          
 
         };
     }

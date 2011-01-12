@@ -15,7 +15,7 @@ namespace ZGame
 {
 
    
-    class ControlModuleProto 
+    class ControlModuleProto : public Ogre::Viewport::Listener
     {
     public:
         ControlModuleProto();
@@ -40,7 +40,7 @@ namespace ZGame
         bool
             onUpdate(const Ogre::FrameEvent &evt);
         bool
-            onDestroy(){return true;}
+            onDestroy();
 
 
         bool attachNode(const Ogre::StringVector &params);
@@ -49,6 +49,15 @@ namespace ZGame
             isEnabled();
         void
             disable(bool tf);
+
+        //Viewport listener
+        virtual void
+            viewportCameraChanged(Ogre::Viewport* viewport);
+        virtual void
+            viewportDimensionsChanged(Ogre::Viewport* viewport){}
+        virtual void
+            viewportDestroyed(Ogre::Viewport* viewport){}
+
     private:
 
         Ogre::Vector3 _transVector;
@@ -58,6 +67,7 @@ namespace ZGame
         Ogre::Real _rotPitch;
         Ogre::Real _rotFactor;
         Ogre::Camera* _cam;
+        Ogre::Viewport* _viewport;
         int _mx_rel;
         int _my_rel;
         int _mx;

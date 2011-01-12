@@ -22,7 +22,14 @@
 	<tab>World</tab>
 	<panel id="world_panel"></panel>
 	<tab>Views</tab>
-	<panel id="view_panel"></panel>
+	<panel id="view_panel">
+	  <form id="cine_form">
+	    <select onchange="CineViewController" id="camera_select_id" name="Camera Select" action="cameraSelect">
+	      <option name="cam0" value="0">Cam0</option>
+	      <option name="cam1" value="1">Cam1</option>
+	    </select>
+	  </form>
+	</panel>
 	<tab>Physics</tab>
 	<panel id="physics_panel"></panel>
 	<tab>Materials</tab>

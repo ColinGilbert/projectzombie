@@ -26,10 +26,12 @@ GuiController::~GuiController()
 {
     Rocket::Core::Shutdown();
     cout << "GuiController::shutDown()" << endl;
-    OGRE_DELETE_T(ogre_system, SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
+    //OGRE_DELETE_T(ogre_system, SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
+    delete ogre_system;
     ogre_system = 0;
 
-    OGRE_DELETE_T(ogre_renderer, RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
+    //OGRE_DELETE_T(ogre_renderer, RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL);
+    delete ogre_renderer;
     ogre_renderer = 0;
 }
 
@@ -296,23 +298,27 @@ bool
         if(ogre_renderer)
         {
             Rocket::Core::SetRenderInterface(0);
-            ogre_renderer = OGRE_NEW_T(RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)(_W_WIDTH, _W_HEIGHT);
+            //ogre_renderer = OGRE_NEW_T(RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)(_W_WIDTH, _W_HEIGHT);
+            ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
             Rocket::Core::SetRenderInterface(ogre_renderer);
         }
         else
         {
-            ogre_renderer = OGRE_NEW_T(RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)(_W_WIDTH, _W_HEIGHT);
+            //ogre_renderer = OGRE_NEW_T(RenderInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)(_W_WIDTH, _W_HEIGHT);
+            ogre_renderer = new RenderInterfaceOgre3D(_W_WIDTH, _W_HEIGHT);
             Rocket::Core::SetRenderInterface(ogre_renderer);
         }
         if(ogre_system)
         {
             Rocket::Core::SetSystemInterface(0);
-            ogre_system = OGRE_NEW_T(SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)();
+            //ogre_system = OGRE_NEW_T(SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)();
+            ogre_system = new SystemInterfaceOgre3D();
             Rocket::Core::SetSystemInterface(ogre_system);
         }
         else
         {
-            ogre_system = OGRE_NEW_T(SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)();
+            //ogre_system = OGRE_NEW_T(SystemInterfaceOgre3D, Ogre::MEMCATEGORY_GENERAL)();
+            ogre_system = new SystemInterfaceOgre3D();
             Rocket::Core::SetSystemInterface(ogre_system);
             Rocket::Core::Initialise();
             Rocket::Controls::Initialise();

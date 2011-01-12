@@ -66,14 +66,14 @@ void
     using Rocket::Core::Factory;
     using Rocket::Core::Element;
     using Rocket::Core::String;
-    _rootElement = Rocket::Core::Factory::InstanceElement(0, 
-        "div", "div", Rocket::Core::XMLAttributes());
+    //_rootElement = Rocket::Core::Factory::InstanceElement(0, 
+      //  "div", "div", Rocket::Core::XMLAttributes());
     //generate form control
     Rocket::Core::XMLAttributes attri;
     attri.Set("id", "cineform");
-    Element* inputForm = Factory::InstanceElement(_rootElement, "form", "form", attri);
-    _rootElement->AppendChild(inputForm);
-    inputForm->RemoveReference();
+    Element* inputForm = Factory::InstanceElement(0, "form", "form", attri);
+    //_rootElement->AppendChild(inputForm);
+    //inputForm->RemoveReference();
     attri.Clear();
 
     //generate camera select drop down
@@ -92,13 +92,13 @@ void
         Rocket::Core::String idStr;
         Rocket::Core::String nameStr;
         nameStr.Append(camInfos[i].name.c_str());
-        nameStr.Append(" ");
-        nameStr.Append(camInfos[i].type.c_str());
+        //nameStr.Append(" ");
+        //nameStr.Append(camInfos[i].type.c_str());
         Rocket::Core::TypeConverter<int, String>::Convert(static_cast<int>(camInfos[i].id), idStr);
-        optPairsVec.push_back(std::make_pair<String, String>(nameStr, idStr));
+        optPairsVec.push_back(std::make_pair<String, String>("cam", idStr));
     }
     GuiUtils::ConstructSelectOptions(cameraSelect, optPairsVec);
 
     //Inform listeners to update. 
-
+    _rootElement = inputForm;
 }
