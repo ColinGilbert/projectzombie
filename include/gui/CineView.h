@@ -60,7 +60,7 @@ namespace ZGame
             Rocket::Core::String _ctrlStr;
             Rocket::Core::Element* _rootElement;
             VIEW_KEY _key;
-
+            Rocket::Core::String _CAM_SELECT_ID;
             void
                 _generateRootElement();
         };

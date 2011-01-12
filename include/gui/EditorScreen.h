@@ -50,6 +50,13 @@ namespace ZGame
                 setCineView(std::auto_ptr<Gui::CineView> cineView);
         protected:
         private:
+
+             enum MAIN_TABS
+            {
+                PROJECT=0, WORLD, VIEW, PHYSICS, MATERIALS, GAME
+            };
+
+
             const Ogre::StringVector&
                 _getDocPath()
             {
@@ -57,6 +64,11 @@ namespace ZGame
             }
             virtual void
                 _afterDocLoadedOnLoad();
+
+            void
+                _buildEditorTab(Rocket::Controls::ElementTabSet* tab);
+            void
+                _elementIsValid(Rocket::Core::Element* element);
 
             Ogre::StringVector _docPath;
             Rocket::Core::String _ctrlStr;

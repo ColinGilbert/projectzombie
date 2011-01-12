@@ -30,7 +30,7 @@ namespace ZGame
         class CinematicController
         {
         public:
-
+            typedef Ogre::vector<ZCameraInfo>::type CAM_VEC;
             typedef std::pair<Ogre::Vector3, Ogre::Quaternion> CAM_INIT_STATE;
             typedef std::pair<Ogre::String, CAM_INIT_STATE> CAM_PAIR;
 
@@ -47,12 +47,14 @@ namespace ZGame
                 return _cineMgr.get();
             }
 
-            const Ogre::vector<ZCameraInfo>::type&
+            const CAM_VEC&
                 getCameraInfos()
             {
                 return _camInfoVec;
             }
 
+            void
+                onCameraChange(World::CAMERA_ID camId);
 
 
             Ogre::Viewport*
@@ -68,7 +70,7 @@ namespace ZGame
         private:
 
             std::auto_ptr<CinematicManager> _cineMgr;
-            typedef Ogre::vector<ZCameraInfo>::type CAM_VEC;
+            
             CAM_VEC _camInfoVec;
 
             Ogre::RenderWindow* _rendWin;

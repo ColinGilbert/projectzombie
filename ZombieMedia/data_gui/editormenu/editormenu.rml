@@ -16,35 +16,19 @@
     <div class="split_top">
     </div>
     <div class="split_bottom">
-      <tabset class="colored">
-	<tab>Project</tab>
-	<panel>
-	  <div text-align="center">
-	  <button type="button" class="small" id="new_project" onclick="EditorController" action="newProject" >New Project</button>
-	  <button type="button" class="small" id="load_project" onclick="EditorController" action="loadProject" >Load Project</button>
-	  <button type="button" class="small" id="quit" onclick="EditorController" action="quit" >Quit</button>
-	  </div>
-	</panel>
+      <tabset class="colored" id="main_tabs">
+	<tab>Projects</tab>
+	<panel id="project_panel"></panel>
 	<tab>World</tab>
-	<panel>
-	  World tools go here
-	</panel>
-	<tab>View</tab>
-	<panel>
-	  View controls go here.
-	</panel>
+	<panel id="world_panel"></panel>
+	<tab>Views</tab>
+	<panel id="view_panel"></panel>
 	<tab>Physics</tab>
-	<panel>
-	  Physcis tools go here
-	</panel>
+	<panel id="physics_panel"></panel>
 	<tab>Materials</tab>
-	<panel>
-	  Materials tools go here.
-	</panel>
+	<panel id="materials_panel"></panel>
 	<tab>Game</tab>
-	<panel>
-	  Game Logic go here
-	</panel>
+	<panel id="game_panel"></panel>
       </tabset>
     </div>
   </body>

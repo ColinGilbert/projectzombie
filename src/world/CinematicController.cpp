@@ -35,6 +35,13 @@ CinematicController::~CinematicController()
 }
 
 void
+    CinematicController::onCameraChange(CAMERA_ID camId)
+{
+    std::cout << "Camera id in onCameraChange: " << camId << std::endl;
+    _vp->setCamera(_cineMgr->getCamera(camId));
+}
+
+void
     CinematicController::loadCameras(std::vector<CAM_PAIR> camStates, size_t rootCamIdx)
 {
     if(rootCamIdx >= camStates.size())
