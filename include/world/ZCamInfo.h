@@ -29,6 +29,9 @@ namespace ZGame
     {
         struct ZCameraInfo
         {
+            ZCameraInfo()
+            {
+            }
             ZCameraInfo(CAMERA_ID ids, Ogre::String types,
                 Ogre::String names, Control* ctrl) : id(ids), 
                 type(types), name(names), control(ctrl)

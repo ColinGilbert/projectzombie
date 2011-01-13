@@ -84,16 +84,19 @@ void
 
     Element* cameraSelect = GuiUtils::ConstructSelectInput(attri, inputForm);
     attri.Clear();
-    const World::CinematicController::CAM_VEC& camInfos = _cineCtrl->getCameraInfos();
-    std::vector<Gui::SELECT_OPT> optPairsVec;
-    for(size_t i=0; i < camInfos.size(); ++i)
+
+    //I'm sorry if this smells. i.first is the key, i.second is ZCameraInfo
+    World::CinematicController::CAM_MAP_CITERS iters = _cineCtrl->getCameraInfosIterators();
+     std::vector<Gui::SELECT_OPT> optPairsVec;
+    for(World::CinematicController::CAM_MAP::const_iterator i = iters.first; 
+        i != iters.second; ++i)
     {
         Rocket::Core::String idStr;
         Rocket::Core::String nameStr;
-        nameStr.Append(camInfos[i].name.c_str());
+        nameStr.Append(i->second.name.c_str());
         //nameStr.Append(" ");
         //nameStr.Append(camInfos[i].type.c_str());
-        Rocket::Core::TypeConverter<int, String>::Convert(static_cast<int>(camInfos[i].id), idStr);
+        Rocket::Core::TypeConverter<int, String>::Convert(static_cast<int>(i->second.id), idStr);
         optPairsVec.push_back(std::make_pair<String, String>("cam", idStr));
     }
     GuiUtils::ConstructSelectOptions(cameraSelect, optPairsVec);

@@ -40,6 +40,8 @@ void
 {
     std::cout << "Camera id in onCameraChange: " << camId << std::endl;
     _vp->setCamera(_cineMgr->getCamera(camId));
+    _cineMgr->setRootCam(camId);
+    _currentOperation.setInput(_cineMgr->getRootCam(), _camInfoVec[camId].control); //There is only one control right now for testing.
 }
 
 void
@@ -59,15 +61,16 @@ void
         {
             camId = _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
                 pair.second.first, pair.second.second);
-            _camInfoVec.push_back(ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
-                _perspControl.get()));
+
+            _camInfoVec[camId] = ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
+                _perspControl.get());
         }
         else if(ortho.compare(pair.first) == 0)
         {
             camId = _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
                 pair.second.first, pair.second.second);
-            _camInfoVec.push_back(ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
-                _perspControl.get()));
+            _camInfoVec[camId] = ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
+                _perspControl.get());
         }
         else
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid camera type: must be PERSPECTIVE or ORTHOGRAPHIC",
@@ -75,11 +78,14 @@ void
     }
     _cineMgr->setRootCam(rootCamIdx);
     _vp = _rendWin->addViewport(_cineMgr->getRootCam());
+
+    CAM_MAP::const_iterator c_iter = _camInfoVec.cbegin();
 }
 
 bool
     CinematicController::onMouseMove(const OIS::MouseEvent& e)
 {
+
     return true;
 }
 
@@ -105,4 +111,37 @@ bool
     CinematicController::onKeyUp(const OIS::KeyEvent& e)
 {
     return true;
+}
+
+EditorOperation::EditorOperation()
+{
+}
+
+EditorOperation::~EditorOperation()
+{
+}
+
+void
+    EditorOperation::onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+}
+
+void
+    EditorOperation::onMouseUp(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+}
+
+void
+    EditorOperation::onMouseMove(const OIS::MouseEvent &e)
+{
+}
+
+void
+    EditorOperation::onKeyDown(const OIS::KeyEvent &e)
+{
+}
+
+void
+    EditorOperation::onKeyUp(const OIS::KeyEvent &e)
+{
 }

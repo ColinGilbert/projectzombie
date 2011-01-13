@@ -27,10 +27,66 @@ namespace ZGame
 {
     namespace World
     {
+        //A temp. solution for different operations.
+        //In the future we can sub-class this 
+        //for different operations (ex: FPS vs. Editor mode).
+        class
+            CinematicOperation
+        {
+        public:
+            virtual ~CinematicOperation(){}
+
+            virtual void
+                onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id) = 0;
+            virtual void
+                onMouseUp(const OIS::MouseEvent &e, OIS::MouseButtonID id) = 0;
+            virtual void
+                onMouseMove(const OIS::MouseEvent &e) = 0;
+            virtual void
+                onKeyDown(const OIS::KeyEvent& e) = 0;
+            virtual void
+                onKeyUp(const OIS::KeyEvent& e) = 0;
+            //NOT CHECKED
+            void
+                setInput(Ogre::Camera* cam, Control* control)
+            {
+                _cam = cam;
+                _control = control;
+            }
+        protected:
+            CinematicOperation(){}
+            Ogre::Camera* _cam;
+            Control* _control;
+        private:
+        };
+
+        class EditorOperation : public CinematicOperation
+        {
+        public:
+            EditorOperation();
+            virtual  ~EditorOperation();
+            
+            virtual void
+                onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+            virtual void
+                onMouseUp(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+            virtual void
+                onMouseMove(const OIS::MouseEvent &e);
+            virtual void
+                onKeyDown(const OIS::KeyEvent &e);
+            virtual void
+                onKeyUp(const OIS::KeyEvent &e);
+
+        };
+
         class CinematicController
         {
         public:
-            typedef Ogre::vector<ZCameraInfo>::type CAM_VEC;
+
+
+
+            typedef Ogre::map<CAMERA_ID, ZCameraInfo>::type CAM_MAP;
+            typedef std::pair<CAM_MAP::const_iterator, CAM_MAP::const_iterator> CAM_MAP_CITERS;
             typedef std::pair<Ogre::Vector3, Ogre::Quaternion> CAM_INIT_STATE;
             typedef std::pair<Ogre::String, CAM_INIT_STATE> CAM_PAIR;
 
@@ -47,10 +103,11 @@ namespace ZGame
                 return _cineMgr.get();
             }
 
-            const CAM_VEC&
-                getCameraInfos()
+            CAM_MAP_CITERS
+                getCameraInfosIterators()
             {
-                return _camInfoVec;
+                return std::make_pair<CAM_MAP::const_iterator, CAM_MAP::const_iterator>(_camInfoVec.cbegin(),
+                    _camInfoVec.cend());
             }
 
             void
@@ -80,14 +137,19 @@ namespace ZGame
         protected:
         private:
 
+
+
             std::auto_ptr<CinematicManager> _cineMgr;
-            
-            CAM_VEC _camInfoVec;
+
+            CAM_MAP _camInfoVec;
 
             Ogre::RenderWindow* _rendWin;
             Ogre::Viewport* _vp;
 
             std::auto_ptr<PerspectiveControl> _perspControl;
+
+            EditorOperation _currentOperation;
+
         };
     }
 }

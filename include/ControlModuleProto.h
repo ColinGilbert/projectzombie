@@ -18,6 +18,8 @@ namespace ZGame
     class ControlModuleProto : public Ogre::Viewport::Listener
     {
     public:
+
+
         ControlModuleProto();
         ControlModuleProto(float startTrans);
         virtual
@@ -59,6 +61,7 @@ namespace ZGame
             viewportDestroyed(Ogre::Viewport* viewport){}
 
     private:
+       
 
         Ogre::Vector3 _transVector;
         Ogre::Real _dTrans; //change in translation
