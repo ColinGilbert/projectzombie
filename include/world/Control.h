@@ -32,33 +32,25 @@ namespace ZGame
         class Control
         {
         public:
-            enum RotationMode
+            enum TransformMode
             {
                 localAxis=0
             };
             virtual ~Control();
 
-            void
-                setNode(Ogre::SceneNode* node);
-            /** \brief This method will reset this control back to initial node.**/
-            void
-                resetNode(Ogre::SceneManager* scnMgr);
-
-            virtual bool
-                onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id) = 0;
-            virtual bool
-                onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id) = 0;
-            virtual bool
-                onMouseMove(const OIS::MouseEvent &evt) = 0;
-
+            /** This method will yaw control a given camera by the fraction of some internal unit.**/
+            virtual void
+                yaw(Ogre::Real fraction, Ogre::Camera* cam);
+            /** This method will translate a given camera by the fraction of some internal unit. **/
+            virtual void
+                translate(Ogre::Real fraction, Ogre::Camera* cam);
+            /** This method will dolly control a given camera by the fraction of some internal unit. **/
+            virtual void
+                dolly(Ogre::Real fraction, Ogre::Camera* cam);
 
         protected:
-            Control(Ogre::SceneManager* scnMgr, Ogre::String name);
-            Ogre::SceneNode* _node;
-        private:
-            
-            Ogre::String _defaultNodeName;
-
+            Control();
+      
         };
     }
 }

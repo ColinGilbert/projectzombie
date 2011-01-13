@@ -24,8 +24,7 @@ THE SOFTWARE.
 
 using namespace ZGame::World;
 
-PerspectiveControl::PerspectiveControl(Ogre::SceneManager* scnMgr) :
-Control(scnMgr, "PerspectiveCtrlNode")
+PerspectiveControl::PerspectiveControl()
 {
 }
 
@@ -33,22 +32,18 @@ PerspectiveControl::~PerspectiveControl()
 {
 }
 
-bool
-    PerspectiveControl::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
+void
+    PerspectiveControl::yaw(Ogre::Real fraction, Ogre::Camera* cam)
 {
-
-    return true;
 }
 
-bool
-    PerspectiveControl::onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
+void
+    PerspectiveControl::translate(Ogre::Real fraction, Ogre::Camera* cam)
 {
-    return true;
 }
 
-bool
-    PerspectiveControl::onMouseMove(const OIS::MouseEvent &evt)
+void
+    PerspectiveControl::dolly(Ogre::Real fraction, Ogre::Camera* cam)
 {
-    return true;
 }
 

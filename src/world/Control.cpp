@@ -24,26 +24,10 @@ THE SOFTWARE.
 
 using namespace ZGame::World;
 
-Control::Control(Ogre::SceneManager* scnMgr, Ogre::String name) : _defaultNodeName(name),
-    _node(scnMgr->getRootSceneNode()->createChildSceneNode(_defaultNodeName))
+Control::Control() 
 {
 }
 
 Control::~Control()
 {
-}
-
-void
-    Control::resetNode(Ogre::SceneManager* scnMgr)
-{
-    _node = static_cast<Ogre::SceneNode*>(scnMgr->getRootSceneNode()->getChild(_defaultNodeName));
-}
-
-void
-    Control::setNode(Ogre::SceneNode* node)
-{
-    if(!node)
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Trying to set a null node", 
-        "Control::setNode");
-    _node = node;
 }

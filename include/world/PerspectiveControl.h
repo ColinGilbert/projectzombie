@@ -30,16 +30,18 @@ namespace ZGame
         class PerspectiveControl : public Control
         {
         public:
-            PerspectiveControl(Ogre::SceneManager* scnMgr);
+            PerspectiveControl();
             virtual ~PerspectiveControl();
 
-            //implement control interfaces
-            virtual bool
-                onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id) = 0;
-            virtual bool
-                onMouseDown(const OIS::MouseEvent &evt, const OIS::MouseButtonID id) = 0;
-            virtual bool
-                onMouseMove(const OIS::MouseEvent &evt) = 0;
+            /** This method will yaw control a given camera by the fraction of some internal unit.**/
+            virtual void
+                yaw(Ogre::Real fraction, Ogre::Camera* cam);
+            /** This method will translate a given camera by the fraction of some internal unit. **/
+            virtual void
+                translate(Ogre::Real fraction, Ogre::Camera* cam);
+            /** This method will dolly control a given camera by the fraction of some internal unit. **/
+            virtual void
+                dolly(Ogre::Real fraction, Ogre::Camera* cam);
         protected:
         private:
         };
