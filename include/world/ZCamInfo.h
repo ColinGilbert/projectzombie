@@ -20,37 +20,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 **/
+
 #include "ZPrerequisites.h"
 
 namespace ZGame
 {
     namespace World
     {
-        /**
-        *This class defines a super-class for controlling cameras.
-        **/
-        class Control
+        struct ZCameraInfo
         {
-        public:
-            enum TransformMode
+            ZCameraInfo(CAMERA_ID ids, Ogre::String types,
+                Ogre::String names, Control* ctrl) : id(ids), 
+                type(types), name(names), control(ctrl)
             {
-                localAxis=0
-            };
-            virtual ~Control();
-
-            /** This method will yaw control a given camera by the fraction of some internal unit.**/
-            virtual void
-                yaw(Ogre::Real fraction, Ogre::Camera* cam) = 0;
-            /** This method will translate a given camera by the fraction of some internal unit. **/
-            virtual void
-                translate(Ogre::Real fraction, Ogre::Camera* cam) = 0;
-            /** This method will dolly control a given camera by the fraction of some internal unit. **/
-            virtual void
-                dolly(Ogre::Real fraction, Ogre::Camera* cam) = 0;
-
-        protected:
-            Control();
-      
+            }
+            CAMERA_ID id;
+            Ogre::String type;
+            Ogre::String name;
+            Control* control;
         };
     }
 }

@@ -22,7 +22,7 @@ THE SOFTWARE.
 **/
 
 #include "ZPrerequisites.h"
-
+#include "world/ZCamInfo.h"
 namespace ZGame
 {
     namespace World
@@ -56,7 +56,6 @@ namespace ZGame
             void
                 onCameraChange(World::CAMERA_ID camId);
 
-
             Ogre::Viewport*
                 getViewport()
             {
@@ -65,6 +64,18 @@ namespace ZGame
                     "CinematicController::getViewport");
                 return _vp;
             }
+
+            bool
+                onMouseMove(const OIS::MouseEvent& e);
+            bool
+                onMouseDown(const OIS::MouseEvent& e, OIS::MouseButtonID id);
+            bool
+                onMouseUp(const OIS::MouseEvent& e, OIS::MouseButtonID id);
+            bool
+                onKeyDown(const OIS::KeyEvent& e);
+            bool
+                onKeyUp(const OIS::KeyEvent& e);
+
 
         protected:
         private:
@@ -75,6 +86,8 @@ namespace ZGame
 
             Ogre::RenderWindow* _rendWin;
             Ogre::Viewport* _vp;
+
+            std::auto_ptr<PerspectiveControl> _perspControl;
         };
     }
 }

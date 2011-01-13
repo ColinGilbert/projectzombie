@@ -147,19 +147,8 @@ namespace ZGame
         class WorldController;
         class CinematicController;
         class CinematicManager;
-
-        struct ZCameraInfo
-        {
-            ZCameraInfo(CAMERA_ID ids, Ogre::String types,
-                Ogre::String names) : id(ids), 
-                type(types), name(names)
-            {
-            }
-            CAMERA_ID id;
-            Ogre::String type;
-            Ogre::String name;
-        };
-
+        class Control;
+        class PerspectiveControl;
     }
 
      namespace EVENT

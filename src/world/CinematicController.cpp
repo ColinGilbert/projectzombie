@@ -22,11 +22,12 @@ THE SOFTWARE.
 
 #include "world/CinematicController.h"
 #include "world/CinematicManager.h"
+#include "world/PerspectiveControl.h"
 
 using namespace ZGame::World;
 
 CinematicController::CinematicController(std::auto_ptr<CinematicManager> cineMgr, Ogre::RenderWindow* rendWin) 
-    : _cineMgr(cineMgr), _rendWin(rendWin), _vp(0)
+    : _cineMgr(cineMgr), _rendWin(rendWin), _vp(0), _perspControl(new PerspectiveControl())
 {
 }
 
@@ -53,26 +54,55 @@ void
     {
         CAM_PAIR pair = camStates[i];
         CAMERA_ID camId;
-       
+
         if(pers.compare(pair.first) == 0)
         {
             camId = _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
                 pair.second.first, pair.second.second);
+            _camInfoVec.push_back(ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
+                _perspControl.get()));
         }
         else if(ortho.compare(pair.first) == 0)
         {
             camId = _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
                 pair.second.first, pair.second.second);
+            _camInfoVec.push_back(ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
+                _perspControl.get()));
         }
         else
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid camera type: must be PERSPECTIVE or ORTHOGRAPHIC",
             "CinematicController::loadCameras");
-         //WOW this piece of code smells.
-        _camInfoVec.push_back(ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName()));
-
     }
     _cineMgr->setRootCam(rootCamIdx);
     _vp = _rendWin->addViewport(_cineMgr->getRootCam());
 }
 
+bool
+    CinematicController::onMouseMove(const OIS::MouseEvent& e)
+{
+    return true;
+}
 
+bool
+    CinematicController::onMouseDown(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+{
+    return true;
+}
+
+bool
+    CinematicController::onMouseUp(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+{
+    return true;
+}
+
+bool
+    CinematicController::onKeyDown(const OIS::KeyEvent& e)
+{
+    return true;
+}
+
+bool
+    CinematicController::onKeyUp(const OIS::KeyEvent& e)
+{
+    return true;
+}
