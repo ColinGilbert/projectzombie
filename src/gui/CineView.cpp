@@ -84,7 +84,6 @@ void
 
     Element* cameraSelect = GuiUtils::ConstructSelectInput(attri, inputForm);
     attri.Clear();
-
     const World::CinematicController::CAM_VEC& camInfos = _cineCtrl->getCameraInfos();
     std::vector<Gui::SELECT_OPT> optPairsVec;
     for(size_t i=0; i < camInfos.size(); ++i)
@@ -98,4 +97,5 @@ void
         optPairsVec.push_back(std::make_pair<String, String>("cam", idStr));
     }
     GuiUtils::ConstructSelectOptions(cameraSelect, optPairsVec);
+
 }
