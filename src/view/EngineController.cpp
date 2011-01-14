@@ -715,7 +715,7 @@ void
 
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in GuiController", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in GuiController", "");
         }
 
         try
@@ -726,7 +726,7 @@ void
             _vp = _cineController->getViewport();
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in CinematicController",
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in CinematicController",
                 "");
         }
 
@@ -742,7 +742,7 @@ void
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in RenderEntitiesManager", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in RenderEntitiesManager", "");
         }
 
         try
@@ -756,7 +756,7 @@ void
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ZCLController", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in ZCLController", "");
         }
         try
         {
@@ -771,7 +771,7 @@ void
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in WorldController", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in WorldController", "");
         }
         try
         {
@@ -787,7 +787,7 @@ void
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ControlModuleProto", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in ControlModuleProto", "");
         }
         try
         {
@@ -807,7 +807,7 @@ void
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in ZWorkspaceController", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in ZWorkspaceController", "");
         }
         try
         {
@@ -819,11 +819,11 @@ void
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription() + " in CharacterUtil", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in CharacterUtil", "");
         }
     }catch(Ogre::Exception e)
     {
-        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getDescription(),
+        OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription(),
             "EngineController::_initSubSystemOnLoadState");
     }
 
