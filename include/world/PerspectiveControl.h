@@ -35,13 +35,15 @@ namespace ZGame
 
             /** This method will yaw control a given camera by the fraction of some internal unit.**/
             virtual void
-                yaw(Ogre::Real fraction, Ogre::Camera* cam);
+                yaw(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
+            virtual void
+                pitch(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
             /** This method will translate a given camera by the fraction of some internal unit. **/
             virtual void
-                translate(Ogre::Real fraction, Ogre::Camera* cam);
+                translate(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
             /** This method will dolly control a given camera by the fraction of some internal unit. **/
             virtual void
-                dolly(Ogre::Real fraction, Ogre::Camera* cam);
+                dolly(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
         protected:
         private:
         };

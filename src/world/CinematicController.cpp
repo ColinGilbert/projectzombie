@@ -39,9 +39,10 @@ void
     CinematicController::onCameraChange(CAMERA_ID camId)
 {
     std::cout << "Camera id in onCameraChange: " << camId << std::endl;
-    _vp->setCamera(_cineMgr->getCamera(camId));
     _cineMgr->setRootCam(camId);
-    _currentOperation.setInput(_cineMgr->getRootCam(), _camInfoVec[camId].control); //There is only one control right now for testing.
+    _vp->setCamera(_cineMgr->getRootCam());
+    _currentOperation.setInput(_cineMgr->getRootCamInfo()->getCamera(), _cineMgr->getRootCamInfo()->getControl(), 
+        _cineMgr->getRootCamInfo()->getNode()); //There is only one control right now for testing.
 }
 
 void
@@ -55,22 +56,15 @@ void
     for(size_t i=0; i < camStates.size(); ++i)
     {
         CAM_PAIR pair = camStates[i];
-        CAMERA_ID camId;
-
         if(pers.compare(pair.first) == 0)
         {
-            camId = _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
-                pair.second.first, pair.second.second);
-
-            _camInfoVec[camId] = ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
-                _perspControl.get());
+                _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
+                pair.second.first, pair.second.second, _perspControl.get());
         }
         else if(ortho.compare(pair.first) == 0)
         {
-            camId = _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
-                pair.second.first, pair.second.second);
-            _camInfoVec[camId] = ZCameraInfo(camId, pair.first, _cineMgr->getCamera(camId)->getName(),
-                _perspControl.get());
+                _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
+                pair.second.first, pair.second.second, _perspControl.get());
         }
         else
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid camera type: must be PERSPECTIVE or ORTHOGRAPHIC",
@@ -78,40 +72,51 @@ void
     }
     _cineMgr->setRootCam(rootCamIdx);
     _vp = _rendWin->addViewport(_cineMgr->getRootCam());
-
-    CAM_MAP::const_iterator c_iter = _camInfoVec.cbegin();
+    onCameraChange(rootCamIdx);
+    
 }
 
 bool
     CinematicController::onMouseMove(const OIS::MouseEvent& e)
 {
-
+    _currentOperation.onMouseMove(e);
     return true;
 }
 
 bool
     CinematicController::onMouseDown(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
+    _currentOperation.onMouseDown(e, id);
     return true;
 }
 
 bool
     CinematicController::onMouseUp(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
+    _currentOperation.onMouseUp(e, id);
     return true;
 }
 
 bool
     CinematicController::onKeyDown(const OIS::KeyEvent& e)
 {
+    _currentOperation.onKeyDown(e);
     return true;
 }
 
 bool
     CinematicController::onKeyUp(const OIS::KeyEvent& e)
 {
+    _currentOperation.onKeyUp(e);
     return true;
 }
+
+CAM_INFO_CITERS
+    CinematicController::getCameraInfosIterators()
+{
+    return _cineMgr->getIterators();
+}
+
 
 EditorOperation::EditorOperation()
 {
@@ -124,16 +129,31 @@ EditorOperation::~EditorOperation()
 void
     EditorOperation::onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+    if(id == OIS::MB_Left) //Enter operation mode
+    {
+        _curMode = CAM_OP;
+    }
 }
 
 void
     EditorOperation::onMouseUp(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+    if(id == OIS::MB_Left)
+    {
+        _curMode = NONE;
+    }
 }
 
 void
     EditorOperation::onMouseMove(const OIS::MouseEvent &e)
 {
+    //Depend on modifier key and mode. Note: We have yet to implement modifier key events.
+    if(CAM_OP)
+    {
+        //modifier mode....
+        _control->yaw(e.state.X.rel, _cam, _node);
+        _control->pitch(e.state.Y.rel, _cam, _node);
+    }
 }
 
 void

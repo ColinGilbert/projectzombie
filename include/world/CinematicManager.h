@@ -20,8 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 **/
-
 #include "ZPrerequisites.h"
+#include "ZCamInfo.h"
 
 namespace ZGame
 {
@@ -34,19 +34,19 @@ namespace ZGame
             CinematicManager(Ogre::SceneManager* scnMgr);
             virtual ~CinematicManager();
 
-            CAMERA_ID
+            void
                 createPerspectiveCamera(Ogre::Real windowW, Ogre::Real windowH,
                 const Ogre::Vector3 &initialPos,
-                const Ogre::Quaternion &initialOrient);
-            CAMERA_ID
+                const Ogre::Quaternion &initialOrient, World::Control* control);
+            void
                 createOrthoCamera(Ogre::Real windowW, Ogre::Real windowH,
                 const Ogre::Vector3 &initialPos,
-                const Ogre::Quaternion &initialOrient);
+                const Ogre::Quaternion &initialOrient, World::Control* control);
 
-            Ogre::Camera*
-                getCamera(CAMERA_ID id)
+            World::ZCameraInfo*
+                getCameraInfo(CAMERA_ID id)
             {
-                return _camsVec[id];
+                return _camsVec.at(id);
             }
 
             void
@@ -57,19 +57,35 @@ namespace ZGame
                 if(!_rootCam)
                     OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
                     "Trying to get null root camera", "CinematicManager::getRootCam");
+                return _rootCam->getCamera();
+            }
+
+            World::ZCameraInfo*
+                getRootCamInfo()
+            {
+                if(!_rootCam)
+                    OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
+                    "Trying to get null root camera", "CinematicManager::getRootCam");
                 return _rootCam;
+            }
+
+
+          CAM_INFO_CITERS
+                getIterators()
+            {
+                return std::pair<CAM_INFOS::const_iterator, CAM_INFOS::const_iterator>(
+                    _camsVec.cbegin(), _camsVec.cend());
             }
 
         protected:
         private:
-            typedef Ogre::vector<Ogre::Camera*>::type CAMERA_VEC;
             static const CAMERA_ID _camCurId;
             const Ogre::String ORTHO_CAM_NAME;
             const Ogre::String PERSP_CAM_NAME;
-            CAMERA_VEC _camsVec;
+            CAM_INFOS _camsVec;
 
             Ogre::SceneManager* _scnMgr;
-            Ogre::Camera* _rootCam;
+            World::ZCameraInfo* _rootCam;
 
         };
     }

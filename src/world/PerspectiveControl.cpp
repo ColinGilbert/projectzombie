@@ -33,17 +33,31 @@ PerspectiveControl::~PerspectiveControl()
 }
 
 void
-    PerspectiveControl::yaw(Ogre::Real fraction, Ogre::Camera* cam)
+    PerspectiveControl::yaw(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
+{
+    //For perspective yaw, we're going to use node as the center of mass to rotate about. 
+    using Ogre::Quaternion;
+
+    Ogre::Radian dr = Ogre::Radian(Ogre::Degree(1.0f*fraction));
+    Quaternion offsetQuat = Quaternion(dr, Ogre::Vector3::UNIT_Y);
+
+    cam->rotate(node->getOrientation() * offsetQuat);
+}
+
+void
+    PerspectiveControl::pitch(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
+{
+
+}
+
+void
+    PerspectiveControl::translate(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
 {
 }
 
 void
-    PerspectiveControl::translate(Ogre::Real fraction, Ogre::Camera* cam)
+    PerspectiveControl::dolly(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
 {
-}
-
-void
-    PerspectiveControl::dolly(Ogre::Real fraction, Ogre::Camera* cam)
-{
+    cam->moveRelative(Ogre::Vector3::UNIT_Z*fraction);
 }
 

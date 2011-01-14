@@ -86,17 +86,17 @@ void
     attri.Clear();
 
     //I'm sorry if this smells. i.first is the key, i.second is ZCameraInfo
-    World::CinematicController::CAM_MAP_CITERS iters = _cineCtrl->getCameraInfosIterators();
+    World::CAM_INFO_CITERS iters = _cineCtrl->getCameraInfosIterators();
      std::vector<Gui::SELECT_OPT> optPairsVec;
-    for(World::CinematicController::CAM_MAP::const_iterator i = iters.first; 
+     for(World::CAM_INFOS::const_iterator i = iters.first; 
         i != iters.second; ++i)
     {
         Rocket::Core::String idStr;
         Rocket::Core::String nameStr;
-        nameStr.Append(i->second.name.c_str());
+        nameStr.Append((*i)->getName().c_str());
         //nameStr.Append(" ");
         //nameStr.Append(camInfos[i].type.c_str());
-        Rocket::Core::TypeConverter<int, String>::Convert(static_cast<int>(i->second.id), idStr);
+        Rocket::Core::TypeConverter<int, String>::Convert(static_cast<int>((*i)->getId()), idStr);
         optPairsVec.push_back(std::make_pair<String, String>("cam", idStr));
     }
     GuiUtils::ConstructSelectOptions(cameraSelect, optPairsVec);

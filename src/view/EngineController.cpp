@@ -63,9 +63,6 @@ MainController(), _stillRunning(true), _lfcPump(0), _keyPump(0), _mousePump(0), 
 {
     // TODO Auto-generated constructor stub
     _listenerID = "EngineControllerListenerID";
-
-
-
 }
 
 EngineController::~EngineController()

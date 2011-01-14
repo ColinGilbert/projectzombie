@@ -48,15 +48,17 @@ namespace ZGame
                 onKeyUp(const OIS::KeyEvent& e) = 0;
             //NOT CHECKED
             void
-                setInput(Ogre::Camera* cam, Control* control)
+                setInput(Ogre::Camera* cam, Control* control, Ogre::SceneNode* node)
             {
                 _cam = cam;
                 _control = control;
+                _node = node;
             }
         protected:
             CinematicOperation(){}
             Ogre::Camera* _cam;
             Control* _control;
+            Ogre::SceneNode* _node;
         private:
         };
 
@@ -76,20 +78,25 @@ namespace ZGame
                 onKeyDown(const OIS::KeyEvent &e);
             virtual void
                 onKeyUp(const OIS::KeyEvent &e);
-
+        private:
+            enum OP_MODE
+            {
+                NONE=0, CAM_OP
+            };
+            OP_MODE _curMode;
         };
 
         class CinematicController
         {
         public:
-
-
-
-            typedef Ogre::map<CAMERA_ID, ZCameraInfo>::type CAM_MAP;
-            typedef std::pair<CAM_MAP::const_iterator, CAM_MAP::const_iterator> CAM_MAP_CITERS;
+            
             typedef std::pair<Ogre::Vector3, Ogre::Quaternion> CAM_INIT_STATE;
             typedef std::pair<Ogre::String, CAM_INIT_STATE> CAM_PAIR;
 
+            /**
+            * \param defaultNode This is the default node that cameras are attached to. All 
+            *
+            */
             CinematicController(std::auto_ptr<CinematicManager> cineMgr,
                 Ogre::RenderWindow* rendWin);
             virtual ~CinematicController();
@@ -103,13 +110,8 @@ namespace ZGame
                 return _cineMgr.get();
             }
 
-            CAM_MAP_CITERS
-                getCameraInfosIterators()
-            {
-                return std::make_pair<CAM_MAP::const_iterator, CAM_MAP::const_iterator>(_camInfoVec.cbegin(),
-                    _camInfoVec.cend());
-            }
-
+            CAM_INFO_CITERS
+                getCameraInfosIterators();
             void
                 onCameraChange(World::CAMERA_ID camId);
 
@@ -140,9 +142,7 @@ namespace ZGame
 
 
             std::auto_ptr<CinematicManager> _cineMgr;
-
-            CAM_MAP _camInfoVec;
-
+            
             Ogre::RenderWindow* _rendWin;
             Ogre::Viewport* _vp;
 

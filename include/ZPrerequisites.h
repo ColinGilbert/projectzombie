@@ -137,6 +137,9 @@ namespace ZGame
     }
     namespace World
     {
+        class ZCameraInfo;
+        typedef Ogre::vector<ZCameraInfo*>::type CAM_INFOS;
+        typedef std::pair<CAM_INFOS::const_iterator, CAM_INFOS::const_iterator> CAM_INFO_CITERS;
         typedef Ogre::uint16 CAMERA_ID;
         class VolumeMap;
         class VolumeMapPaging;

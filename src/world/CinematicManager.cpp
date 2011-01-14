@@ -21,6 +21,7 @@ THE SOFTWARE.
 **/
 
 #include "world/CinematicManager.h"
+#include "world/Control.h"
 
 using namespace ZGame::World;
 
@@ -33,11 +34,15 @@ CinematicManager::CinematicManager(Ogre::SceneManager* scnMgr) : _scnMgr(scnMgr)
 
 CinematicManager::~CinematicManager()
 {
+    for(size_t i = 0; i < _camsVec.size(); ++i)
+    {
+        delete _camsVec[i];
+    }
 }
-
-CAMERA_ID
+//We're not sure whether return a reference to a vector is such a great idea. 
+void
     CinematicManager::createPerspectiveCamera(Ogre::Real windowW, Ogre::Real windowH, const Ogre::Vector3 &initialPos,
-    const Ogre::Quaternion &initialOrient)
+    const Ogre::Quaternion &initialOrient, Control* control)
 {
     Ogre::Camera* cam = _scnMgr->createCamera(PERSP_CAM_NAME + Ogre::StringConverter::toString(_camCurId));
     cam->setNearClipDistance(0.5f);
@@ -45,13 +50,13 @@ CAMERA_ID
     cam->setPosition(initialPos);
     cam->setOrientation(initialOrient);
     cam->setAspectRatio(windowW / windowH);
-    _camsVec.push_back(cam);
-    return _camsVec.size()-1;
+    Ogre::SceneNode* defaultNode = _scnMgr->getRootSceneNode()->createChildSceneNode(cam->getName());
+    _camsVec.push_back(new ZCameraInfo(_camsVec.size(), "PERSPECTIVE", cam->getName(), control, cam, defaultNode));
 }
 
-CAMERA_ID
+void
     CinematicManager::createOrthoCamera(Ogre::Real windowW, Ogre::Real windowH, const Ogre::Vector3 &initialPos,
-    const Ogre::Quaternion &initialOrient)
+    const Ogre::Quaternion &initialOrient, Control* control)
 {
     Ogre::Camera* cam = _scnMgr->createCamera(ORTHO_CAM_NAME + Ogre::StringConverter::toString(_camCurId));
     cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
@@ -61,8 +66,8 @@ CAMERA_ID
     cam->setFOVy(Ogre::Radian(Ogre::Math::PI / 2.0f));
     cam->setPosition(initialPos);
     cam->setOrientation(initialOrient);
-    _camsVec.push_back(cam);
-    return _camsVec.size()-1;
+    Ogre::SceneNode* defaultNode = _scnMgr->getRootSceneNode()->createChildSceneNode(cam->getName());
+    _camsVec.push_back(new ZCameraInfo(_camsVec.size(), "ORTHOGRAPHIC", cam->getName(), control, cam, defaultNode));
 }
 
 void
