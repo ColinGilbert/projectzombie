@@ -451,12 +451,12 @@ bool
     else if(event.key == OIS::KC_TAB)
     {
         //if(_controlMod.get() != 0)
-        if(_controlMod->isEnabled())
+        /*if(_controlMod->isEnabled())
         {
             _controlMod->disable(true);
         }
         else
-            _controlMod->disable(false);
+            _controlMod->disable(false);*/
     }
     ogreConsole->onKeyPressed(event);
     
@@ -724,6 +724,10 @@ void
             _cineController.reset(new World::CinematicController(cineMgr, _window));
             gameState.onCinematicControllerConfiguration(_cineController.get());
             _vp = _cineController->getViewport();
+            LifeCycle::bindAndRegisterLifeCycleObserver<World::CinematicController>(lfcReg, lfcObs, *_cineController.get(),
+                LifeCycle::LFC_ON_UPDATE);
+            EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_cineController);
+            EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_cineController);
         }catch(Ogre::Exception e)
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in CinematicController",

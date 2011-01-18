@@ -46,19 +46,17 @@ namespace ZGame
                 onKeyDown(const OIS::KeyEvent& e) = 0;
             virtual void
                 onKeyUp(const OIS::KeyEvent& e) = 0;
-            //NOT CHECKED
+            virtual void
+                onUpdate(const Ogre::FrameEvent &evt) = 0;
             void
-                setInput(Ogre::Camera* cam, Control* control, Ogre::SceneNode* node)
-            {
-                _cam = cam;
-                _control = control;
-                _node = node;
-            }
+                setInput(Ogre::Camera* cam, Control* control, Ogre::SceneNode* attachNode,
+                Ogre::SceneNode* lookAtNode);
         protected:
             CinematicOperation(){}
             Ogre::Camera* _cam;
             Control* _control;
-            Ogre::SceneNode* _node;
+            Ogre::SceneNode* _rootNode;
+            Ogre::SceneNode* _lookAtNode;
         private:
         };
 
@@ -78,10 +76,12 @@ namespace ZGame
                 onKeyDown(const OIS::KeyEvent &e);
             virtual void
                 onKeyUp(const OIS::KeyEvent &e);
+            virtual void
+                onUpdate(const Ogre::FrameEvent &evt);
         private:
             enum OP_MODE
             {
-                NONE=0, CAM_OP
+                NONE=0, CAM_OP_PITCH_YAW, CAM_OP_DOLLY
             };
             OP_MODE _curMode;
         };
@@ -134,6 +134,8 @@ namespace ZGame
                 onKeyDown(const OIS::KeyEvent& e);
             bool
                 onKeyUp(const OIS::KeyEvent& e);
+            bool
+                onUpdate(const Ogre::FrameEvent& evt);
 
 
         protected:
@@ -149,6 +151,8 @@ namespace ZGame
             std::auto_ptr<PerspectiveControl> _perspControl;
 
             EditorOperation _currentOperation;
+
+            Ogre::SceneNode* _centerNode; //This is temp. This should be passed in.
 
         };
     }

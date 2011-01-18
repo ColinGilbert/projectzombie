@@ -47,11 +47,13 @@ void
     Ogre::Camera* cam = _scnMgr->createCamera(PERSP_CAM_NAME + Ogre::StringConverter::toString(_camCurId));
     cam->setNearClipDistance(0.5f);
     cam->setFarClipDistance(800.0f);
-    cam->setPosition(initialPos);
-    cam->setOrientation(initialOrient);
+    cam->setPosition(0.0f, 0.0f, 0.0f);
     cam->setAspectRatio(windowW / windowH);
-    Ogre::SceneNode* defaultNode = _scnMgr->getRootSceneNode()->createChildSceneNode(cam->getName());
-    _camsVec.push_back(new ZCameraInfo(_camsVec.size(), "PERSPECTIVE", cam->getName(), control, cam, defaultNode));
+    Ogre::SceneNode* defaultNode = _scnMgr->createSceneNode();
+    defaultNode->setPosition(initialPos); //It's in local space.
+    defaultNode->setOrientation(initialOrient);
+    defaultNode->attachObject(cam);
+    _camsVec.push_back(new ZCameraInfo(_camsVec.size(), "PERSPECTIVE", cam->getName(), control, cam));
 }
 
 void
@@ -62,12 +64,14 @@ void
     cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
     cam->setOrthoWindow(100, 50);
     cam->setNearClipDistance(1);
+    cam->setPosition(0.0f, 0.0f,  0.0f);
     //cam->setFarClipDistance(100.0f);
     cam->setFOVy(Ogre::Radian(Ogre::Math::PI / 2.0f));
-    cam->setPosition(initialPos);
-    cam->setOrientation(initialOrient);
-    Ogre::SceneNode* defaultNode = _scnMgr->getRootSceneNode()->createChildSceneNode(cam->getName());
-    _camsVec.push_back(new ZCameraInfo(_camsVec.size(), "ORTHOGRAPHIC", cam->getName(), control, cam, defaultNode));
+    Ogre::SceneNode* defaultNode = _scnMgr->createSceneNode();
+    defaultNode->setPosition(initialPos);
+    defaultNode->setOrientation(initialOrient);
+    defaultNode->attachObject(cam);
+    _camsVec.push_back(new ZCameraInfo(_camsVec.size(), "ORTHOGRAPHIC", cam->getName(), control, cam));
 }
 
 void

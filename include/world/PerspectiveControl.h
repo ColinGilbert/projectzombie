@@ -27,6 +27,13 @@ namespace ZGame
 {
     namespace World
     {
+        /**
+        *This control implements a control to control cameras. It is specific to the perspective camera case.
+        *Right now this control has only orbitial camera mode, i.e. yaw is about global Y. In the future we can 
+        *easily extend this to other modes, such as yaw around abitrary up axis (example: for a lot of CAD programs,
+        *one can yaw about some abitrary up axis, where this up axis is usually computed from the mouse click position.)
+        *The class assumes that the camera is always attached to a parent node.
+        **/
         class PerspectiveControl : public Control
         {
         public:
@@ -35,17 +42,24 @@ namespace ZGame
 
             /** This method will yaw control a given camera by the fraction of some internal unit.**/
             virtual void
-                yaw(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
+                yaw(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode);
             virtual void
-                pitch(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
+                pitch(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode);
             /** This method will translate a given camera by the fraction of some internal unit. **/
             virtual void
-                translate(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
+                translate(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode);
             /** This method will dolly control a given camera by the fraction of some internal unit. **/
             virtual void
-                dolly(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node);
+                dolly(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode);
+            virtual void
+                update(Ogre::Real dt, Ogre::Camera* cam, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode);
+            virtual void
+                reset();
         protected:
         private:
+            Ogre::Radian _currentRadPitch;
+            Ogre::Radian _currentRadYaw;
+            Ogre::Real _distance;
         };
     }
 }

@@ -55,7 +55,8 @@ float4 ssao_ps(
     uniform sampler2D geomMap : TEXUNIT0,
     uniform sampler2D randMap  : TEXUNIT1): COLOR0
 {
-    #define MAX_RAND_SAMPLES 14
+    #define MAX_RAND_SAMPLES 14 
+    
 
     const float3 RAND_SAMPLES[MAX_RAND_SAMPLES] =
     {

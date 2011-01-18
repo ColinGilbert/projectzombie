@@ -29,11 +29,15 @@ using namespace ZGame::World;
 CinematicController::CinematicController(std::auto_ptr<CinematicManager> cineMgr, Ogre::RenderWindow* rendWin) 
     : _cineMgr(cineMgr), _rendWin(rendWin), _vp(0), _perspControl(new PerspectiveControl())
 {
+    //test code. These nodes should be passed in.
+    _centerNode = _cineMgr->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 }
 
 CinematicController::~CinematicController()
 {
+    _cineMgr->getSceneManager()->getRootSceneNode()->removeChild(_centerNode);
 }
+
 
 void
     CinematicController::onCameraChange(CAMERA_ID camId)
@@ -42,7 +46,7 @@ void
     _cineMgr->setRootCam(camId);
     _vp->setCamera(_cineMgr->getRootCam());
     _currentOperation.setInput(_cineMgr->getRootCamInfo()->getCamera(), _cineMgr->getRootCamInfo()->getControl(), 
-        _cineMgr->getRootCamInfo()->getNode()); //There is only one control right now for testing.
+        _centerNode, _centerNode); //There is only one control right now for testing.
 }
 
 void
@@ -56,19 +60,25 @@ void
     for(size_t i=0; i < camStates.size(); ++i)
     {
         CAM_PAIR pair = camStates[i];
+        //Camera positions and rotation are in camera local space.
         if(pers.compare(pair.first) == 0)
         {
                 _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
-                pair.second.first, pair.second.second, _perspControl.get());
+                    Ogre::Vector3(0.0f, 0.0f, 0.0f), Ogre::Quaternion(), _perspControl.get());
         }
         else if(ortho.compare(pair.first) == 0)
         {
                 _cineMgr->createOrthoCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
-                pair.second.first, pair.second.second, _perspControl.get());
+                    Ogre::Vector3(), Ogre::Quaternion(), _perspControl.get());
         }
         else
             OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid camera type: must be PERSPECTIVE or ORTHOGRAPHIC",
             "CinematicController::loadCameras");
+        if(i == rootCamIdx)
+        { 
+            _centerNode->setPosition(pair.second.first);
+            _centerNode->rotate(pair.second.second);
+        }
     }
     _cineMgr->setRootCam(rootCamIdx);
     _vp = _rendWin->addViewport(_cineMgr->getRootCam());
@@ -111,6 +121,17 @@ bool
     return true;
 }
 
+/**
+*Do we really have to have so many abstractions here? Current operatioion::upadte then in that control::update.
+*Idea for this is to make it more generalized.
+*/
+bool
+    CinematicController::onUpdate(const Ogre::FrameEvent &evt)
+{
+    _currentOperation.onUpdate(evt);
+    return true;
+}
+
 CAM_INFO_CITERS
     CinematicController::getCameraInfosIterators()
 {
@@ -118,7 +139,31 @@ CAM_INFO_CITERS
 }
 
 
-EditorOperation::EditorOperation()
+void
+    CinematicOperation::setInput(Ogre::Camera* cam, Control* control, Ogre::SceneNode* attachNode,
+    Ogre::SceneNode* lookAtNode)
+{
+    if(!attachNode)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid null pointer: attachNode", "CinematicOperation::setInput");
+    if(!lookAtNode)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid null pointer: lookAtNode", "CinematicOperation::setInput");
+    Ogre::SceneNode* camNode;
+    camNode = static_cast<Ogre::SceneNode*>(cam->getParentNode());
+    if(!camNode)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Camera is missing a camera node", "CinematicOperation::setInput");
+    _control = control;
+    Ogre::Node* parentNode = camNode->getParent();
+    if(parentNode)
+        parentNode->removeChild(camNode);
+    _cam = cam;
+    _rootNode = attachNode;
+    _rootNode->addChild(camNode);
+    _rootNode->setInheritOrientation(false);
+    _lookAtNode = lookAtNode;
+    _cam->setFixedYawAxis(true);
+}
+
+EditorOperation::EditorOperation() : _curMode(NONE)
 {
 }
 
@@ -129,9 +174,13 @@ EditorOperation::~EditorOperation()
 void
     EditorOperation::onMouseDown(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-    if(id == OIS::MB_Left) //Enter operation mode
+    if(id == OIS::MB_Left && _curMode == NONE) //Enter operation mode
     {
-        _curMode = CAM_OP;
+        _curMode = CAM_OP_PITCH_YAW;
+    }
+    else if(id == OIS::MB_Right && _curMode == NONE)
+    {
+        _curMode = CAM_OP_DOLLY;
     }
 }
 
@@ -142,26 +191,41 @@ void
     {
         _curMode = NONE;
     }
+    else if(id == OIS::MB_Right)
+    {
+        _curMode = NONE;
+    }
 }
 
 void
     EditorOperation::onMouseMove(const OIS::MouseEvent &e)
 {
     //Depend on modifier key and mode. Note: We have yet to implement modifier key events.
-    if(CAM_OP)
+    if(_curMode == CAM_OP_PITCH_YAW)
     {
-        //modifier mode....
-        _control->yaw(e.state.X.rel, _cam, _node);
-        _control->pitch(e.state.Y.rel, _cam, _node);
+        //modifier mode....   
+        _control->pitch(-e.state.Y.rel, static_cast<Ogre::SceneNode*>(_cam->getParentSceneNode()), _lookAtNode);
+        _control->yaw(-e.state.X.rel, static_cast<Ogre::SceneNode*>(_cam->getParentSceneNode()), _lookAtNode);
+    }
+    else if(_curMode == CAM_OP_DOLLY)
+    {
+        _control->dolly(e.state.X.rel, static_cast<Ogre::SceneNode*>(_cam->getParentNode()), _lookAtNode);
     }
 }
 
 void
     EditorOperation::onKeyDown(const OIS::KeyEvent &e)
 {
+    
 }
 
 void
     EditorOperation::onKeyUp(const OIS::KeyEvent &e)
 {
+}
+
+void
+    EditorOperation::onUpdate(const Ogre::FrameEvent& evt)
+{
+    _control->update(evt.timeSinceLastFrame, _cam, _cam->getParentSceneNode(), _lookAtNode);
 }

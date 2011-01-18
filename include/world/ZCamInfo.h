@@ -31,10 +31,8 @@ namespace ZGame
         {
         public:
             ZCameraInfo(CAMERA_ID theid, Ogre::String types,
-                Ogre::String names, Control* ctrl, Ogre::Camera* cam,
-                Ogre::SceneNode* node)
-                : id(theid), type(types), name(names), _control(ctrl), _camera(cam),
-                _node(node), _defaultNode(node)
+                Ogre::String names, Control* ctrl, Ogre::Camera* cam)
+                : id(theid), type(types), name(names), _control(ctrl), _camera(cam)
             {
             }
 
@@ -51,12 +49,6 @@ namespace ZGame
                 return id;
             }
 
-            Ogre::SceneNode*
-                getNode()
-            {
-                return _node;
-            }
-
             Control*
                 getControl()
             {
@@ -68,25 +60,10 @@ namespace ZGame
             {
                 return _camera;
             }
-
-            void
-                setNode(Ogre::SceneNode* node)
-            {
-                _node = node;
-            }
-
-            /** This will reset to default node. Every Camera requires a default node.**/
-            void resetToDefaultNode()
-            {
-                _node = _defaultNode;
-            }
-
         private:
             Ogre::String type;
             Ogre::String name;
             CAMERA_ID id;
-            Ogre::SceneNode* _defaultNode; //Every camera has to have a node. 
-            Ogre::SceneNode* _node;
             Ogre::Camera* _camera;
             Control* _control;
 

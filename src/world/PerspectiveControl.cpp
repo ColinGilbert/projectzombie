@@ -23,9 +23,20 @@ THE SOFTWARE.
 #include "world/PerspectiveControl.h"
 
 using namespace ZGame::World;
+using std::cout; using std::endl;
 
-PerspectiveControl::PerspectiveControl()
+
+/*
+*Note: This piece of code may not have the best of implementation. Maybe we should use quaternions 
+*instead of appending to Radians, then creating quaternion from Radians. Using quaternion the numbers 
+*will always be periodic, but using Radians we may have overflow.
+*
+*/
+
+PerspectiveControl::PerspectiveControl() : _currentRadYaw(0.0f), _currentRadPitch(0.0f),
+    _distance(1.0f)
 {
+
 }
 
 PerspectiveControl::~PerspectiveControl()
@@ -33,31 +44,47 @@ PerspectiveControl::~PerspectiveControl()
 }
 
 void
-    PerspectiveControl::yaw(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
+    PerspectiveControl::reset()
 {
-    //For perspective yaw, we're going to use node as the center of mass to rotate about. 
+    _currentRadYaw = 0.0f;
+    _currentRadPitch = 0.0f;
+}
+
+void
+    PerspectiveControl::yaw(Ogre::Real fraction, Ogre::SceneNode* camNode,
+    Ogre::SceneNode* lookAtNode)
+{
+    //For perspective yaw, we're going to ASSUME camNode's has a parent node node and that it will represen the center of mass, that is,
+    //all rotations are done in local space of camNode.
     using Ogre::Quaternion;
-
-    Ogre::Radian dr = Ogre::Radian(Ogre::Degree(1.0f*fraction));
-    Quaternion offsetQuat = Quaternion(dr, Ogre::Vector3::UNIT_Y);
-
-    cam->rotate(node->getOrientation() * offsetQuat);
+    _currentRadYaw += Ogre::Radian(0.015f * fraction);
 }
 
 void
-    PerspectiveControl::pitch(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
+    PerspectiveControl::pitch(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode)
 {
-
+    _currentRadPitch += Ogre::Radian(0.015f * fraction);
 }
-
 void
-    PerspectiveControl::translate(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
+    PerspectiveControl::translate(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode)
 {
 }
 
 void
-    PerspectiveControl::dolly(Ogre::Real fraction, Ogre::Camera* cam, Ogre::Node* node)
+    PerspectiveControl::dolly(Ogre::Real fraction, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode)
 {
-    cam->moveRelative(Ogre::Vector3::UNIT_Z*fraction);
-}
+    Ogre::Camera* cam = static_cast<Ogre::Camera*>(camNode->getAttachedObject(0));
+    _distance += fraction;
+  }
 
+void
+    PerspectiveControl::update(Ogre::Real dt, Ogre::Camera* cam, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode)
+{
+    using Ogre::Quaternion;
+    camNode->setPosition(0.0f, 0.0f, 0.0f);
+    
+    Quaternion yQuat = Quaternion(_currentRadYaw, Ogre::Vector3::UNIT_Y);
+    Quaternion pQuat = yQuat * Quaternion(_currentRadPitch, Ogre::Vector3::UNIT_X);
+    camNode->setOrientation(yQuat * pQuat);
+    camNode->setPosition(camNode->getOrientation() *  Ogre::Vector3(0.0f, 0.0f, _distance));
+}

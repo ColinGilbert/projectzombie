@@ -34,6 +34,12 @@ namespace ZGame
             CinematicManager(Ogre::SceneManager* scnMgr);
             virtual ~CinematicManager();
 
+            Ogre::SceneManager*
+                getSceneManager()
+            {
+                return _scnMgr;
+            }
+
             void
                 createPerspectiveCamera(Ogre::Real windowW, Ogre::Real windowH,
                 const Ogre::Vector3 &initialPos,
