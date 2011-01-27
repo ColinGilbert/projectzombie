@@ -212,8 +212,20 @@ bool
             return false;
     }
 
+    //bootstrap Sdk resources.
+    loadAssets(PlatformPath + "bootstrap.cfg");
+    //loadSdkTrays();
+    //_sdkTrayMgr->showLoadingBar();
+
+    loadAssets(PlatformPath + "resources.cfg");
+    ResourceGroupManager::getSingleton().createResourceGroup("TreeDebug");
+
 
     chooseSceneManager();
+
+
+
+
 
     _initCommands();
 
@@ -222,12 +234,7 @@ bool
     _inController->onInit(_window);
     injectInputSubject();
 
-    //bootstrap Sdk resources.
-    loadAssets(PlatformPath + "bootstrap.cfg");
-    loadSdkTrays();
-    _sdkTrayMgr->showLoadingBar();
 
-    loadAssets(PlatformPath + "resources.cfg");
 
     //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
     Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");
@@ -250,8 +257,8 @@ bool
 
     _netClient.reset(new ZGame::Networking::NetClientController());
 
-    _sdkTrayMgr->hideLoadingBar();
-    _sdkTrayMgr->hideAll();
+    //_sdkTrayMgr->hideLoadingBar();
+    //_sdkTrayMgr->hideAll();
     _scnMgr->addRenderQueueListener(this);
 
 
@@ -259,10 +266,67 @@ bool
 }
 
 void
+    EngineController::_setupCHCSceneManager()
+{
+    String cullmode(
+
+        //"VIEW_FRUSTUM"			// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
+        //"VIEW_FRUSTUM_MASK"			// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
+        //"VIEW_FRUSTUM_MASK_TEMPORAL" // Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
+        //"VIEW_FRUSTUM_DIRECT"		// Octree view frustum culling with  2 type(Visible, Invisible)
+        //"VIEW_FRUSTUM_RADAR"		// Octree view frustum culling with  2 type(Visible, Invisible)
+        //"VIEW_FRUSTUM_COMPLEX"	// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
+        //"STOP_AND_WAIT"			// Query all visible before drawing it, meaning it's waiting for query results (slow, debug purpose)
+        "CHC"						// render whole tree that was visible at previous frame and test other part of tree and leafs.
+        //"CHC_CONSERVATIVE"		// Try to use previous frame info to reduce query time (WIP)
+        );
+    _scnMgr->setOption(String("setCullingMode"), &cullmode);
+
+    bool show;
+    show = false;
+    _scnMgr->setOption(String("ShowOctree"), &show);
+    show = false;
+    _scnMgr->setOption(String("CullDebug"), &show);
+    show = false;
+    _scnMgr->setOption(String("CullDebugText"), &show);
+
+    AxisAlignedBox aabox(-1000, -1000, -1000, 1000, 1000, 1000);
+    _scnMgr->setOption(String("Size"), &aabox);
+
+    int valInt = 64;
+    _scnMgr->setOption(String("Depth"), &valInt);
+
+}
+
+void
     EngineController::chooseSceneManager()
 {
+    //_scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "ProjectChaos");
+    
+    const String scnMgrName("OctreeCHCSceneManager");
     bool notFound = true;
-    _scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "ProjectChaos");
+    SceneManagerEnumerator::MetaDataIterator it = _root->getSceneManagerMetaDataIterator();
+    while(it.hasMoreElements())
+    {
+    const SceneManagerMetaData* metaData = it.getNext();
+
+    if(metaData->sceneTypeMask == 0xFFFF &&
+    metaData->worldGeometrySupported == false &&
+    metaData->typeName == scnMgrName
+    )
+    {
+    notFound = false;
+    break;
+    }
+    }
+
+    if(notFound)
+    {
+    OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find " + scnMgrName + " plugin. Check if it's in plugins.cfg", "chooseSceneManager");
+    }
+
+    _scnMgr = _root->createSceneManager(scnMgrName, "ProjectChaos");
+    
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
     rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
 
@@ -453,17 +517,43 @@ bool
         //if(_controlMod.get() != 0)
         /*if(_controlMod->isEnabled())
         {
-            _controlMod->disable(true);
+        _controlMod->disable(true);
         }
         else
-            _controlMod->disable(false);*/
+        _controlMod->disable(false);*/
     }
     ogreConsole->onKeyPressed(event);
-    
+
     if (!consoleVis)
     {
         _keyPump->updateKeyDownObs(event);
     }
+
+    Ogre::String cullmode;
+
+#define MY_HIT_KEY_ONCE(E,A,B) if(E.key == A)		\
+    {												\
+    cullmode = B;									\
+    }
+
+    MY_HIT_KEY_ONCE(event, OIS::KC_1, "VIEW_FRUSTUM_DIRECT");
+    MY_HIT_KEY_ONCE(event, OIS::KC_2, "VIEW_FRUSTUM");
+    MY_HIT_KEY_ONCE(event, OIS::KC_3, "VIEW_FRUSTUM_MASK");
+    MY_HIT_KEY_ONCE(event, OIS::KC_4, "VIEW_FRUSTUM_MASK_TEMPORAL");
+    MY_HIT_KEY_ONCE(event, OIS::KC_5, "STOP_AND_WAIT");
+    MY_HIT_KEY_ONCE(event, OIS::KC_6, "CHC");
+    MY_HIT_KEY_ONCE(event, OIS::KC_7, "CHC_CONSERVATIVE");
+
+
+#undef MY_HIT_KEY_ONCE
+
+    if(!cullmode.empty())
+    {
+        //_scnMgr->setOption (String("CurrentOptionCamera"), _window->getViewport(0)->getCamera());
+        _scnMgr->setOption (String("setCullingMode"), &cullmode);
+    }
+
+
     return true;
 }
 
@@ -579,7 +669,6 @@ void
     logM->logMessage(Ogre::LML_NORMAL, "Class: " + _curStateInfo->gameStateClass);
 
 
-
     if (_curStateInfo->stateType == GameStateInfo::STATEFUL)
     {
         //add to stateful
@@ -621,6 +710,9 @@ void
 
         _initSubSystemsOnLoadState(info, lfcReg, keyReg, mouseReg, *_curGameState.get());
 
+
+
+
         _initPacket = new ZInitPacket(&info, _scnMgr, _cineController->getCinematicManager()->getRootCam(), 
             _window,
             _inController->getKeyboard(), _workspaceCtrl.get(), 
@@ -656,6 +748,96 @@ void
         delete _initPacket;
     }
     logM->logMessage(Ogre::LML_NORMAL, "Realizing current state done");
+}
+
+void
+    EngineController::_addStaticTestObjects()
+{
+    int mHouseDist = 50;
+    int mNumClone = 2000;
+    Entity* mHouseEnt = _scnMgr->createEntity("StaticOccluder_House", "tudorhouse.mesh");
+
+    StaticGeometry* s = _scnMgr->createStaticGeometry("StaticOccluder");
+
+    s->setRegionDimensions(Vector3(1950.0,1950.0,1950.0));
+    // Set the region origin so the centre is at 0 world
+    s->setOrigin(Vector3(0, 0, 0));
+
+    int n = 0;
+    for (int x = -100; x < 100; x += mHouseDist)
+    {
+        for (int z = -100; z < 100; z += mHouseDist)
+        {
+            Vector3 pos(
+                x + Math::RangeRandom(-25, 25), 
+                80, 
+                z + Math::RangeRandom(-25, 25));
+            Quaternion orientation;
+            orientation.FromAngleAxis(
+                Degree(Math::RangeRandom(0, 359)),
+                Vector3::UNIT_Y);
+            Vector3 scale(
+                0.05, Math::RangeRandom(0.08, 0.15), 0.05);
+
+            // Clone House
+            char cloneName[255];
+            // StaticOccluder in the name is the way for the Scene manager to know how to handle it.
+            sprintf(cloneName, "StaticOccluder_House%d", n++);
+            s->addEntity(mHouseEnt->clone(cloneName), pos, orientation, scale);
+        }
+
+    }
+
+    s->build();
+
+    unsigned int mCurrNumClones = 0;
+
+    // Create an entity from a model (will be loaded automatically)
+    Entity* mKnotEnt = _scnMgr->createEntity("StaticOccluder_Knot", "knot.mesh");
+    mKnotEnt->setMaterialName("Examples/TextureEffect2");
+
+    if (mCurrNumClones < 100000)
+    {
+        // Attach the entity to the root of the scene
+        SceneNode* rootNode = _scnMgr->getRootSceneNode();
+
+        // Add a whole bunch of extra entities
+        Entity *cloneEnt;
+        for (unsigned int n = 0; n < mNumClone; ++n)
+        {
+            // Clone knot
+            char cloneName[255];
+            // StaticOccluder in the name is the way for the Scene manager to know how to handle it.
+            sprintf(cloneName, "StaticOccluder_Knot%d", n + mCurrNumClones);
+
+            // Create a new node under the root
+            SceneNode* node = _scnMgr->createSceneNode(cloneName);
+
+            // Random Scale
+            Vector3 nodeScale;
+            const Real scaleFactor = Math::UnitRandom() * 2.0;
+            nodeScale.x = scaleFactor;
+            nodeScale.y = scaleFactor;
+            nodeScale.z = scaleFactor;
+            node->setScale(nodeScale);
+
+            // Random translate
+            Vector3 nodePos;
+            const Real posFactor = 19500.0;
+            nodePos.x = Math::SymmetricRandom() * posFactor;
+            nodePos.y = Math::SymmetricRandom() * posFactor / 10;
+            nodePos.z = Math::SymmetricRandom() * posFactor;
+            node->setPosition(nodePos);
+
+            cloneEnt = mKnotEnt->clone(cloneName);
+
+            // Attach to new node
+            node->attachObject(cloneEnt);
+            rootNode->addChild(node);
+        }
+        mCurrNumClones += mNumClone;
+    }
+
 }
 
 void
@@ -724,10 +906,13 @@ void
             _cineController.reset(new World::CinematicController(cineMgr, _window));
             gameState.onCinematicControllerConfiguration(_cineController.get());
             _vp = _cineController->getViewport();
-            LifeCycle::bindAndRegisterLifeCycleObserver<World::CinematicController>(lfcReg, lfcObs, *_cineController.get(),
-                LifeCycle::LFC_ON_UPDATE);
+            //LifeCycle::bindAndRegisterLifeCycleObserver<World::CinematicController>(lfcReg, lfcObs, *_cineController.get(),
+            //LifeCycle::LFC_ON_UPDATE);
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_cineController);
             EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_cineController);
+
+            _setupCHCSceneManager();
+            //_addStaticTestObjects();
         }catch(Ogre::Exception e)
         {
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in CinematicController",

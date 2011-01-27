@@ -261,9 +261,11 @@ bool
         case OIS::KC_K:
         _skyX->setLightingMode(SkyX::SkyX::LM_LDR);
         break;
+        /*
     case OIS::KC_1:
         _skyX->setTimeMultiplier(1.0f);
         break;
+
     case OIS::KC_2:
         _skyX->setTimeMultiplier(0.1f);
         break;
@@ -287,11 +289,13 @@ bool
         break;
     case OIS::KC_8:
         SkyXOptions.OuterRadius -= 0.16 * 0.25f;
+        */
     case OIS::KC_9:
         SkyXOptions.SunIntensity += 10;
         break;
     case OIS::KC_0:
         SkyXOptions.SunIntensity -= 10;
+        
     default:
         break;
     }
@@ -328,7 +332,7 @@ bool
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
     
     Real turbulence = 3.5;
-#if 1
+#if 0
     //_SHC_R[0] = 1.0f; _SHC_G[0] = 1.0f; _SHC_G[
 
     /*

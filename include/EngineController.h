@@ -137,8 +137,14 @@ namespace ZGame
         void
             realizeCurrentState(); //"realize" as in use meta-data to load actual class data.
 
+        void
+            _setupCHCSceneManager(); //temp method to setup CHC Scene Mangaer. 
+
         Ogre::Camera*
             createDefaultCamera(Ogre::Vector3 initialPos);
+
+        void
+            _addStaticTestObjects();
 
     private:
 

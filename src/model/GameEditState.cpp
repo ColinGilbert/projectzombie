@@ -88,7 +88,7 @@ bool
     _editorScreen = static_cast<Gui::EditorScreen*>(initPacket->guiCtrl->getScreen("EditorScreen"));
     _editorScreen->setCineView(cineView);
     _editorScreen->onLoad();
-    _editorScreen->show();
+    _editorScreen->hide();
     return true;
 }
 
@@ -139,7 +139,7 @@ void
 {
     info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
     info.requireWorldController = true;
-    info.requireControlModule = false;
+    info.requireControlModule = true;
     info.requireWorkspace = true;
 }
 
@@ -164,8 +164,8 @@ void
     std::vector<CinematicController::CAM_PAIR> cams;
     cams.push_back(std::make_pair<Ogre::String, CinematicController::CAM_INIT_STATE>("PERSPECTIVE",
         std::make_pair<Ogre::Vector3, Ogre::Quaternion>( Ogre::Vector3(32.0f, 128.0f, 32.0f), Ogre::Quaternion() ) ) );
-    cams.push_back(std::make_pair<Ogre::String, CinematicController::CAM_INIT_STATE>("ORTHOGRAPHIC",
-        std::make_pair<Ogre::Vector3, Ogre::Quaternion>( Ogre::Vector3(32.0f, 250.0f, 32.0f), Ogre::Quaternion() ) ) );
+    //cams.push_back(std::make_pair<Ogre::String, CinematicController::CAM_INIT_STATE>("ORTHOGRAPHIC",
+        //std::make_pair<Ogre::Vector3, Ogre::Quaternion>( Ogre::Vector3(32.0f, 250.0f, 32.0f), Ogre::Quaternion() ) ) );
 
     cineCtrl->loadCameras(cams, 0);
 }

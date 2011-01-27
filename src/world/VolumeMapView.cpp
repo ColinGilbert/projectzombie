@@ -20,10 +20,15 @@ using PolyVox::SurfaceMesh;
 using PolyVox::Vector3DFloat;
 using namespace Ogre;
 
+size_t VolumeMapView::man_count = 0;
+
 VolumeMapView::VolumeMapView(Ogre::SceneManager* scnMgr) : 
-    _scnMgr(scnMgr), _manual(0), _phyBody(0),
-        _root(scnMgr->getRootSceneNode()->createChildSceneNode())
+    _scnMgr(scnMgr), _manual(0), _phyBody(0), _root(0)
 {
+
+    //_root = scnMgr->createSceneNode(Ogre::String("StaticOccluder_volmap")
+        //+Ogre::StringConverter::toString(man_count++));
+    //_scnMgr->getRootSceneNode()->addChild(_root);
 }
 
 VolumeMapView::~VolumeMapView()
@@ -52,7 +57,10 @@ void
         _manual->detachFromParent();
         _scnMgr->destroyManualObject(_manual);
         _manual = 0;
-        _root->setVisible(false, true);
+        _scnMgr->getRootSceneNode()->removeChild(_root);
+        _scnMgr->destroySceneNode(_root);
+        _root = 0;
+        //_root->setVisible(false, true);
         if(_phyBody)
             phyMgr->destroyBody(_phyBody);
         _phyBody = 0;
@@ -74,6 +82,7 @@ void
 void
     VolumeMapView::_manualFromMesh(bool isUpdate, PolyVox::SurfaceMesh<PositionMaterial>* mesh, Ogre::ManualObject* manual)
 {
+
     using std::vector;
     const vector<uint32_t>& indices = mesh->getIndices();
     const vector<PositionMaterial>& vertices = mesh->getVertices();
@@ -102,6 +111,11 @@ void
         uint32_t ix = *itIdx;
     }
     manual->end();
+    Ogre::AxisAlignedBox box;
+    box = manual->getBoundingBox();
+    cout << "Box is: " << box << endl;
+    //Ogre::AxisAlignedBox aabb(0, 0, 0, 32, 256, 32);
+    //manual->setBoundingBox(aabb);
 }
 
 void
@@ -115,9 +129,15 @@ void
 void
     VolumeMapView::finalizeRegion()
 {
-    _root->attachObject(_manual);
+    
+    _root = _scnMgr->createSceneNode(Ogre::String("StaticOccluder_volmap")
+        +Ogre::StringConverter::toString(man_count++));
     _root->setPosition(_origin);
+    _root->attachObject(_manual);
+    _root->needUpdate(true);
     _root->setVisible(true);
+    _root->showBoundingBox(true);
+    _scnMgr->getRootSceneNode()->addChild(_root);
 }
 
 
