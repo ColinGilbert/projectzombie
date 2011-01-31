@@ -48,6 +48,8 @@ namespace ZGame
             }
             void
                 setCineView(std::auto_ptr<Gui::CineView> cineView);
+            void
+                setToolsetView(std::auto_ptr<Gui::ToolsetView> toolsetView);
         protected:
         private:
 
@@ -74,6 +76,7 @@ namespace ZGame
             Rocket::Core::String _ctrlStr;
 
             std::auto_ptr<Gui::CineView> _cineView;
+            std::auto_ptr<Gui::ToolsetView> _toolsetView;
 
         };
     }

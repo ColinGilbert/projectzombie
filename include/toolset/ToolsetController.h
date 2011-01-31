@@ -1,3 +1,5 @@
+#pragma once
+
 /**
 Permission is hereby granted by Fdastero LLC, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +24,19 @@ THE SOFTWARE.
 *email: llwijk@gmail.com
 **/
 
-#pragma once
-
-#include <Ogre.h>
-#include <OIS/OIS.h>
-#include <Rocket/Core.h>
-#include <Rocket/Controls.h>
-#include <Rocket/Debugger.h>
-#include <Rocket/Core/RenderInterface.h>
-#include <Rocket/Core/String.h>
-#include <Rocket/Core/Context.h>
-//#include <Rocket/Controls/ElementFormControlInput.h>
-
-
-
-class SystemInterfaceOgre3D;
-class RenderInterfaceOgre3D;
+#include "ZPrerequisites.h"
 
 namespace ZGame
 {
-    namespace Gui
+    namespace Toolset
     {
-        typedef Rocket::Core::String VIEW_KEY;
-        typedef std::pair<Rocket::Core::String, Rocket::Core::String> SELECT_OPT;
-        class GuiController;
-        class CineView;
-        class ToolsetView;
-        class Screens;
-        class HDRSettingsView;
-        typedef std::pair<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
-        typedef std::map<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
-        typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+        class ToolsetController
+        {
+        public:
+            ToolsetController(std::auto_ptr<ToolsetManager> toolMgr);
+            virtual ~ToolsetController();
+        private:
+            std::auto_ptr<ToolsetManager> _toolMgr;
+        };
     }
 }

@@ -169,4 +169,10 @@ namespace ZGame
         class GeometryManager;
     }
 
+    namespace Toolset
+    {
+        class ToolsetController;
+        class ToolsetManager;
+    }
+
 }

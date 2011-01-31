@@ -20,8 +20,10 @@
 #include "world/CinematicController.h"
 #include "gui/EditorScreen.h"
 #include "gui/CineView.h"
+#include "gui/ToolsetView.h"
 #include "ZWorkspaceController.h"
 #include "ZWorkspace.h"
+
 namespace ZGame
 {
     GameEditState::GameEditState() :
@@ -85,8 +87,10 @@ bool
     //Here we will manually set the various views on editor screen. This is how we're doing this now, maybe in the future
     //we will have a more generalized way of adding views to screens.
     std::auto_ptr<Gui::CineView> cineView(new Gui::CineView(initPacket->workspaceCtrl->getZWorkspace()->getCinematicController()));
+    std::auto_ptr<Gui::ToolsetView> toolsetView(new Gui::ToolsetView(initPacket->workspaceCtrl->getZWorkspace()->getToolsetController()));
     _editorScreen = static_cast<Gui::EditorScreen*>(initPacket->guiCtrl->getScreen("EditorScreen"));
     _editorScreen->setCineView(cineView);
+    _editorScreen->setToolsetView(toolsetView);
     _editorScreen->onLoad();
     _editorScreen->show();
     return true;

@@ -1,3 +1,5 @@
+#pragma once
+
 /**
 Permission is hereby granted by Fdastero LLC, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +24,39 @@ THE SOFTWARE.
 *email: llwijk@gmail.com
 **/
 
-#pragma once
-
-#include <Ogre.h>
-#include <OIS/OIS.h>
-#include <Rocket/Core.h>
-#include <Rocket/Controls.h>
-#include <Rocket/Debugger.h>
-#include <Rocket/Core/RenderInterface.h>
-#include <Rocket/Core/String.h>
-#include <Rocket/Core/Context.h>
-//#include <Rocket/Controls/ElementFormControlInput.h>
-
-
-
-class SystemInterfaceOgre3D;
-class RenderInterfaceOgre3D;
-
+#include "ZPrerequisites.h"
 namespace ZGame
 {
-    namespace Gui
+    namespace Geometry
     {
-        typedef Rocket::Core::String VIEW_KEY;
-        typedef std::pair<Rocket::Core::String, Rocket::Core::String> SELECT_OPT;
-        class GuiController;
-        class CineView;
-        class ToolsetView;
-        class Screens;
-        class HDRSettingsView;
-        typedef std::pair<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
-        typedef std::map<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
-        typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+        /**
+        *This class is the manager through which Geometry objects are managed. Behind the 
+        *scene this manager will utilize the component system to accomplish things.
+        *
+        *\note Right now it's not using the component system at all. We're at protoying stage.
+        **/
+        class GeometryManager
+        {
+        public:
+            GeometryManager();
+            virtual ~GeometryManager();
+
+            bool
+                onInit(ZGame::ZInitPacket* initPacket);
+            bool
+                onUpdate(const Ogre::FrameEvent &evt);
+            bool
+                onDestroy();
+            /** \note temp method**/
+            const Ogre::String
+                createCube(Ogre::Real cursorX, Ogre::Real cursorY);
+
+
+        protected:
+        private:
+            static size_t _geoNumber;
+            Ogre::Camera* _cam;
+            Ogre::SceneManager* _scnMgr;
+        };
     }
 }

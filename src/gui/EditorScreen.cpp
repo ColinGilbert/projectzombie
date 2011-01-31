@@ -2,6 +2,7 @@
 #include <iostream>
 using std::cout; using std::endl;
 #include "gui/CineView.h"
+#include "gui/ToolsetView.h"
 using namespace ZGame::Gui;
 
 EditorScreen::EditorScreen(GuiController* guiCtrl) : Screens(guiCtrl, "EditorScreen"),
@@ -23,6 +24,13 @@ void
 }
 
 void
+    EditorScreen::setToolsetView(std::auto_ptr<ToolsetView> toolsetView)
+{
+    _toolsetView = toolsetView;
+    p_registerEventInstancer(_toolsetView.get());
+}
+
+void
     EditorScreen::_elementIsValid(Rocket::Core::Element* element)
 {
     if(!element)
@@ -41,6 +49,8 @@ void
     _elementIsValid(panel);
     panel = tab->GetElementById("view_panel");
     _elementIsValid(panel);
+    if(!_cineView.get())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid pointer for CineView", "EditorScreen::_buildEditorTab");
     panel->AppendChild(_cineView->getViewElement());
     panel = tab->GetElementById("physics_panel");
     _elementIsValid(panel);
@@ -48,6 +58,11 @@ void
     _elementIsValid(panel);
     panel = tab->GetElementById("game_panel");
     _elementIsValid(panel);
+    panel = tab->GetElementById("toolset_panel");
+    _elementIsValid(panel);
+    if(!_cineView.get())
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid pointer for ToolsetView", "EditorScreen::_buildEditorTab");
+    panel->AppendChild(_toolsetView->getViewElement());
 }
 
 void

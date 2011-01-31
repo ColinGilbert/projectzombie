@@ -34,7 +34,7 @@ namespace ZGame
     public:
         ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray,
             ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl,
-            World::CinematicController* cineCtrl, Geometry::GeometryManager* geoMgr);
+            World::CinematicController* cineCtrl, Geometry::GeometryManager* geoMgr, Toolset::ToolsetController* toolsetCtrl);
         virtual
             ~ZWorkspace();
 
@@ -95,6 +95,11 @@ namespace ZGame
             return _geoMgr;
         }
 
+        Toolset::ToolsetController*
+            getToolsetController()
+        {
+            return _toolsetCtrl;
+        }
 
     protected:
 
@@ -111,6 +116,7 @@ namespace ZGame
         World::PhysicsManager* _phyMgr;
         World::CinematicController* _cineCtrl;
         Geometry::GeometryManager* _geoMgr;
+        Toolset::ToolsetController* _toolsetCtrl;
 
     private:
         void

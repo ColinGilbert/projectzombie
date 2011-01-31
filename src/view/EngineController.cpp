@@ -48,7 +48,8 @@ using namespace std;
 #include "CommandController.h"
 
 #include "geometry/GeometryManager.h"
-
+#include "toolset/ToolsetController.h"
+#include "toolset/ToolsetManager.h"
 
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -942,6 +943,8 @@ void
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in RenderEntitiesManager", "");
         }
 
+
+
         try
         {
             if(info.requireZCLController)
@@ -997,10 +1000,17 @@ void
                 _geometryManager.reset(new Geometry::GeometryManager());
                 LifeCycle::bindAndRegisterLifeCycleObserver(lfcReg, lfcObs, *_geometryManager);
 
+                std::auto_ptr<Toolset::ToolsetManager> toolMgr(new Toolset::ToolsetManager());
+                _toolsetCtrl.reset(new Toolset::ToolsetController(toolMgr));
+                
+                
                 _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get(),
-                    _cineController.get(), _geometryManager.get()));
+                    _cineController.get(), _geometryManager.get(), 
+                    _toolsetCtrl.get()));
                 _workspaceCtrl.reset(new ZGame::ZWorkspaceController);
                 _workspaceCtrl->setZWorkspace(_workspace.get());
+                
+                
                 //Workspace controller
                 LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
                     LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);

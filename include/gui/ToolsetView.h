@@ -20,6 +20,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 **/
+/**
+* \author beyzend
+* \email llwijk@gmail.com
+**/
 
 #include "ZPrerequisites.h"
 #include "gui/GuiPrerequisite.h"
@@ -29,18 +33,17 @@ namespace ZGame
 {
     namespace Gui
     {
-        class CineView : public GuiView, public Rocket::Core::EventListenerInstancer, public Rocket::Core::EventListener
+        class ToolsetView : public GuiView, public Rocket::Core::EventListenerInstancer, 
+            public Rocket::Core::EventListener
         {
         public:
-            CineView(World::CinematicController* cineCtrl);
-            virtual ~CineView();
-            //interface methods for GuiView
-            /** \brief This method will returns the Rocket based element representing this view.**/
+            ToolsetView(Toolset::ToolsetController* toolCtrl);
+            virtual ~ToolsetView();
+
             virtual Rocket::Core::Element*
                 getViewElement();
-            
 
-            //Interfaces for events
+            //interface for events.
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
             virtual void
@@ -54,13 +57,12 @@ namespace ZGame
                 return _key;
             }
 
-        protected:
         private:
-            World::CinematicController* _cineCtrl;
+            Toolset::ToolsetController* _toolCtrl;
             Rocket::Core::String _ctrlStr;
             Rocket::Core::Element* _rootElement;
             VIEW_KEY _key;
-            Rocket::Core::String _CAM_SELECT_ID;
+            Rocket::Core::String _TOOL_SELECT_ID;
             void
                 _generateRootElement();
         };
