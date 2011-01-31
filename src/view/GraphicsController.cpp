@@ -68,7 +68,7 @@ bool
     GraphicsController::onRenderQueueEnd(Ogre::uint8 queueGroupId,
     const Ogre::String& invocation, bool& skipThisInvocation)
 {
-    
+
     if(queueGroupId == Ogre::RENDER_QUEUE_OVERLAY && _vp->getOverlaysEnabled())
     {
         if(_stateOnce)
@@ -83,7 +83,7 @@ bool
 bool
     GraphicsController::onInit(ZGame::ZInitPacket* packet)
 {
-     for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
+    for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
     {
         _SHC_R[i] = 0.0f;
         _SHC_G[i] = 0.0f;
@@ -111,7 +111,7 @@ bool
     light->setDirection(lightDir);
     light->setDiffuseColour(ColourValue(1.0, 1.0, 1.0));
     light->setSpecularColour(ColourValue(0.1f, 0.1f, 0.1f));
-       
+
     _ssaoListener.setCamera(packet->initialCamera);
     Ogre::ColourValue fadeColour(0.109f, 0.417f, 0.625f);
     _scnMgr->setFog(Ogre::FOG_NONE);
@@ -119,7 +119,7 @@ bool
 
     this->_parseHDRConfig();
 
-    
+
     _initSSAO();
     _initSkyX();
     _initHDR(packet->renderWindow, packet->initialCamera);
@@ -134,7 +134,7 @@ void
     GraphicsController::_initSkyX()
 {
     _skyX.reset(new SkyX::SkyX(_scnMgr, _vp->getCamera()));
-    
+
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
     SkyXOptions.EastPosition = Ogre::Vector2(1, 0);
@@ -258,44 +258,52 @@ bool
     case OIS::KC_L:
         _skyX->setLightingMode(SkyX::SkyX::LM_HDR);
         break;
-        case OIS::KC_K:
+    case OIS::KC_K:
         _skyX->setLightingMode(SkyX::SkyX::LM_LDR);
-        break;
-        /*
-    case OIS::KC_1:
-        _skyX->setTimeMultiplier(1.0f);
-        break;
-
-    case OIS::KC_2:
-        _skyX->setTimeMultiplier(0.1f);
         break;
     case OIS::KC_V:
         _skyX->setTimeMultiplier(0.001f);
         break;
-    case OIS::KC_3:
+    case OIS::KC_MINUS:
+        _skyX->setTimeMultiplier(1.0f);
+        break;
+
+    case OIS::KC_EQUALS:
+        _skyX->setTimeMultiplier(0.1f);
+        break;
+        
+        case OIS::KC_1:
+        _skyX->setTimeMultiplier(1.0f);
+        break;
+
+        case OIS::KC_2:
+        _skyX->setTimeMultiplier(0.1f);
+        break;
+
+        case OIS::KC_3:
         SkyXOptions.Exposure += 0.16 * 0.5f;
         break;
-    case OIS::KC_4:
+        case OIS::KC_4:
         SkyXOptions.Exposure -= 0.16 * 0.5f;
         break;
-    case OIS::KC_5:
+        case OIS::KC_5:
         SkyXOptions.InnerRadius += 0.16 * 0.25f;
         break;
-    case OIS::KC_6:
+        case OIS::KC_6:
         SkyXOptions.InnerRadius -= 0.16 * 0.25f;
         break;
-    case OIS::KC_7:
+        case OIS::KC_7:
         SkyXOptions.OuterRadius += 0.16 * 0.25f;
         break;
-    case OIS::KC_8:
+        case OIS::KC_8:
         SkyXOptions.OuterRadius -= 0.16 * 0.25f;
-        */
+        
     case OIS::KC_9:
         SkyXOptions.SunIntensity += 10;
         break;
     case OIS::KC_0:
         SkyXOptions.SunIntensity -= 10;
-        
+
     default:
         break;
     }
@@ -320,30 +328,30 @@ bool
     GraphicsController::onUpdate(const Ogre::FrameEvent &evt)
 {
     using namespace Ogre;
-        
+
     //Update HDR
     _hdrCompositor->SetFrameTime(evt.timeSinceLastFrame);
 
     //pass int he Skylight SH coefficients
     //Compute theta and phi and get turbulence
     Vector3 xyz = -_skyX->getAtmosphereManager()->getSunDirection();
-    
+
     Ogre::Radian theta = Math::ACos(xyz.y);
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
-    
+
     Real turbulence = 3.5;
 #if 0
     //_SHC_R[0] = 1.0f; _SHC_G[0] = 1.0f; _SHC_G[
 
     /*
-     for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
+    for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
     {
-        _SHC_R[i] = 1.0f;
-        _SHC_G[i] = 0.0f;
-        _SHC_B[i] = 0.0f;
+    _SHC_R[i] = 1.0f;
+    _SHC_G[i] = 0.0f;
+    _SHC_B[i] = 0.0f;
     }*/
 #endif
-     
+
     if(xyz.y >= 0.0f)
     {
         CalculatePreethamSH(theta.valueRadians(),phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 1.0f);
@@ -355,12 +363,12 @@ bool
     /*
     else
     {
-        theta = Radian(Math::PI - theta.valueRadians());
-        phi = Radian(Math::PI * 2.0f - theta.valueRadians());
-        CalculatePreethamSH(theta.valueRadians(), phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 0.0001f);
-        CalculateSunSH(theta.valueRadians(), phi.valueRadians(), turbulence, NUM_OF_BANDS, _SHC_R, _SHC_G, _SHC_B, 0.0001f);
+    theta = Radian(Math::PI - theta.valueRadians());
+    phi = Radian(Math::PI * 2.0f - theta.valueRadians());
+    CalculatePreethamSH(theta.valueRadians(), phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 0.0001f);
+    CalculateSunSH(theta.valueRadians(), phi.valueRadians(), turbulence, NUM_OF_BANDS, _SHC_R, _SHC_G, _SHC_B, 0.0001f);
     }*/
-    
+
 
     //theta = Math::ACos(xyz.y).valueRadians();
     //phi = Math::ATan2(xyz.x, xyz.z).valueRadians();
@@ -394,7 +402,7 @@ bool
     //sun direction for light
     //light
     //static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"))->getTechnique(0)->getPass(0)->
-        pass->getFragmentProgramParameters()->setNamedConstant("uLightY", -_skyX->getAtmosphereManager()->getSunDirection().y);
+    pass->getFragmentProgramParameters()->setNamedConstant("uLightY", -_skyX->getAtmosphereManager()->getSunDirection().y);
 
     _skyX->update(evt.timeSinceLastFrame);
 #if 0
@@ -405,10 +413,10 @@ bool
             cout << "R,G,B: " << _SHC_R[i] << ", " << _SHC_G[i] << ", " << _SHC_B[i] << endl;
         }
 
-       cout << "theta, phi: " << theta.valueDegrees() << ", " << phi.valueDegrees() << endl;
-       cout << "sun direction: " << xyz << endl;
-       if(_timeCount > 0.0f)
-           _timeCount = 0.0f;
+        cout << "theta, phi: " << theta.valueDegrees() << ", " << phi.valueDegrees() << endl;
+        cout << "sun direction: " << xyz << endl;
+        if(_timeCount > 0.0f)
+            _timeCount = 0.0f;
     }
     _timeCount += evt.timeSinceLastFrame;
 #endif

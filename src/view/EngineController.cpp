@@ -47,6 +47,9 @@ using namespace std;
 #include "command/CommandList.h"
 #include "CommandController.h"
 
+#include "geometry/GeometryManager.h"
+
+
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 static const Ogre::String PlatformPath("configs_windows/");
@@ -270,14 +273,14 @@ void
 {
     String cullmode(
 
-        //"VIEW_FRUSTUM"			// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
+        "VIEW_FRUSTUM"			// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
         //"VIEW_FRUSTUM_MASK"			// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
         //"VIEW_FRUSTUM_MASK_TEMPORAL" // Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
         //"VIEW_FRUSTUM_DIRECT"		// Octree view frustum culling with  2 type(Visible, Invisible)
         //"VIEW_FRUSTUM_RADAR"		// Octree view frustum culling with  2 type(Visible, Invisible)
         //"VIEW_FRUSTUM_COMPLEX"	// Octree view frustum culling with 3 type (Full, NONE, PARTIAL)
         //"STOP_AND_WAIT"			// Query all visible before drawing it, meaning it's waiting for query results (slow, debug purpose)
-        "CHC"						// render whole tree that was visible at previous frame and test other part of tree and leafs.
+        //"CHC"						// render whole tree that was visible at previous frame and test other part of tree and leafs.
         //"CHC_CONSERVATIVE"		// Try to use previous frame info to reduce query time (WIP)
         );
     _scnMgr->setOption(String("setCullingMode"), &cullmode);
@@ -301,8 +304,7 @@ void
 void
     EngineController::chooseSceneManager()
 {
-    //_scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "ProjectChaos");
-    
+#if 0
     const String scnMgrName("OctreeCHCSceneManager");
     bool notFound = true;
     SceneManagerEnumerator::MetaDataIterator it = _root->getSceneManagerMetaDataIterator();
@@ -326,7 +328,12 @@ void
     }
 
     _scnMgr = _root->createSceneManager(scnMgrName, "ProjectChaos");
-    
+#endif
+
+#if 1
+    _scnMgr = _root->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "ProjectChaos");
+#endif
+
     RenderQueue* rdrQueue = _scnMgr->getRenderQueue();
     rdrQueue->setDefaultQueueGroup(Ogre::RENDER_QUEUE_MAIN);
 
@@ -530,7 +537,7 @@ bool
     }
 
     Ogre::String cullmode;
-
+#if 0
 #define MY_HIT_KEY_ONCE(E,A,B) if(E.key == A)		\
     {												\
     cullmode = B;									\
@@ -552,6 +559,7 @@ bool
         //_scnMgr->setOption (String("CurrentOptionCamera"), _window->getViewport(0)->getCamera());
         _scnMgr->setOption (String("setCullingMode"), &cullmode);
     }
+#endif
 
 
     return true;
@@ -906,12 +914,12 @@ void
             _cineController.reset(new World::CinematicController(cineMgr, _window));
             gameState.onCinematicControllerConfiguration(_cineController.get());
             _vp = _cineController->getViewport();
-            //LifeCycle::bindAndRegisterLifeCycleObserver<World::CinematicController>(lfcReg, lfcObs, *_cineController.get(),
-            //LifeCycle::LFC_ON_UPDATE);
+            LifeCycle::bindAndRegisterLifeCycleObserver<World::CinematicController>(lfcReg, lfcObs, *_cineController.get(),
+            LifeCycle::LFC_ON_UPDATE);
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_cineController);
             EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_cineController);
 
-            _setupCHCSceneManager();
+            //_setupCHCSceneManager();
             //_addStaticTestObjects();
         }catch(Ogre::Exception e)
         {
@@ -983,8 +991,14 @@ void
             //WORKSPACE
             if(info.requireWorkspace)
             {
+                //We allocate Geometry Manager. Because Workspace will always have a geo. manager. This
+                //may change in the future.
+
+                _geometryManager.reset(new Geometry::GeometryManager());
+                LifeCycle::bindAndRegisterLifeCycleObserver(lfcReg, lfcObs, *_geometryManager);
+
                 _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get(),
-                    _cineController.get()));
+                    _cineController.get(), _geometryManager.get()));
                 _workspaceCtrl.reset(new ZGame::ZWorkspaceController);
                 _workspaceCtrl->setZWorkspace(_workspace.get());
                 //Workspace controller

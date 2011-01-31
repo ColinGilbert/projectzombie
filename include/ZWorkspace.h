@@ -29,27 +29,12 @@ THE SOFTWARE.
 
 namespace ZGame
 {
-    namespace Entities
-    {
-        class EntitiesManager;
-        class EntitiesGroup;
-        class RenderEntitiesManager;
-    }
-    namespace ZCL
-    {
-        class ZCLController;
-    }
-    namespace World
-    {
-        class WorldController;
-        class PhysicsManager;
-    }
     class ZWorkspace
     {
     public:
         ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray,
             ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl,
-            World::CinematicController* cineCtrl);
+            World::CinematicController* cineCtrl, Geometry::GeometryManager* geoMgr);
         virtual
             ~ZWorkspace();
 
@@ -104,6 +89,12 @@ namespace ZGame
             return _cineCtrl;
         }
 
+        Geometry::GeometryManager*
+            getGeometryManager()
+        {
+            return _geoMgr;
+        }
+
 
     protected:
 
@@ -119,6 +110,7 @@ namespace ZGame
         World::WorldController* _worldCtrl;
         World::PhysicsManager* _phyMgr;
         World::CinematicController* _cineCtrl;
+        Geometry::GeometryManager* _geoMgr;
 
     private:
         void

@@ -60,7 +60,6 @@ void
         _scnMgr->getRootSceneNode()->removeChild(_root);
         _scnMgr->destroySceneNode(_root);
         _root = 0;
-        //_root->setVisible(false, true);
         if(_phyBody)
             phyMgr->destroyBody(_phyBody);
         _phyBody = 0;
@@ -134,9 +133,7 @@ void
         +Ogre::StringConverter::toString(man_count++));
     _root->setPosition(_origin);
     _root->attachObject(_manual);
-    _root->needUpdate(true);
-    _root->setVisible(true);
-    _root->showBoundingBox(true);
+    //_root->showBoundingBox(true);
     _scnMgr->getRootSceneNode()->addChild(_root);
 }
 

@@ -88,7 +88,7 @@ bool
     _editorScreen = static_cast<Gui::EditorScreen*>(initPacket->guiCtrl->getScreen("EditorScreen"));
     _editorScreen->setCineView(cineView);
     _editorScreen->onLoad();
-    _editorScreen->hide();
+    _editorScreen->show();
     return true;
 }
 
@@ -139,7 +139,7 @@ void
 {
     info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
     info.requireWorldController = true;
-    info.requireControlModule = true;
+    info.requireControlModule = false;
     info.requireWorkspace = true;
 }
 

@@ -2,6 +2,7 @@
 #include "ZWorkspaceController.h"
 #include "world/WorldController.h"
 #include "ZInitPacket.h"
+#include "geometry/GeometryManager.h"
 using std::cout;
 using std::endl;
 using namespace ZGame;
@@ -37,6 +38,10 @@ bool
     {
         //_workspace->getWorldController()->addBlock(evt.state.X.abs / _windowWidth, 
             //evt.state.Y.abs / _windowHeight);
+        _workspace->getGeometryManager()->createCube(evt.state.X.abs / _windowWidth,
+            evt.state.Y.abs / _windowHeight);
+
+
     }
     else if(id == OIS::MouseButtonID::MB_Right)
     {

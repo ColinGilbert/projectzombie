@@ -164,5 +164,9 @@ namespace ZGame
         struct LifeCycleObserver;
     }
 
+    namespace Geometry
+    {
+        class GeometryManager;
+    }
 
 }

@@ -64,7 +64,7 @@ void
         if(pers.compare(pair.first) == 0)
         {
                 _cineMgr->createPerspectiveCamera(_rendWin->getWidth(), _rendWin->getHeight(), 
-                    pair.second.first, Ogre::Quaternion(), _perspControl.get());
+                    Ogre::Vector3(), Ogre::Quaternion(), _perspControl.get());
         }
         else if(ortho.compare(pair.first) == 0)
         {
