@@ -3,6 +3,9 @@
 #include "world/WorldController.h"
 #include "ZInitPacket.h"
 #include "geometry/GeometryManager.h"
+#include "world/CinematicController.h"
+#include "world/CinematicManager.h"
+#include "toolset/ToolsetController.h"
 using std::cout;
 using std::endl;
 using namespace ZGame;
@@ -36,6 +39,19 @@ bool
     //Depending on mode.
     if(id == OIS::MouseButtonID::MB_Left)
     {
+        //Just pass in the 3d position of where the user clicked. This is predefined to be a certain distance into the screen.
+        Ogre::Camera* cam = _workspace->getCinematicController()->getCinematicManager()->getRootCam();
+        Ogre::Real x, y;
+        x = evt.state.X.abs / _windowWidth;
+        y = evt.state.Y.abs / _windowHeight;
+
+        Ogre::Ray rayTo;
+        Ogre::Real distanceForward = 4.0f; //4 units into screen is where cursor will be.
+        rayTo  = cam->getCameraToViewportRay(x, y);
+
+        _workspace->getToolsetController()->onCursorPosition3d(rayTo.getPoint(distanceForward));
+
+
     }
     else if(id == OIS::MouseButtonID::MB_Right)
     {     

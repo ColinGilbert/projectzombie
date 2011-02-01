@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 #include "ZPrerequisites.h"
 
+
 namespace ZGame
 {
     namespace Toolset
@@ -33,10 +34,45 @@ namespace ZGame
         class ToolsetController
         {
         public:
+
+            enum ToolType
+            {
+                SELECT=0,CURSOR, CUBE
+            };
+            
+            typedef Ogre::vector<std::pair<Ogre::String, ToolType> >::type ToolDesc;
+            typedef std::pair<ToolDesc::const_iterator, ToolDesc::const_iterator> ToolDescCIter;
+
             ToolsetController(std::auto_ptr<ToolsetManager> toolMgr);
             virtual ~ToolsetController();
+
+            ToolDescCIter
+                getToolDescriptions();
+
+            bool
+                onInit(ZGame::ZInitPacket* initPacket);
+
+            /** This method is called for onCreate events. Will
+            create the current tool type at the cursor
+            **/
+            void
+                onCreate();
+
+            void
+                setToolType(ToolType type);
+            /** Method is called whenever on screen 3d cursor position event is generated.**/
+            void
+                onCursorPosition3d(Ogre::Vector3 pos);
+
+
         private:
             std::auto_ptr<ToolsetManager> _toolMgr;
+            ToolDesc _toolsDesc;
+            ToolType _curToolType;
+            Ogre::uint16 _cursorId;
+            void
+                _switchTool(ToolType type);
+                
         };
     }
 }

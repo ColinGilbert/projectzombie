@@ -1000,9 +1000,9 @@ void
                 _geometryManager.reset(new Geometry::GeometryManager());
                 LifeCycle::bindAndRegisterLifeCycleObserver(lfcReg, lfcObs, *_geometryManager);
 
-                std::auto_ptr<Toolset::ToolsetManager> toolMgr(new Toolset::ToolsetManager());
+                std::auto_ptr<Toolset::ToolsetManager> toolMgr(new Toolset::ToolsetManager(_geometryManager.get()));
                 _toolsetCtrl.reset(new Toolset::ToolsetController(toolMgr));
-                
+                LifeCycle::bindAndRegisterLifeCycleObserver(lfcReg, lfcObs, *_toolsetCtrl, LifeCycle::LFC_ON_INIT);
                 
                 _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get(),
                     _cineController.get(), _geometryManager.get(), 

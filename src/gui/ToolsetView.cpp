@@ -30,6 +30,14 @@ void
     Element* el = event.GetCurrentElement();
     if(_TOOL_SELECT_ID == el->GetId())
     {
+         Rocket::Controls::SelectOption* option = GuiUtils::getSelectOption(el);
+         if(option)
+         {
+             unsigned int toolType;
+             Rocket::Core::TypeConverter<Rocket::Core::String, unsigned int>::Convert(option->GetValue(), toolType);
+             _toolCtrl->setToolType(static_cast<Toolset::ToolsetController::ToolType>(toolType));
+             //refresh this view.
+         }
     }
 }
 
@@ -70,10 +78,14 @@ void
 
     std::vector<Gui::SELECT_OPT> optPairsVec;
 
-    optPairsVec.push_back(std::make_pair<String, String>("box", "0"));
-    optPairsVec.push_back(std::make_pair<String, String>("sphere", "1"));
-    optPairsVec.push_back(std::make_pair<String, String>("cylinder", "2"));
-
+    auto cIters = _toolCtrl->getToolDescriptions();
+    for(Toolset::ToolsetController::ToolDesc::const_iterator iter = cIters.first; 
+        iter != cIters.second; ++iter)
+    {
+        Rocket::Core::String idStr;
+        Rocket::Core::TypeConverter<unsigned int, String>::Convert(static_cast<unsigned int>(iter->second), idStr);
+        optPairsVec.push_back(std::make_pair<String, String>(iter->first.c_str(), idStr));
+    }
     GuiUtils::ConstructSelectOptions(cameraSelect, optPairsVec);
 
 }

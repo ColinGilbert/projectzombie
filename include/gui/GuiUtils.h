@@ -58,6 +58,17 @@ namespace ZGame
                 select->RemoveReference();
                 return select;
             }
+            /** 
+            *This method will get select option from a Element. It is ASSUMED that THE element is 
+            *a type of ElementFormControlSelect. Conversion will be done through static_casting. We assume no responsiblity
+            *of type checking here.
+            **/
+            static Rocket::Controls::SelectOption*
+                getSelectOption(Rocket::Core::Element* el)
+            {
+                 Rocket::Controls::ElementFormControlSelect *select = static_cast<Rocket::Controls::ElementFormControlSelect*>(el);
+                 return select->GetOption(select->GetSelection());
+            }
 
 
         };

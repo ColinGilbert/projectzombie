@@ -33,14 +33,12 @@ void
     Element* el = event.GetCurrentElement();
     if(_CAM_SELECT_ID == el->GetId())
     {
-        Rocket::Controls::ElementFormControlSelect *select = static_cast<Rocket::Controls::ElementFormControlSelect*>(el);
-        Rocket::Controls::SelectOption* option = select->GetOption(select->GetSelection());
+        Rocket::Controls::SelectOption* option = GuiUtils::getSelectOption(el);
         if(option)
         {
-            cout << "Option Selected: " << option->GetValue().CString() << endl;
             World::CAMERA_ID camId;
-            std::istringstream iss(option->GetValue().CString());
-            iss >> camId;
+            cout << "Option Selected: " << option->GetValue().CString() << endl;
+            Rocket::Core::TypeConverter<Rocket::Core::String, World::CAMERA_ID>::Convert(option->GetValue(), camId);
             _cineCtrl->onCameraChange(camId);
         }
     }

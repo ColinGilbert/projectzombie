@@ -1,7 +1,8 @@
 #pragma once
-
 /**
-Permission is hereby granted by Fdastero LLC, free of charge, to any person obtaining a copy
+*Copyright (c) 2010 Fdastero LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -19,37 +20,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 **/
-/**
-*author: beyzend 
-*email: llwijk@gmail.com
-**/
 
 #include "ZPrerequisites.h"
-#include "toolset/ToolInfo.h"
+
 namespace ZGame
 {
     namespace Toolset
     {
-        class ToolsetManager
+
+        class ToolInfo
         {
         public:
-            ToolsetManager(Geometry::GeometryManager* geoMgr);
-            virtual ~ToolsetManager();
+            ToolInfo(Ogre::uint16 id, Ogre::SceneNode* toolNode);
+            virtual ~ToolInfo();
 
-            const Ogre::uint16 //we need to define this as ID.
-                createCursor();
-            /** \note This function is not safe. ID may be invalid or pointer may become invalid.**/
-            ToolInfo*
-                getTool(Ogre::uint16 id);
+            Ogre::uint16 
+                getId()
+            {
+                return _id;
+            }
 
+            Ogre::SceneNode* 
+                getNode()
+            {
+                return _toolNode;
+            }
 
         private:
-            Ogre::vector<ToolInfo>::type _tools; //We are using vector because we don't expect
-            //too much tools to be created.
-            Geometry::GeometryManager* _geoMgr;
-
-
+            Ogre::uint16 _id;
+            Ogre::SceneNode* _toolNode;
 
         };
+
+        typedef Ogre::vector<ToolInfo>::type ToolInfos;
+        typedef ToolInfos::iterator ToolInfosIterator;
+        typedef ToolInfos::const_iterator ToolInfosConstIterator;
+
+
+
     }
 }

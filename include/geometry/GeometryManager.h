@@ -47,9 +47,9 @@ namespace ZGame
                 onUpdate(const Ogre::FrameEvent &evt);
             bool
                 onDestroy();
-            /** \note temp method**/
-            const Ogre::String
-                createCube(Ogre::Real cursorX, Ogre::Real cursorY);
+            
+            Ogre::SceneNode*
+                createCube(Ogre::Vector3 size=Ogre::Vector3());
 
 
         protected:
@@ -57,6 +57,11 @@ namespace ZGame
             static size_t _geoNumber;
             Ogre::Camera* _cam;
             Ogre::SceneManager* _scnMgr;
+            Ogre::ResourceHandle _CUBE_MESH_HANDLE;
+            /** This method will create meshes for all geometry types supported by this manager.**/
+            void
+                _createMeshes();
+
         };
     }
 }
