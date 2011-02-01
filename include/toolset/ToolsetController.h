@@ -61,7 +61,7 @@ namespace ZGame
             void
                 setToolType(ToolType type);
             /** Method is called whenever on screen 3d cursor position event is generated.**/
-            void
+            bool
                 onCursorPosition3d(Ogre::Vector3 pos);
 
 

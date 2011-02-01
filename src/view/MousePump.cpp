@@ -33,7 +33,8 @@ namespace ZGame
   {
     for(DownObsItr it=_downObs.begin();it !=_downObs.end();++it)
       {
-        (*it)(evt,bId);
+        if(!(*it)(evt,bId))
+            break;
       }
     return true;
   }
@@ -41,7 +42,8 @@ namespace ZGame
   {
     for(UpObsItr it=_upObs.begin();it !=_upObs.end();++it)
       {
-        (*it)(evt,bId);
+        if(!(*it)(evt,bId))
+            break;
       }
     return true;
   }

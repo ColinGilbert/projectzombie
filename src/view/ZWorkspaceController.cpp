@@ -36,6 +36,13 @@ bool
 bool
     ZWorkspaceController::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
+    return true;
+}
+
+bool
+    ZWorkspaceController::onMouseDown(const OIS::MouseEvent &evt, 
+    const OIS::MouseButtonID id)
+{
     //Depending on mode.
     if(id == OIS::MouseButtonID::MB_Left)
     {
@@ -49,21 +56,20 @@ bool
         Ogre::Real distanceForward = 4.0f; //4 units into screen is where cursor will be.
         rayTo  = cam->getCameraToViewportRay(x, y);
 
-        _workspace->getToolsetController()->onCursorPosition3d(rayTo.getPoint(distanceForward));
+        /*
+        *This business is stupid. We only doing this now for prototyping. 
+        *
+        */
+        if(_workspace->getToolsetController()->onCursorPosition3d(rayTo.getPoint(distanceForward)))
+        {
+            _workspace->getCinematicController()->onDisableOneFrame();
+        }
 
 
     }
     else if(id == OIS::MouseButtonID::MB_Right)
     {     
     }
-    return true;
-}
-
-bool
-    ZWorkspaceController::onMouseDown(const OIS::MouseEvent &evt, 
-    const OIS::MouseButtonID id)
-{
-    
     return true;
 }
 

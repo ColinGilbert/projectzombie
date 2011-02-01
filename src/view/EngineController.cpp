@@ -569,26 +569,21 @@ bool
 bool
     EngineController::onMouseMove(const OIS::MouseEvent &event)
 {
-    /*
-    * Note: It is ugly to intercept trays events this way. The original plan is to have the concept of intercepting events. We need to implement
-    * that using Delegates. This way, we can filter and intercept events. Bascially we need to better manage this. Perhaps by having a pump at the game state
-    * level and implement a handler which wraps the pumps and is reactive to events.
-    */
-    _mousePump->updateMouseMoveEvt(event);
+    _guiCtrl->onMouseMove(event); //Mouse events are routed through _guiControl now so we can use the GUI system to filter mouse.
     return true;
 }
 
 bool
     EngineController::onMouseDown(const OIS::MouseEvent &event, const OIS::MouseButtonID id)
 {
-    _mousePump->updateMouseDownEvt(event, id);
+    _guiCtrl->onMouseDown(event, id);
     return true;
 }
 
 bool
     EngineController::onMouseUp(const OIS::MouseEvent &event, const OIS::MouseButtonID id)
 {
-    _mousePump->updateMouseUpEvt(event, id);
+    _guiCtrl->onMouseUp(event, id);
     return true;
 }
 
@@ -900,7 +895,7 @@ void
                 LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
 
             EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);
-            EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_guiCtrl);
+            _guiCtrl->setMousePump(_mousePump.get());
 
             gameState.onGuiConfiguration(_guiCtrl.get());
 
@@ -1015,7 +1010,7 @@ void
                 LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
                     LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
                 EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_workspaceCtrl);
-                EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_workspaceCtrl);
+                EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_workspaceCtrl, ORDER_FIRST);
 
             }
         }catch(Ogre::Exception e)

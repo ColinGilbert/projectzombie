@@ -7,8 +7,7 @@
 
 #ifndef MOUSEEVENTREGISTER_H_
 #define MOUSEEVENTREGISTER_H_
-#include <memory>
-#include <vector>
+#include "ZPrerequisites.h"
 #include "EventDelegates.h"
 namespace ZGame
 {
@@ -21,10 +20,10 @@ namespace ZGame
     ~MouseEventRegister();
 
     void injectMouseSubj(const EVENT::MouseEvtSubject &subj);
-    void registerMouseObs(EVENT::MouseEvtObserver &obs);
+    void registerMouseObs(EVENT::MouseEvtObserver &obs, REGISTER_ORDER order);
   protected:
-	typedef std::vector<EVENT::MouseEvtObserver>::iterator ObsItr;
-	std::vector<EVENT::MouseEvtObserver> _obs;
+	typedef std::list<EVENT::MouseEvtObserver>::iterator ObsItr;
+	std::list<EVENT::MouseEvtObserver> _obs;
 
   };
 

@@ -31,7 +31,8 @@ void KeyboardPump::updateKeyDownObs(const OIS::KeyEvent &evt)
  {
    for(KeyDownObsItr it=_onKeyDownObs.begin();it!=_onKeyDownObs.end();++it)
      {
-       (*it)(evt); //make delegate call
+       if(!(*it)(evt))
+           break; //make delegate call
      }
  }
 
@@ -39,7 +40,8 @@ void KeyboardPump::updateKeyDownObs(const OIS::KeyEvent &evt)
 {
   for (KeyUpObsItr it = _onKeyUpObs.begin(); it != _onKeyUpObs.end(); ++it)
     {
-      (*it)(evt);
+      if(!(*it)(evt))
+          break;
     }
 }
 

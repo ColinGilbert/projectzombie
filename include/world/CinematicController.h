@@ -136,7 +136,9 @@ namespace ZGame
                 onKeyUp(const OIS::KeyEvent& e);
             bool
                 onUpdate(const Ogre::FrameEvent& evt);
-
+            /** \brief Call this method to disable Cinematic control for one frame.**/
+            void
+                onDisableOneFrame();
 
         protected:
         private:
@@ -154,6 +156,7 @@ namespace ZGame
 
             Ogre::SceneNode* _centerNode; //This is temp. This should be passed in.
 
+            bool _disable;
         };
     }
 }

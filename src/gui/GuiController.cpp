@@ -7,6 +7,7 @@
 #include "GraphicsController.h"
 #include "gui/SceensFactory.h"
 #include "gui/HDRSettingsView.h"
+#include "MousePump.h"
 using std::cout; 
 using std::endl;
 
@@ -70,12 +71,25 @@ void
     return;
 }
 
+void
+    GuiController::setMousePump(ZGame::MousePump* mousePump)
+{
+    _mousePump = mousePump;
+}
+
 Rocket::Core::EventListener*
     GuiController::InstanceEventListener(const Rocket::Core::String& value)
 {
     Rocket::Core::EventListener* retList = 0;
     Rocket::Core::EventListener* temp = 0;
     bool continueCheck = false;
+
+    Rocket::Core::String thisHandler("ROOT_HANDLER");
+    if(thisHandler == value)
+    {
+        return this;
+    }
+
     //iterate through the screens and ask it for event listeners based on passed in string.
     //NOTE: There should be a one-to-one mapping of value to a corresponding event listener.
     //Thus if we detect that this is false here, we need to throw exception.
@@ -333,6 +347,7 @@ bool
 
         _createGui2d();
 
+        //
         //Load any persistence screens.
         _debugScreen = static_cast<DebugScreen*>(ScreensFactory::createScreens("DebugScreen", this));
         _debugScreen->setHDRSettingsView(std::auto_ptr<Gui::HDRSettingsView>(new HDRSettingsView(initPacket->gfxCtrl->getHdrCompositor())));
@@ -345,6 +360,9 @@ bool
         _persistScreens.push_back(_debugScreen);
 
         BuildKeyMaps();
+
+
+
 
     }catch(Ogre::Exception e)
     {
@@ -488,31 +506,35 @@ bool
     GuiController::onMouseMove(const OIS::MouseEvent& e)
 {
     int key_modifier_state = GetKeyModifierState();
-
+    
     _gui2d->ProcessMouseMove(e.state.X.abs, e.state.Y.abs, key_modifier_state);
     if (e.state.Z.rel != 0)
         _gui2d->ProcessMouseWheel(e.state.Z.rel / -120, key_modifier_state);
 
-    return true;
+    return _mousePump->updateMouseMoveEvt(e); //continue on with mouse move pumps as normal.
 }
 
 bool
-    GuiController::onMouseDown(const OIS::MouseEvent& ROCKET_UNUSED(e), OIS::MouseButtonID id)
+    GuiController::onMouseDown(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+    //ROCKET_UNUSED(e), OIS::MouseButtonID id)
 {
-    _gui2d->ProcessMouseButtonDown((int) id, GetKeyModifierState());
-    return true;
+    _curEvent = &e;
+    _curMouseBid = id;
+    return _gui2d->ProcessMouseButtonDown((int) id, GetKeyModifierState()); //we're going to let libRocket filter events for us. See ProcessEvent function.
 }
 
 bool
-    GuiController::onMouseUp(const OIS::MouseEvent& ROCKET_UNUSED(e), OIS::MouseButtonID id)
+    GuiController::onMouseUp(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
-    _gui2d->ProcessMouseButtonUp((int) id, GetKeyModifierState());
-    return true;
+    _curEvent = &e;
+    _curMouseBid = id;
+    return _gui2d->ProcessMouseButtonUp((int) id, GetKeyModifierState());
 }
 
 bool
     GuiController::onKeyDown(const OIS::KeyEvent& e)
 {
+    bool notEaten = true;
     Rocket::Core::Input::KeyIdentifier key_identifier = key_identifiers[e.key];
     cout << "GuiController::onKeyDown" << endl;
     // Toggle the debugger on a shift-~ press.
@@ -521,19 +543,19 @@ bool
     {
         cout << "Rocket Debugger setVisible" << endl;
         Rocket::Debugger::SetVisible(!Rocket::Debugger::IsVisible());
-        return true;
+        return false;
     }
 
     if (key_identifier != Rocket::Core::Input::KI_UNKNOWN)
-        _gui2d->ProcessKeyDown(key_identifier, GetKeyModifierState());
+        notEaten = _gui2d->ProcessKeyDown(key_identifier, GetKeyModifierState());
 
     // Send through the ASCII value as text input if it is printable.
     if (e.text >= 32)
-        _gui2d->ProcessTextInput((Rocket::Core::word) e.text);
+        notEaten = _gui2d->ProcessTextInput((Rocket::Core::word) e.text);
     else if (key_identifier == Rocket::Core::Input::KI_RETURN)
-        _gui2d->ProcessTextInput((Rocket::Core::word) '\n');
+        notEaten = _gui2d->ProcessTextInput((Rocket::Core::word) '\n');
 
-    return true;
+    return notEaten;
 }
 
 bool
@@ -739,4 +761,18 @@ int
 #endif
 
     return modifier_state;
+}
+
+void
+    GuiController::ProcessEvent(Rocket::Core::Event &event)
+{
+    Rocket::Core::String eventType = event.GetType();
+    if(eventType == "mousedown")
+    {
+        _mousePump->updateMouseDownEvt(*_curEvent, _curMouseBid);
+    }
+    else if(eventType == "mouseup")
+    {
+        _mousePump->updateMouseUpEvt(*_curEvent, _curMouseBid);
+    }
 }

@@ -27,7 +27,7 @@ THE SOFTWARE.
 using namespace ZGame::World;
 
 CinematicController::CinematicController(std::auto_ptr<CinematicManager> cineMgr, Ogre::RenderWindow* rendWin) 
-    : _cineMgr(cineMgr), _rendWin(rendWin), _vp(0), _perspControl(new PerspectiveControl())
+    : _cineMgr(cineMgr), _rendWin(rendWin), _vp(0), _perspControl(new PerspectiveControl()), _disable(false)
 {
     //test code. These nodes should be passed in.
     _centerNode = _cineMgr->getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -89,6 +89,10 @@ void
 bool
     CinematicController::onMouseMove(const OIS::MouseEvent& e)
 {
+    if(_disable)
+    {
+        return true;
+    }
     _currentOperation.onMouseMove(e);
     return true;
 }
@@ -96,6 +100,10 @@ bool
 bool
     CinematicController::onMouseDown(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
+    if(_disable)
+    {
+        return true;
+    }
     _currentOperation.onMouseDown(e, id);
     return true;
 }
@@ -103,6 +111,8 @@ bool
 bool
     CinematicController::onMouseUp(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
+    if(_disable)
+        return true;
     _currentOperation.onMouseUp(e, id);
     return true;
 }
@@ -110,6 +120,8 @@ bool
 bool
     CinematicController::onKeyDown(const OIS::KeyEvent& e)
 {
+    if(_disable)
+        return true;
     _currentOperation.onKeyDown(e);
     return true;
 }
@@ -117,6 +129,8 @@ bool
 bool
     CinematicController::onKeyUp(const OIS::KeyEvent& e)
 {
+    if(_disable)
+        return true;
     _currentOperation.onKeyUp(e);
     return true;
 }
@@ -128,6 +142,8 @@ bool
 bool
     CinematicController::onUpdate(const Ogre::FrameEvent &evt)
 {
+    if(_disable)
+        _disable = false;
     _currentOperation.onUpdate(evt);
     return true;
 }
@@ -228,4 +244,10 @@ void
     EditorOperation::onUpdate(const Ogre::FrameEvent& evt)
 {
     _control->update(evt.timeSinceLastFrame, _cam, _cam->getParentSceneNode(), _lookAtNode);
+}
+
+void
+    CinematicController::onDisableOneFrame()
+{
+    _disable = true;
 }

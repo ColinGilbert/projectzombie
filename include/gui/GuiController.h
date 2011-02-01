@@ -34,7 +34,9 @@ namespace ZGame
     {
         class Screens;
         class DebugScreen;
-        class GuiController : Rocket::Core::EventListenerInstancer
+
+
+        class GuiController : Rocket::Core::EventListenerInstancer, public Rocket::Core::EventListener
         {
         public:
             GuiController();
@@ -42,6 +44,12 @@ namespace ZGame
 
 
             Screens* getScreen(const Rocket::Core::String &key);
+            /** This method is used to propgate events to the Engine through key / mouse pumps
+            *to accomplish filtering GUI events from the Engine.
+            **/
+            virtual 
+                void ProcessEvent(Rocket::Core::Event& event);
+
 
             virtual Rocket::Core::EventListener*
                 InstanceEventListener(const Rocket::Core::String& value);
@@ -99,7 +107,9 @@ namespace ZGame
                 loadDocumentsWithContext(Rocket::Core::Context* context, 
                 StrToDocumentMap &docMap);
 
-
+            void
+                setMousePump(ZGame::MousePump* mousePump);
+            
         private:
 
             void
@@ -151,6 +161,10 @@ namespace ZGame
             bool _transitionLock;
             Gui::ScreenTransitionTranslate _transTranslate;
             bool _eventListenerRegistered;
+
+            ZGame::MousePump* _mousePump;
+            const OIS::MouseEvent* _curEvent;
+            OIS::MouseButtonID _curMouseBid;
         };
     }
 }

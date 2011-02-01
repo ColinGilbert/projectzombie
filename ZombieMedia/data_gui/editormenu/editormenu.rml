@@ -13,8 +13,6 @@
     </style>
   </head>
   <body template="splitcontenttemplate">
-    <div class="split_top">
-    </div>
     <div class="split_bottom">
       <tabset class="colored" id="main_tabs">
 	<tab>Projects</tab>

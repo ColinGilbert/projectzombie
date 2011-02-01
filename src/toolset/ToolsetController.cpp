@@ -47,9 +47,13 @@ void
 
 }
 
-void
+bool
     ToolsetController::onCursorPosition3d(Ogre::Vector3 pos)
 {
     if(_curToolType == CURSOR)
+    {
         _toolMgr->getTool(_cursorId)->getNode()->setPosition(pos);
+        return true;
+    }
+    return false;
 }

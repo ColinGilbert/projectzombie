@@ -1,0 +1,12 @@
+<template name="splitcontenttemplate" content="content_">
+<head>
+  <link type="text/rcss" href="../rcss/rkt.rcss"/>
+  <link type="text/rcss" href="../rcss/invader.rcss" />
+</head>
+<body class="splitcontentmenu">
+  <div id="content_">
+    <div class="split_top" onmousedown="ROOT_HANDLER" onmouseup="ROOT_HANDLER">
+    </div>
+  </div>
+</body>
+</template>

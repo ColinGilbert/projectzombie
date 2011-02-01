@@ -7,6 +7,7 @@
 
 #ifndef LIFECYCLEDELEGATESUTIL_H_
 #define LIFECYCLEDELEGATESUTIL_H_
+#include "ZPrerequisites.h"
 #include "LifeCycleDelegates.h"
 #include "EventDelegates.h"
 #include "delegates/EntityDelegates.h"
@@ -184,13 +185,14 @@ namespace ZGame
     }
     namespace EVENT
     {
+        
         template<typename T>
         static void bindAndRegisterKeyObserver(KeyEventRegister &keyReg, KeyboardEvtObserver &keyObs,
-            T& binder)
+            T& binder, REGISTER_ORDER order=ORDER_DONOTCARE)
         {
             keyObs.kde.bind(&binder,&T::onKeyDown);
             keyObs.kue.bind(&binder,&T::onKeyUp);
-            keyReg.registerKeyObs(keyObs);
+            keyReg.registerKeyObs(keyObs, order);
         }
         static void clearKeyObs(EVENT::KeyboardEvtObserver &keyObs)
         {
@@ -199,12 +201,12 @@ namespace ZGame
         }
         template<typename T>
         static void bindAndRegisterMouseObserver(MouseEventRegister &mouseReg, MouseEvtObserver &mouseObs,
-            T& binder)
+            T& binder, REGISTER_ORDER order=ORDER_DONOTCARE)
         {
             mouseObs.mde.bind(&binder,&T::onMouseDown);
             mouseObs.mme.bind(&binder,&T::onMouseMove);
             mouseObs.mue.bind(&binder,&T::onMouseUp);
-            mouseReg.registerMouseObs(mouseObs);
+            mouseReg.registerMouseObs(mouseObs, order);
         }
         static void clearMouseObs(EVENT::MouseEvtObserver &mouseObs)
         {

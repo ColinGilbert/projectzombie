@@ -50,6 +50,11 @@ namespace OgreBites
 
 namespace ZGame
 {
+    enum REGISTER_ORDER
+    {
+        ORDER_FIRST=0, ORDER_DONOTCARE
+    };
+
     /**
     * This class contains information needed to bootstrap the Engine. The system
     *requires certain bootstrapping information in order to boot various sub systems.

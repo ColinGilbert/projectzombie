@@ -110,11 +110,6 @@ void
         uint32_t ix = *itIdx;
     }
     manual->end();
-    Ogre::AxisAlignedBox box;
-    box = manual->getBoundingBox();
-    cout << "Box is: " << box << endl;
-    //Ogre::AxisAlignedBox aabb(0, 0, 0, 32, 256, 32);
-    //manual->setBoundingBox(aabb);
 }
 
 void

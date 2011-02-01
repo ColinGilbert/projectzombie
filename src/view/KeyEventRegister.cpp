@@ -33,11 +33,21 @@ namespace ZGame
       {
         subj(*it);
       }
+
+    _keyObs.clear();
   }
 
-  void KeyEventRegister::registerKeyObs(EVENT::KeyboardEvtObserver &obs)
+  void KeyEventRegister::registerKeyObs(EVENT::KeyboardEvtObserver &obs,
+      REGISTER_ORDER order)
   {
-    _keyObs.push_back(obs);
+      if(order == ORDER_DONOTCARE)
+      {
+        _keyObs.push_back(obs);
+      }
+      else
+      {
+          _keyObs.push_front(obs);
+      }
     EVENT::clearKeyObs(obs);
   }
 
