@@ -49,7 +49,7 @@ namespace ZGame
                 onDestroy();
             
             Ogre::SceneNode*
-                createCube(Ogre::Vector3 size=Ogre::Vector3());
+                createCube(Ogre::Vector3 size=Ogre::Vector3(), Ogre::String name=Ogre::String());
 
 
         protected:

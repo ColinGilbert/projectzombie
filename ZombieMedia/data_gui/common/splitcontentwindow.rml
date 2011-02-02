@@ -2,6 +2,7 @@
 <head>
   <link type="text/rcss" href="../rcss/rkt.rcss"/>
   <link type="text/rcss" href="../rcss/invader.rcss" />
+  <link type="text/rcss" href="../rcss/editor.rcss" />
 </head>
 <body class="splitcontentmenu">
   <div id="content_">

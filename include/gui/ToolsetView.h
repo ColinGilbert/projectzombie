@@ -34,7 +34,7 @@ namespace ZGame
     namespace Gui
     {
         class ToolsetView : public GuiView, public Rocket::Core::EventListenerInstancer, 
-            public Rocket::Core::EventListener
+            public Rocket::Core::EventListener 
         {
         public:
             ToolsetView(Toolset::ToolsetController* toolCtrl);
@@ -60,12 +60,28 @@ namespace ZGame
             void
                 updatePanel(Rocket::Core::Element* panel);
 
+          
+
+
         private:
+
+            class ToolsetIdFormatter : public Rocket::Controls::DataFormatter
+            {
+            public:
+                ToolsetIdFormatter() : Rocket::Controls::DataFormatter("tool_id_formatter")
+                {}
+                ~ToolsetIdFormatter(){}
+                //Implements data formatter
+                virtual void
+                    FormatData(Rocket::Core::String& formatted_data, const Rocket::Core::StringList& raw_data);
+            };
+
             Toolset::ToolsetController* _toolCtrl;
             Rocket::Core::String _ctrlStr;
             Rocket::Core::Element* _rootElement;
             VIEW_KEY _key;
             Rocket::Core::String _TOOL_SELECT_ID;
+            ToolsetIdFormatter _idFormatter;
             void
                 _generateRootElement();
         };

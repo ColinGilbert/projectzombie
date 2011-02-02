@@ -53,6 +53,7 @@ bool
     if(_curToolType == CURSOR)
     {
         _toolMgr->getTool(_cursorId)->getNode()->setPosition(pos);
+        _toolMgr->refreshTool(_cursorId); //hackish
         return true;
     }
     return false;

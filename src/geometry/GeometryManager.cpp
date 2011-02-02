@@ -73,14 +73,15 @@ void
 
 
 Ogre::SceneNode*
-    GeometryManager::createCube(Ogre::Vector3 size)
+    GeometryManager::createCube(Ogre::Vector3 size, Ogre::String name)
 {
     Ogre::String cubeName("geocube_");
+    cubeName += name;
     cubeName.append(Ogre::StringConverter::toString(_geoNumber++));
     
  
     Ogre::Entity* cubeEnt = _scnMgr->createEntity(Ogre::MeshManager::getSingleton().getByHandle(_CUBE_MESH_HANDLE)->getName());
-    Ogre::SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode(cubeName);
     node->attachObject(cubeEnt);
     //Resize the cube. We're really doing a scale here, may not be correct.
     node->scale(size);

@@ -4,6 +4,7 @@
     <link type="text/template" href="../common/splitcontentwindow.rml" />
     <link type="text/rcss" href="../rcss/rkt.rcss"/>
     <link type="text/rcss" href="../rcss/invader.rcss" />
+   
     <style>
       body
       {
@@ -30,23 +31,27 @@
 	<panel id="game_panel"></panel>
 	<tab>Tools</tab>
 	<panel id="toolset_panel">
-	  <div class="content_left">
+	  <div class="split_left">
 	  <form id="toolsetform">
 	    <select id="tool_select_id" name="Tool Select" onchange="ToolsetViewController" action="cameraSelect">
 	    </select>
 	  </form>
 	      <!-- Really we should have the concept of properties panel. For now we do everything here.-->
 	      <button type="button" id="create_id">Create Shape</button><br />
-	      <button type="button" id="update_id">Update Shape</button><br />
 	  </div>
-	  <div class="content_right">
-	    <p>Hello Test World</p>
-	  </div>
-	  <!--
+	  <div class="split_right">
+	    <div class="panel_left">
 	      <datagrid source="tool_source.tools">
-		<col fields="name" width="40%">Tool Name</col>
+		<col fields="id" formatter="tool_id_formatter" width="5%">Tool Id</col>
+		<col fields="name" width="35%">Tool Name</col>
+		<col fields="pos" width="60%">Position</col>
 	      </datagrid>
-	      !-->	  
+	    </div>
+	    <div class="panel_right">
+	      <div id="tool_property">
+	      </div> 
+ 	    </div>
+	  </div>
 	</panel>
       </tabset>
     </div>

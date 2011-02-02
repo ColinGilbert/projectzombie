@@ -1,0 +1,67 @@
+body.splitcontentmenu
+{
+	z-index: 3;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	
+	min-width: 0;
+	max-width: 1920;
+	
+	min-height: 0;
+	max-height: 1080;
+}
+
+div.split_top
+{
+	z-index: 2;
+	padding: 0%;
+	height: 80%;
+}
+
+div.split_bottom
+{
+	z-index: 2;
+	width: 100%;
+	background-color: rgba(128, 128, 128, 255);
+	padding-top: 0%;
+	height: 20%;
+}
+
+div.split_left
+{
+	z-index: 2;
+	width: 10%;
+	float:left;
+}
+
+div.split_right
+{
+	z-index: 2;
+	width: 84%;
+	height: 60%;
+	margin-left:5%;
+	margin-top:1%;
+	float:left;
+	//overflow: scroll;
+}
+
+div.panel_left
+{
+	z-index: 2;
+	width: 50%;
+	height: 90%;
+	float:left;
+	overflow: scroll;
+}
+
+div.panel_right
+{
+	z-index: 2;
+	width: 50%;
+	height: 90%;
+	float:left;
+	overflow: scroll; 
+}

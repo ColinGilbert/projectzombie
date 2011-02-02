@@ -22,7 +22,7 @@ THE SOFTWARE.
 **/
 
 #include "ZPrerequisites.h"
-
+#include "gui/GuiPrerequisite.h"
 namespace ZGame
 {
     namespace Toolset
@@ -44,6 +44,12 @@ namespace ZGame
                 getNode()
             {
                 return _toolNode;
+            }
+
+            Rocket::Core::String
+                getName()
+            {
+                return Rocket::Core::String(_toolNode->getName().c_str());
             }
 
         private:

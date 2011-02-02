@@ -38,6 +38,22 @@ void
              _toolCtrl->setToolType(static_cast<Toolset::ToolsetController::ToolType>(toolType));
              //refresh this view.
          }
+         return;
+    }
+    //Get action string.
+    Rocket::Core::String actionStr = el->GetAttribute<Rocket::Core::String>("action", "");
+    if(actionStr.Empty())
+        return;
+    Rocket::Core::StringList cmdList;
+    //parse out command.
+    Rocket::Core::StringUtilities::ExpandString(cmdList, actionStr, ' ');
+    if(cmdList[0] == "get_tool")
+    {
+        if(cmdList.size() != 2)
+            return; //throw exception
+        int id;
+        Rocket::Core::TypeConverter<Rocket::Core::String, int>::Convert(cmdList[1], id);
+        std::cout << "get tool id is: " << id << std::endl;
     }
 }
 
@@ -104,4 +120,16 @@ void
         Rocket::Core::TypeConverter<unsigned int, Rocket::Core::String>::Convert(static_cast<unsigned int>(iter->second), idStr);
         select->Add(iter->first.c_str(), idStr); //WTF, it should be a Rocket::String here and not Ogre::String.
     }
+}
+
+void
+    ToolsetView::ToolsetIdFormatter::FormatData(Rocket::Core::String& formatted_data, const Rocket::Core::StringList& raw_data)
+{
+    std::cout << "raw data size: " << raw_data.size() << std::endl;
+    const Rocket::Core::String _ctrlStr("ToolsetViewController");
+    //format id
+    formatted_data.Append("<div onclick=\"");
+    formatted_data.Append(_ctrlStr + "\" ");
+    formatted_data.Append("action=\"get_tool " + raw_data[0] + "\""); //chage_tool id
+    formatted_data.Append(">" + raw_data[0] + "</div>");
 }

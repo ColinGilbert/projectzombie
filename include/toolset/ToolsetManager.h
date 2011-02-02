@@ -25,12 +25,13 @@ THE SOFTWARE.
 **/
 
 #include "ZPrerequisites.h"
+#include "gui/GuiPrerequisite.h"
 #include "toolset/ToolInfo.h"
 namespace ZGame
 {
     namespace Toolset
     {
-        class ToolsetManager
+        class ToolsetManager : public Rocket::Controls::DataSource
         {
         public:
             ToolsetManager(Geometry::GeometryManager* geoMgr);
@@ -41,7 +42,14 @@ namespace ZGame
             /** \note This function is not safe. ID may be invalid or pointer may become invalid.**/
             ToolInfo*
                 getTool(Ogre::uint16 id);
-
+            void
+                refreshTool(Ogre::uint16 id);
+           //implement datasource methods
+            virtual void
+                GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index,
+                const Rocket::Core::StringList& columns);
+            virtual int
+                GetNumRows(const Rocket::Core::String& table);
 
         private:
             Ogre::vector<ToolInfo>::type _tools; //We are using vector because we don't expect

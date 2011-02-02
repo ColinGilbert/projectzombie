@@ -28,6 +28,8 @@ THE SOFTWARE.
 #include <OIS/OIS.h>
 #include <Rocket/Core.h>
 #include <Rocket/Controls.h>
+#include <Rocket/Controls/DataSource.h>
+#include <Rocket/Controls/DataFormatter.h>
 #include <Rocket/Debugger.h>
 #include <Rocket/Core/RenderInterface.h>
 #include <Rocket/Core/String.h>
