@@ -271,6 +271,7 @@ void
         Rocket::Core::ElementDocument* doc = context->LoadDocument(_data_path + iter->first);
         if(doc)
         {
+            doc->Hide();
             doc->RemoveReference();
         }
         iter->second = doc;

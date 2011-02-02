@@ -93,15 +93,14 @@ namespace ZGame
             void
                 show()
             {
-                StrToDocumentMap docMap = _docManager->getAll();
-                std::for_each(docMap.begin(), docMap.end(), Screens::s_docShow);
+                _docManager->getRootDocument()->Show();
                 setVisible(true);
+
             }
             void
                 hide()
             {   
-                StrToDocumentMap docMap = _docManager->getAll();
-                std::for_each(docMap.begin(), docMap.end(), Screens::s_docHide);
+                _docManager->getRootDocument()->Hide();
                 setVisible(false);
             }
 

@@ -55,6 +55,8 @@ namespace ZGame
                 update(Ogre::Real dt, Ogre::Camera* cam, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode);
             virtual void
                 reset();
+            virtual void
+                resetDistance();
         protected:
         private:
             Ogre::Radian _currentRadPitch;

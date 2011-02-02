@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 #include "gui/GuiPrerequisite.h"
 #include "gui/Screens.h"
-
+#include "gui/TemplateCloner.h"
 namespace ZGame
 {
     namespace Gui
@@ -77,6 +77,8 @@ namespace ZGame
 
             std::auto_ptr<Gui::CineView> _cineView;
             std::auto_ptr<Gui::ToolsetView> _toolsetView;
+
+            TemplateCloner _templateCloner;
 
         };
     }

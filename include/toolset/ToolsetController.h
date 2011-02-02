@@ -25,12 +25,14 @@ THE SOFTWARE.
 **/
 
 #include "ZPrerequisites.h"
-
+#include "gui/GuiPrerequisite.h"
+#include "gui/ToolInfoView.h"
 
 namespace ZGame
 {
     namespace Toolset
     {
+        
         class ToolsetController
         {
         public:
@@ -64,15 +66,46 @@ namespace ZGame
             bool
                 onCursorPosition3d(Ogre::Vector3 pos);
 
+            Gui::ToolInfoView*
+                refreshToolView(Gui::ToolInfoView* toolView, int toolId);
+
+            void
+                addListener(ToolsetControllerListener* listener);
+            void
+                removeListener(ToolsetControllerListener* listener);
+
+            Ogre::Vector3
+                getCursor3dPosition();
+
 
         private:
+
+            typedef Ogre::map<ToolsetControllerListener*, ToolsetControllerListener*>::type
+                ListenerMap;
+            ListenerMap _listenerMap;
+
             std::auto_ptr<ToolsetManager> _toolMgr;
             ToolDesc _toolsDesc;
             ToolType _curToolType;
             Ogre::uint16 _cursorId;
+            Gui::TemplateCloner* _templateCloner;
             void
                 _switchTool(ToolType type);
+            void
+                _informViews();
                 
         };
+        class ToolsetControllerListener
+        {
+        public:
+            virtual ~ToolsetControllerListener()
+            {
+            }
+            virtual void
+                onChange(ToolsetController* ctrl) = 0;
+        protected:
+            ToolsetControllerListener(){}
+        };
+        
     }
 }

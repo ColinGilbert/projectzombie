@@ -176,8 +176,10 @@ namespace ZGame
 
     namespace Toolset
     {
+        class ToolsetControllerListener;
         class ToolsetController;
         class ToolsetManager;
+        class ToolInfo;
     }
 
 }

@@ -10,6 +10,7 @@ EditorScreen::EditorScreen(GuiController* guiCtrl) : Screens(guiCtrl, "EditorScr
 {
     p_setKey("EditorScreen");
     _docPath.push_back("editormenu/editormenu.rml");
+    _docPath.push_back("editormenu/editortemplates.rml");
 }
 
 EditorScreen::~EditorScreen()
@@ -71,10 +72,16 @@ void
 {
     _docManager->defineRoot(_docPath[0].c_str());
     p_setName(_docManager->getRootDocument()->GetTitle());
+    _docManager->get(_docPath[1].c_str())->Hide();
+    _docManager->get(_docPath[1].c_str())->Blur();
     //Setup the views
     //We will need to setup a global view handling in Screens
     if(!_cineView.get())
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null cineView pointer", "EditorScreen::_afterDocLoadedOnLoad");
+
+    _templateCloner.setTemplateDoc(_docManager->get(_docPath[1].c_str()));
+
+    _toolsetView->setTempalteCloner(&_templateCloner);
 
     //We will implement global view control in Screens super-class. For now just test it.
     Rocket::Controls::ElementTabSet* tab = static_cast<Rocket::Controls::ElementTabSet*>(_docManager->getRootDocument()

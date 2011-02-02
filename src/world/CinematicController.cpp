@@ -23,7 +23,7 @@ THE SOFTWARE.
 #include "world/CinematicController.h"
 #include "world/CinematicManager.h"
 #include "world/PerspectiveControl.h"
-
+using namespace ZGame;
 using namespace ZGame::World;
 
 CinematicController::CinematicController(std::auto_ptr<CinematicManager> cineMgr, Ogre::RenderWindow* rendWin) 
@@ -135,6 +135,14 @@ bool
     return true;
 }
 
+void
+    CinematicController::onChange(Toolset::ToolsetController* toolsetCtrl)
+{
+    //We do it this way is because typically we attach the camera to some scene node, and whatever is responsible for
+    //that scene node will change it there. 
+    _currentOperation.getAttachNode()->setPosition(toolsetCtrl->getCursor3dPosition());
+}
+
 /**
 *Do we really have to have so many abstractions here? Current operatioion::upadte then in that control::update.
 *Idea for this is to make it more generalized.
@@ -227,6 +235,13 @@ void
     {
         _control->dolly(e.state.X.rel, static_cast<Ogre::SceneNode*>(_cam->getParentNode()), _lookAtNode);
     }
+}
+
+void
+    EditorOperation::resetAttachNode(Ogre::SceneNode* attachNode)
+{
+    _rootNode = attachNode;
+    _control->resetDistance();
 }
 
 void

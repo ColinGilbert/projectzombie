@@ -3,7 +3,7 @@
 using namespace ZGame::Toolset;
 using namespace ZGame;
 ToolsetManager::ToolsetManager(Geometry::GeometryManager* geoMgr)
-    : Rocket::Controls::DataSource("tool_source"), _geoMgr(geoMgr)
+    : Rocket::Controls::DataSource("tool_source"), _geoMgr(geoMgr), _selectionId(-1)
 {
 }
 
@@ -15,7 +15,9 @@ ToolsetManager::~ToolsetManager()
 ToolInfo*
     ToolsetManager::getTool(Ogre::uint16 id)
 {
-    return &_tools[id]; 
+    ToolInfo* ret = &_tools.at(id); //bound checking should be done here.
+    _selectionId = id;
+    return ret;
 }
 
 void

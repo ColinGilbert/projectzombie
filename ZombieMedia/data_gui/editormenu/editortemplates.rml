@@ -1,0 +1,28 @@
+<rml>
+  <head>
+    <title>editortemplates</title>
+    <link type="text/rcss" href="../rcss/rkt.rcss" />
+    <link type="text/rcss" href="../rcss/invader.rcss" />
+    <link type="text/rcss" href="../rcss/editor.rcss" />
+    <style>
+      body
+      {
+      width: 0%;
+      height: 0%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Begin tempalte definition. These are divs which we are going to clone later, to be used as templates for elements in the editor. -->
+    <div id="transformation">
+    <div class="attributes">
+      <div id="world_pos"></div><br />
+      <button type="button">Set Pos</button><br />
+      </div>
+    </div>
+    <div id="cube_max_extent" class="attributes">
+      <div id="world_max"></div><br />
+      <button type="button" onclick="" action="setWorldMax">Set</button><br />
+    </div>
+  </body>
+</rml>

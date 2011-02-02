@@ -54,6 +54,8 @@ namespace ZGame
                 update(Ogre::Real dt, Ogre::Camera* cam, Ogre::SceneNode* camNode, Ogre::SceneNode* lookAtNode) = 0;
             virtual void
                 reset() = 0;
+            virtual void
+                resetDistance() = 0;
         protected:
             Control();
       

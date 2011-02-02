@@ -27,6 +27,7 @@ ZWorkspace::ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* en
     _zclCtrl(zclCtrl), _worldCtrl(worldCtrl), _workspaceRoot(scnMgr->getRootSceneNode()->createChildSceneNode("WorkspaceNode")),
     _cineCtrl(cineCtrl), _geoMgr(geoMgr), _toolsetCtrl(toolsetCtrl)
 {
+    _toolsetCtrl->addListener(_cineCtrl);
 }
 
 ZWorkspace::~ZWorkspace()

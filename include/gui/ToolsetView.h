@@ -28,13 +28,18 @@ THE SOFTWARE.
 #include "ZPrerequisites.h"
 #include "gui/GuiPrerequisite.h"
 #include "gui/GuiView.h"
-
+#include "gui/ToolInfoView.h"
+#include "toolset/ToolsetController.h"
 namespace ZGame
 {
     namespace Gui
     {
+        /** 
+        * This class defines a GuiView on Toolsets.
+        *
+        **/
         class ToolsetView : public GuiView, public Rocket::Core::EventListenerInstancer, 
-            public Rocket::Core::EventListener 
+            public Rocket::Core::EventListener, public Toolset::ToolsetControllerListener
         {
         public:
             ToolsetView(Toolset::ToolsetController* toolCtrl);
@@ -61,6 +66,8 @@ namespace ZGame
                 updatePanel(Rocket::Core::Element* panel);
 
           
+            void
+                onChange(Toolset::ToolsetController* controller);
 
 
         private:
@@ -82,8 +89,13 @@ namespace ZGame
             VIEW_KEY _key;
             Rocket::Core::String _TOOL_SELECT_ID;
             ToolsetIdFormatter _idFormatter;
+
+            ToolInfoView _toolInfoView; //generic toolInfoView.
+            Rocket::Core::Element* _viewPanel;
             void
                 _generateRootElement();
+            void
+                _refreshRightPanel(int toolId);
         };
     }
 }

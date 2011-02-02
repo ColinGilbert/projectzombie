@@ -50,12 +50,17 @@ namespace ZGame
                 const Rocket::Core::StringList& columns);
             virtual int
                 GetNumRows(const Rocket::Core::String& table);
+            int
+                getSelectionId()
+            {
+                return _selectionId;
+            }
 
         private:
             Ogre::vector<ToolInfo>::type _tools; //We are using vector because we don't expect
             //too much tools to be created.
             Geometry::GeometryManager* _geoMgr;
-
+            int _selectionId;
 
 
         };

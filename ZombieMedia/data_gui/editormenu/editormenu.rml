@@ -47,9 +47,7 @@
 		<col fields="pos" width="60%">Position</col>
 	      </datagrid>
 	    </div>
-	    <div class="panel_right">
-	      <div id="tool_property">
-	      </div> 
+	    <div class="panel_right" id="panel_right">
  	    </div>
 	  </div>
 	</panel>

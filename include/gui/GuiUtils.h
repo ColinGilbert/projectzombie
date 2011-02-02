@@ -70,6 +70,16 @@ namespace ZGame
                  return select->GetOption(select->GetSelection());
             }
 
+            static void
+                RemoveAllChildReferences(Rocket::Core::Element* root)
+            {
+                for(size_t i = 0; i < root->GetNumChildren(); ++i)
+                {
+                    Rocket::Core::Element* child = root->GetChild(i);
+                    root->RemoveChild(child);
+                }
+            }
+
 
         };
     }

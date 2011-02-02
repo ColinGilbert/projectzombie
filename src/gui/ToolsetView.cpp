@@ -8,6 +8,7 @@ ToolsetView::ToolsetView(Toolset::ToolsetController* toolCtrl)
     : _toolCtrl(toolCtrl), _ctrlStr("ToolsetViewController"),
     _rootElement(0), _key("ToolsetView"), _TOOL_SELECT_ID("tool_select_id")
 {
+    _toolCtrl->addListener(this);
 }
 
 ToolsetView::~ToolsetView()
@@ -54,7 +55,38 @@ void
         int id;
         Rocket::Core::TypeConverter<Rocket::Core::String, int>::Convert(cmdList[1], id);
         std::cout << "get tool id is: " << id << std::endl;
+        _refreshRightPanel(id);
     }
+}
+
+void
+    ToolsetView::onChange(Toolset::ToolsetController* controller)
+{
+    _refreshRightPanel(-1);
+}
+
+void
+    ToolsetView::_refreshRightPanel(int toolId)
+{
+    using Rocket::Core::Element;
+    using Rocket::Core::ElementUtilities;
+    if(!_viewPanel)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for view panel", "ToolsetView;:_refreshRightPanel");
+    Element* rightPanel = _viewPanel->GetElementById("panel_right");
+    
+    if(!rightPanel)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for right panel", "ToolsetView::_refreshRightPanel");
+
+    _toolCtrl->refreshToolView(&_toolInfoView, toolId);
+
+    if(rightPanel->GetNumChildren() > 0)
+    {
+        Element* el = rightPanel->GetChild(0);
+        rightPanel->RemoveChild(el);
+        Gui::GuiUtils::RemoveAllChildReferences(el);
+        el->RemoveReference();
+    }
+   _toolInfoView.appendViewToElement(rightPanel);
 }
 
 Rocket::Core::Element*
@@ -109,6 +141,11 @@ void
 void
     ToolsetView::updatePanel(Rocket::Core::Element* panel)
 {
+    //Setup the views.
+    //Storing a pointer to viewPanel here is kind of hackish. May need to rethink this.
+    _viewPanel = panel;
+    _toolInfoView.setTempalteCloner(getTemplateCloner());
+
     Rocket::Controls::ElementFormControlSelect* select = static_cast<Rocket::Controls::ElementFormControlSelect*>(panel->GetElementById(_TOOL_SELECT_ID));
     if(!select)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for tool select control", "ToolsetView::updatePanel");

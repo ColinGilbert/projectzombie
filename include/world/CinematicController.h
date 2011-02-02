@@ -23,6 +23,8 @@ THE SOFTWARE.
 
 #include "ZPrerequisites.h"
 #include "world/ZCamInfo.h"
+#include "toolset/ToolsetController.h"
+
 namespace ZGame
 {
     namespace World
@@ -48,9 +50,19 @@ namespace ZGame
                 onKeyUp(const OIS::KeyEvent& e) = 0;
             virtual void
                 onUpdate(const Ogre::FrameEvent &evt) = 0;
+            virtual void
+                resetAttachNode(Ogre::SceneNode* attachNode) = 0;
+            Ogre::SceneNode*
+                getAttachNode()
+            {
+                return _rootNode;
+            }
             void
                 setInput(Ogre::Camera* cam, Control* control, Ogre::SceneNode* attachNode,
                 Ogre::SceneNode* lookAtNode);
+
+           
+
         protected:
             CinematicOperation(){}
             Ogre::Camera* _cam;
@@ -78,6 +90,8 @@ namespace ZGame
                 onKeyUp(const OIS::KeyEvent &e);
             virtual void
                 onUpdate(const Ogre::FrameEvent &evt);
+            virtual void
+                resetAttachNode(Ogre::SceneNode* attachNode);
         private:
             enum OP_MODE
             {
@@ -86,7 +100,7 @@ namespace ZGame
             OP_MODE _curMode;
         };
 
-        class CinematicController
+        class CinematicController : public Toolset::ToolsetControllerListener
         {
         public:
             
@@ -136,6 +150,9 @@ namespace ZGame
                 onKeyUp(const OIS::KeyEvent& e);
             bool
                 onUpdate(const Ogre::FrameEvent& evt);
+            virtual void
+                onChange(Toolset::ToolsetController* toolsetCtrl);
+
             /** \brief Call this method to disable Cinematic control for one frame.**/
             void
                 onDisableOneFrame();

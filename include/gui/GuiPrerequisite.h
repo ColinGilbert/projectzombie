@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include <Rocket/Core/RenderInterface.h>
 #include <Rocket/Core/String.h>
 #include <Rocket/Core/Context.h>
+#include <Rocket/Core/ElementUtilities.h>
 //#include <Rocket/Controls/ElementFormControlInput.h>
 
 
@@ -55,5 +56,6 @@ namespace ZGame
         typedef std::pair<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
         typedef std::map<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
         typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;
+        class TemplateCloner;
     }
 }

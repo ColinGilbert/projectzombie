@@ -48,8 +48,13 @@ void
 {
     _currentRadYaw = 0.0f;
     _currentRadPitch = 0.0f;
+    _distance = 1.0f;
 }
-
+void
+    PerspectiveControl::resetDistance()
+{
+    _distance = 1.0f;
+}
 void
     PerspectiveControl::yaw(Ogre::Real fraction, Ogre::SceneNode* camNode,
     Ogre::SceneNode* lookAtNode)
@@ -82,7 +87,7 @@ void
 {
     using Ogre::Quaternion;
     camNode->setPosition(0.0f, 0.0f, 0.0f);
-    
+    cam->setPosition(0.0f, 0.0f, 0.0f);
     Quaternion yQuat = Quaternion(_currentRadYaw, Ogre::Vector3::UNIT_Y);
     Quaternion pQuat = yQuat * Quaternion(_currentRadPitch, Ogre::Vector3::UNIT_X);
     camNode->setOrientation(yQuat * pQuat);
