@@ -29,7 +29,25 @@
 	<tab>Game</tab>
 	<panel id="game_panel"></panel>
 	<tab>Tools</tab>
-	<panel id="toolset_panel"></panel>
+	<panel id="toolset_panel">
+	  <div class="content_left">
+	  <form id="toolsetform">
+	    <select id="tool_select_id" name="Tool Select" onchange="ToolsetViewController" action="cameraSelect">
+	    </select>
+	  </form>
+	      <!-- Really we should have the concept of properties panel. For now we do everything here.-->
+	      <button type="button" id="create_id">Create Shape</button><br />
+	      <button type="button" id="update_id">Update Shape</button><br />
+	  </div>
+	  <div class="content_right">
+	    <p>Hello Test World</p>
+	  </div>
+	  <!--
+	      <datagrid source="tool_source.tools">
+		<col fields="name" width="40%">Tool Name</col>
+	      </datagrid>
+	      !-->	  
+	</panel>
       </tabset>
     </div>
   </body>

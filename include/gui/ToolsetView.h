@@ -57,6 +57,9 @@ namespace ZGame
                 return _key;
             }
 
+            void
+                updatePanel(Rocket::Core::Element* panel);
+
         private:
             Toolset::ToolsetController* _toolCtrl;
             Rocket::Core::String _ctrlStr;

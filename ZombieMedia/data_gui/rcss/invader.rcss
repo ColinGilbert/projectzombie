@@ -123,7 +123,12 @@ div.content_bar_top
 	height: 100%;
 	text-align: left;
 }
-
+div.content_wrapper
+{
+	width: 100%;
+	padding-top:5%;
+	overflow: scroll;
+}
 div.content_left
 {
 	z-index: 5;

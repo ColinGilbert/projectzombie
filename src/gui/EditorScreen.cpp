@@ -62,7 +62,8 @@ void
     _elementIsValid(panel);
     if(!_cineView.get())
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Invalid pointer for ToolsetView", "EditorScreen::_buildEditorTab");
-    panel->AppendChild(_toolsetView->getViewElement());
+    _toolsetView->updatePanel(panel);
+    //panel->AppendChild(_toolsetView->getViewElement());
 }
 
 void

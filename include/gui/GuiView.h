@@ -46,6 +46,8 @@ namespace ZGame
                 actionElementUpdate(Rocket::Core::Element* actionElement){}
             virtual ~GuiView(){}
 
+          
+
         protected:
             GuiView(){}
             

@@ -520,7 +520,8 @@ bool
 {
     _curEvent = &e;
     _curMouseBid = id;
-    return _gui2d->ProcessMouseButtonDown((int) id, GetKeyModifierState()); //we're going to let libRocket filter events for us. See ProcessEvent function.
+    _gui2d->ProcessMouseButtonDown((int) id, GetKeyModifierState()); //we're going to let libRocket filter events for us. See ProcessEvent function.
+    return true;
 }
 
 bool
@@ -528,7 +529,8 @@ bool
 {
     _curEvent = &e;
     _curMouseBid = id;
-    return _gui2d->ProcessMouseButtonUp((int) id, GetKeyModifierState());
+    _gui2d->ProcessMouseButtonUp((int) id, GetKeyModifierState());
+    return true;
 }
 
 bool

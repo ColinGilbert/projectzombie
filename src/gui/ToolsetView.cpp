@@ -90,4 +90,18 @@ void
 
 }
 
-
+void
+    ToolsetView::updatePanel(Rocket::Core::Element* panel)
+{
+    Rocket::Controls::ElementFormControlSelect* select = static_cast<Rocket::Controls::ElementFormControlSelect*>(panel->GetElementById(_TOOL_SELECT_ID));
+    if(!select)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for tool select control", "ToolsetView::updatePanel");
+    auto cIters = _toolCtrl->getToolDescriptions();
+    for(Toolset::ToolsetController::ToolDesc::const_iterator iter = cIters.first; 
+        iter != cIters.second; ++iter)
+    {
+        Rocket::Core::String idStr;
+        Rocket::Core::TypeConverter<unsigned int, Rocket::Core::String>::Convert(static_cast<unsigned int>(iter->second), idStr);
+        select->Add(iter->first.c_str(), idStr); //WTF, it should be a Rocket::String here and not Ogre::String.
+    }
+}
