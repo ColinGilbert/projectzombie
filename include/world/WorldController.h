@@ -50,6 +50,8 @@ namespace ZGame
             // Temp method for testing
             void addBlock(Ogre::Real cursorX, Ogre::Real cursorY);
             void removeBlock(Ogre::Real cursorX, Ogre::Real cursorY);
+            void getCursor3dPosition(Ogre::Ray rayTo, Ogre::Vector3& position,
+                Ogre::Real searchDistance);
 
             void
                 setWorldConfiguration(std::auto_ptr<WorldConfig> worldConfig);

@@ -350,15 +350,15 @@ bool
 
         //
         //Load any persistence screens.
-        _debugScreen = static_cast<DebugScreen*>(ScreensFactory::createScreens("DebugScreen", this));
-        _debugScreen->setHDRSettingsView(std::auto_ptr<Gui::HDRSettingsView>(new HDRSettingsView(initPacket->gfxCtrl->getHdrCompositor())));
-        _debugScreen->onLoad();
+        //_debugScreen = static_cast<DebugScreen*>(ScreensFactory::createScreens("DebugScreen", this));
+        //_debugScreen->setHDRSettingsView(std::auto_ptr<Gui::HDRSettingsView>(new HDRSettingsView(initPacket->gfxCtrl->getHdrCompositor())));
+        //_debugScreen->onLoad();
         /*
         *For now this part is hacky. We need to add screen after the "root" screen has been added. This is so because we're doing pop transition wrong right now doing it this
         *way gets you the correct result. We need to fix pop/push transition first, then change this to get correct behavior.
         */
-        addScreens(this->getGui2d(), _debugScreen);
-        _persistScreens.push_back(_debugScreen);
+        //addScreens(this->getGui2d(), _debugScreen);
+        //_persistScreens.push_back(_debugScreen);
 
         BuildKeyMaps();
 

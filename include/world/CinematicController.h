@@ -151,7 +151,7 @@ namespace ZGame
             bool
                 onUpdate(const Ogre::FrameEvent& evt);
             virtual void
-                onChange(Toolset::ToolsetController* toolsetCtrl);
+                onSetCursor3dPosition(Toolset::ToolsetController* toolsetCtrl);
 
             /** \brief Call this method to disable Cinematic control for one frame.**/
             void

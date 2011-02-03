@@ -86,6 +86,7 @@ namespace ZGame
             Toolset::ToolsetController* _toolCtrl;
             Rocket::Core::String _ctrlStr;
             Rocket::Core::Element* _rootElement;
+            Rocket::Controls::ElementFormControlSelect* _toolSelect;
             VIEW_KEY _key;
             Rocket::Core::String _TOOL_SELECT_ID;
             ToolsetIdFormatter _idFormatter;

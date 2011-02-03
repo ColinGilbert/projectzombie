@@ -118,6 +118,12 @@ void
 }
 
 void
+    WorldController::getCursor3dPosition(Ogre::Ray rayTo, Ogre::Vector3& position, Ogre::Real searchDistance)
+{
+    _volumeMap->getBlockCenterWithRay(rayTo, searchDistance, position);
+}
+
+void
     WorldController::addBlock(Ogre::Real cursorX, Ogre::Real cursorY)
 {
     using namespace Ogre;

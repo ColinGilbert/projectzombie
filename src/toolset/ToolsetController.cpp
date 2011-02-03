@@ -37,6 +37,12 @@ void
     _switchTool(type);
 }
 
+int
+    ToolsetController::getToolType()
+{
+    return _curToolType;
+}
+
 void
     ToolsetController::_switchTool(ToolType type)
 {
@@ -50,17 +56,41 @@ void
 }
 
 bool
+    ToolsetController::isCursorMode()
+{
+    return _curToolType == CURSOR;
+}
+
+bool
     ToolsetController::onCursorPosition3d(Ogre::Vector3 pos)
 {
     if(_curToolType == CURSOR)
     {
         _toolMgr->getTool(_cursorId)->getNode()->setPosition(pos);
         _toolMgr->refreshTool(_cursorId); //hackish
-         _informViews();
+        
+        std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
+            iter.second->onChange(this);
+        });
+
         return true;
     }
    
     return false;
+}
+
+void
+    ToolsetController::onSetCursor3dPosition()
+{
+    if(_curToolType == CURSOR)
+    {
+        _switchTool(SELECT);
+        std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
+            iter.second->onSetCursor3dPosition(this);
+            iter.second->onChange(this);
+        });
+
+    }
 }
 
 Ogre::Vector3
@@ -87,19 +117,6 @@ void
     return;
 }
 
-/**
-* \note Not completely implemented. We should implment actual listeners. Right now we just push state back to toolView.
-**/
-void
-    ToolsetController::_informViews()
-{
-    for(ListenerMap::iterator iter = _listenerMap.begin();
-        iter != _listenerMap.end(); 
-        ++iter)
-    {
-        iter->second->onChange(this);
-    }
-}
 
 /**
 * This method will refresh a tool view given a tool id. This method should be called each time you want to update 

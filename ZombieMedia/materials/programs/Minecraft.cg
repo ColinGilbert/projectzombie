@@ -9,6 +9,7 @@ struct VS_OUT
   float4 worldPos : TEXCOORD2;
   float3 diffuseUV : TEXCOORD0;
   float4 textureAtlasOffset : TEXCOORD1;
+  float2 fogExponent : TEXCOORD3;
   //float4 lightSpacePos0 : TEXCOORD2;
   //float4 lightSpacePos1 : TEXCOORD3;
   //float4 lightSpacePos2 : TEXCOORD4;
@@ -49,6 +50,7 @@ VS_OUT main_vp(
 	       //float4 uv0 : TEXCOORD1,
 
 	       uniform float4x4 worldViewProj,
+	       uniform float4x4 worldView,
 	       //uniform float4x4 worldMat,
 	       uniform float3 sundir
 	       //uniform float4 lightPosition,
@@ -134,6 +136,12 @@ const float3 L22  = float3(-0.161784, -0.191783, -0.219152);
 
   VS_OUT outp;
   outp.pos = mul(worldViewProj, pos);
+  float4 ec = mul(worldViewProj, pos);
+  float fogDistance = length(float3(ec.xyz / ec.w));
+  float fogDensity = 0.5f;
+  outp.fogExponent.x = fogDistance * fogDensity;
+  
+
   //outp.diffuseUV.xy = uv0.xy;
   outp.worldPos = pos;//mul(worldMat, pos);
   float idx = uv1.x * 256.0 - 1.0;
@@ -142,7 +150,7 @@ const float3 L22  = float3(-0.161784, -0.191783, -0.219152);
  
   outp.textureAtlasOffset = float4(blockx, blocky, 0, 0) * eOffset;
   
-  //outp.P = float4(1.0, 1.0, 1.0, 1.0);
+  
   
   return outp;
 }
@@ -233,6 +241,7 @@ float4 main_fp(
 #endif
   //diffuseColor *= 0.0002;
   diffuseColor *= 0.000035;
+  //diffuseColor *= 0.01;
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)
     {
@@ -300,7 +309,13 @@ float4 main_fp(
   if(uLightY < 0.0)
     nightMulti = lerp(0.05, 0.1, -uLightY);
   //float4 test = In.diffuseColor; 
+
+  //float fogFactor = exp2(-abs(In.fogExponent.x));
+  //fogFactor = 1.0f;
   float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  //float3 fogColor = float3(0.5f, 0.5f, 0.5f);
+  //vColor.xyz = lerp(fogColor, vColor.xyz, fogFactor);
+
   //vColor.w = 1.0;
   //float4 vColor = texDiffuse * In.diffuseColor * nightMulti;// * intensity;
   //vColor = texDiffuse * 1.0;

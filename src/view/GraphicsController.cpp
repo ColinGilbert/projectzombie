@@ -83,6 +83,11 @@ bool
 bool
     GraphicsController::onInit(ZGame::ZInitPacket* packet)
 {
+
+    Ogre::CompositorManager& compMgr = Ogre::CompositorManager::getSingleton();
+
+    compMgr.registerCompositorLogic("HDR", new HDRLogic);
+
     for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
     {
         _SHC_R[i] = 0.0f;
@@ -114,20 +119,43 @@ bool
 
     _ssaoListener.setCamera(packet->initialCamera);
     Ogre::ColourValue fadeColour(0.109f, 0.417f, 0.625f);
+    fadeColour *= 0.0001f;
     _scnMgr->setFog(Ogre::FOG_NONE);
-    _vp->setBackgroundColour(fadeColour);
+    _initBackgroundHdr();
+    //_vp->setBackgroundColour(fadeColour);
 
     this->_parseHDRConfig();
 
 
-    _initSSAO();
+    _ogreHdr = CompositorManager::getSingleton().addCompositor(_vp, "HDR", 0);
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(_vp, "HDR", true);
+
     _initSkyX();
-    _initHDR(packet->renderWindow, packet->initialCamera);
+    _initSSAO();
+    //_initHDR(packet->renderWindow, packet->initialCamera);
+    
     _ssaoInstance->setEnabled(true);
-    _hdrCompositor->Enable(true);
+    //_hdrCompositor->Enable(true);
     _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
+    
     _scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
     return true;
+}
+
+void
+    GraphicsController::_initBackgroundHdr()
+{
+    Ogre::Rectangle2D* rect = new Ogre::Rectangle2D(false);
+    rect->setCorners(-1.0f, 1.0f, 1.0f, -1.0f);
+    rect->setMaterial("PRJZ/HDRBackground");
+    rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND + 1);
+    rect->setBoundingBox(Ogre::AxisAlignedBox(-100000.0*Ogre::Vector3::UNIT_SCALE, 100000.0*Ogre::Vector3::UNIT_SCALE));
+    //Ogre::AxisAlignedBox aabInf;
+    //aabInf.setInfinite();
+    //rect->setBoundingBox(aabInf);
+    Ogre::SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode("HdrBackground");
+    node->attachObject(rect);
+    node->setVisible(true);
 }
 
 void
@@ -141,6 +169,11 @@ void
     _skyX->getAtmosphereManager()->setOptions(SkyXOptions);
     _skyX->setLightingMode(SkyX::SkyX::LM_LDR);
     _skyX->create();
+
+   // _skyX->getGPUManager()->addGroundPass(
+     //   static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
+       // getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 420, Ogre::SBT_TRANSPARENT_COLOUR);
+
 }
 
 /**
@@ -249,12 +282,14 @@ bool
 
         std::cout << "HDR toggle!" << std::endl;
         //_bloomInstance->setEnabled(!_bloomInstance->getEnabled());
-        _hdrCompositor->Enable(!_hdrCompositor->IsEnabled());
+        //_hdrCompositor->Enable(!_hdrCompositor->IsEnabled());
+        _ogreHdr->setEnabled(!_ogreHdr->getEnabled());
         break;
     case OIS::KC_N:
 
         _bloomInstance->setEnabled(!_bloomInstance->getEnabled());
         break;
+        
     case OIS::KC_L:
         _skyX->setLightingMode(SkyX::SkyX::LM_HDR);
         break;
@@ -279,7 +314,7 @@ bool
         case OIS::KC_2:
         _skyX->setTimeMultiplier(0.1f);
         break;
-
+        
         case OIS::KC_3:
         SkyXOptions.Exposure += 0.16 * 0.5f;
         break;
@@ -303,7 +338,7 @@ bool
         break;
     case OIS::KC_0:
         SkyXOptions.SunIntensity -= 10;
-
+        
     default:
         break;
     }
@@ -319,7 +354,7 @@ bool
 
 bool GraphicsController::onFrameEnded(const Ogre::FrameEvent& evt)
 {
-    _hdrCompositor->update(); //need to call this during the frame started phase.
+    //_hdrCompositor->update(); //need to call this during the frame started phase.
     return true;
 }
 
@@ -330,12 +365,12 @@ bool
     using namespace Ogre;
 
     //Update HDR
-    _hdrCompositor->SetFrameTime(evt.timeSinceLastFrame);
+    //_hdrCompositor->SetFrameTime(evt.timeSinceLastFrame);
 
     //pass int he Skylight SH coefficients
     //Compute theta and phi and get turbulence
     Vector3 xyz = -_skyX->getAtmosphereManager()->getSunDirection();
-
+    //Vector3 xyz = Ogre::Vector3::UNIT_Y;
     Ogre::Radian theta = Math::ACos(xyz.y);
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
 
@@ -403,6 +438,7 @@ bool
     //light
     //static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"))->getTechnique(0)->getPass(0)->
     pass->getFragmentProgramParameters()->setNamedConstant("uLightY", -_skyX->getAtmosphereManager()->getSunDirection().y);
+    //pass->getFragmentProgramParameters()->setNamedConstant("uLightY", xyz.y);
 
     _skyX->update(evt.timeSinceLastFrame);
 #if 0

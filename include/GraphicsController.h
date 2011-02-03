@@ -160,6 +160,9 @@ namespace ZGame
     protected:
 
     private:
+
+        void _initBackgroundHdr();
+
         void _initShadows();
         void _initSSAO();
         void _initHDR(Ogre::RenderWindow* windowm, Ogre::Camera* initialCam);
@@ -176,6 +179,7 @@ namespace ZGame
         Ogre::CompositorInstance* _gBufferInstance;
         Ogre::CompositorInstance* _ssaoInstance;
         Ogre::CompositorInstance* _bloomInstance;
+        Ogre::CompositorInstance* _ogreHdr;
         shadowListener _shadowListener;
         ssaoListener _ssaoListener;
         std::auto_ptr<HDRCompositor> _hdrCompositor;

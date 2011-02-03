@@ -75,6 +75,9 @@ namespace ZGame
                 addBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance);
             void
                 removeBlock(Ogre::Ray &rayTo, Ogre::Real searchDistance);
+            void
+                getBlockCenterWithRay(Ogre::Ray &rayTo, Ogre::Real searchDistance,
+                Ogre::Vector3& blockCenter);
 
 
             //Ogre WorkQueue related overrides
@@ -229,6 +232,10 @@ namespace ZGame
                 VOLUME_MODIFY_MODE mode);
             void
                 _removeBlockFromVolume(const Ogre::Vector3 &point);
+
+            void
+                _getCenterOfIntersectedPoint(Ogre::Vector3& point, Ogre::Vector3 rayDir);
+
             VolumePage*
                 _allocateVolume(Ogre::PageID pageId, size_t size, size_t height);
             Ogre::PageID 

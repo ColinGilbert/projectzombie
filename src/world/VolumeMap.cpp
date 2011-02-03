@@ -362,6 +362,46 @@ inline void
     *y = static_cast<int16> (y16);
 }
 
+ static const Vector3 faces[6] = {
+    Ogre::Vector3(0.5f, 0.0f, 0.0f),
+    Ogre::Vector3(-0.5f, 0.0f, 0.0f),
+    Ogre::Vector3(0.0f, 0.5f, 0.0f),
+    Ogre::Vector3(0.0f, -0.5f, 0.0f),
+    Ogre::Vector3(0.0f, 0.0f, 0.5f),
+    Ogre::Vector3(0.0f, 0.0f, -0.5f)};
+
+inline void
+    VolumeMap::_getCenterOfIntersectedPoint(Ogre::Vector3& point, Ogre::Vector3 rayDir)
+{
+    Ogre::Vector3 cubeCenter(Ogre::Math::Floor(point.x + 0.5f),
+    Ogre::Math::Floor(point.y + 0.5f),
+    Ogre::Math::Floor(point.z + 0.5f));
+   
+    for(size_t i = 0; i < 6; ++i)
+    {
+        Ogre::Vector3 pointOnFace = cubeCenter + faces[i];
+        
+        Ogre::Vector3 canadidateVecInPlane = point - pointOnFace; 
+        //If canadidate and faceNormal is orthgonal then onTheFace is in the plane of the face.
+        Ogre::Real dotp = canadidateVecInPlane.dotProduct(faces[i]);
+        //Ogre::Real epsilon = std::numeric_limits<Ogre::Real>::epsilon(); //Are you retarded? The float tolrance from dotp can be very
+        //small yet still greater than epsilon.
+        const Ogre::Real epsilon = 0.0001f;
+        
+        if(dotp <= epsilon && dotp >= -epsilon)
+        {
+            //Depending on the direction of ray we pick the cube next to it.
+            if(faces[i].dotProduct(rayDir) >= 0.0f)
+            {
+               cubeCenter += faces[i]*2.0f;
+            }
+            break;
+        }
+    }
+
+    point = cubeCenter;
+}
+
 /**
 *This method will add a block to the volume. This method assumes that the passed in point is a point on a face of a cube,
 *and the ray direction corresponds to the picking direction. (Note: This still works for empty space because the point of
@@ -399,7 +439,7 @@ inline void
         cout << "face normal: " << faces[i] << endl;
         Ogre::Real dotp = canadidateVecInPlane.dotProduct(faces[i]);
         cout << "dotp is " << dotp << endl;
-        Ogre::Real epsilon = std::numeric_limits<Ogre::Real>::epsilon();
+        const Ogre::Real epsilon = 0.0001f;
         if(dotp <= epsilon && dotp >= -epsilon)
         {
             cout << "canadidate vector is in plane" << endl;
@@ -506,6 +546,19 @@ void
     region->mapView.updateRegion(&surface);
     region->mapView.finalizeRegion();
     region->mapView.createPhysicsRegion(_phyMgr);
+}
+
+void
+    VolumeMap::getBlockCenterWithRay(Ogre::Ray &rayTo, Ogre::Real searchDistance, Ogre::Vector3& blockCenter)
+{
+    if(_phyMgr->getCollisionPoint(blockCenter, rayTo, searchDistance))
+    {
+        _getCenterOfIntersectedPoint(blockCenter, rayTo.getDirection());
+    }
+    else
+    {
+        blockCenter = rayTo.getPoint(searchDistance);
+    }
 }
 
 void

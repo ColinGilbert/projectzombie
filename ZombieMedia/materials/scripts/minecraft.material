@@ -62,6 +62,7 @@ fragment_program PRJZ/PSSM/shadow_reciever_ps unified
 	//delegate MinecraftFP_glsl
 }
 
+
 material PRJZ/Minecraft
 {
 	technique
@@ -183,7 +184,7 @@ material testatlas
 		//}
 		pass
 		{
-			diffuse vertexcolour
+			diffuse 1.0 1.0 1.0
 			//ambient 1.0 1.0 1.0
 			lighting off
 			//alpha_rejection greater_equal 128
@@ -191,6 +192,44 @@ material testatlas
 			texture_unit
 			{
 				texture minecraft_terrain_bb.png
+			}
+		}
+	}
+}
+
+material PRJZ/Cursor
+{
+	technique
+	{
+		pass
+		{
+		
+			diffuse 0.5 0.0 0.0
+			specular 1.0 1.0 1.0 12.5
+			emissive 1.0 0.0 0.0
+			//depth_check off
+			//depth_write off
+			polygon_mode wireframe
+		}
+	}
+
+}
+
+material PRJZ/HDRBackground
+{
+	technique
+	{
+		pass
+		{
+			depth_write off
+			depth_check off
+			lighting off
+			
+			vertex_program_ref PRJZ/HDRBackground_vs
+			{
+			}
+			fragment_program_ref PRJZ/HDRBackground_ps
+			{
 			}
 		}
 	}

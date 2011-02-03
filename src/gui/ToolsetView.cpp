@@ -63,6 +63,7 @@ void
     ToolsetView::onChange(Toolset::ToolsetController* controller)
 {
     _refreshRightPanel(-1);
+    _toolSelect->SetSelection(controller->getToolType());
 }
 
 void
@@ -101,41 +102,6 @@ Rocket::Core::Element*
 void
     ToolsetView::_generateRootElement()
 {
-    using Rocket::Core::Factory;
-    using Rocket::Core::Element;
-    using Rocket::Core::String;
-   
-    _rootElement = Rocket::Core::Factory::InstanceElement(0, 
-        "div", "div", Rocket::Core::XMLAttributes());
-
-    //Create the tool select drop down box.
-    Rocket::Core::XMLAttributes attri;
-    attri.Set("id", "toolsetform");
-    Element* inputForm = Factory::InstanceElement(0, "form", "form", attri);
-    _rootElement->AppendChild(inputForm);
-    inputForm->RemoveReference();
-    attri.Clear();
-
-    attri.Set("id", _TOOL_SELECT_ID);
-    attri.Set("name", "Tool Select");
-    attri.Set("onchange", _ctrlStr);
-    attri.Set("action", "cameraSelect");
-
-    Element* cameraSelect = GuiUtils::ConstructSelectInput(attri, inputForm);
-    attri.Clear();
-
-    std::vector<Gui::SELECT_OPT> optPairsVec;
-
-    auto cIters = _toolCtrl->getToolDescriptions();
-    for(Toolset::ToolsetController::ToolDesc::const_iterator iter = cIters.first; 
-        iter != cIters.second; ++iter)
-    {
-        Rocket::Core::String idStr;
-        Rocket::Core::TypeConverter<unsigned int, String>::Convert(static_cast<unsigned int>(iter->second), idStr);
-        optPairsVec.push_back(std::make_pair<String, String>(iter->first.c_str(), idStr));
-    }
-    GuiUtils::ConstructSelectOptions(cameraSelect, optPairsVec);
-
 }
 
 void
@@ -146,7 +112,7 @@ void
     _viewPanel = panel;
     _toolInfoView.setTempalteCloner(getTemplateCloner());
 
-    Rocket::Controls::ElementFormControlSelect* select = static_cast<Rocket::Controls::ElementFormControlSelect*>(panel->GetElementById(_TOOL_SELECT_ID));
+    _toolSelect = static_cast<Rocket::Controls::ElementFormControlSelect*>(panel->GetElementById(_TOOL_SELECT_ID));
     if(!select)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for tool select control", "ToolsetView::updatePanel");
     auto cIters = _toolCtrl->getToolDescriptions();
@@ -155,7 +121,7 @@ void
     {
         Rocket::Core::String idStr;
         Rocket::Core::TypeConverter<unsigned int, Rocket::Core::String>::Convert(static_cast<unsigned int>(iter->second), idStr);
-        select->Add(iter->first.c_str(), idStr); //WTF, it should be a Rocket::String here and not Ogre::String.
+        _toolSelect->Add(iter->first.c_str(), idStr); //WTF, it should be a Rocket::String here and not Ogre::String.
     }
 }
 

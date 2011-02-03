@@ -45,22 +45,14 @@ using namespace Ogre;
 class ListenerFactoryLogic : public Ogre::CompositorLogic
 {
 public:
-  //This looks to be hack: Must set the listener before you do this, since we're not creating
-  //the listener here. THe listener IS the HDRCompositor class (see below.) Better idea is to
-  //separate the two. (We will refactor. This is a quick hack to get this into the engine for a woo-ah moment.
-  void setCompositorListener(Ogre::CompositorInstance::Listener* listener)
-  {
-    _listener = listener;
-  }
+  
   /** @copydoc CompositorLogic::compositorInstanceCreated */
   virtual void
   compositorInstanceCreated(Ogre::CompositorInstance* newInstance)
   {
-    cout << "HDRLogic::CompositorInstanceCreate called." << endl;
-    //DANGEROUS: Make sure listener is set!
-   // Ogre::CompositorInstance::Listener* listener = _listener;//createListener(newInstance);
-    newInstance->addListener(_listener);
-    mListeners[newInstance] = _listener;
+    Ogre::CompositorInstance::Listener* listener = createListener(newInstance);
+    newInstance->addListener(listener);
+    mListeners[newInstance] = listener;
   }
 
   /** @copydoc CompositorLogic::compositorInstanceDestroyed */
@@ -72,15 +64,22 @@ public:
   }
 
 protected:
-  Ogre::CompositorInstance::Listener* _listener;
   //This is the method that implementations will need to override
-  //virtual Ogre::CompositorInstance::Listener*
-  //createListener(Ogre::CompositorInstance* instance) = 0;
+  virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance) = 0;
 private:
   typedef std::map<Ogre::CompositorInstance*, Ogre::CompositorInstance::Listener*> ListenerMap;
   ListenerMap mListeners;
 
 };
+
+//The compositor logic for the hdr compositor
+class HDRLogic : public ListenerFactoryLogic
+{
+protected:
+	/** @copydoc ListenerFactoryLogic::createListener */
+	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance);
+};
+
 
 
 class HDRCompositor : public Ogre::CompositorInstance::Listener

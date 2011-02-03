@@ -62,9 +62,13 @@ namespace ZGame
 
             void
                 setToolType(ToolType type);
+            int
+                getToolType();
             /** Method is called whenever on screen 3d cursor position event is generated.**/
             bool
                 onCursorPosition3d(Ogre::Vector3 pos);
+            void
+                onSetCursor3dPosition();
 
             Gui::ToolInfoView*
                 refreshToolView(Gui::ToolInfoView* toolView, int toolId);
@@ -76,7 +80,8 @@ namespace ZGame
 
             Ogre::Vector3
                 getCursor3dPosition();
-
+            bool
+                isCursorMode();
 
         private:
 
@@ -91,8 +96,8 @@ namespace ZGame
             Gui::TemplateCloner* _templateCloner;
             void
                 _switchTool(ToolType type);
-            void
-                _informViews();
+            bool
+                _informListeners(ListenerMap::iterator curIter);
                 
         };
         class ToolsetControllerListener
@@ -102,7 +107,9 @@ namespace ZGame
             {
             }
             virtual void
-                onChange(ToolsetController* ctrl) = 0;
+                onChange(ToolsetController* ctrl){};
+            virtual void
+                onSetCursor3dPosition(ToolsetController* ctrl){};
         protected:
             ToolsetControllerListener(){}
         };

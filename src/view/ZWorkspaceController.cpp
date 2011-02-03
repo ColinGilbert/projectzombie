@@ -36,6 +36,13 @@ bool
 bool
     ZWorkspaceController::onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id)
 {
+    if(id == OIS::MB_Left)
+    {
+        if(_workspace->getToolsetController()->isCursorMode())
+        {
+            _workspace->getToolsetController()->onSetCursor3dPosition();
+        }
+    }
     return true;
 }
 
@@ -43,32 +50,25 @@ bool
     ZWorkspaceController::onMouseDown(const OIS::MouseEvent &evt, 
     const OIS::MouseButtonID id)
 {
-    //Depending on mode.
-    if(id == OIS::MouseButtonID::MB_Left)
+    if(id == OIS::MB_Left)
     {
-        //Just pass in the 3d position of where the user clicked. This is predefined to be a certain distance into the screen.
-        Ogre::Camera* cam = _workspace->getCinematicController()->getCinematicManager()->getRootCam();
-        Ogre::Real x, y;
-        x = evt.state.X.abs / _windowWidth;
-        y = evt.state.Y.abs / _windowHeight;
-
-        Ogre::Ray rayTo;
-        Ogre::Real distanceForward = 4.0f; //4 units into screen is where cursor will be.
-        rayTo  = cam->getCameraToViewportRay(x, y);
-
-        /*
-        *This business is stupid. We only doing this now for prototyping. 
-        *
-        */
-        if(_workspace->getToolsetController()->onCursorPosition3d(rayTo.getPoint(distanceForward)))
+        if(_workspace->getToolsetController()->isCursorMode())
         {
+            //Get voxel position.
+            //Just pass in the 3d position of where the user clicked. This is predefined to be a certain distance into the screen.
+            Ogre::Camera* cam = _workspace->getCinematicController()->getCinematicManager()->getRootCam();
+            Ogre::Real x, y;
+            x = evt.state.X.abs / _windowWidth;
+            y = evt.state.Y.abs / _windowHeight;
+
+            Ogre::Ray rayTo;
+            Ogre::Vector3 position;
+            Ogre::Real searchDistance = 64.0f;
+            rayTo  = cam->getCameraToViewportRay(x, y);
+            _workspace->getWorldController()->getCursor3dPosition(rayTo, position, searchDistance);
+            _workspace->getToolsetController()->onCursorPosition3d(position);
             _workspace->getCinematicController()->onDisableOneFrame();
         }
-
-
-    }
-    else if(id == OIS::MouseButtonID::MB_Right)
-    {     
     }
     return true;
 }
@@ -76,6 +76,23 @@ bool
 bool
     ZWorkspaceController::onMouseMove(const OIS::MouseEvent &evt)
 {
+    if(_workspace->getToolsetController()->isCursorMode())
+    {
+        //Get voxel position.
+        //Just pass in the 3d position of where the user clicked. This is predefined to be a certain distance into the screen.
+        Ogre::Camera* cam = _workspace->getCinematicController()->getCinematicManager()->getRootCam();
+        Ogre::Real x, y;
+        x = evt.state.X.abs / _windowWidth;
+        y = evt.state.Y.abs / _windowHeight;
+
+        Ogre::Ray rayTo;
+        Ogre::Vector3 position;
+        Ogre::Real searchDistance = 64.0f;
+        rayTo  = cam->getCameraToViewportRay(x, y);
+        _workspace->getWorldController()->getCursor3dPosition(rayTo, position, searchDistance);
+        _workspace->getToolsetController()->onCursorPosition3d(position);
+        _workspace->getCinematicController()->onDisableOneFrame();
+    }
     return true;
 }
 

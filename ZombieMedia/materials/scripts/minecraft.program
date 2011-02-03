@@ -1,7 +1,7 @@
 vertex_program PRJZ/PSSM/shadow_caster_vs cg
 {
 	source Minecraft.cg
-	profiles vs_3_x argvp1
+	profiles vs_3_x arbvp1
 	entry_point caster_vs
 	default_params
 	{
@@ -31,6 +31,7 @@ vertex_program MinecraftVP_cg cg
 	default_params
 	{
 		param_named_auto worldViewProj	worldviewproj_matrix
+		param_named_auto worldView  worldview_matrix;
 		//param_named_auto lightPosition	light_position_object_space 0
 		param_named_auto eyePos	camera_position_object_space
 		//param_named_auto texWorldViewProjMatrix0	texture_worldviewproj_matrix 0
@@ -117,5 +118,29 @@ fragment_program MinecraftFP_glsl glsl
 		param_named_auto invShadowMapSize0	inverse_texture_size 0
 		param_named_auto invShadowMapSize1	inverse_texture_size 1
 		param_named_auto invShadowMapSize2	inverse_texture_size 2
+	}
+}
+
+vertex_program PRJZ/HDRBackground_vs cg
+{
+	source HDRBackground.cg
+	profiles vs_3_0 
+	entry_point background_vs
+	default_params
+	{
+		param_named_auto	vprjMat viewproj_matrix	
+		param_named_auto	prjMat  project_matrix
+
+	}
+}
+
+
+fragment_program PRJZ/HDRBackground_ps cg
+{
+	source HDRBackground.cg
+	profiles ps_3_0 
+	entry_point background_ps
+	default_params
+	{
 	}
 }

@@ -81,9 +81,14 @@ Ogre::SceneNode*
     
  
     Ogre::Entity* cubeEnt = _scnMgr->createEntity(Ogre::MeshManager::getSingleton().getByHandle(_CUBE_MESH_HANDLE)->getName());
-    Ogre::SceneNode* node = _scnMgr->getRootSceneNode()->createChildSceneNode(cubeName);
+    Ogre::SceneNode* rootnode = _scnMgr->getRootSceneNode()->createChildSceneNode(cubeName);
+    Ogre::SceneNode* node = rootnode->createChildSceneNode();
+
     node->attachObject(cubeEnt);
+    cubeEnt->setMaterial(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Cursor"));
+    cubeEnt->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE);
     //Resize the cube. We're really doing a scale here, may not be correct.
+    node->translate(0.0f, 0.0, 0.0f);
     node->scale(size);
-    return node;
+    return rootnode;
 }

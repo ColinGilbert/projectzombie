@@ -136,7 +136,7 @@ bool
 }
 
 void
-    CinematicController::onChange(Toolset::ToolsetController* toolsetCtrl)
+    CinematicController::onSetCursor3dPosition(Toolset::ToolsetController* toolsetCtrl)
 {
     //We do it this way is because typically we attach the camera to some scene node, and whatever is responsible for
     //that scene node will change it there. 

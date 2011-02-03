@@ -33,7 +33,7 @@ const Ogre::uint16
     ToolsetManager::createCursor()
 {
     Ogre::uint16 id = static_cast<Ogre::uint16>(_tools.size());
-    Ogre::SceneNode* node = _geoMgr->createCube(Ogre::Vector3(0.2f, 0.2f, 0.2f), "cursor");
+    Ogre::SceneNode* node = _geoMgr->createCube(Ogre::Vector3(1.05f, 1.05f, 1.05f), "cursor");
     _tools.push_back(ToolInfo(id, node));
     NotifyRowAdd("tools", _tools.size(), 1);
     return id;
