@@ -1,9 +1,6 @@
 #pragma once
-#include <iostream>
-#include <Ogre.h>
-#include <MaterialDensityPair.h>
-#include <Volume.h>
 
+#include "ZPrerequisites.h"
 namespace ZGame
 {
     namespace World
@@ -12,7 +9,7 @@ namespace ZGame
         {
         public:
             virtual ~MapGenerator(){}
-            virtual void generate(PolyVox::UInt8Volume* data, PolyVox::Region region,
+            virtual void generate(PVolume* data, PolyVox::Region region,
                 Ogre::Real pageX, Ogre::Real pageY) = 0;
             
         protected:

@@ -84,7 +84,8 @@ material PRJZ/Minecraft
 			//cull_software back
 			//polygon_mode wireframe
 			//modulate
-
+			depth_write on
+			depth_check on
 			vertex_program_ref PRJZ/PSSM/shadow_reciever_vs
 			{
 				//param_named		LightPosition	float4	       256 512 -512 0
@@ -104,7 +105,8 @@ material PRJZ/Minecraft
 				max_anisotropy 8
 				mipmap_bias -2.0
 				//texture minecraft_terrain_sanguine_hi.png
-				texture minecraft_terrain_me_hi.png
+				texture minecraft_terrain_hi2.png
+				//texture minecraft_terrain_me_hi.png
 				//texture minecraft_terrain_hi.png
 				//texture minecraft_terrain_rpg.png
 				//texture minecraft_terrain_bb.png
@@ -146,7 +148,7 @@ material PRJZ/Minecraft
 		
 			
 		
-		}
+		} 
 	}
 
 	// this is the technique for the scheme "geom" that the SSAO
@@ -159,7 +161,7 @@ material PRJZ/Minecraft
 	    pass
 	    {
 		depth_write on
-	    	//depth_check on
+	    	
 
 	        vertex_program_ref MinecraftGeom_vs
 	        {

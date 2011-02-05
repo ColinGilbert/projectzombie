@@ -192,7 +192,7 @@ bool
     //_root = new Ogre::Root("plugins.cfg");
 
     _root.reset(new Ogre::Root(PlatformPath + "plugins.cfg", "pchaos.cfg", "Engine.log"));
-    _root->getWorkQueue()->setResponseProcessingTimeLimit(0);
+    _root->getWorkQueue()->setResponseProcessingTimeLimit(4);
     //Note: We should pass in a stream to this which appends to App.log.
     Ogre::LogManager::getSingleton().createLog("App.log");
     if(_startEngine) 
@@ -241,7 +241,7 @@ bool
 
 
     //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Popular");
-    Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");
+    //Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("PROJECT_ZOMBIE");
 
     Ogre::LogManager* lm = LogManager::getSingletonPtr();
     lm->setLogDetail(Ogre::LL_NORMAL);

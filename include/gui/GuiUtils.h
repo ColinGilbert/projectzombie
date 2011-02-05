@@ -80,6 +80,12 @@ namespace ZGame
                 }
             }
 
+            static Rocket::Core::String
+                GetActionString(Rocket::Core::Element* el)
+            {
+                return el->GetAttribute<Rocket::Core::String>("actiobn", "");
+            }
+
 
         };
     }

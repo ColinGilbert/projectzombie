@@ -6,14 +6,7 @@
 *      Author: beyzend
 */
 //#include <OgreMemoryAllocatorConfig.h>
-#include <memory>
-#include <limits>
-#include <cmath>
-#include <iostream>
-#include <OgreException.h>
-#include <CubicSurfaceExtractor.h>
-using std::cout;
-using std::endl;
+
 #include "world/VolumeMap.h"
 #include "PolyVoxImpl/Utility.h"
 #include "world/PerlinNoiseMapGen.h"
@@ -22,6 +15,15 @@ using std::endl;
 #include "world/PhysicsManager.h"
 
 #include <OgreBulletCollisionsRay.h>
+
+#include <SurfaceMesh.h>
+#include <MeshDecimator.h>
+#include <CubicSurfaceExtractor.h>
+
+using std::cout;
+using std::endl;
+
+
 
 
 using ZGame::World::VolumeMap;
@@ -114,8 +116,14 @@ WorkQueue::Response*
     gen.generate(&page->data, pageRegion, static_cast<Ogre::Real>(localx), 
         static_cast<Ogre::Real>(localy));
  
-    ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, lreq.surface);
+    //PolyVox::CubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, pageRegion, lreq.surface);
+    //ZCubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, pageRegion, lreq.tempSurface);
+    ZCubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, pageRegion, lreq.surface);
     surfExtractor.execute();
+
+    //PolyVox::MeshDecimator<PolyVox::PositionMaterial> decimator(lreq.tempSurface, lreq.surface);
+    //decimator.execute();
+
     response = new WorkQueue::Response(req, true, Any());
     return response;
 }
@@ -157,6 +165,7 @@ void
             _unloadPageRegion(page, lreq.ogreId);
         }
         OGRE_DELETE_T(lreq.surface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
+        //OGRE_DELETE_T(lreq.tempSurface, SurfaceMesh, Ogre::MEMCATEGORY_GENERAL);
     }
     else
     {
@@ -273,6 +282,8 @@ void
             req.page = pair.first;
             req.ogreId = pair.second.first;
             req.surface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+            //req.tempSurface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
+
             Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 10, _FORCE_SYNC);
         }
         else
@@ -541,7 +552,8 @@ void
     PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
         PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
     PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
-    ZCubicSurfaceExtractor<uint8_t> surfExtractor(&page->data, pageRegion, &surface);
+    //ZCubicSurfaceExtractor<Material8> surfExtractor(&page->data, pageRegion, &surface);
+    PolyVox::CubicSurfaceExtractor<Material8> surfExtractor(&page->data, pageRegion, &surface);
     surfExtractor.execute();
     region->mapView.updateRegion(&surface);
     region->mapView.finalizeRegion();

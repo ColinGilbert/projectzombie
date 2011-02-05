@@ -162,17 +162,18 @@ void
     GraphicsController::_initSkyX()
 {
     _skyX.reset(new SkyX::SkyX(_scnMgr, _vp->getCamera()));
-
+    _skyX->create();
+    _skyX->getGPUManager()->addGroundPass(
+        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
+        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 64, Ogre::SBT_TRANSPARENT_COLOUR);
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
     SkyXOptions.EastPosition = Ogre::Vector2(1, 0);
     _skyX->getAtmosphereManager()->setOptions(SkyXOptions);
     _skyX->setLightingMode(SkyX::SkyX::LM_LDR);
-    _skyX->create();
+    
 
-   // _skyX->getGPUManager()->addGroundPass(
-     //   static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-       // getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 420, Ogre::SBT_TRANSPARENT_COLOUR);
+   
 
 }
 
@@ -338,7 +339,15 @@ bool
         break;
     case OIS::KC_0:
         SkyXOptions.SunIntensity -= 10;
-        
+        break;
+    case OIS::KC_Y:
+
+         SkyXOptions.HeightPosition += 0.16 * 0.05f;
+         break;
+    case OIS::KC_U:
+
+		SkyXOptions.HeightPosition -= 0.16*0.05f;
+        break;
     default:
         break;
     }

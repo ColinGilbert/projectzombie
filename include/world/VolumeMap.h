@@ -1,17 +1,8 @@
 #pragma warning( disable : 4503)
 #pragma once
 
-#include <unordered_map>
-#include <Ogre.h>
-#include <MaterialDensityPair.h>
-
-#include <SurfaceMesh.h>
-#include <Volume.h>
+#include "ZPrerequisites.h"
 #include "world/VolumeMapView.h" //We use it directly here instead of relying on the Observer pattern to update views.
-#include <OgreGrid2DPageStrategy.h>
-#include <OgrePagedWorldSection.h>
-#include <OgrePagedWorld.h>
-#include <OgrePageManager.h>
 #include "world/PerlinNoiseMapGen.h"
 #include "world/TestMapGenerator.h"
 /*
@@ -105,15 +96,17 @@ namespace ZGame
             };
             /**
             * This class defines a volume page. It has a correspondance to Ogre Paging's Paging system on PageID (uint32).
+            *
+            * \note We need to refactor this class to use templating on PolyVox::Volume and Material.
             */
             class VolumePage
             {
             public:
 
                 VolumePage(size_t pageSize, size_t pageHeight) :
-                  data(pageSize, pageHeight, pageSize, 32)
+                  data(pageSize, pageHeight, pageSize, 16)
                   {
-                      data.setBorderValue(0);
+                      data.setBorderValue(PolyVox::Material8(0));
                   }
                   virtual ~VolumePage()
                   {
@@ -126,7 +119,8 @@ namespace ZGame
                       //_regionMap.clear();
                   }
                   Ogre::PageID id;
-                  PolyVox::UInt8Volume data;
+                  //PolyVox::UInt8Volume data;
+                  PVolume data;
                   PageRegion*
                       createRegion(Ogre::PageID pageId, Ogre::SceneManager* scnMgr)
                   {
@@ -138,9 +132,21 @@ namespace ZGame
                           _regionMap[pageId] = region;
                           return region;
                       }
+                      return 0;
+                      /*
+                      * Note: THe below exception can happen. I'm not yet sure why or how it
+                      *happens. However, we are going to ignore this for now because of the
+                      *fact that PageID is unique. If a PageID is in a region already, 
+                      *then it exists, we can just safely ignore that we are asked to 
+                      *load this existing PageID again. My guess on why this happens is
+                      *either it's the fault of Ogre's paging system upstream. Or there is
+                      *still some logic bug I haven't figured out yet.
+                      */
+                      /*
                       OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE,
                           "Tring to create an exisiting PageRegion in a VolumePage!",
                           "PageRegion::createRegion");
+                      */
                       //if(findMe->second->loading)
                       //return 0; //Return 0 if this is found. We just don't reload it again.
                   }
@@ -185,7 +191,9 @@ namespace ZGame
                 VolumePage* page;
                 VolumeMap* origin;
                 Ogre::PageID ogreId;
+                PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* tempSurface;
                 PolyVox::SurfaceMesh<PolyVox::PositionMaterial>* surface;
+                
                 friend std::ostream&
                     operator<<(std::ostream& o, const LoadRequest& r)
                 {

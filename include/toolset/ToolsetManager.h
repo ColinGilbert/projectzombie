@@ -31,7 +31,7 @@ namespace ZGame
 {
     namespace Toolset
     {
-        class ToolsetManager : public Rocket::Controls::DataSource
+        class ToolsetManager 
         {
         public:
             ToolsetManager(Geometry::GeometryManager* geoMgr);
@@ -39,17 +39,26 @@ namespace ZGame
 
             const Ogre::uint16 //we need to define this as ID.
                 createCursor();
+            ToolInfo*
+                createCube();
             /** \note This function is not safe. ID may be invalid or pointer may become invalid.**/
             ToolInfo*
                 getTool(Ogre::uint16 id);
             void
                 refreshTool(Ogre::uint16 id);
-           //implement datasource methods
-            virtual void
-                GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index,
-                const Rocket::Core::StringList& columns);
-            virtual int
-                GetNumRows(const Rocket::Core::String& table);
+           
+            int
+                getSize()
+            {
+                return _tools.size();
+            }
+
+            void
+                setSelectionid(int selectId)
+            {
+                _selectionId = selectId;
+            }
+
             int
                 getSelectionId()
             {
@@ -57,7 +66,7 @@ namespace ZGame
             }
 
         private:
-            Ogre::vector<ToolInfo>::type _tools; //We are using vector because we don't expect
+            Ogre::vector<ToolInfo*>::type _tools; //We are using vector because we don't expect
             //too much tools to be created.
             Geometry::GeometryManager* _geoMgr;
             int _selectionId;

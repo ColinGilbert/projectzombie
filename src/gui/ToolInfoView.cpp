@@ -39,7 +39,6 @@ void
 }
 /** 
 * This method will generate the basic view for ToolInfo. Such that it will create input / ouput view for transformation attributes of this ToolInfo.
-* \note Ideally we should load from a template. We are don't that now; we simply create everything in c++, for now.
 *
 **/
 void

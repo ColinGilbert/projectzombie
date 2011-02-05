@@ -9,7 +9,7 @@ struct VS_OUT
   float4 worldPos : TEXCOORD2;
   float3 diffuseUV : TEXCOORD0;
   float4 textureAtlasOffset : TEXCOORD1;
-  float2 fogExponent : TEXCOORD3;
+  //float2 fogExponent : TEXCOORD3;
   //float4 lightSpacePos0 : TEXCOORD2;
   //float4 lightSpacePos1 : TEXCOORD3;
   //float4 lightSpacePos2 : TEXCOORD4;
@@ -35,10 +35,10 @@ void caster_ps(
   oColour = float4(finalDepth, finalDepth, finalDepth, 1);
 }
 
-#define NUM_OF_COEF 3
+//#define NUM_OF_COEF 3
 
-#define ATLAS_WIDTH 2048.0
-#define TEX_WIDTH 128.0
+#define ATLAS_WIDTH 4096.0
+#define TEX_WIDTH 256.0
 #define BlockOffset TEX_WIDTH / ATLAS_WIDTH
 #define eOffset TEX_WIDTH / ATLAS_WIDTH
 
@@ -48,7 +48,6 @@ VS_OUT main_vp(
 	       //float3 normal1 : NORMAL,
 	       float4 uv1 : TEXCOORD0,
 	       //float4 uv0 : TEXCOORD1,
-
 	       uniform float4x4 worldViewProj,
 	       uniform float4x4 worldView,
 	       //uniform float4x4 worldMat,
@@ -61,96 +60,21 @@ VS_OUT main_vp(
 	       //uniform float4x4 texWorldViewProjMatrix0,
 	       //uniform float4x4 texWorldViewProjMatrix1,
 	       //uniform float4x4 texWorldViewProjMatrix2
-#if 0
-	       uniform float4[NUM_OF_COEF] SHC_R,
-	       uniform float4[NUM_OF_COEF] SHC_G,
-	       uniform float4[NUM_OF_COEF] SHC_B
-#endif
 	       )
 {
-  /*
-  const float ATLAS_WIDTH = 4096.0;
-  const float TEX_WIDTH = 256.0;
-  const float BlockOffset = TEX_WIDTH / ATLAS_WIDTH;
-  const float eOffset = TEX_WIDTH / ATLAS_WIDTH;*/
-#if !SKY
-const float3 v00 = float3(SHC_R[0], SHC_G[0], SHC_B[0]);
-const float3 v1m1 = float3(SHC_R[1], SHC_G[1], SHC_B[1]);
-const float3 v10 = float3(SHC_R[2], SHC_G[2], SHC_B[2]);
-const float3 v11 = float3(SHC_R[3], SHC_G[3], SHC_B[3]);
-const float3 v2m2 = float3(SHC_R[4], SHC_G[4], SHC_B[4]);
-const float3 v2m1 = float3(SHC_R[5], SHC_G[5], SHC_B[5]);
-const float3 v20 = float3(SHC_R[6], SHC_G[6], SHC_B[6]);
-const float3 v21 = float3(SHC_R[7], SHC_G[7], SHC_B[7]);
-const float3 v22 = float3(SHC_R[8], SHC_G[8], SHC_B[8]);
-
-// Constants for Funston Beach Sunset lighting
-
-const float3 L00  = float3( 0.6841148,  0.6929004,  0.7069543);
-const float3 L1m1 = float3( 0.3173355,  0.3694407,  0.4406839);
-const float3 L10  = float3(-0.1747193, -0.1737154, -0.1657420);
-const float3 L11  = float3(-0.4496467, -0.4155184, -0.3416573);
-const float3 L2m2 = float3(-0.1690202, -0.1703022, -0.1525870);
-const float3 L2m1 = float3(-0.0837808, -0.0940454, -0.1027518);
-const float3 L20  = float3(-0.0319670, -0.0214051, -0.0147691);
-const float3 L21  = float3( 0.1641816,  0.1377558,  0.1010403);
-const float3 L22  = float3( 0.3697189,  0.3097930,  0.2029923);
-#endif
-#if 0
-const float3 L00  = float3( 0.871297,  0.875222,  0.864470);
-const float3 L1m1 = float3( 0.175058,  0.245335,  0.312891);
-const float3 L10  = float3( 0.034675,  0.036107,  0.037362);
-const float3 L11  = float3(-0.004629, -0.029448, -0.048028);
-const float3 L2m2 = float3(-0.120535, -0.121160, -0.117507);
-const float3 L2m1 = float3( 0.003242,  0.003624,  0.007511);
-const float3 L20  = float3(-0.028667, -0.024926, -0.020998);
-const float3 L21  = float3(-0.077539, -0.086325, -0.091591);
-const float3 L22  = float3(-0.161784, -0.191783, -0.219152); 
-#endif
-#if 0
- const float3 L00 = float3(SHC_R[0].x, SHC_G[0].x, SHC_B[0].x);
- const float3 L00v = float3(500.0, 500.0, 500.0);
- const float3 L1m1 = float3(SHC_R[0].y, SHC_G[0].y, SHC_B[0].y);
- const float3 L10 = float3(SHC_R[0].z, SHC_G[0].z, SHC_B[0].z);
- const float3 L11 = float3(SHC_R[1].x, SHC_G[1].x, SHC_B[1].x);
- const float3 L2m2 = float3(SHC_R[1].y, SHC_G[1].y, SHC_B[1].y);
- const float3 L2m1 = float3(SHC_R[1].z, SHC_G[1].z, SHC_B[1].z);
- const float3 L20 = float3(SHC_R[2].x, SHC_G[2].x, SHC_B[2].x);
- const float3 L21 = float3(SHC_R[2].y, SHC_G[2].y, SHC_B[2].y);
- const float3 L22 = float3(SHC_R[2].z, SHC_G[2].z, SHC_B[2].z);
- const float3 L4m4 = float3(SHC_R[4].x, SHC_G[4].y, SHC_B[4].z);
- const float3 L4m3 = float3(SHC_R[4].x, 0.0, 0.0);
-#endif
-#if 0
- const float3 L00 = float3(SHC_R[0], SHC_G[0].x, SHC_B[0].x);
- const float3 L1m1 = float3(SHC_R[1], SHC_G[0].y, SHC_B[0].y);
- const float3 L10 = float3(SHC_R[2], SHC_G[0].z, SHC_B[0].z);
- const float3 L11 = float3(SHC_R[3], SHC_G[1].x, SHC_B[1].x);
- const float3 L2m2 = float3(SHC_R[4], SHC_G[1].y, SHC_B[1].y);
- const float3 L2m1 = float3(SHC_R[5], SHC_G[1].z, SHC_B[1].z);
- const float3 L20 = float3(SHC_R[6], SHC_G[2].x, SHC_B[2].x);
- const float3 L21 = float3(SHC_R[7], SHC_G[2].y, SHC_B[2].y);
- const float3 L22 = float3(SHC_R[8], SHC_G[2].z, SHC_B[2].z);
- const float3 L4m4 = float3(SHC_R[9], SHC_G[4].y, SHC_B[4].z);
-#endif
 
   VS_OUT outp;
   outp.pos = mul(worldViewProj, pos);
-  float4 ec = mul(worldViewProj, pos);
-  float fogDistance = length(float3(ec.xyz / ec.w));
-  float fogDensity = 0.5f;
-  outp.fogExponent.x = fogDistance * fogDensity;
-  
 
-  //outp.diffuseUV.xy = uv0.xy;
   outp.worldPos = pos;//mul(worldMat, pos);
+  outp.diffuseUV = float3(0.0f, 0.0f, 0.0f);
+  outp.textureAtlasOffset = float4(0.0f, 0.0f, 0.0f, 0.0f);
+ 
   float idx = uv1.x * 256.0 - 1.0;
   float blocky = floor(idx / 16.0);
   float blockx = (idx - blocky * 16.0);
  
   outp.textureAtlasOffset = float4(blockx, blocky, 0, 0) * eOffset;
-  
-  
   
   return outp;
 }
@@ -163,13 +87,6 @@ float4 main_fp(
 	       uniform float SHC_G_0,uniform float SHC_G_1,uniform float SHC_G_2,uniform float SHC_G_3,uniform float SHC_G_4,uniform float SHC_G_5,uniform float SHC_G_6,uniform float SHC_G_7,uniform float SHC_G_8, uniform float SHC_G_9, uniform float SHC_G_10, uniform float SHC_G_11, uniform float SHC_G_12, uniform float SHC_G_13, uniform float SHC_G_14, uniform float SHC_G_15, uniform float SHC_G_16, uniform float SHC_G_17,
 	       uniform float SHC_B_0,uniform float SHC_B_1,uniform float SHC_B_2,uniform float SHC_B_3,uniform float SHC_B_4,uniform float SHC_B_5,uniform float SHC_B_6,uniform float SHC_B_7,uniform float SHC_B_8, uniform float SHC_B_9, uniform float SHC_B_10, uniform float SHC_B_11, uniform float SHC_B_12, uniform float SHC_B_13, uniform float SHC_B_14, uniform float SHC_B_15, uniform float SHC_B_16, uniform float SHC_B_17,
 #endif
-	       //	       uniform sampler2D shadowMap0 : register(s1),
-	       //uniform sampler2D shadowMap1 : register(s2),
-	       //uniform sampler2D shadowMap2 : register(s3),
-	       //uniform float inverseShadowmapSize0,
-	       //uniform float inverseShadowmapSize1,
-	       //uniform float inverseShadowmapSize2,
-	       //uniform float4 pssmSplitPoints
 	       uniform float uLightY
 	       ) : COLOR
 {
@@ -209,12 +126,9 @@ float4 main_fp(
  float3 normal = cross(ddy(In.worldPos.xyz),ddx(In.worldPos.xyz));
  normal = normalize(normal);
  
- /*
-  float3x3 texMat = {0.0, 0.0, -1.0,
-  	     -1.0, 0.0, 0.0,
-  	     0.0, 1.0, 0.0};*/
-  float3 n = float3(-normal.z, -normal.x, normal.y);//mul(texMat, normal);
-  //normal = n;
+
+  float3 n = float3(-normal.z, -normal.x, normal.y);
+
   float4 diffuseColor = float4(1.0, 1.0, 1.0, 1.0);
 
   diffuseColor.xyz =  C1 * L22 * (n.x * n.x - n.y * n.y) +
@@ -239,9 +153,9 @@ float4 main_fp(
     d7 * L43 * (n.y*n.z*(3.0*n.x*n.x-n.y*n.y)) + 
     d8 * L44 * (n.x*n.y*(n.x*n.x-n.y*n.y));
 #endif
-  //diffuseColor *= 0.0002;
+
   diffuseColor *= 0.000035;
-  //diffuseColor *= 0.01;
+
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)
     {
@@ -273,55 +187,17 @@ float4 main_fp(
     {
       uv0 = frac(In.worldPos.xy);
     }
-  
-  //float idx = In.textureAtlasOffset.x * 256.0 - 1.0;
-  //float blocky = floor(idx / 16.0);
-  //float blockx = (idx - blocky * 16.0);
-  //blockx = 7;
-  //blocky = 0;
-  //float pixelOffset = eOffset / TEX_WIDTH;
-  //float4 uv = (float4(blockx, blocky, 0, 0) + float4(uv0,1.0,1.0)) * eOffset;
+ 
   In.textureAtlasOffset += float4(uv0, 1.0, 1.0) * eOffset;
   float4 texDiffuse = tex2D(diffuseMap, In.textureAtlasOffset.xy);
   
-  /*
-  if(uv0.x == 1.0)
-    outp.textureAtlasUV.x -= pixelOffset;
-  if(uv0.y == 1.0)
-    outp.textureAtlasUV.y -= pixelOffset;
-  */
-  //float camDepth = In.diffuseUV.z;
-  //float shadow = calcPSSMSimpleShadow(shadowMap0, shadowMap1, shadowMap2,
-  //		     In.lightSpacePos0, In.lightSpacePos1, In.lightSpacePos2,
-  //			      //inverseShadowmapSize0, inverseShadowmapSize1, inverseShadowmapSize2,
-  //		     pssmSplitPoints, camDepth);
-  //float4 vColor = texDiffuse * lerp(0.5, 1.0,shadow);
-  //float4 vColor;
-  //vColor.xyz = calcPSSMDebugShadow(shadowMap0, shadowMap1, shadowMap2,
-  //			   In.lightSpacePos0, In.lightSpacePos1, In.lightSpacePos2,
-  //		     inverseShadowmapSize0, inverseShadowmapSize1, inverseShadowmapSize2,
-  //		     pssmSplitPoints, camDepth);
   float nightMulti;
-  //if(uLightY >= 0.0)
-  //lightIntensity = lerp(0.005, 1.0, uLightY);
-  //else
+
   nightMulti = 1.0;
   if(uLightY < 0.0)
     nightMulti = lerp(0.05, 0.1, -uLightY);
-  //float4 test = In.diffuseColor; 
-
-  //float fogFactor = exp2(-abs(In.fogExponent.x));
-  //fogFactor = 1.0f;
+ 
   float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
-  //float3 fogColor = float3(0.5f, 0.5f, 0.5f);
-  //vColor.xyz = lerp(fogColor, vColor.xyz, fogFactor);
-
-  //vColor.w = 1.0;
-  //float4 vColor = texDiffuse * In.diffuseColor * nightMulti;// * intensity;
-  //vColor = texDiffuse * 1.0;
-  //(0.5 - 0.5*saturate(-(uLightY - 0.15)*4) + 0.115);
-  //float4 vColor = In.tempColor;
-  
   return vColor;
 }
 

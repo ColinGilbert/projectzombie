@@ -6,7 +6,7 @@ using namespace ZGame;
 using namespace ZGame::Toolset;
 
 ToolsetController::ToolsetController(std::auto_ptr<ToolsetManager> toolMgr)
-    : _toolMgr(toolMgr)
+    : _toolMgr(toolMgr), Rocket::Controls::DataSource("tool_source")
 {
     _toolsDesc.push_back(std::make_pair("SELECT_TOOL", SELECT));
     _toolsDesc.push_back(std::make_pair("CURSOR_TOOL", CURSOR)); 
@@ -22,6 +22,7 @@ bool
     ToolsetController::onInit(ZGame::ZInitPacket* initPacket)
 {
     _cursorId = _toolMgr->createCursor();
+    NotifyRowAdd("tools", -1, 1);
     return true;
 }
 
@@ -48,11 +49,29 @@ void
 {
     _curToolType = type;
 }
-
+/**
+* This method is called for onCreate events. For this event we will create the current tool type. For selection and cursor, there can be only one in existence
+*at a time, so we ignore it for those tools. We will create the tools for other types. 
+*
+*/
 void
     ToolsetController::onCreate()
 {
-
+    ToolInfo* cubeTool = 0;
+    switch(_curToolType)
+    {
+    case CUBE:
+        cubeTool = _toolMgr->createCube();
+        cubeTool->getNode()->setPosition(_toolMgr->getTool(_cursorId)->getNode()->getPosition());
+        _toolMgr->setSelectionid(cubeTool->getId());
+        NotifyRowAdd("tools", -1, 1);   
+        break;
+    default:
+        break;
+    }
+    std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
+        iter.second->onChange(this);
+    });
 }
 
 bool
@@ -67,8 +86,7 @@ bool
     if(_curToolType == CURSOR)
     {
         _toolMgr->getTool(_cursorId)->getNode()->setPosition(pos);
-        _toolMgr->refreshTool(_cursorId); //hackish
-        
+        NotifyRowChange("tools", _cursorId, 1);
         std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
             iter.second->onChange(this);
         });
@@ -84,7 +102,7 @@ void
 {
     if(_curToolType == CURSOR)
     {
-        _switchTool(SELECT);
+        //_switchTool(SELECT);
         std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
             iter.second->onSetCursor3dPosition(this);
             iter.second->onChange(this);
@@ -119,24 +137,60 @@ void
 
 
 /**
-* This method will refresh a tool view given a tool id. This method should be called each time you want to update 
-*the view on a tool. DO NOT use a ToolView without calling this each time. This mean DO NOT assume anything regarding
-*how the ToolInfo are stored, that's what you want to refresh everytime you use it. If you do that we can at leas guaraeentee
-*that it will work for the most recent refresh. 
+* This method will refresh a tool view given a tool id. 
 *
-* \note WTF? This should be redesigned to not assume this. It's likely you won't have problem because the underlying storage
-*will not change. Just to be safe though.
 **/
-Gui::ToolInfoView*
+bool
     ToolsetController::refreshToolView(Gui::ToolInfoView* toolView, int toolId)
 {
+    bool refreshed = false;
     if(toolId == -1 && _toolMgr->getSelectionId() != -1)
     {
         toolView->setToolInfo(_toolMgr->getTool(_toolMgr->getSelectionId()));
+        refreshed = true;
     }
-    else
+    else if(toolId != -1)
     {
         toolView->setToolInfo(_toolMgr->getTool(toolId));
+        _toolMgr->setSelectionid(toolId);
+        refreshed = true;
     }
-    return toolView;
+    return refreshed;
+}
+
+/**
+* This method implements Rocket::Core::Data source virtual method. It will Get the row based on internal data store of
+*ToolInfo.
+**/
+void
+    ToolsetController::GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index,
+    const Rocket::Core::StringList& columns)
+{
+    if(table == "tools")
+    {
+        for(size_t i = 0; i < columns.size(); ++i)
+        {
+            ToolInfo* info = _toolMgr->getTool(row_index);
+            if(columns[i] == "id")
+            {
+                Rocket::Core::String idStr;
+                Rocket::Core::TypeConverter<int, Rocket::Core::String>::Convert(info->getId(), idStr);
+                row.push_back(idStr);
+            }
+            else if(columns[i] == "name")
+            {
+                row.push_back(info->getName());
+            }
+            else if(columns[i] == "pos")
+            {
+                row.push_back(Ogre::StringConverter::toString(info->getNode()->getPosition()).c_str());
+            }
+        }
+    }
+}
+
+int
+    ToolsetController::GetNumRows(const Rocket::Core::String& table)
+{
+    return _toolMgr->getSize();
 }

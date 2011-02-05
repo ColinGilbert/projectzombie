@@ -118,6 +118,7 @@ void main_fp(
 #endif // LDR
 	)
 {	
+
 	oColor = float4(iRayleighColor,1);
 	
 #ifdef LDR

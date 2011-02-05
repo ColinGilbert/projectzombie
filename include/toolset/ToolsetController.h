@@ -33,7 +33,7 @@ namespace ZGame
     namespace Toolset
     {
         
-        class ToolsetController
+        class ToolsetController : public Rocket::Controls::DataSource
         {
         public:
 
@@ -70,7 +70,7 @@ namespace ZGame
             void
                 onSetCursor3dPosition();
 
-            Gui::ToolInfoView*
+            bool
                 refreshToolView(Gui::ToolInfoView* toolView, int toolId);
 
             void
@@ -82,6 +82,14 @@ namespace ZGame
                 getCursor3dPosition();
             bool
                 isCursorMode();
+
+            //implement datasource methods
+            virtual void
+                GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index,
+                const Rocket::Core::StringList& columns);
+            virtual int
+                GetNumRows(const Rocket::Core::String& table);
+
 
         private:
 

@@ -22,18 +22,23 @@ fragment_program PRJZ/PSSM/shadow_caster_ps cg
 
 
 
-vertex_program MinecraftVP_cg cg
+vertex_program MinecraftVP_cg hlsl
 {
 	source Minecraft.cg
-	profiles vs_3_0 
+	//profiles vs_3_0 
 	entry_point main_vp
-
+	target vs_3_0
+	//compile_arguments -NUM_OF_COEFF=3 -ATLAS_WIDTH=4096.0 -TEX_WIDTH=256.0
 	default_params
 	{
 		param_named_auto worldViewProj	worldviewproj_matrix
 		param_named_auto worldView  worldview_matrix;
 		//param_named_auto lightPosition	light_position_object_space 0
 		param_named_auto eyePos	camera_position_object_space
+		//param_name int NUM_OF_COEF 3
+		//param_name float ATLAS_WIDTH 2048.0
+		//param_name float TEX_WIDTH 256.0
+		
 		//param_named_auto texWorldViewProjMatrix0	texture_worldviewproj_matrix 0
 		//param_named_auto texWorldViewProjMatrix1	texture_worldviewproj_matrix 1
 		//param_named_auto texWorldViewProjMatrix2	texture_worldviewproj_matrix 2
@@ -42,36 +47,12 @@ vertex_program MinecraftVP_cg cg
 		//param_named_auto depthRange2			shadow_scene_depth_range 2
 	}
 }
-
-vertex_program MinecraftGeom_vs cg
+fragment_program MinecraftFP_cg hlsl
 {
 	source Minecraft.cg
-	profiles vs_3_0
-	entry_point geom_vs
-	default_params
-	{
-		param_named_auto wvpMat worldviewproj_matrix
-		param_named_auto wvMat worldview_matrix
-	}
-}
-
-fragment_program MinecraftGeom_ps cg
-{
-	source Minecraft.cg
-	profiles ps_3_0
-	entry_point geom_ps
-	default_params
-	{
-		param_named_auto far far_clip_distance
-	}
-}
-
-fragment_program MinecraftFP_cg cg
-{
-	source Minecraft.cg
-	profiles ps_3_0
+	
 	entry_point main_fp
-
+	target ps_3_0
 	default_params
 	{
 		//param_named_auto lightDiffuse	derived_light_diffuse_colour 0
@@ -84,6 +65,32 @@ fragment_program MinecraftFP_cg cg
 	}
 
 }
+vertex_program MinecraftGeom_vs hlsl
+{
+	source Minecraft.cg
+	//profiles vs_3_0
+	entry_point geom_vs
+	target vs_3_0
+	default_params
+	{
+		param_named_auto wvpMat worldviewproj_matrix
+		param_named_auto wvMat worldview_matrix
+	}
+}
+
+fragment_program MinecraftGeom_ps hlsl
+{
+	source Minecraft.cg
+	//profiles ps_3_0
+	entry_point geom_ps
+	target ps_3_0
+	default_params
+	{
+		param_named_auto far far_clip_distance
+	}
+}
+
+
 
 vertex_program MinecraftVP_glsl glsl
 {

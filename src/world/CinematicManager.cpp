@@ -45,8 +45,8 @@ void
     const Ogre::Quaternion &initialOrient, Control* control)
 {
     Ogre::Camera* cam = _scnMgr->createCamera(PERSP_CAM_NAME + Ogre::StringConverter::toString(_camCurId));
-    cam->setNearClipDistance(5.0f);
-    cam->setFarClipDistance(800.0f);
+    cam->setNearClipDistance(1.0f);
+    cam->setFarClipDistance(512.0f);
     cam->setPosition(0.0f, 0.0f, 0.0f);
     cam->setAspectRatio(windowW / windowH);
     Ogre::SceneNode* defaultNode = _scnMgr->createSceneNode();

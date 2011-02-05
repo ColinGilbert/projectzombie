@@ -36,8 +36,7 @@
 	    <select id="tool_select_id" name="Tool Select" onchange="ToolsetViewController" action="cameraSelect">
 	    </select>
 	  </form>
-	      <!-- Really we should have the concept of properties panel. For now we do everything here.-->
-	      <button type="button" id="create_id">Create Shape</button><br />
+	      <button type="button" id="create_id" onclick="ToolsetViewController" action="createShape">Create Shape</button><br />
 	  </div>
 	  <div class="split_right">
 	    <div class="panel_left">
@@ -47,6 +46,7 @@
 		<col fields="pos" width="60%">Position</col>
 	      </datagrid>
 	    </div>
+	    <!-- We will injection a template here from c++ that is the properities page.-->
 	    <div class="panel_right" id="panel_right">
  	    </div>
 	  </div>

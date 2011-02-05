@@ -3,28 +3,26 @@
 using namespace ZGame::Toolset;
 using namespace ZGame;
 ToolsetManager::ToolsetManager(Geometry::GeometryManager* geoMgr)
-    : Rocket::Controls::DataSource("tool_source"), _geoMgr(geoMgr), _selectionId(-1)
+    : _geoMgr(geoMgr), _selectionId(-1)
 {
 }
 
 ToolsetManager::~ToolsetManager()
 {
+   for(auto iter = _tools.begin(); iter != _tools.end(); ++iter)
+   {
+       delete *iter;
+   }
 }
 
 
 ToolInfo*
     ToolsetManager::getTool(Ogre::uint16 id)
 {
-    ToolInfo* ret = &_tools.at(id); //bound checking should be done here.
-    _selectionId = id;
+    ToolInfo* ret = _tools.at(id); //bound checking should be done here.
     return ret;
 }
 
-void
-    ToolsetManager::refreshTool(Ogre::uint16 id)
-{
-    NotifyRowChange("tools", id, 1);
-}
 /**
 * \note We should use the component system to add a Render compoent. However, component system is not finished so we do 
 *this. 
@@ -34,44 +32,16 @@ const Ogre::uint16
 {
     Ogre::uint16 id = static_cast<Ogre::uint16>(_tools.size());
     Ogre::SceneNode* node = _geoMgr->createCube(Ogre::Vector3(1.05f, 1.05f, 1.05f), "cursor");
-    _tools.push_back(ToolInfo(id, node));
-    NotifyRowAdd("tools", _tools.size(), 1);
+    _tools.push_back(new ToolInfo(id, node));
     return id;
 }
 
-/**
-* This method implements Rocket::Core::Data source virtual method. It will Get the row based on internal data store of
-*ToolInfo.
-**/
-void
-    ToolsetManager::GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index,
-    const Rocket::Core::StringList& columns)
+ToolInfo*
+    ToolsetManager::createCube()
 {
-    if(table == "tools")
-    {
-        for(size_t i = 0; i < columns.size(); ++i)
-        {
-            ToolInfo* info = getTool(row_index);
-            if(columns[i] == "id")
-            {
-                Rocket::Core::String idStr;
-                Rocket::Core::TypeConverter<int, Rocket::Core::String>::Convert(info->getId(), idStr);
-                row.push_back(idStr);
-            }
-            else if(columns[i] == "name")
-            {
-                row.push_back(info->getName());
-            }
-            else if(columns[i] == "pos")
-            {
-                row.push_back(Ogre::StringConverter::toString(info->getNode()->getPosition()).c_str());
-            }
-        }
-    }
-}
-
-int
-    ToolsetManager::GetNumRows(const Rocket::Core::String& table)
-{
-    return _tools.size();
+    Ogre::uint16 id = static_cast<Ogre::uint16>(_tools.size());
+    Ogre::SceneNode* node = _geoMgr->createCube(Ogre::Vector3(10.0f, 10.0f, 1.0f), "toolcube");
+    ToolInfo* tool = new ToolInfo(id, node);
+    _tools.push_back(tool);
+    return tool;
 }

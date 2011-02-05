@@ -1,4 +1,5 @@
 #pragma once
+#include "ZPrerequisites.h"
 #include "world/MapGenerator.h"
 namespace ZGame
 {
@@ -9,13 +10,13 @@ namespace ZGame
         public:
             ~TestMapGenerator(){}
             void
-                generate(PolyVox::Volume<uint8_t>* data, PolyVox::Region,
+                generate(PVolume* data, PolyVox::Region,
                 Ogre::Real pageX, Ogre::Real pageY);
         private:
             void
-                createSphereInVolume(Volume<uint8_t>& volData,  PolyVox::Region &region, float fRadius, uint8_t uValue);
+                createSphereInVolume(PVolume& volData,  PolyVox::Region &region, float fRadius, uint8_t uValue);
             void
-                createCubeInVolume(Volume<uint8_t>& volData, Vector3DUint16 lowerCorner, Vector3DUint16 upperCorner, uint8_t uValue);
+                createCubeInVolume(PVolume& volData, Vector3DUint16 lowerCorner, Vector3DUint16 upperCorner, uint8_t uValue);
         };
     }
 }
@@ -23,7 +24,7 @@ namespace ZGame
 using namespace ZGame::World;
 using namespace PolyVox;
 inline void 
-    TestMapGenerator::generate(Volume<uint8_t>* data, PolyVox::Region region,
+    TestMapGenerator::generate(Volume<Material8>* data, PolyVox::Region region,
     Ogre::Real pageX, Ogre::Real pageY)
 {
     
@@ -39,7 +40,7 @@ inline void
 }
 
 inline void 
-    TestMapGenerator::createSphereInVolume(Volume<uint8_t>& volData, PolyVox::Region &region,
+    TestMapGenerator::createSphereInVolume(PVolume& volData, PolyVox::Region &region,
     float fRadius, uint8_t uValue)
 {
 	//This vector hold the position of the center of the volume
@@ -70,7 +71,7 @@ inline void
 }
 
 inline void 
-    TestMapGenerator::createCubeInVolume(Volume<uint8_t>& volData, Vector3DUint16 lowerCorner, Vector3DUint16 upperCorner, uint8_t uValue)
+    TestMapGenerator::createCubeInVolume(PVolume& volData, Vector3DUint16 lowerCorner, Vector3DUint16 upperCorner, uint8_t uValue)
 {
 	//This three-level for loop iterates over every voxel between the specified corners
 	for (int z = lowerCorner.getZ(); z <= upperCorner.getZ(); z++)

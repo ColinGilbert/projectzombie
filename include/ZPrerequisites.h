@@ -22,8 +22,13 @@ THE SOFTWARE.
 
 #pragma once
 
-#include <memory>
 #include <vector>
+
+//#include <PolyVoxForwardDeclarations.h>
+//#include <MaterialDensityPair.h>
+
+#include <memory>
+
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -37,6 +42,18 @@ THE SOFTWARE.
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 
+#include <unordered_map>
+
+
+#include <Volume.h>
+#include <Material.h>
+
+
+
+#include <OgreGrid2DPageStrategy.h>
+#include <OgrePagedWorldSection.h>
+#include <OgrePagedWorld.h>
+#include <OgrePageManager.h>
 
 
 
@@ -142,6 +159,7 @@ namespace ZGame
     }
     namespace World
     {
+        typedef PolyVox::Volume<PolyVox::Material8> PVolume;
         class ZCameraInfo;
         typedef Ogre::vector<ZCameraInfo*>::type CAM_INFOS;
         typedef std::pair<CAM_INFOS::const_iterator, CAM_INFOS::const_iterator> CAM_INFO_CITERS;

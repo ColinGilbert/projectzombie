@@ -31,8 +31,8 @@ namespace PolyVox
 
         private:
             
-            static const VoxelType AIR_BLOCK = 0; 
-            
+            //static const VoxelType AIR_BLOCK = 0; 
+            VoxelType AIR_BLOCK;
             enum AXIS
             {
                 X = 0, Y, Z

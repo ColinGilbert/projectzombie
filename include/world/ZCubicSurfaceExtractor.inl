@@ -14,7 +14,8 @@ namespace PolyVox
         SurfaceMesh<PositionMaterial>* result) : _volData(volData),
         //_sampVolume(volData),
         _regSizeInVoxels(region),
-        _meshCurrent(result)
+        _meshCurrent(result),
+        AIR_BLOCK(VoxelType(0))
     {
         
         //_regSizeInVoxels.cropTo(_volData->getEnclosingRegion());
@@ -256,16 +257,16 @@ namespace PolyVox
                 {
                 case Z: //z axis
                     v0 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX - 0.5f, regY - 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //upper left corner
                     v1 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX - 0.5f, regY + 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //lower right corner
                     v2 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + count - 0.5f, regY - 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //upper right corner
                     v3 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + count - 0.5f, regY + 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     if(rleVec[i].whichFace== MYFACE)
                     {
 
@@ -280,16 +281,16 @@ namespace PolyVox
                     break;
                 case Y: //y axis
                     v0 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX - 0.5f, regY + 0.5f, regZ - 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //upper left corner
                     v1 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX - 0.5f, regY + 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //lower right corner
                     v2 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + count - 0.5f, regY + 0.5f, regZ - 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //upper right corner
                     v3 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + count - 0.5f, regY + 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                    
                     if(rleVec[i].whichFace == MYFACE)
                     {
@@ -305,16 +306,16 @@ namespace PolyVox
                     break;
                 case X:
                     v0 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + 0.5f, regY - 0.5f, regZ - 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //upper left corner
                     v1 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + 0.5f, regY - 0.5f, regZ + 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //lower right corner
                     v2 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + 0.5f, regY + count - 0.5f, regZ - 0.5f), 
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     //upper right corner
                     v3 = _meshCurrent->addVertex(PositionMaterial(Vector3DFloat(regX + 0.5f, regY + count - 0.5f, regZ + 0.5f),
-                        faceMaterial));
+                        faceMaterial.getMaterial()));
                     if(rleVec[i].whichFace == MYFACE)
                     {
 

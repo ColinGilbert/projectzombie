@@ -6,7 +6,8 @@ using namespace ZGame::Gui;
 
 ToolsetView::ToolsetView(Toolset::ToolsetController* toolCtrl)
     : _toolCtrl(toolCtrl), _ctrlStr("ToolsetViewController"),
-    _rootElement(0), _key("ToolsetView"), _TOOL_SELECT_ID("tool_select_id")
+    _rootElement(0), _key("ToolsetView"), _TOOL_SELECT_ID("tool_select_id"),
+    _CREATE_SHAPE_ID("create_id")
 {
     _toolCtrl->addListener(this);
 }
@@ -28,6 +29,7 @@ void
 {
     using Rocket::Core::Element;
     using std::cout; using std::endl;
+    using Rocket::Core::String;
     Element* el = event.GetCurrentElement();
     if(_TOOL_SELECT_ID == el->GetId())
     {
@@ -39,24 +41,32 @@ void
              _toolCtrl->setToolType(static_cast<Toolset::ToolsetController::ToolType>(toolType));
              //refresh this view.
          }
-         return;
     }
-    //Get action string.
-    Rocket::Core::String actionStr = el->GetAttribute<Rocket::Core::String>("action", "");
-    if(actionStr.Empty())
-        return;
-    Rocket::Core::StringList cmdList;
-    //parse out command.
-    Rocket::Core::StringUtilities::ExpandString(cmdList, actionStr, ' ');
-    if(cmdList[0] == "get_tool")
+    else if(_CREATE_SHAPE_ID == el->GetId())
     {
-        if(cmdList.size() != 2)
-            return; //throw exception
-        int id;
-        Rocket::Core::TypeConverter<Rocket::Core::String, int>::Convert(cmdList[1], id);
-        std::cout << "get tool id is: " << id << std::endl;
-        _refreshRightPanel(id);
+        //String actionStr = GuiUtils::GetActionString(el); //No need to get action string actually.
+        _toolCtrl->onCreate();
     }
+    else
+    {
+        //Get action string.
+        Rocket::Core::String actionStr = el->GetAttribute<Rocket::Core::String>("action", "");
+        if(actionStr.Empty())
+            return;
+        Rocket::Core::StringList cmdList;
+        //parse out command.
+        Rocket::Core::StringUtilities::ExpandString(cmdList, actionStr, ' ');
+        if(cmdList[0] == "get_tool")
+        {
+            if(cmdList.size() != 2)
+                return; //throw exception
+            int id;
+            Rocket::Core::TypeConverter<Rocket::Core::String, int>::Convert(cmdList[1], id);
+            std::cout << "get tool id is: " << id << std::endl;
+            _refreshRightPanel(id);
+        }
+    }
+
 }
 
 void
@@ -78,16 +88,17 @@ void
     if(!rightPanel)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for right panel", "ToolsetView::_refreshRightPanel");
 
-    _toolCtrl->refreshToolView(&_toolInfoView, toolId);
-
-    if(rightPanel->GetNumChildren() > 0)
+    if(_toolCtrl->refreshToolView(&_toolInfoView, toolId))
     {
-        Element* el = rightPanel->GetChild(0);
-        rightPanel->RemoveChild(el);
-        Gui::GuiUtils::RemoveAllChildReferences(el);
-        el->RemoveReference();
+        if(rightPanel->GetNumChildren() > 0)
+        {
+            Element* el = rightPanel->GetChild(0);
+            rightPanel->RemoveChild(el);
+            Gui::GuiUtils::RemoveAllChildReferences(el);
+            el->RemoveReference();
+        }
+        _toolInfoView.appendViewToElement(rightPanel);
     }
-   _toolInfoView.appendViewToElement(rightPanel);
 }
 
 Rocket::Core::Element*
