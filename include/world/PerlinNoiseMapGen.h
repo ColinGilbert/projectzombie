@@ -220,6 +220,7 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
             _processVoxel(x, y, z, val, hVals[regionZ][regionX].uValue, halfHeight);
         }
     }
+    /*
     //proces upper border
     z = region.getUpperCorner().getZ();
     for(int16_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
@@ -231,7 +232,8 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
             size_t val = (size_t)(hVals[regionZ][regionX].value);
             _processVoxel(x, y, z, val, hVals[regionZ][regionX].uValue, halfHeight);
         }
-    }
+    }*/
+    /*
     //process left border
     int16_t x = region.getLowerCorner().getX() - 1;
     for(int16_t z = region.getLowerCorner().getZ() - 1; z <= region.getUpperCorner().getZ(); z++)
@@ -243,10 +245,10 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
             size_t val = (size_t)(hVals[regionZ][regionX].value);
             _processVoxel(x, y, z, val, hVals[regionZ][regionX].uValue, halfHeight);
         }
-    }
+    }*/
     //process right border
-    x = region.getUpperCorner().getX();
-    for(int16_t z = region.getLowerCorner().getZ() - 1; z <= region.getUpperCorner().getZ(); z++)
+    int16_t x = region.getUpperCorner().getX();
+    for(int16_t z = region.getLowerCorner().getZ() ; z < region.getUpperCorner().getZ(); z++)
     {
         for(int16_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
         {

@@ -50,7 +50,7 @@ VS_OUT main_vp(
 	       //float4 uv0 : TEXCOORD1,
 	       uniform float4x4 worldViewProj,
 	       uniform float4x4 worldView,
-	       //uniform float4x4 worldMat,
+	       uniform float4x4 worldMat,
 	       uniform float3 sundir
 	       //uniform float4 lightPosition,
 	       //uniform float3 lightDiffuse,
@@ -66,15 +66,16 @@ VS_OUT main_vp(
   VS_OUT outp;
   outp.pos = mul(worldViewProj, pos);
 
-  outp.worldPos = pos;//mul(worldMat, pos);
+  outp.worldPos = abs(pos + float4(0.5f, 0.5f, 0.5f, 0.5f));//mul(worldMat, pos);
   outp.diffuseUV = float3(0.0f, 0.0f, 0.0f);
   outp.textureAtlasOffset = float4(0.0f, 0.0f, 0.0f, 0.0f);
  
-  float idx = uv1.x * 256.0 - 1.0;
+  float idx = uv1.x * 256.0 -1;
+  //float idx = 13.0f;
   float blocky = floor(idx / 16.0);
   float blockx = (idx - blocky * 16.0);
  
-  outp.textureAtlasOffset = float4(blockx, blocky, 0, 0) * eOffset;
+  outp.textureAtlasOffset = float4(blockx + 0.25f, blocky + 0.25f, 0, 0) * eOffset ;
   
   return outp;
 }
@@ -82,12 +83,13 @@ VS_OUT main_vp(
 float4 main_fp(
 	       VS_OUT In,
 	       uniform sampler2D diffuseMap : register(s0),
-	       #if 1
+	       //#if 1
 	       uniform float SHC_R_0,uniform float SHC_R_1,uniform float SHC_R_2,uniform float SHC_R_3,uniform float SHC_R_4,uniform float SHC_R_5,uniform float SHC_R_6,uniform float SHC_R_7,uniform float SHC_R_8, uniform float SHC_R_9, uniform float SHC_R_10, uniform float SHC_R_11, uniform float SHC_R_12, uniform float SHC_R_13, uniform float SHC_R_14, uniform float SHC_R_15, uniform float SHC_R_16, uniform float SHC_R_17,
 	       uniform float SHC_G_0,uniform float SHC_G_1,uniform float SHC_G_2,uniform float SHC_G_3,uniform float SHC_G_4,uniform float SHC_G_5,uniform float SHC_G_6,uniform float SHC_G_7,uniform float SHC_G_8, uniform float SHC_G_9, uniform float SHC_G_10, uniform float SHC_G_11, uniform float SHC_G_12, uniform float SHC_G_13, uniform float SHC_G_14, uniform float SHC_G_15, uniform float SHC_G_16, uniform float SHC_G_17,
 	       uniform float SHC_B_0,uniform float SHC_B_1,uniform float SHC_B_2,uniform float SHC_B_3,uniform float SHC_B_4,uniform float SHC_B_5,uniform float SHC_B_6,uniform float SHC_B_7,uniform float SHC_B_8, uniform float SHC_B_9, uniform float SHC_B_10, uniform float SHC_B_11, uniform float SHC_B_12, uniform float SHC_B_13, uniform float SHC_B_14, uniform float SHC_B_15, uniform float SHC_B_16, uniform float SHC_B_17,
-#endif
-	       uniform float uLightY
+	       //#endif
+	       uniform float uLightY,
+	       uniform float texOffset
 	       ) : COLOR
 {
 
@@ -159,12 +161,12 @@ float4 main_fp(
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)
     {
-      uv0 = frac(In.worldPos.yz);
+      uv0 = frac(float2(-In.worldPos.z, -In.worldPos.y));
     }
   
   if(normal.x < -0.5)
     {
-      uv0 = frac(In.worldPos.yz);
+      uv0 = frac(float2(-In.worldPos.z, In.worldPos.y));
       }
   //top
   
@@ -176,19 +178,20 @@ float4 main_fp(
   //bottom
   if(normal.y < -0.5)
     {
-      uv0 = frac(In.worldPos.xz);
+      uv0 = frac(float2(-In.worldPos.x, In.worldPos.z));
     }
   
   if(normal.z > 0.5)
     {
-      uv0 = frac(In.worldPos.xy);
+      uv0 = frac(float2(In.worldPos.x, -In.worldPos.y));
+      //uv0 = float2(In.worldPos.x, -In.worldPos.y);
     }
   if(normal.z < -0.5)
     {
-      uv0 = frac(In.worldPos.xy);
+      uv0 = frac(float2(-In.worldPos.x,-In.worldPos.y));
     }
  
-  In.textureAtlasOffset += float4(uv0, 1.0, 1.0) * eOffset;
+  In.textureAtlasOffset += float4(uv0 * 0.5, 0.0, 0.0) * eOffset; /// 2.0);
   float4 texDiffuse = tex2D(diffuseMap, In.textureAtlasOffset.xy);
   
   float nightMulti;
@@ -196,8 +199,9 @@ float4 main_fp(
   nightMulti = 1.0;
   if(uLightY < 0.0)
     nightMulti = lerp(0.05, 0.1, -uLightY);
- 
+  
   float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  //float4 vColor = float4(1.0, 1.0, 1.0, diffuseColor.w * nightMulti);
   return vColor;
 }
 

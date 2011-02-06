@@ -24,6 +24,8 @@ Rocket::Core::EventListener*
     return 0;
 }
 
+static Ogre::Real texOffset = 0.0f;
+
 void
     ToolsetView::ProcessEvent(Rocket::Core::Event& event)
 {
@@ -46,6 +48,20 @@ void
     {
         //String actionStr = GuiUtils::GetActionString(el); //No need to get action string actually.
         _toolCtrl->onCreate();
+    }
+    else if(el->GetId() == "adjust_id_up")
+    {
+        Ogre::MaterialManager& mm = Ogre::MaterialManager::getSingleton();
+        Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr>(mm.getByName("PRJZ/Minecraft"));
+        texOffset += 0.01;
+        mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("texOffset", texOffset);
+    }
+    else if(el->GetId() == "adjust_id_down")
+    {
+        Ogre::MaterialManager& mm = Ogre::MaterialManager::getSingleton();
+        Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr>(mm.getByName("PRJZ/Minecraft"));
+        texOffset -= 0.01;
+        mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("texOffset", texOffset);
     }
     else
     {

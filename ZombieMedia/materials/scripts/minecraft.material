@@ -97,15 +97,17 @@ material PRJZ/Minecraft
 			texture_unit diffuseMap
 			{
 				//filtering trilinear
-				tex_address_mode clamp
+				//tex_address_mode wrap
 				//filtering none
 				//filtering bilinear
-				filtering point point point 
+				filtering anisotropic
+				//filtering point point point 
 				//filtering anisotropic anisotropic bilinear
-				max_anisotropy 8
-				mipmap_bias -2.0
+				//max_anisotropy 8
+				//mipmap_bias -2.0
+				texture minecraft_atlas0.dds
 				//texture minecraft_terrain_sanguine_hi.png
-				texture minecraft_terrain_hi2.png
+				//texture minecraft_terrain_hi2.png
 				//texture minecraft_terrain_me_hi.png
 				//texture minecraft_terrain_hi.png
 				//texture minecraft_terrain_rpg.png

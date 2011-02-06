@@ -165,7 +165,8 @@ void
     _skyX->create();
     _skyX->getGPUManager()->addGroundPass(
         static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 64, Ogre::SBT_TRANSPARENT_COLOUR);
+        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
+   
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
     SkyXOptions.EastPosition = Ogre::Vector2(1, 0);
@@ -419,6 +420,7 @@ bool
 
 
     //
+    
     Ogre::MaterialPtr matPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"));
     Ogre::Pass* pass = matPtr->getTechnique(0)->getPass(0);
     size_t idx = 0;
