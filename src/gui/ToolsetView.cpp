@@ -7,7 +7,7 @@ using namespace ZGame::Gui;
 ToolsetView::ToolsetView(Toolset::ToolsetController* toolCtrl)
     : _toolCtrl(toolCtrl), _ctrlStr("ToolsetViewController"),
     _rootElement(0), _key("ToolsetView"), _TOOL_SELECT_ID("tool_select_id"),
-    _CREATE_SHAPE_ID("create_id")
+    _CREATE_SHAPE_ID("create_id"), _SCALE_MODE_ID("scaleMode_id"), _toolInfoView(_ctrlStr)
 {
     _toolCtrl->addListener(this);
 }
@@ -49,19 +49,9 @@ void
         //String actionStr = GuiUtils::GetActionString(el); //No need to get action string actually.
         _toolCtrl->onCreate();
     }
-    else if(el->GetId() == "adjust_id_up")
+    else if(_SCALE_MODE_ID == el->GetId())
     {
-        Ogre::MaterialManager& mm = Ogre::MaterialManager::getSingleton();
-        Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr>(mm.getByName("PRJZ/Minecraft"));
-        texOffset += 0.01;
-        mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("texOffset", texOffset);
-    }
-    else if(el->GetId() == "adjust_id_down")
-    {
-        Ogre::MaterialManager& mm = Ogre::MaterialManager::getSingleton();
-        Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr>(mm.getByName("PRJZ/Minecraft"));
-        texOffset -= 0.01;
-        mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("texOffset", texOffset);
+        
     }
     else
     {
@@ -104,17 +94,22 @@ void
     if(!rightPanel)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for right panel", "ToolsetView::_refreshRightPanel");
 
-    if(_toolCtrl->refreshToolView(&_toolInfoView, toolId))
+    //Hack////
+    if(toolId > -1)
     {
-        if(rightPanel->GetNumChildren() > 0)
+        if(rightPanel->GetNumChildren() > 0) //clean up the current elements that is in the panel because we're setting a new tool.
         {
             Element* el = rightPanel->GetChild(0);
             rightPanel->RemoveChild(el);
             Gui::GuiUtils::RemoveAllChildReferences(el);
             el->RemoveReference();
         }
-        _toolInfoView.appendViewToElement(rightPanel);
     }
+    //END HACK///Maybe this entire program is one big hack. 
+
+    _toolCtrl->refreshToolView(&_toolInfoView, toolId, rightPanel);
+
+   
 }
 
 Rocket::Core::Element*

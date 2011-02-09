@@ -5,8 +5,8 @@
 using namespace ZGame::Gui;
 using ZGame::Toolset::ToolInfo;
 
-ToolInfoView::ToolInfoView() 
-    : _rootElement(0), _key("ToolInfoView"), _toolInfo(0)
+ToolInfoView::ToolInfoView(Rocket::Core::String ctrlStr)
+    : _rootElement(0), _key("ToolInfoView"), _toolInfo(0), _ctrlStr(ctrlStr)
 {
 }
 
@@ -37,6 +37,31 @@ void
 {
     _generateBasicView(root);
 }
+
+void
+    ToolInfoView::refreshViewElement(Rocket::Core::Element* el)
+{
+    if(!el)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for element",
+        "ToolInfoView::refreshViewElement");
+    Rocket::Core::Element* transformEl = el->GetElementById("transformation");
+    if(!transformEl)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for transformation element",
+        "ToolInfoView::refreshViewElement");
+    Rocket::Core::Element* worldPosEl;
+    worldPosEl = transformEl->GetElementById("world_pos");
+    Rocket::Core::Element* scaleEl = transformEl->GetElementById("scale");
+    
+    if(!el || !scaleEl)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for worldPosEl", 
+        "ToolInfoView::refreshViewElement");
+    //world pos
+    worldPosEl->SetInnerRML(Ogre::StringConverter::toString(_toolInfo->getNode()->getPosition()).c_str());
+    //scale
+    scaleEl->SetInnerRML("N/A");
+}
+
+
 /** 
 * This method will generate the basic view for ToolInfo. Such that it will create input / ouput view for transformation attributes of this ToolInfo.
 *
@@ -49,10 +74,21 @@ void
     if(!_toolInfo)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for _toolInfo", "ToolInfoView::_generateBasicView");
     Rocket::Core::Element* transformationEl = getTemplateCloner()->getCloneById("transformation"); //Exception should be thrown if invalid.
+    if(!transformationEl)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for transformationEl", "ToolInfoView::_generateBasicView");
+    transformationEl->SetId("transformation");
     Rocket::Core::Element* worldPosEl = transformationEl->GetElementById("world_pos");
+    Rocket::Core::Element* scaleEl = transformationEl->GetElementById("scale");
+
     if(!worldPosEl)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for worldPosEl", "ToolInfoView::_generateBasicView");
-    worldPosEl->SetId(worldPosEl->GetId()+"_test");
+    if(!scaleEl)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for scaleEl", "ToolInfoView::_generateBasicView");
+    //World position attribute.
     worldPosEl->SetInnerRML(Ogre::StringConverter::toString(_toolInfo->getNode()->getPosition()).c_str());
+    //Set scale attribute.
+    scaleEl->SetAttribute<Rocket::Core::String>("onclick", _ctrlStr);
+    scaleEl->SetInnerRML("N/A");
+
     rootEl->AppendChild(transformationEl);
 }

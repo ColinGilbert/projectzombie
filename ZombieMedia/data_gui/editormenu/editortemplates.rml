@@ -15,14 +15,12 @@
   <body>
     <!-- Begin tempalte definition. These are divs which we are going to clone later, to be used as templates for elements in the editor. -->
     <div id="transformation">
-    <div class="attributes">
-      <div id="world_pos"></div><br />
-      <button type="button">Set Pos</button><br />
+      <div class="attributes">
+	<div id="world_pos"></div><br />
+	<button type="button">Set Pos</button><br />
+	<div id="scale"></div><br />
+	<button id="scaleMode_Id" type="button" onclick="" action="scaleMode">Scale</button><br />
       </div>
-    </div>
-    <div id="cube_max_extent" class="attributes">
-      <div id="world_max"></div><br />
-      <button type="button" onclick="" action="setWorldMax">Set</button><br />
     </div>
   </body>
 </rml>

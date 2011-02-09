@@ -9,10 +9,10 @@ ToolsetManager::ToolsetManager(Geometry::GeometryManager* geoMgr)
 
 ToolsetManager::~ToolsetManager()
 {
-   for(auto iter = _tools.begin(); iter != _tools.end(); ++iter)
-   {
-       delete *iter;
-   }
+    for(auto iter = _tools.begin(); iter != _tools.end(); ++iter)
+    {
+        delete *iter;
+    }
 }
 
 
@@ -32,6 +32,19 @@ const Ogre::uint16
 {
     Ogre::uint16 id = static_cast<Ogre::uint16>(_tools.size());
     Ogre::SceneNode* node = _geoMgr->createCube(Ogre::Vector3(1.05f, 1.05f, 1.05f), "cursor");
+    _tools.push_back(new ToolInfo(id, node));
+
+
+    return id;
+}
+
+const Ogre::uint16
+    ToolsetManager::createBlueCursor()
+{
+    Ogre::uint16 id = static_cast<Ogre::uint16>(_tools.size());
+    //Create the blue cursor, used to indicate creation location.
+    Ogre::SceneNode* node = _geoMgr->createCube(Ogre::Vector3(1.05f, 1.05f, 1.05f), "cursor",
+        "PRJZ/BlueCursor");
     _tools.push_back(new ToolInfo(id, node));
     return id;
 }

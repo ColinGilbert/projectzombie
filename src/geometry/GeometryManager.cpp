@@ -73,7 +73,7 @@ void
 
 
 Ogre::SceneNode*
-    GeometryManager::createCube(Ogre::Vector3 size, Ogre::String name)
+    GeometryManager::createCube(Ogre::Vector3 size, Ogre::String name, Ogre::String materialName)
 {
     Ogre::String cubeName("geocube_");
     cubeName += name;
@@ -85,10 +85,14 @@ Ogre::SceneNode*
     Ogre::SceneNode* node = rootnode->createChildSceneNode();
 
     node->attachObject(cubeEnt);
-    cubeEnt->setMaterial(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Cursor"));
+    cubeEnt->setMaterial(Ogre::MaterialManager::getSingleton().getByName(materialName));
     cubeEnt->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE);
-    //Resize the cube. We're really doing a scale here, may not be correct.
-    node->translate(0.0f, 0.0, 0.0f);
+    //translate so lower left corner is the origin.
+    Ogre::Vector3 trans(-0.5f, -0.5f, 0.0f); //may need to pass this in.
+    node->translate(trans);
     node->scale(size);
+    trans = size * 0.5f;
+    trans.z = 0.0f;
+    node->translate(trans);
     return rootnode;
 }

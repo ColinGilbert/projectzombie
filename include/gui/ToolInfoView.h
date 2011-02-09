@@ -36,7 +36,7 @@ namespace ZGame
         class ToolInfoView : public GuiView
         {
         public:
-            ToolInfoView();
+            ToolInfoView(Rocket::Core::String ctrlStr);
             virtual ~ToolInfoView();
 
             //interface for GuiView
@@ -45,6 +45,13 @@ namespace ZGame
 
             void
                 appendViewToElement(Rocket::Core::Element* root);
+            /**
+            * This method will update the given view element. It is assumed that the passed in element
+            *correspond to this view.
+            *
+            **/
+            void
+                refreshViewElement(Rocket::Core::Element* el);
 
             void setToolInfo(Toolset::ToolInfo* toolInfo)
             {
@@ -59,6 +66,8 @@ namespace ZGame
             Toolset::ToolInfo* _toolInfo;
             Rocket::Core::Element* _rootElement;
             VIEW_KEY _key;
+            /** String for the controller on this view.**/
+            Rocket::Core::String _ctrlStr;
             /** \brief This method will generate a basic view for this ToolInfo. e.g. transformation attributes.**/
             void
                 _generateBasicView(Rocket::Core::Element* rootEl);

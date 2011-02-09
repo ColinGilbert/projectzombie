@@ -6,7 +6,7 @@ using namespace ZGame;
 using namespace ZGame::Toolset;
 
 ToolsetController::ToolsetController(std::auto_ptr<ToolsetManager> toolMgr)
-    : _toolMgr(toolMgr), Rocket::Controls::DataSource("tool_source")
+    : _toolMgr(toolMgr), Rocket::Controls::DataSource("tool_source"), _curToolsetMode(MOVECURSOR)
 {
     _toolsDesc.push_back(std::make_pair("SELECT_TOOL", SELECT));
     _toolsDesc.push_back(std::make_pair("CURSOR_TOOL", CURSOR)); 
@@ -22,6 +22,8 @@ bool
     ToolsetController::onInit(ZGame::ZInitPacket* initPacket)
 {
     _cursorId = _toolMgr->createCursor();
+    NotifyRowAdd("tools", -1, 1);
+    _cursorBlueId = _toolMgr->createBlueCursor();
     NotifyRowAdd("tools", -1, 1);
     return true;
 }
@@ -62,7 +64,7 @@ void
     {
     case CUBE:
         cubeTool = _toolMgr->createCube();
-        cubeTool->getNode()->setPosition(_toolMgr->getTool(_cursorId)->getNode()->getPosition());
+        cubeTool->getNode()->setPosition(_toolMgr->getTool(_cursorBlueId)->getNode()->getPosition());
         _toolMgr->setSelectionid(cubeTool->getId());
         NotifyRowAdd("tools", -1, 1);   
         break;
@@ -79,21 +81,37 @@ bool
 {
     return _curToolType == CURSOR;
 }
+void
+    ToolsetController::_informListeners(unsigned int event)
+{
+    std::for_each(_listenerMap.begin(), _listenerMap.end(), [this, event](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
+        if(event & ToolsetController::ONCHANGE_EVENT)
+            iter.second->onChange(this);
+        if(event & ToolsetController::ONCURSOR3DPOSITION_EVENT)
+            iter.second->onSetCursor3dPosition(this);
+    });
+}
 
 bool
     ToolsetController::onCursorPosition3d(Ogre::Vector3 pos)
 {
-    if(_curToolType == CURSOR)
+    if(_curToolType == CURSOR && _curToolsetMode == MOVECURSOR)
     {
         _toolMgr->getTool(_cursorId)->getNode()->setPosition(pos);
+        _informListeners(ONCHANGE_EVENT);
         NotifyRowChange("tools", _cursorId, 1);
-        std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
-            iter.second->onChange(this);
-        });
-
         return true;
     }
-   
+    else if(_curToolType == SELECT && _curToolsetMode == SCALE)
+    {
+        //In this mode, we want to do scale operation with the cursor. Since we are in SELECT mode,
+        //the anchor will be _cursorBlueId's tool. This mean we are scaling the blue cursor in SELECT mode. 
+        
+    }
+    //Else we are scaling some sort of geometric tool. We should have that ID, and the corresponding tool will be used
+    //as the anchor.
+
+
     return false;
 }
 
@@ -102,19 +120,17 @@ void
 {
     if(_curToolType == CURSOR)
     {
-        //_switchTool(SELECT);
-        std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
-            iter.second->onSetCursor3dPosition(this);
-            iter.second->onChange(this);
-        });
-
+        //Move the blue cursor to the position
+        _toolMgr->getTool(_cursorBlueId)->getNode()->setPosition(
+        _toolMgr->getTool(_cursorId)->getNode()->getPosition());
+        _informListeners(ONCHANGE_EVENT | ONCURSOR3DPOSITION_EVENT);
     }
 }
 
 Ogre::Vector3
     ToolsetController::getCursor3dPosition()
 {
-    return _toolMgr->getTool(_cursorId)->getNode()->getPosition();
+    return _toolMgr->getTool(_cursorBlueId)->getNode()->getPosition();
 }
 
 void
@@ -140,22 +156,21 @@ void
 * This method will refresh a tool view given a tool id. 
 *
 **/
-bool
-    ToolsetController::refreshToolView(Gui::ToolInfoView* toolView, int toolId)
+void
+    ToolsetController::refreshToolView(Gui::ToolInfoView* toolView, int toolId,
+    Rocket::Core::Element* rootElement)
 {
-    bool refreshed = false;
     if(toolId == -1 && _toolMgr->getSelectionId() != -1)
     {
         toolView->setToolInfo(_toolMgr->getTool(_toolMgr->getSelectionId()));
-        refreshed = true;
+        toolView->refreshViewElement(rootElement);
     }
     else if(toolId != -1)
     {
         toolView->setToolInfo(_toolMgr->getTool(toolId));
-        _toolMgr->setSelectionid(toolId);
-        refreshed = true;
+        toolView->appendViewToElement(rootElement);
+        _toolMgr->setSelectionid(toolId);    
     }
-    return refreshed;
 }
 
 /**
@@ -194,3 +209,4 @@ int
 {
     return _toolMgr->getSize();
 }
+

@@ -90,6 +90,7 @@ namespace ZGame
             VIEW_KEY _key;
             Rocket::Core::String _TOOL_SELECT_ID;
             Rocket::Core::String _CREATE_SHAPE_ID;
+            Rocket::Core::String _SCALE_MODE_ID;
             ToolsetIdFormatter _idFormatter;
 
             ToolInfoView _toolInfoView; //generic toolInfoView.

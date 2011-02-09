@@ -37,8 +37,6 @@
 	    </select>
 	  </form>
 	      <button type="button" id="create_id" onclick="ToolsetViewController" action="createShape">Create Shape</button><br />
-	      <button type="button" id="adjust_id_up" onclick="ToolsetViewController" action="adjust">Adjust U"</button><br />
-	      <button typetype="button" id="adjust_id_down" onclick="ToolsetViewController" action="adjust">Adjust D"</button><br />
 	  </div>
 	  <div class="split_right">
 	    <div class="panel_left">

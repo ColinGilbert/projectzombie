@@ -19,51 +19,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-**/
 
+**/
 #include "ZPrerequisites.h"
-#include "gui/GuiPrerequisite.h"
+#include "toolset/ToolXForm.h"
 namespace ZGame
 {
     namespace Toolset
     {
-
-        class ToolInfo
+        class CubeToolXForm : public ToolXForm
         {
         public:
-            ToolInfo(Ogre::uint16 id, Ogre::SceneNode* toolNode);
-            virtual ~ToolInfo();
-
-            Ogre::uint16 
-                getId()
-            {
-                return _id;
-            }
-
-            Ogre::SceneNode* 
-                getNode()
-            {
-                return _toolNode;
-            }
-
-            Rocket::Core::String
-                getName()
-            {
-                return Rocket::Core::String(_toolNode->getName().c_str());
-            }
-
-
+            CubeToolXForm();
+            virtual ~CubeToolXForm();
+            virtual ToolXForm&
+                scaleApply(Ogre::SceneNode* node, const Ogre::Vector3 &anchorPos, const Ogre::Vector3 &cursorPos);
+            virtual ToolXForm&
+                translateApply(Ogre::SceneNode* node, const Ogre::Vector3 &anchorPos, const Ogre::Vector3 &cursorPos);
+            virtual ToolXForm&
+                setLowerLeft(Ogre::SceneNode* node, const Ogre::Vector3 &anchorPos, const Ogre::Vector3 &cursorPos);
+            virtual ToolXForm&
+                setUpperRight(Ogre::SceneNode* node, const Ogre::Vector3 &anchorPos, const Ogre::Vector3 &cursorPos);
+        protected:
         private:
-            Ogre::uint16 _id;
-            Ogre::SceneNode* _toolNode;
-
         };
-
-        typedef Ogre::vector<ToolInfo>::type ToolInfos;
-        typedef ToolInfos::iterator ToolInfosIterator;
-        typedef ToolInfos::const_iterator ToolInfosConstIterator;
-
-
-
     }
 }

@@ -39,6 +39,8 @@ namespace ZGame
 
             const Ogre::uint16 //we need to define this as ID.
                 createCursor();
+            const Ogre::uint16
+                createBlueCursor();
             ToolInfo*
                 createCube();
             /** \note This function is not safe. ID may be invalid or pointer may become invalid.**/

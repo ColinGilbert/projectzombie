@@ -37,11 +37,19 @@ namespace ZGame
         {
         public:
 
+            static const unsigned int ONCHANGE_EVENT = BIT(1);
+            static const unsigned int ONCURSOR3DPOSITION_EVENT = BIT(2);
+
             enum ToolType
             {
                 SELECT=0,CURSOR, CUBE
             };
             
+            enum ToolsetMode
+            {
+                MOVECURSOR=0,TRANSLATE,SCALE,ROTATE
+            };
+
             typedef Ogre::vector<std::pair<Ogre::String, ToolType> >::type ToolDesc;
             typedef std::pair<ToolDesc::const_iterator, ToolDesc::const_iterator> ToolDescCIter;
 
@@ -64,14 +72,27 @@ namespace ZGame
                 setToolType(ToolType type);
             int
                 getToolType();
+
+            void
+                setToolsetMode(ToolsetMode mode)
+            {
+                _curToolsetMode = mode;
+            }
+            int
+                getToolsetMode()
+            {
+                return _curToolsetMode;
+            }
+
             /** Method is called whenever on screen 3d cursor position event is generated.**/
             bool
                 onCursorPosition3d(Ogre::Vector3 pos);
             void
                 onSetCursor3dPosition();
 
-            bool
-                refreshToolView(Gui::ToolInfoView* toolView, int toolId);
+            void
+                refreshToolView(Gui::ToolInfoView* toolView, int toolId, 
+                Rocket::Core::Element* rootElement);
 
             void
                 addListener(ToolsetControllerListener* listener);
@@ -90,8 +111,9 @@ namespace ZGame
             virtual int
                 GetNumRows(const Rocket::Core::String& table);
 
-
         private:
+
+           
 
             typedef Ogre::map<ToolsetControllerListener*, ToolsetControllerListener*>::type
                 ListenerMap;
@@ -101,12 +123,14 @@ namespace ZGame
             ToolDesc _toolsDesc;
             ToolType _curToolType;
             Ogre::uint16 _cursorId;
+            Ogre::uint16 _cursorBlueId;
             Gui::TemplateCloner* _templateCloner;
+            ToolsetMode _curToolsetMode;
             void
                 _switchTool(ToolType type);
-            bool
-                _informListeners(ListenerMap::iterator curIter);
-                
+            void
+                _informListeners(unsigned int event);
+           
         };
         class ToolsetControllerListener
         {

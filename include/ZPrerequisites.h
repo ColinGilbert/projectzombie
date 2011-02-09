@@ -56,6 +56,7 @@ THE SOFTWARE.
 #include <OgrePageManager.h>
 
 
+#define BIT(x) (1<<(x))
 
 class HDRCompositor;
 

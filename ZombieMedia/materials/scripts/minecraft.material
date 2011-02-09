@@ -201,7 +201,8 @@ material testatlas
 	}
 }
 
-material PRJZ/Cursor
+
+material PRJZ/WireframeTool
 {
 	technique
 	{
@@ -218,6 +219,18 @@ material PRJZ/Cursor
 	}
 
 }
+
+material PRJZ/BlueCursor : PRJZ/WireframeTool
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.0 0.6 0.0
+		}
+	}
+}
+
 
 material PRJZ/HDRBackground
 {

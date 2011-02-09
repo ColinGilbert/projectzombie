@@ -55,7 +55,7 @@ namespace ZGame
             return false;   \
         }
 
-#define BIT(x) (1<<(x))
+
         //Fuuuuuuu why didn't we use Enum to begin with? Let's try to refactor this asap.
         static const unsigned int LFC_ON_DESTROY = BIT(1);
         static const unsigned int LFC_ON_INIT = BIT(2);
