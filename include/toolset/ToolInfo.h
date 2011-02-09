@@ -52,10 +52,15 @@ namespace ZGame
                 return Rocket::Core::String(_toolNode->getName().c_str());
             }
 
+            void
+                setToolXForm(ToolXForm* toolXform);
+            ToolXForm*
+                getToolXForm();
 
         private:
             Ogre::uint16 _id;
             Ogre::SceneNode* _toolNode;
+            ToolXForm* _toolXForm;
 
         };
 

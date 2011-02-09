@@ -74,15 +74,10 @@ namespace ZGame
                 getToolType();
 
             void
-                setToolsetMode(ToolsetMode mode)
-            {
-                _curToolsetMode = mode;
-            }
+                setToolsetMode(ToolsetMode mode);
+           
             int
-                getToolsetMode()
-            {
-                return _curToolsetMode;
-            }
+                getToolsetMode();
 
             /** Method is called whenever on screen 3d cursor position event is generated.**/
             bool
@@ -123,15 +118,18 @@ namespace ZGame
             ToolDesc _toolsDesc;
             ToolType _curToolType;
             Ogre::uint16 _cursorId;
-            Ogre::uint16 _cursorBlueId;
+            Ogre::uint16 _cursorBlueId; //This is used as anchor
+            Ogre::uint16 _cursorYellowId; //This is used as selection box.
             Gui::TemplateCloner* _templateCloner;
             ToolsetMode _curToolsetMode;
+            ToolXForm* _cubeSelectXForm;
             void
                 _switchTool(ToolType type);
             void
                 _informListeners(unsigned int event);
            
         };
+
         class ToolsetControllerListener
         {
         public:

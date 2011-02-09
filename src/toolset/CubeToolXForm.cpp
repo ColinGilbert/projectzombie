@@ -61,11 +61,12 @@ ToolXForm&
         leftMostExtent = cursorPos;
         rightMostExtent = anchorPos;
     }
+    /*
     else
     {
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Invalid cursorPosition. Cannot find a side which the cursor belongs to.", 
             "CubeToolXForm::scaleApply");
-    }
+    }*/
     //Set the Ys
     if(yf == Plane::POSITIVE_SIDE)
     {
@@ -84,10 +85,13 @@ ToolXForm&
     Ogre::Real scaleX = rightMostExtent.x - leftMostExtent.x;
     Ogre::Real scaleY = rightMostExtent.y - leftMostExtent.y;
     Ogre::Real scaleZ = rightMostExtent.z - leftMostExtent.z;
-    if(scaleX < 1.0f || scaleY < 1.0f || scaleZ < 1.0f)
-    {
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Computed scale value is invalid!", "CubeToolXForm::scaleApply");
-    }
+    
+    cout << "scale x, y, z" << scaleX << ", " << scaleY << ", " << scaleZ << endl;
+
+    //if(scaleX < 1.0f || scaleY < 1.0f || scaleZ < 1.0f)
+    //{
+      //  return *this; //do nothing because this means cursor is on anchor.
+    //}
     //translate to left most extent then scale.
     node->scale(1.0f, 1.0f, 1.0f); //return to unit scale. Maye this can be eliminated by figure out offset scales.
     node->setScale(scaleX, scaleY, scaleZ);

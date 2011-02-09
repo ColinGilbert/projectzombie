@@ -79,16 +79,20 @@ void
     transformationEl->SetId("transformation");
     Rocket::Core::Element* worldPosEl = transformationEl->GetElementById("world_pos");
     Rocket::Core::Element* scaleEl = transformationEl->GetElementById("scale");
+    //Rocket::Core::Element* scaleButton = transformationEl->GetElementById("scalemode_id");
 
     if(!worldPosEl)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for worldPosEl", "ToolInfoView::_generateBasicView");
     if(!scaleEl)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for scaleEl", "ToolInfoView::_generateBasicView");
+    //if(!scaleButton)
+      //  OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Null pointer for scale mode button", "ToolInfoView::_generateBasicView");
     //World position attribute.
     worldPosEl->SetInnerRML(Ogre::StringConverter::toString(_toolInfo->getNode()->getPosition()).c_str());
     //Set scale attribute.
-    scaleEl->SetAttribute<Rocket::Core::String>("onclick", _ctrlStr);
     scaleEl->SetInnerRML("N/A");
-
+    //Set scale button
+    //scaleButton->SetAttribute<Rocket::Core::String>("onclick", _ctrlStr);
+    
     rootEl->AppendChild(transformationEl);
 }

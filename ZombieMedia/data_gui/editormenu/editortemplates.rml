@@ -19,7 +19,9 @@
 	<div id="world_pos"></div><br />
 	<button type="button">Set Pos</button><br />
 	<div id="scale"></div><br />
-	<button id="scaleMode_Id" type="button" onclick="" action="scaleMode">Scale</button><br />
+	<!-- There is currently a bug in libRocket where clone's children that are button elements does not inherit their id
+	  Therefore we manually set the controller here for now.-->
+	<button type="button" id="scalemode_id" onclick="ToolsetViewController" action="scaleMode">Scale</button><br />
       </div>
     </div>
   </body>

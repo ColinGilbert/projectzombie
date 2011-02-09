@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "ZPrerequisites.h"
 #include "gui/GuiPrerequisite.h"
 #include "toolset/ToolInfo.h"
+
 namespace ZGame
 {
     namespace Toolset
@@ -40,7 +41,7 @@ namespace ZGame
             const Ogre::uint16 //we need to define this as ID.
                 createCursor();
             const Ogre::uint16
-                createBlueCursor();
+                createBlueCursor(Ogre::Vector3 scale=Ogre::Vector3(1.05f, 1.05f, 1.05f));
             ToolInfo*
                 createCube();
             /** \note This function is not safe. ID may be invalid or pointer may become invalid.**/
@@ -72,8 +73,6 @@ namespace ZGame
             //too much tools to be created.
             Geometry::GeometryManager* _geoMgr;
             int _selectionId;
-
-
         };
     }
 }

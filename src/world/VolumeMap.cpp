@@ -570,6 +570,10 @@ void
     else
     {
         blockCenter = rayTo.getPoint(searchDistance);
+        //But also hash this center into block unots;
+        blockCenter.x = Ogre::Math::Floor(blockCenter.x + 0.5f); //Need to write a function for this
+        blockCenter.y = Ogre::Math::Floor(blockCenter.y + 0.5f);
+        blockCenter.z = Ogre::Math::Floor(blockCenter.z + 0.5f);
     }
 }
 

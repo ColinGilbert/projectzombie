@@ -198,6 +198,7 @@ namespace ZGame
         class ToolsetControllerListener;
         class ToolsetController;
         class ToolsetManager;
+        class ToolXForm;
         class ToolInfo;
     }
 

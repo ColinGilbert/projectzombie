@@ -49,10 +49,6 @@ void
         //String actionStr = GuiUtils::GetActionString(el); //No need to get action string actually.
         _toolCtrl->onCreate();
     }
-    else if(_SCALE_MODE_ID == el->GetId())
-    {
-        
-    }
     else
     {
         //Get action string.
@@ -70,6 +66,10 @@ void
             Rocket::Core::TypeConverter<Rocket::Core::String, int>::Convert(cmdList[1], id);
             std::cout << "get tool id is: " << id << std::endl;
             _refreshRightPanel(id);
+        }
+        else if(cmdList[0] == "scaleMode")
+        {
+            _toolCtrl->setToolsetMode(Toolset::ToolsetController::SCALE);
         }
     }
 
