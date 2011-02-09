@@ -27,7 +27,7 @@ bool
     NotifyRowAdd("tools", -1, 1);
     _cursorBlueId = _toolMgr->createBlueCursor();
     NotifyRowAdd("tools", -1, 1);
-    _cursorYellowId = _toolMgr->createBlueCursor(Ogre::Vector3(10.0f, 10.0f, 10.0f));
+    _cursorYellowId = _toolMgr->createBlueCursor(Ogre::Vector3(1.0f, 1.0f, 1.0f));
     _toolMgr->getTool(_cursorYellowId)->setToolXForm(_cubeSelectXForm);
     //We won't inform row add because we want to hide it from selection.
     return true;

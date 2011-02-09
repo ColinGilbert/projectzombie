@@ -88,11 +88,11 @@ Ogre::SceneNode*
     cubeEnt->setMaterial(Ogre::MaterialManager::getSingleton().getByName(materialName));
     cubeEnt->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE);
     //translate so lower left corner is the origin.
-    Ogre::Vector3 trans(-0.5f, -0.5f, 0.0f); //may need to pass this in.
-    node->translate(trans);
+    //Ogre::Vector3 trans(-0.5f, -0.5f, -0.5f); //may need to pass this in.
+    //node->translate(trans); //This moves the origin to lower-left 
+    node->setInheritScale(true);
     node->scale(size);
-    trans = size * 0.5f;
-    trans.z = 0.0f;
-    node->translate(trans);
+    //trans = size / (-0.5f);
+    //node->translate(trans);
     return rootnode;
 }
