@@ -40,7 +40,7 @@ bool
     {
         if(_workspace->getToolsetController()->isCursorMode())
         {
-            _workspace->getToolsetController()->onSetCursor3dPosition();
+            _workspace->getToolsetController()->onSetCursor3dPosition(_workspace->getWorldController());
         }
     }
     return true;

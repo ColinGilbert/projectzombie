@@ -3,6 +3,7 @@
 #include "ZInitPacket.h"
 #include "gui/TemplateCloner.h"
 #include "toolset/CubeToolXForm.h"
+#include "world/WorldController.h"
 using namespace ZGame;
 using namespace ZGame::Toolset;
 
@@ -147,7 +148,7 @@ bool
 }
 
 void
-    ToolsetController::onSetCursor3dPosition()
+    ToolsetController::onSetCursor3dPosition(World::WorldController* worldCtrl)
 {
     if(_curToolType == CURSOR && _curToolsetMode == MOVECURSOR)
     {
@@ -158,13 +159,81 @@ void
             _toolMgr->getTool(_cursorId)->getNode()->getPosition());
         _informListeners(ONCHANGE_EVENT | ONCURSOR3DPOSITION_EVENT);
     }
-    else if(_curToolType == CURSOR && _curToolsetMode == SCALE) //do not care about tool type.
+    else if(_curToolType == CURSOR && _curToolsetMode == SCALE)
     {
         //stop scale mode.
         setToolsetMode(MOVECURSOR);
         setToolType(SELECT);
+        //compute AABB from anchor (blue cusor) and cursor. 
+        ToolInfo* cursor = _toolMgr->getTool(_cursorId);
+        ToolInfo* anchor = _toolMgr->getTool(_cursorBlueId);
+        ToolInfo* select = _toolMgr->getTool(_cursorYellowId);
+
+        //output AABB of yellow cursor which is the selection
+        Ogre::AxisAlignedBox selectAABB;
+
+        selectAABB = select->getNode()->_getWorldAABB();
+
+        _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition());
+
+        std::cout << "computed Select AABB: " << selectAABB << std::endl;
+
     }
 }
+
+void
+    ToolsetController::_computeSelectAABB(Ogre::AxisAlignedBox &aabb, const Ogre::Vector3 &cursor, 
+    const Ogre::Vector3 &anchor)
+{
+    //We are going to assume everything is in CUBE units. By extent we mean the min / max of the AABB, in world
+    //coordinates.
+    //Depending on quadrant move the extents.
+    Ogre::Vector3 leftExtent, rightExtent;
+    //Quad. I. 
+    if(cursor.x >= anchor.x && cursor.z <= anchor.z)
+    {
+        leftExtent = anchor; rightExtent = cursor;
+        if(cursor.y < anchor.y)
+        {
+            leftExtent.y = cursor.y;
+            rightExtent.y = anchor.y;
+        }
+    }
+    //Quad. II
+    else if(cursor.x < anchor.x && cursor.z <= anchor.z)
+    {
+        leftExtent = cursor; rightExtent = anchor;
+        leftExtent.z = anchor.z; rightExtent.z = cursor.z;
+        leftExtent.y = anchor.y; rightExtent.y = cursor.y;
+        if(cursor.y < anchor.y)
+        {
+            rightExtent.y = anchor.y;
+        }
+    }
+    //Quad. III
+    else if(cursor.x < anchor.x && cursor.z > anchor.z)
+    {
+        leftExtent = cursor; rightExtent = anchor;
+        if(cursor.y >= anchor.y)
+        {
+            leftExtent.y = anchor.y;
+            rightExtent.y = cursor.y;
+        }
+    }
+    //Quad. IV
+    else if(cursor.x >= anchor.x && cursor.z > anchor.z)
+    {
+        leftExtent = anchor; rightExtent = cursor;
+        leftExtent.z = cursor.z; rightExtent.z = anchor.z;
+        if(cursor.y < anchor.y)
+        {
+            leftExtent.y = cursor.y;
+            rightExtent.y = anchor.y;
+        }
+    }
+    aabb.setExtents(leftExtent, rightExtent);
+}
+
 
 Ogre::Vector3
     ToolsetController::getCursor3dPosition()

@@ -159,3 +159,8 @@ void
     }
     _cam = tempCam;
 }
+
+void
+    WorldController::onSelectionRegion(const Ogre::AxisAlignedBox &selectBox)
+{
+}

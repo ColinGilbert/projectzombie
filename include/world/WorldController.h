@@ -53,6 +53,10 @@ namespace ZGame
             void getCursor3dPosition(Ogre::Ray rayTo, Ogre::Vector3& position,
                 Ogre::Real searchDistance);
 
+            /** \brief This method will be called with a selection region specified by the extents.**/
+            void
+                onSelectionRegion(const Ogre::AxisAlignedBox &selectBox);
+
             void
                 setWorldConfiguration(std::auto_ptr<WorldConfig> worldConfig);
 

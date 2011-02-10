@@ -83,7 +83,7 @@ namespace ZGame
             bool
                 onCursorPosition3d(Ogre::Vector3 pos);
             void
-                onSetCursor3dPosition();
+                onSetCursor3dPosition(World::WorldController* worldCtrl);
 
             void
                 refreshToolView(Gui::ToolInfoView* toolView, int toolId, 
@@ -127,6 +127,9 @@ namespace ZGame
                 _switchTool(ToolType type);
             void
                 _informListeners(unsigned int event);
+            void
+                _computeSelectAABB(Ogre::AxisAlignedBox &aabb, const Ogre::Vector3 &cursor,
+                const Ogre::Vector3 &anchor);
            
         };
 
