@@ -21,18 +21,12 @@ namespace ZGame
         class PhysicsManager;
         /**
         * This class defines a representation or a volume map. A volume map is a container for managing a collection of Volume Pages. Volume Pages are
-        * defined as a mapping to Ogre's Paging System's PageIDs to this Volume Map's Volume Pages, which contains PolyVox Volume data. In correspondance with
-        * Ogre's paging system, we implement load and unloading of pages. We currently keep a free list of Volume Pages that we use to get a free Volume Page. After
-        * a free page is gotten, we then insert it into map structure. This is to facilitate searching for this page based on PageID when Ogre's Paging System
-        * asks us to unload a page. That is, we remove this page from the Map and add it to the free list, to be reused. This current system is a first
-        * implementation (we did it because it seemed easier.)
+        * defined as a mapping to Ogre's Paging System's PageIDs to this Volume Map's Volume Pages, containing PolyVox Volume data. In correspondance with
+        * Ogre's paging system, we implement load and unloading of pages. Volume Page correspond to PolyVox::Volume. Each Volume Page contains multiple VolumeRegion, 
+        *these page regions correspond to PolyVox::Region. Finally, there is a one to one mapping between Ogre's PageID and VolumeRegion. This implies that
+        *a VolumePage may contain multiple PageIds. 
         *
-        * We directly map our Volume Page to PolyVox's Volume. This may be inefficient (because our pages are small, and we need many pages to represent a
-        * large level.) An alternative is to push the paging system to PolyVox volume where we allocate a bigger sized Volume and directly manipulate the volume's
-        * data to provide paging. But this means we have to implement our own paging strategy (in Ogre this is called PagingStrategy) in order to figure out
-        * when to load/unload PolyVox volumes (of a certain size). So for now this is what we do for we hook direclty into Ogre's paging system. In the future
-        * we can optimize.
-        */
+        **/
         class VolumeMap : public Ogre::WorkQueue::RequestHandler, public Ogre::WorkQueue::ResponseHandler
         {
         public:
@@ -69,6 +63,9 @@ namespace ZGame
             void
                 getBlockCenterWithRay(Ogre::Ray &rayTo, Ogre::Real searchDistance,
                 Ogre::Vector3& blockCenter);
+            /** \brief This method fills the selection AABB with data.**/
+            void
+                fillSelection(const Ogre::AxisAlignedBox &aabb, uint8_t data);
 
 
             //Ogre WorkQueue related overrides
@@ -216,12 +213,45 @@ namespace ZGame
             typedef std::unordered_map<Ogre::PageID, VolumePage*, hash<Ogre::PageID>, std::equal_to<Ogre::PageID>,
                 Ogre::STLAllocator<std::pair<const Ogre::PageID, VolumePage*>, Ogre::GeneralAllocPolicy> > PagesMap;
             //typedef Ogre::map<Ogre::PageID, VolumePage*>::type PagesMap;
+            
             PagesMap _pagesMap;
             PhysicsManager* _phyMgr;
             typedef Ogre::deque<std::pair<VolumePage*, std::pair<Ogre::PageID, PageRegion* >>>::type LoadQueue;
             LoadQueue _loadQueue;
 
         private:
+
+            struct PageXY
+            {
+                long x;
+                long y;
+            };
+
+            typedef PageXY VolXY;
+
+            struct PageFillCmd
+            {
+                Ogre::Vector3 regionStart;
+                Ogre::Vector3 regionEnd;
+                uint8_t data;
+            };
+
+            struct PageDirtyCmd
+            {
+                Ogre::Vector2 localStart;
+                Ogre::Vector2 localEnd;
+                VolumePage* page;
+                PageRegion* region;
+            };
+
+            typedef Ogre::list<PageFillCmd>::type PageRegionList;
+            PageRegionList _fillVolumeCmd;
+
+            typedef Ogre::list<PageDirtyCmd>::type DirtyRegionList;
+
+            DirtyRegionList _dirtyRegionsList;
+
+
             enum VOLUME_MODIFY_MODE
             {
                 ADD_BLOCK=0, REMOVE_BLOCK
@@ -257,7 +287,33 @@ namespace ZGame
             void _unloadPageRegion(VolumePage* page, Ogre::PageID regionId);
             void
                 _processLoadQueue();
-       
+
+            void
+                _processFillCommands();
+            void
+                _processDirtyRegions();
+            void
+                _executeFillCommand(const PageFillCmd& cmd);
+            void
+                _fillSelection(Ogre::Real totalZLenInVoxels, Ogre::Real totalXLenInVoxels, 
+                Ogre::Real totalYLenInVoxels,
+                const Ogre::Vector3 &leftCorner, uint8_t data);
+
+            void
+                _addFillRegionCommand(int startX, int startY, int startZ, 
+                int endX, int endY, int endZ, 
+                uint8_t data);
+
+            void
+                _cubeCoordsToPageXY(long &x, long &z, const Ogre::Vector3 &cubeCenter);
+
+            void
+                _getPage(Ogre::Vector3 cubeCenter, long &pageX, long &pageZ, Ogre::PageID &pageID,
+                long &volX, long &volZ, Ogre::PageID &volID, 
+                VolumePage** volPage, PageRegion** region);
+
+            Ogre::Vector2
+                _pageCoordToWorldCoord(long pageX, long pageZ);
         
         };
     }

@@ -10,6 +10,7 @@
 #include "world/VolumeMap.h"
 #include "PolyVoxImpl/Utility.h"
 #include "world/PerlinNoiseMapGen.h"
+#include "world/FillMapGen.h"
 #include "world/WorldDefs.h"
 #include "world/ZCubicSurfaceExtractor.h"
 #include "world/PhysicsManager.h"
@@ -230,6 +231,8 @@ void
     VolumeMap::onUpdate(const Ogre::FrameEvent &evt)
 {
     _processLoadQueue();
+    _processFillCommands();
+    _processDirtyRegions();
 }
 
 /**
@@ -413,6 +416,195 @@ inline void
     point = cubeCenter;
 }
 
+void
+    VolumeMap::fillSelection(const Ogre::AxisAlignedBox& aabb, uint8_t data)
+{
+    using Ogre::Vector3;
+    //Get the total length of the box along Z.
+    Vector3 size = aabb.getSize();
+    Vector3 leftCorner = aabb.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM);
+    cout << "VolumMap::fillSelection" << endl;
+    cout << "size: " << size << endl;
+    cout << "leftCorner: " << leftCorner << endl;
+    _fillSelection(Ogre::Math::Abs(size.z), Ogre::Math::Abs(size.x), Ogre::Math::Abs(size.y), leftCorner, data);
+}
+
+inline void
+    VolumeMap::_fillSelection(Ogre::Real totalZLenInVoxels, Ogre::Real totalXLenInVoxels, Ogre::Real totalYLenInVoxels,
+    const Ogre::Vector3 &leftCorner, uint8_t data)
+{
+    //Note: There is a more optimized method that gets rid of the if branching during ever loop iteration. We can do that in the future.
+    //basically, snip off the ends and process the full "tiles" in between. THen process the snipped ends. 
+    /*
+    *This algorithm will loop through all voxel regions for the given length along Z and X. It does this by adding offsets from the
+    *length and subtracting this offset from the length until the length is gone. The offsets are tried to be filled by
+    *BLOCK_WIDTH (the width of the chunk). So this means basically the ends are are the only regions not the size
+    *of full region chunks. By the end of iterations all regions touched by the given lenghs have been visited. 
+    */
+    int curZ = static_cast<int>(leftCorner.z);
+    do
+    {
+        int zOffset = totalZLenInVoxels;
+        int bottomZ = (curZ / WORLD_BLOCK_WIDTH) * WORLD_BLOCK_WIDTH + WORLD_BLOCK_WIDTH - 1;
+        int regionEndZ = curZ + zOffset;
+        if(curZ + totalZLenInVoxels > bottomZ)
+        {
+            zOffset = bottomZ - curZ;
+            regionEndZ = curZ + zOffset;
+        }
+        
+        int curX = static_cast<int>(leftCorner.x);
+        Ogre::Real tempXLen = totalXLenInVoxels;
+
+        do
+        {
+            int xOffset = tempXLen;
+            int rightX = (curX / WORLD_BLOCK_WIDTH) * WORLD_BLOCK_WIDTH + WORLD_BLOCK_WIDTH -1;
+            int regionEndX = curX + xOffset;
+            if(curX + tempXLen > rightX)
+            {
+                xOffset = rightX - curX;
+                regionEndX = curX + xOffset;
+            }
+
+            //For now, Y is constant and is totalYLenInVoxels
+            _addFillRegionCommand(curX, static_cast<int>(leftCorner.y), curZ, regionEndX, 
+                static_cast<int>(leftCorner.y) + totalYLenInVoxels, regionEndZ, data);
+
+            tempXLen -= xOffset + 1;
+            curX = regionEndX + 1;
+
+            
+
+        }while(tempXLen > 0);
+
+        totalZLenInVoxels -= zOffset + 1;
+        curZ = regionEndZ + 1;
+
+    }while(totalZLenInVoxels > 0);
+}
+
+inline void
+    VolumeMap::_addFillRegionCommand(int startX, int startY, int startZ, 
+    int endX, int endY, int endZ, 
+    uint8_t data)
+{
+    PageFillCmd cmd;
+    cmd.regionStart = Ogre::Vector3(startX, startY, startZ);
+    cmd.regionEnd = Ogre::Vector3(endX, endY, endZ);
+    cmd.data = data;
+
+    _fillVolumeCmd.push_back(cmd);
+}
+
+/**
+* \note this method must be executed in the same thread as _addFillRegionCommand.
+**/
+void
+    VolumeMap::_processFillCommands()
+{
+    while(!_fillVolumeCmd.empty())
+    {
+        PageFillCmd& cmd = _fillVolumeCmd.front();
+        _executeFillCommand(cmd);
+        _fillVolumeCmd.pop_front();
+    }
+}
+
+/**
+* This method will iterate through the dirty regions list and unload then reload those regions. 
+*
+*/
+void
+    VolumeMap::_processDirtyRegions()
+{
+    //WARNING: This method is not 100% safe. In the other modifiy volume method (eventually we should merge these) we only modify a single voxel.
+    //In this method IT IS POSSIBLE--though unlikely--that we can fill many regions at one, and many regions get dirtied. But we may try to update a dirted region
+    //that is in the process of being deferred loaded. We are not taking that into account here. It is unlikely we will modify so many regions (at least for now) 
+    //so this is unlikely to happen. However, we need to keep this in mind, such as if we use this to generate terrain.
+    while(!_dirtyRegionsList.empty())
+    {
+        PageDirtyCmd &cmd = _dirtyRegionsList.front();
+        cmd.region->mapView.unloadRegion(_phyMgr);
+        PolyVox::Region pageRegion(PolyVox::Vector3DInt16(cmd.localStart.x, 0, cmd.localStart.y),
+            PolyVox::Vector3DInt16(cmd.localEnd.x, WORLD_HEIGHT, cmd.localEnd.y));
+        PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
+        ZCubicSurfaceExtractor<Material8> surfExtractor(&cmd.page->data, pageRegion, &surface);
+        surfExtractor.execute();
+        cmd.region->mapView.updateRegion(&surface);
+        cmd.region->mapView.finalizeRegion();
+        cmd.region->mapView.createPhysicsRegion(_phyMgr);
+        _dirtyRegionsList.pop_front();
+    }
+}
+
+
+inline void
+    VolumeMap::_getPage(Ogre::Vector3 cubeCenter, long &pageX, long &pageZ, Ogre::PageID &pageID,
+    long &volX, long &volZ, Ogre::PageID &volID, 
+    VolumePage** volPage, PageRegion** region)
+{
+    _cubeCoordsToPageXY(pageX, pageZ, cubeCenter);
+    pageID = _packIndex(pageX, pageZ);
+    volID = _pageIdToVolumeId(pageID, _volSideLenInPages);
+    _unpackIndex(volID, &volX, &volZ);
+    PagesMap::iterator findMe = _pagesMap.find(volID);
+    if(findMe != _pagesMap.end())
+    {
+        *volPage = findMe->second;
+        *region = (*volPage)->getRegion(pageID);
+    }
+}
+
+inline void
+    VolumeMap::_executeFillCommand(const PageFillCmd &cmd)
+{
+    //We may need to refactor entire class to work with only x and y. instead of page id.
+    //Find the page region id and Volume ID for this.
+    long pageX,pageZ,volX,volZ;
+    Ogre::PageID pageID, volID;
+    VolumePage* page = 0;
+    PageRegion* region = 0;
+    Ogre::Vector3 cubeCenter = cmd.regionStart;
+    _getPage(cubeCenter, pageX, pageZ, pageID, volX, volZ, volID, 
+        &page, &region);
+    if(page && region)
+    {
+        //Now we want to define the region. The region we want to hit is regionStart, to regionEnd, but in local space of the Page.
+        Ogre::Vector2 volumeOrigin(volX, volZ);
+        Ogre::Vector2 cubeLocal = Ogre::Vector2(cubeCenter.x, cubeCenter.z);
+        Ogre::Vector2 regionStart = _transformToVolumeLocal(volumeOrigin, cubeLocal, _volSizeInBlocks);
+        cubeLocal = Ogre::Vector2(cmd.regionEnd.x, cmd.regionEnd.z);
+        Ogre::Vector2 regionEnd = _transformToVolumeLocal(volumeOrigin, cubeLocal, _volSizeInBlocks);
+        PolyVox::Region pageRegion(PolyVox::Vector3DInt16(regionStart.x, cubeCenter.y, regionStart.y),
+            PolyVox::Vector3DInt16(regionEnd.x, cmd.regionEnd.y, regionEnd.y));
+        World::FillMapGen gen;
+        gen.generate(&page->data, pageRegion, cmd.data);
+        //dirty the map
+        PageDirtyCmd pageDirty;
+        Ogre::Vector2 localPageWorld = _pageCoordToWorldCoord(pageX, pageZ);
+        pageDirty.localStart = _transformToVolumeLocal(volumeOrigin, localPageWorld, _volSizeInBlocks);
+        pageDirty.localEnd = pageDirty.localStart + Ogre::Vector2(WORLD_BLOCK_WIDTH, WORLD_BLOCK_WIDTH);
+        pageDirty.page = page;
+        pageDirty.region = region;
+        _dirtyRegionsList.push_back(pageDirty);
+    }
+}
+
+inline Ogre::Vector2
+    VolumeMap::_pageCoordToWorldCoord(long pageX, long pageZ)
+{
+    return Ogre::Vector2(pageX * static_cast<long> (WORLD_BLOCK_WIDTH), pageZ * static_cast<long>(WORLD_BLOCK_WIDTH));
+}
+
+inline void
+    VolumeMap::_cubeCoordsToPageXY(long &x, long &z, const Vector3 &cubeCenter)
+{
+ 
+    x = Ogre::Math::Floor(cubeCenter.x / WORLD_BLOCK_WIDTH);
+    z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
+}
+
 /**
 *This method will add a block to the volume. This method assumes that the passed in point is a point on a face of a cube,
 *and the ray direction corresponds to the picking direction. (Note: This still works for empty space because the point of
@@ -474,13 +666,15 @@ inline void
     //and negative of the natural number (excluding zero) to the negative of natural numbers grouped by WORLD_BLOCK_WDITH
     long x, z;
 
-    x = Ogre::Math::Floor(cubeCenter.x / WORLD_BLOCK_WIDTH);
-    z = Ogre::Math::Floor(cubeCenter.z / WORLD_BLOCK_WIDTH);
-    
+
+    _cubeCoordsToPageXY(x, z, cubeCenter);
+
     pageID = _packIndex(x, z);
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
     long vx, vy;
     _unpackIndex(volumeId, &vx, &vy);
+
+   
     //Find this page id.
     cout << "Page idx: " << x << " " << z << endl;
     cout << "Volume idx: " << vx << " " << vy << endl;
@@ -521,7 +715,9 @@ inline void
         }
 
         cout << "cube in local space: " << cubeLocal << endl;;
-
+        
+        //NOTE: THis is WIP. The better idea is to queue up modification commands. So we modify and mark as dirty. THEN generate
+        //all dirtied regions in one get-to. This is much better because we eliminate branching.
         page->data.setVoxelAt(static_cast<uint16_t>(cubeLocal.x), static_cast<uint16_t>(cubeCenter.y), static_cast<uint16_t>(cubeLocal.y), 
                 blockType);
         if(regionLeft) //ALL THIS just to remove a block on the border??? WTF. Okay, I store multiple pages per PolyVox::Volume to have better cache utilization.
@@ -552,8 +748,8 @@ void
     PolyVox::Region pageRegion(PolyVox::Vector3DInt16(localOrigin.x, 0, localOrigin.y),
         PolyVox::Vector3DInt16(upperCorner.x, WORLD_HEIGHT, upperCorner.y));
     PolyVox::SurfaceMesh<PolyVox::PositionMaterial> surface;
-    //ZCubicSurfaceExtractor<Material8> surfExtractor(&page->data, pageRegion, &surface);
-    PolyVox::CubicSurfaceExtractor<Material8> surfExtractor(&page->data, pageRegion, &surface);
+    ZCubicSurfaceExtractor<Material8> surfExtractor(&page->data, pageRegion, &surface);
+    //PolyVox::CubicSurfaceExtractor<Material8> surfExtractor(&page->data, pageRegion, &surface);
     surfExtractor.execute();
     region->mapView.updateRegion(&surface);
     region->mapView.finalizeRegion();

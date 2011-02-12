@@ -150,6 +150,7 @@ bool
 void
     ToolsetController::onSetCursor3dPosition(World::WorldController* worldCtrl)
 {
+    using std::cout; using std::endl;
     if(_curToolType == CURSOR && _curToolsetMode == MOVECURSOR)
     {
         //Move the blue cursor to the position
@@ -176,7 +177,9 @@ void
 
         _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition());
 
-        std::cout << "computed Select AABB: " << selectAABB << std::endl;
+        cout << "computed Select AABB: " << selectAABB << endl;
+        cout << "min AABB: " << selectAABB.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM) << endl;
+        worldCtrl->onSelectionRegion(selectAABB);
 
     }
 }

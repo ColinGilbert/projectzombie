@@ -163,4 +163,7 @@ void
 void
     WorldController::onSelectionRegion(const Ogre::AxisAlignedBox &selectBox)
 {
+    //ask the volume map to handle this selection box. 
+    uint8_t voxel = 1; //fill with rock for now.
+    _volumeMap->fillSelection(selectBox, voxel);
 }
