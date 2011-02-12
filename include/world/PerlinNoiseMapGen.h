@@ -268,8 +268,8 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
         {
             for(int16_t x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX(); x++)
             {
-                size_t regionZ = z - region.getLowerCorner().getZ() + 1;
-                size_t regionX = x - region.getLowerCorner().getX() + 1;
+                size_t regionZ = z - region.getLowerCorner().getZ();
+                size_t regionX = x - region.getLowerCorner().getX();
                 size_t val = (size_t)(hVals[regionZ][regionX].value);
                 _processVoxel(x, y, z, val, hVals[regionZ][regionX].uValue, halfHeight);
             }
