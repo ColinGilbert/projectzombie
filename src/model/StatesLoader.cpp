@@ -7,6 +7,7 @@
 #include <Ogre.h>
 #include "StatesLoader.h"
 
+using namespace std;
 using namespace ZGame;
 
 StatesLoader::StatesLoader()

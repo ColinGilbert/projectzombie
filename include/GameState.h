@@ -21,7 +21,6 @@
 #include "LifeCycleDelegates.h"
 #include "DelegatesUtil.h"
 
-using namespace std;
 
 
 

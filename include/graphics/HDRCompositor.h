@@ -34,7 +34,6 @@ using std::endl;
 #include <OgreRenderWindow.h>
 #include <OgreCamera.h>
 
-using namespace Ogre;
 
 //#define NUMTONEMAPPERS 5
 //#define NUMGLARETYPES 2
@@ -143,15 +142,15 @@ protected:
   float m_E;
   float m_Phi;
 
-  RenderWindow* m_Window;
-  Camera* m_Cam;
+  Ogre::RenderWindow* m_Window;
+  Ogre::Camera* m_Cam;
 
-  CompositorPtr m_Compositor;
-  CompositionTechnique *m_HDRTechnique;
+  Ogre::CompositorPtr m_Compositor;
+  Ogre::CompositionTechnique *m_HDRTechnique;
 
 public:
 
-  HDRCompositor(RenderWindow* win, Camera* cam);
+  HDRCompositor(Ogre::RenderWindow* win, Ogre::Camera* cam);
   ~HDRCompositor(void)
   {
       Release();
@@ -357,11 +356,11 @@ public:
       }
   }
 
-  static String
+  static Ogre::String
   ToneMapperToString(const TONEMAPPER ToneMapper);
-  static String
+  static Ogre::String
   GlareTypeToString(const GLARETYPE GlareType);
-  static String
+  static Ogre::String
   StarTypeToString(const STARTYPE StarType);
 
   void update();
@@ -370,7 +369,7 @@ public:
 private:
 
   void
-  CreateTextureDef(const String name, const unsigned int width, const unsigned int height, const Ogre::PixelFormat format);
+  CreateTextureDef(const Ogre::String name, const unsigned int width, const unsigned int height, const Ogre::PixelFormat format);
   void
   BrightPass(void);
   void

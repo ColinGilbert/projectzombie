@@ -7,7 +7,6 @@
 
 #pragma once
 #include <memory>
-using namespace std;
 #include <Ogre.h>
 #include "GameState.h"
 #include <boost/shared_ptr.hpp>
@@ -15,7 +14,7 @@ using namespace std;
 #include "ControlModuleProto.h"
 #include "world/VolumeMapPaging.h"
 #include "world/VolumePagedWorldSection.h"
-using namespace Ogre;
+
 namespace ZGame
 {
     class GameEditView;

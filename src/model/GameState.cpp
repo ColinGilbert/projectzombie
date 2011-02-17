@@ -9,7 +9,7 @@
 #include <SdkTrays.h>
 #include "GameState.h"
 
-
+using namespace std;
 
 namespace ZGame
 {

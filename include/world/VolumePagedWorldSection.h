@@ -17,7 +17,6 @@ namespace ZGame
   namespace World
   {
     class VolumeMap;
-    using namespace Ogre;
     using Ogre::uint16;
     using Ogre::int16;
     using Ogre::int32;
@@ -73,23 +72,23 @@ namespace ZGame
       virtual int32
       getPageRangeMaxY() const;
 
-      virtual Grid2DPageStrategy*
+      virtual Ogre::Grid2DPageStrategy*
       getGridStrategy() const;
-      virtual Grid2DPageStrategyData*
+      virtual Ogre::Grid2DPageStrategyData*
       getGridStrategyData() const;
 
       void
-      loadPage(PageID pageID, bool forceSynchronous = false);
+      loadPage(Ogre::PageID pageID, bool forceSynchronous = false);
       void
-      unloadPage(PageID pageID, bool forceSynchronous = false);
+      unloadPage(Ogre::PageID pageID, bool forceSynchronous = false);
 
     protected:
 
       /// Overridden from PagedWorldSection
       void
-      loadSubtypeData(StreamSerialiser& ser);
+      loadSubtypeData(Ogre::StreamSerialiser& ser);
       void
-      saveSubtypeData(StreamSerialiser& ser);
+      saveSubtypeData(Ogre::StreamSerialiser& ser);
 
       virtual void
       syncSettings();
@@ -97,7 +96,7 @@ namespace ZGame
     private:
       VolumeMap* _volumeMap;
       void
-      _unpackIndex(PageID pageID, long* x, long* y);
+      _unpackIndex(Ogre::PageID pageID, long* x, long* y);
 
     };
   }

@@ -36,6 +36,9 @@ namespace ZGame
                 unloadRegion(PhysicsManager* phyMgr);
             void
                 createPhysicsRegion(PhysicsManager* phyMgr);
+            void
+                createPhysicsRegion(PhysicsManager* phyMgr, 
+                OgreBulletCollisions::CompoundCollisionShape* compoundShape);
                 //OgreBulletCollisions::ConvexHullCollisionShape* shape);
                 
 

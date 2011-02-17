@@ -9,9 +9,7 @@
 #define COMMONFIXTURES_H_
 
 #include <iostream>
-using namespace std;
 #include <Ogre.h>
-using namespace Ogre;
 
 struct GPUEntsPropsFixture
 {
@@ -21,10 +19,10 @@ struct GPUEntsPropsFixture
 
   }
   ~GPUEntsPropsFixture(){}
-  Real minx; Real minz;
-  Real maxx; Real maxz;
+  Ogre::Real minx; Ogre::Real minz;
+  Ogre::Real maxx; Ogre::Real maxz;
   int texW; int texH;
-  Real entHeight;
+  Ogre::Real entHeight;
 };
 
 #endif /* COMMONFIXTURES_H_ */

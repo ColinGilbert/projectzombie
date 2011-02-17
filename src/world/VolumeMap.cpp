@@ -1,12 +1,9 @@
-#pragma warning(disable : 4503)
 /*
 * VolumeMap.cpp
 *
 *  Created on: Sep 21, 2010
 *      Author: beyzend
 */
-//#include <OgreMemoryAllocatorConfig.h>
-
 #include "world/VolumeMap.h"
 #include "PolyVoxImpl/Utility.h"
 #include "world/PerlinNoiseMapGen.h"
@@ -24,9 +21,6 @@
 using std::cout;
 using std::endl;
 
-
-
-
 using ZGame::World::VolumeMap;
 using PolyVox::ZCubicSurfaceExtractor;
 using PolyVox::MaterialDensityPair44;
@@ -35,21 +29,22 @@ using PolyVox::Vector3DFloat;
 using PolyVox::Vector3DUint16;
 using PolyVox::Vector3DInt16;
 using std::shared_ptr;
-//using PolyVox::SurfaceExtractor;
-//using PolyVox::CubicSurfaceExtractorWithNormals;
 using PolyVox::CubicSurfaceExtractor;
 using PolyVox::SurfaceMesh;
 using namespace ZGame::World;
 using namespace Ogre;
 
-
+#define ONE_VOLUME_ONE_CHUNK 0
 
 const Ogre::uint16 VolumeMap::WORKQUEUE_LOAD_REQUEST = 1;
 
 
 VolumeMap::VolumeMap(Ogre::SceneManager* scnMgr, size_t volSideLenInPages, bool FORCE_SYNC) : _scnMgr(scnMgr),
 _volSideLenInPages(volSideLenInPages), _volSizeInBlocks(volSideLenInPages*WORLD_BLOCK_WIDTH), _volHeight(WORLD_HEIGHT),
-    _FORCE_SYNC(FORCE_SYNC)
+    _FORCE_SYNC(FORCE_SYNC), _totalVolInKB(0.0), _totalNumOfChunks(0), _avgLoadTime(0.0),
+    _avgCompression(0.0), _avgGenerationTime(0.0), _avgExtractionTime(0.0), _avgViewTime(0.0),
+    _totalVolInKBDeallocated(0.0),
+    SHARED_BLOCK_SIZE(32), UNCOMPRESSED_CACHE_SIZE(1)
 {
     World::PerlinNoiseMapGen::initGradientPoints();
 }
@@ -89,16 +84,25 @@ Ogre::Vector2
     VolumeMap::_transformToVolumeLocal(Ogre::Vector2 volumeOrigin, Ogre::Vector2 local,
     size_t volSideLenInBlocks)
 {
+#if !ONE_VOLUME_ONE_CHUNK
     size_t halfVolSide = volSideLenInBlocks / 2;
     Ogre::Vector2 coords = local + Ogre::Vector2(halfVolSide, halfVolSide); //shift it to zero.
     coords -= volumeOrigin * volSideLenInBlocks; //transform into local space.
     return coords;
+#else
+    return Ogre::Vector2(0.0f, 0.0f);
+#endif
 }
 
 WorkQueue::Response*
     VolumeMap::handleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
 {
+#if PROFILE
+    CPerfCounter counter;
+    counter.Start();
+#endif
     LoadRequest lreq = any_cast<LoadRequest> (req->getData());
+
     VolumePage* page = lreq.page;
     WorkQueue::Response* response = 0;
     long volx, voly; long localx, localy;
@@ -116,15 +120,21 @@ WorkQueue::Response*
     World::PerlinNoiseMapGen gen;
     gen.generate(&page->data, pageRegion, static_cast<Ogre::Real>(localx), 
         static_cast<Ogre::Real>(localy));
- 
+#if PROFILE
+    counter.Stop();
+    page->generateTime = counter.GetElapsedTime();
+    counter.Start();
+#endif
     //PolyVox::CubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, pageRegion, lreq.surface);
     //ZCubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, pageRegion, lreq.tempSurface);
     ZCubicSurfaceExtractor<PolyVox::Material8> surfExtractor(&page->data, pageRegion, lreq.surface);
     surfExtractor.execute();
-
     //PolyVox::MeshDecimator<PolyVox::PositionMaterial> decimator(lreq.tempSurface, lreq.surface);
     //decimator.execute();
-
+#if PROFILE
+    counter.Stop();
+    page->extractionTime = counter.GetElapsedTime() - page->generateTime;
+#endif
     response = new WorkQueue::Response(req, true, Any());
     return response;
 }
@@ -156,10 +166,35 @@ void
         PageRegion* region = page->getRegion(lreq.ogreId);
         if(!region->deferredUnload)
         {
+#if PROFILE
+            _perfCounter.Reset();
+            _perfCounter.Start();
+#endif
             region->loading = false;
             region->mapView.createRegion(page->worldOrigin, lreq.surface);
             region->mapView.finalizeRegion();
+        
             region->mapView.createPhysicsRegion(_phyMgr);
+#if PROFILE
+            _perfCounter.Stop();
+            //double compressionRatio = page->data.calculateCompressionRatio();
+            //_avgCompression = (compressionRatio + _totalNumOfChunks * _avgCompression) / (_totalNumOfChunks + 1);
+            //_totalVolInKB += page->data.calculateSizeInBytes() / 1000.0;
+            
+            //time
+            _avgViewTime = (_perfCounter.GetElapsedTime() + _totalNumOfChunks * _avgViewTime) / (_totalNumOfChunks + 1);
+            _avgGenerationTime = (page->generateTime + _totalNumOfChunks * _avgGenerationTime) / (_totalNumOfChunks + 1);
+            _avgExtractionTime = (page->extractionTime + _totalNumOfChunks * _avgExtractionTime) / (_totalNumOfChunks + 1);
+            _avgLoadTime = _avgViewTime + _avgGenerationTime + _avgExtractionTime;
+            _totalNumOfChunks++;
+              //cout << "compression for chunk: " << compressionRatio << endl;
+            //cout << "avgCompression: " << _avgCompression << endl;
+            //cout << "total volume size in kb: " << _totalVolInKB << endl;    
+            //cout << "average view time: " << _avgViewTime << endl;
+            //cout << "average generation time: " << _avgGenerationTime << endl;
+            //cout << "average extraction time: " << _avgExtractionTime << endl;
+            //cout << "average elapsed time: " << _avgLoadTime << endl;         
+#endif 
         }
         else
         {
@@ -176,6 +211,22 @@ void
     //OGRE_DELETE_T(res, Response, Ogre::MEMCATEGORY_GENERAL);
 
 }
+
+#if PROFILE
+    void
+        VolumeMap::getProfileStats(std::ostream &out)
+    {
+        cout << "Shared Block Size: " << SHARED_BLOCK_SIZE << endl;
+        cout << "Uncompressed Cache Size: " << UNCOMPRESSED_CACHE_SIZE << endl;
+        //We planned to do something more complicated but screw it. Let's just look at this in console output and manually paste it to a file.
+        out << "avgCompression: " << _avgCompression << endl;
+        out << "total volume size in kb: " << _totalVolInKB << endl;    
+        out << "average graphics and physics upload time: " << _avgViewTime << endl;
+        out << "average generation time: " << _avgGenerationTime << endl;
+        out << "average extraction time: " << _avgExtractionTime << endl;
+        out << "average elapsed time: " << _avgLoadTime << endl;         
+    }
+#endif
 
 void
     VolumeMap::_initVolumes()
@@ -200,12 +251,21 @@ VolumeMap::VolumePage*
     PagesMap::iterator findMe = _pagesMap.find(pageId);
     if(findMe == _pagesMap.end())
     {
-        VolumePage* page = OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(size, height);
+        VolumePage* page = OGRE_NEW_T(VolumePage, Ogre::MEMCATEGORY_GENERAL)(size, height,
+            SHARED_BLOCK_SIZE, UNCOMPRESSED_CACHE_SIZE);
         page->id = pageId;
         long x,y;
         _unpackIndex(pageId, &x, &y);
+#if !ONE_VOLUME_ONE_CHUNK
+        // Use this if MORE THAN ONE chunk per VOLUME
         Ogre::Vector3 volWorldOrigin(size * (static_cast<Ogre::Real>(x) - 1.0f / 2.0f), 
             0.0f, size * (static_cast<Ogre::Real>(y) - 1.0 / 2.0f) );
+            
+#else
+        //size = 16;
+        Ogre::Vector3 volWorldOrigin(size * (static_cast<Ogre::Real>(x)), 
+            0.0f, size * (static_cast<Ogre::Real>(y)));
+#endif
         page->worldOrigin = volWorldOrigin;
         _pagesMap[pageId] = page;
         return page;
@@ -286,7 +346,7 @@ void
             req.ogreId = pair.second.first;
             req.surface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
             //req.tempSurface = OGRE_NEW_T (PolyVox::SurfaceMesh<PolyVox::PositionMaterial>, Ogre::MEMCATEGORY_GENERAL);
-
+            //stats track
             Root::getSingleton().getWorkQueue()->addRequest(_workQueueChannel, WORKQUEUE_LOAD_REQUEST, Any(req), 10, _FORCE_SYNC);
         }
         else
@@ -308,18 +368,23 @@ void
     Ogre::PageID volumeId = _pageIdToVolumeId(pageID, _volSideLenInPages);
 
     PagesMap::iterator findMe = _pagesMap.find(volumeId);
+    
     if(findMe == _pagesMap.end())
     {
-        //Just ignore it for now. We need to look at Ogre paging system too.
-        //return;
-        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
-            "Trying to unload a page from a non-existent Volume", "VolumeMap::unloadPage");
+        return;
+        //Why is this so? Situation can arise where the task system is unable to cope 
+        //with loading under certain loading constraints (it will throw unhandled exceptions).
+        //In this case it tries to unload a page that it thinks is in the system, when in fact
+        //it is not, due to the thread system not being able to actually create that page.
+        //OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
+          //  "Trying to unload a page from a non-existent Volume", "VolumeMap::unloadPage");
     }
     PageRegion* region = findMe->second->getRegion(pageID);
     if(region)
     {
         if(!region->loading)
         {
+            
             region->mapView.unloadRegion(_phyMgr);
             _unloadPageRegion(findMe->second, pageID);        
         }
@@ -337,9 +402,11 @@ void
     page->removeRegion(regionId);
     if(page->isEmpty())
     {
+        cout << "deleting page" << endl;
         Ogre::PageID id = page->id;
         OGRE_DELETE_T(page, VolumePage, Ogre::MEMCATEGORY_GENERAL);
         _pagesMap.erase(id);
+
     }
 }
 

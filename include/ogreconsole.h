@@ -4,11 +4,6 @@
 #include <OgreFrameListener.h>
 #include <Ogre.h>
 #include <OIS/OIS.h>
-
-
-//using namespace Ogre;
-//using namespace std;
-
 /**
 * \file Please deprecate this ASAP.
 *
@@ -17,8 +12,7 @@
 
 namespace ZGame
 {
-  using namespace std;
-  using namespace Ogre;
+  
   //class OgreConsole: public Ogre::Singleton<OgreConsole>, Ogre::FrameListener, Ogre::LogListener
   class OgreConsole: public Ogre::FrameListener, Ogre::LogListener
   {

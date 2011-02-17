@@ -4,6 +4,7 @@
 #include <Shapes/OgreBulletCollisionsBoxShape.h>
 #include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
 #include <Shapes/OgreBulletCollisionsTrimeshShape.h>
+#include <Shapes/OgreBulletCollisionsCompoundShape.h>
 #include <OgreBulletCollisionsRay.h>
 #include <iostream>
 using std::cout;
@@ -126,6 +127,72 @@ void
     _shapes[cubeShape] = cubeShape;
 
 }
+
+/**
+*A temp hack method to test using box collision shape.
+**/
+OgreBulletCollisions::CompoundCollisionShape*
+    PhysicsManager::createCompoundShape()
+{
+    using namespace OgreBulletCollisions;
+    using namespace OgreBulletDynamics;
+    using namespace Ogre;
+    CompoundCollisionShape* compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
+    return compoundShape;
+}
+
+/**
+*A temp hack method for testing.
+*
+**/
+void
+    PhysicsManager::addCubeToCompoundShape(const Ogre::Vector3 &pos,
+    OgreBulletCollisions::CompoundCollisionShape* compoundShape)
+{
+    OgreBulletCollisions::BoxCollisionShape* box = _createBoxShape();
+    compoundShape->addChildShape(box, pos);
+}
+
+
+/**
+*A temp hack method to test using box collision shapes (in compound shapes) for terrain instead of 
+*static meshes.
+**/
+OgreBulletCollisions::BoxCollisionShape*
+    PhysicsManager::_createBoxShape()
+{
+    using namespace OgreBulletCollisions;
+    using namespace OgreBulletDynamics;
+    using namespace Ogre;
+    const Ogre::Vector3 cubeBodyBounds(0.5, 0.5, 0.5);
+    BoxCollisionShape* cubeShape = new BoxCollisionShape(cubeBodyBounds);
+    return cubeShape;
+
+}
+
+OgreBulletDynamics::RigidBody*
+    PhysicsManager::createVolumeRigidyBodyFromCompoundShape(OgreBulletCollisions::CompoundCollisionShape* compoundShape,
+                Ogre::SceneNode* node,        
+                OgreBulletDynamics::RigidBody* currentBody,
+                float restitution, float friction,
+                const Ogre::String &name
+                )
+{
+    using namespace OgreBulletDynamics;
+    using namespace OgreBulletCollisions;
+    RigidBody *shapeBody = new RigidBody("SHAPE" + Ogre::StringConverter::toString(_bodies.size()), _world);
+    
+    shapeBody->setStaticShape(compoundShape, restitution, friction);
+    //shapeBody->setShape(c
+    //shapeBody->setPosition(node->getPosition());
+    //shapeBody->setOrientation(node->getOrientation());
+  
+    _bodies[shapeBody] = shapeBody;
+    _shapes[compoundShape] = compoundShape;
+    return shapeBody;
+}
+
+
 /**
 ** \note this method interface should be refactored to correspond to the way we are assuming about reusing static rigid bodies
 *relating to order or destruction of bodies.
@@ -148,9 +215,9 @@ OgreBulletDynamics::RigidBody*
         return 0;
         StaticMeshToShapeConverter shapeConvert(manual->getSection(0), transform);
         TriangleMeshCollisionShape* shape = shapeConvert.createTrimesh();
-
         RigidBody *shapeBody = new RigidBody("SHAPE" + Ogre::StringConverter::toString(_bodies.size()), _world);
         shapeBody->setStaticShape(shape, restitution, friction);
+
         //_world->addRigidBody(shapeBody, 0, 0);
     
         _bodies[shapeBody] = shapeBody; //There should be a one-to-one mapping of shapes into bodies. So don't need to check.

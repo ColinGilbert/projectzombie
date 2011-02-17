@@ -4,8 +4,6 @@
 #include <vector>
 #include <Ogre.h>
 
-using namespace Ogre;
-
 namespace ZGame
 {
     namespace Entities

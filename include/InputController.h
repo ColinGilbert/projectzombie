@@ -15,8 +15,6 @@
 #include <vector>
 #include <map>
 //#include <string>
-using namespace std;
-
 #include <boost/thread/thread.hpp>
 #include <boost/thread/xtime.hpp>
 #include <Ogre.h>

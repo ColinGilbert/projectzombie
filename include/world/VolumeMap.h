@@ -1,10 +1,36 @@
-#pragma warning( disable : 4503)
+/**
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+**/
+/**
+*author: beyzend 
+*email: llwijk@gmail.com
+**/
+
 #pragma once
+
+#define PROFILE 1 //should move this to prerequisites later.
 
 #include "ZPrerequisites.h"
 #include "world/VolumeMapView.h" //We use it directly here instead of relying on the Observer pattern to update views.
 #include "world/PerlinNoiseMapGen.h"
 #include "world/TestMapGenerator.h"
+#include "utilities/Timer.h"
 /*
 * VolumeMap.h
 *
@@ -80,6 +106,11 @@ namespace ZGame
 
             static const Ogre::uint16 WORKQUEUE_LOAD_REQUEST;
 
+#if PROFILE
+            void
+                getProfileStats(std::ostream &out);
+#endif
+
         protected:
 
             Ogre::uint16 _workQueueChannel;
@@ -100,8 +131,10 @@ namespace ZGame
             {
             public:
 
-                VolumePage(size_t pageSize, size_t pageHeight) :
-                  data(pageSize, pageHeight, pageSize, 16)
+                VolumePage(size_t pageSize, size_t pageHeight,
+                    size_t sharedBlockSize = 32, 
+                    size_t uncompressedCacheSize = 4) :
+                  data(pageSize, pageHeight, pageSize, 32)
                   {
                       data.setBorderValue(PolyVox::Material8(0));
                   }
@@ -115,6 +148,11 @@ namespace ZGame
                       }
                       //_regionMap.clear();
                   }
+                  //keep time stat. here. Putting in LoadRequest doesn't work.
+#if PROFILE
+                  double generateTime;
+                  double extractionTime;
+#endif
                   Ogre::PageID id;
                   //PolyVox::UInt8Volume data;
                   PVolume data;
@@ -207,6 +245,8 @@ namespace ZGame
             Ogre::uint32 _volWidthInRegions;
             Ogre::uint32 _volHeightInRegions;
             Ogre::uint32 _volDepthInRegions;
+            size_t SHARED_BLOCK_SIZE;
+            size_t UNCOMPRESSED_CACHE_SIZE;
             
             Ogre::Vector3 _origin;
             bool _FORCE_SYNC;
@@ -314,7 +354,18 @@ namespace ZGame
 
             Ogre::Vector2
                 _pageCoordToWorldCoord(long pageX, long pageZ);
-        
+#if PROFILE
+            //Used for stats tracking
+            double _totalVolInKB; //total volume processed in kilobytes
+            double _totalVolInKBDeallocated;
+            long _totalNumOfChunks; //total number of chunks processed.
+            double _avgLoadTime; //average of loading time. Running average.
+            double _avgGenerationTime;
+            double _avgExtractionTime;
+            double _avgViewTime; 
+            double _avgCompression; //running average of compression ratio.
+            CPerfCounter _perfCounter;
+#endif
         };
     }
 }

@@ -11,6 +11,7 @@
 #include <Utils/OgreBulletCollisionsMeshToShapeConverter.h>
 #include "world/PhysicsManager.h"
 #include <OgreException.h>
+#include <Shapes/OgreBulletCollisionsCompoundShape.h>
 using std::cout;
 using std::endl;
 
@@ -117,6 +118,12 @@ void
 {
     if(_manual->getNumSections() > 0)
         _phyBody = mgr->staticObjectFromManual(_manual, _phyBody, 0.1f, 0.6f, _root->_getFullTransform());
+}
+
+void
+    VolumeMapView::createPhysicsRegion(PhysicsManager* mgr, OgreBulletCollisions::CompoundCollisionShape* compoundShape)
+{
+    _phyBody = mgr->createVolumeRigidyBodyFromCompoundShape(compoundShape, _root, 0, 0.6, 0.6);
 }
 
 

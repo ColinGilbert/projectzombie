@@ -15,7 +15,7 @@ namespace ZGame
 {
     namespace World
     {
-        
+
         class PhysicsManager
         {
         public:
@@ -37,11 +37,32 @@ namespace ZGame
                 const Ogre::String &name=""
                 );
 
+            
+            OgreBulletCollisions::CompoundCollisionShape*
+                createCompoundShape();
+           
+
+
             void
                 destroyBody(OgreBulletDynamics::RigidBody* body);
 
             void 
                 addCube(const Ogre::Vector3 &pos);
+
+            void
+                addCubeToCompoundShape(const Ogre::Vector3 &pos,
+                OgreBulletCollisions::CompoundCollisionShape* compoundShape);
+
+            OgreBulletDynamics::RigidBody* 
+                createVolumeRigidyBodyFromCompoundShape(OgreBulletCollisions::CompoundCollisionShape* compoundShape,
+                Ogre::SceneNode* node,
+                OgreBulletDynamics::RigidBody* currentBody = 0,
+                float restitution = 0.6f, float friction = 0.6f,
+                const Ogre::String &name=""
+                );
+                
+
+
 
             OgreBulletCollisions::ConvexHullCollisionShape* createConvexHullShape();
 
@@ -67,15 +88,18 @@ namespace ZGame
 
 
         private:
+
+             OgreBulletCollisions::BoxCollisionShape*
+                _createBoxShape();
             /*
             class ManualObjectToShapeConverter : public OgreBulletCollisions::VertexIndexToShape
             {
             public:
-                ManualObjectToShapeConverter();
-                ~ManualObjectToShapeConverter();
+            ManualObjectToShapeConverter();
+            ~ManualObjectToShapeConverter();
 
-                void
-                    addManualObject(Ogre::ManualObject* manual);
+            void
+            addManualObject(Ogre::ManualObject* manual);
             };
             */
         };

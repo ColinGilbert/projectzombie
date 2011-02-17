@@ -148,8 +148,8 @@ namespace ZGame
 
     private:
 
-        auto_ptr<ZGame::Networking::NetClientController> _netClient;
-        auto_ptr<OgreBites::SdkTrayManager> _sdkTrayMgr;
+        std::auto_ptr<ZGame::Networking::NetClientController> _netClient;
+        std::auto_ptr<OgreBites::SdkTrayManager> _sdkTrayMgr;
         Ogre::Viewport* _vp;
 
         Ogre::String _listenerID;
@@ -192,8 +192,8 @@ namespace ZGame
         
 
         ZInitPacket* _initPacket;
-        auto_ptr<GraphicsController> _gfxCtrl;
-        auto_ptr<Gui::GuiController> _guiCtrl;
+        std::auto_ptr<GraphicsController> _gfxCtrl;
+        std::auto_ptr<Gui::GuiController> _guiCtrl;
 
         std::auto_ptr<ControlModuleProto> _controlMod;
         std::auto_ptr<ZGame::World::WorldController> _worldController;

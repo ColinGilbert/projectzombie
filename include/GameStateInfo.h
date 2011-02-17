@@ -11,9 +11,6 @@
 //#include <string>
 #include <map>
 #include <Ogre.h>
-using namespace std;
-
-
 
 namespace ZGame
 {

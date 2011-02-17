@@ -26,6 +26,7 @@
 #include "Ogre.h"
 using std::cout;
 using std::endl;
+using namespace Ogre;
 
 class HDRListener: public Ogre::CompositorInstance::Listener
 {

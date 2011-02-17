@@ -6,7 +6,6 @@
 */
 #include <iostream>
 #include <stdexcept>
-using namespace std;
 #include "EngineController.h"
 #include "GameStateFactory.h"
 #include "StatesLoader.h"
@@ -57,6 +56,9 @@ static const Ogre::String PlatformPath("configs_windows/");
 #else 
 static const Ogre::String PlatformPath("configs_linux/");
 #endif
+
+using namespace std;
+using namespace Ogre;
 namespace ZGame
 {
 

@@ -205,7 +205,7 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
             hVals[z][x].value = oceanFloor + (height - 8.0) * (val + 1.0) / 2.0;
         }
     }
-#if 1 
+#if 0 
     //Process the border first. This reduced the chance of leaked memory due to threaded processing of shared borders. 
     //I'm too lazy right now to implement a completely thread safe way using Atomic variables from TBB.
     //process lower border
@@ -278,14 +278,14 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
 #else
      //Do a flood fill thing. Where if the current height is less than precomputed "height map", then fill with rock.
     //If it's the current height, fill with value stored in height map. Else it is air.
-    for(int16_t z=region.getLowerCorner().getZ()-1; z <= region.getUpperCorner().getZ(); z++)
+    for(int16_t z=region.getLowerCorner().getZ(); z < region.getUpperCorner().getZ(); z++)
     {
         for(int16_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY(); y++)
         {
-            for(int16_t x = region.getLowerCorner().getX()-1; x <= region.getUpperCorner().getX(); x++)
+            for(int16_t x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX(); x++)
             {
-                size_t regionZ = z - region.getLowerCorner().getZ() + 1;
-                size_t regionX = x - region.getLowerCorner().getX() + 1;
+                size_t regionZ = z - region.getLowerCorner().getZ(); //was + 1
+                size_t regionX = x - region.getLowerCorner().getX(); // was + 1
                 size_t val = (size_t)(hVals[regionZ][regionX].value);
                 _processVoxel(x, y, z, val, hVals[regionZ][regionX].uValue, halfHeight);
             }

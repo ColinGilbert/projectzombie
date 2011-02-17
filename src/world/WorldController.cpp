@@ -32,8 +32,6 @@ _scnMgr(0), _volumePaging(0),
 
 WorldController::~WorldController()
 {
-    _physicsMgr.reset(0);
-    _volumeMap.reset(0);
 }
 
 
@@ -55,8 +53,27 @@ bool WorldController::onUpdate(const Ogre::FrameEvent &evt)
 
 bool WorldController::onDestroy()
 {
+    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+    cout << endl;
+    cout << "World Map config: " << endl;
+    WorldMapConfig config = _worldConfig->getWorldMapConfig();
+    cout << "on-screen map dimensions: " << config.loadRadius * 2 << "^2" << endl;
+    cout << "unload radius: " << config.unloadRadius << endl;
+    cout << "Outputing Volume Map stats: " << endl;
+    _volumeMap->getProfileStats(cout);
+    cout << endl;
+    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+
     cout << "WorldController::onDestroy called." << endl;
     cout << "Deleting WorldMap." << endl;
+
+
+
+    _physicsMgr.reset(0);
+    _volumeMap.reset(0);
+
+
+
     _pageManager.removeCamera(_cam);
     _viewport->removeListener(this);
     OGRE_DELETE_T(_volumePaging, VolumeMapPaging, Ogre::MEMCATEGORY_GENERAL);
@@ -86,7 +103,7 @@ void WorldController::_init(ZGame::ZInitPacket *packet)
         _worldConfig->load();
     }
     _loadWorldMap(_worldConfig->getWorldMapConfig());
-    _worldConfig.reset(0);
+    
 }
 
 void
@@ -103,6 +120,7 @@ void
     //_worldMap.reset(new WorldMap());
     //_worldMap->load(); //We should implement load from configuration file.
     size_t numOfPagesPerAxis = (config.unloadRadius  / WORLD_BLOCK_WIDTH * 2 + 1);
+    //_volumeMap.reset(new VolumeMap(_scnMgr, numOfPagesPerAxis, config.forceSync));
     _volumeMap.reset(new VolumeMap(_scnMgr, numOfPagesPerAxis, config.forceSync));
     _volumeMap->load(_physicsMgr.get());
 

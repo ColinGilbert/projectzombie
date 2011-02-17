@@ -10,7 +10,6 @@
 
 //#include <string>
 
-//using namespace std;
 #include <Ogre.h>
 
 //#include <OpenSteer/SimpleVehicle.h>
