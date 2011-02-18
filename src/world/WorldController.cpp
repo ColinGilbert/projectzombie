@@ -142,6 +142,22 @@ void
 }
 
 void
+    WorldController::getCursor3dPosition(Ogre::Ray rayTo, Ogre::Vector3& position, const Ogre::Plane &constraintPlane)
+{
+    //I don't think the case for non-intersection will occur. 
+    Ogre::Real searchDistance = 64.0f;
+    std::pair<bool, Ogre::Real> retStruct = rayTo.intersects(constraintPlane);
+    if(retStruct.first == true)
+    {
+        position = rayTo.getPoint(retStruct.second);
+    }
+    else
+        position = rayTo.getPoint(searchDistance);
+    _volumeMap->toVoxelCoords(position); //convert to voxel coords.
+}
+
+
+void
     WorldController::addBlock(Ogre::Real cursorX, Ogre::Real cursorY)
 {
     using namespace Ogre;
@@ -179,9 +195,8 @@ void
 }
 
 void
-    WorldController::onSelectionRegion(const Ogre::AxisAlignedBox &selectBox)
+    WorldController::onSelectionRegion(const Ogre::AxisAlignedBox &selectBox, size_t materialId)
 {
     //ask the volume map to handle this selection box. 
-    uint8_t voxel = 1; //fill with rock for now.
-    _volumeMap->fillSelection(selectBox, voxel);
+    _volumeMap->fillSelection(selectBox, materialId);
 }

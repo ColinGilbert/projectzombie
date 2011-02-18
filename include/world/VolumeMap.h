@@ -92,7 +92,9 @@ namespace ZGame
             /** \brief This method fills the selection AABB with data.**/
             void
                 fillSelection(const Ogre::AxisAlignedBox &aabb, uint8_t data);
-
+            /** \brief This method will convert a vector3 into global voxel coordinates.**/
+            void
+                toVoxelCoords(Ogre::Vector3 &position);
 
             //Ogre WorkQueue related overrides
             bool

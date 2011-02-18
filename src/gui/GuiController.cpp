@@ -557,7 +557,6 @@ bool
         notEaten = _gui2d->ProcessTextInput((Rocket::Core::word) e.text);
     else if (key_identifier == Rocket::Core::Input::KI_RETURN)
         notEaten = _gui2d->ProcessTextInput((Rocket::Core::word) '\n');
-
     return notEaten;
 }
 

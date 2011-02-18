@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 using namespace ZGame;
 
-ZWorkspaceController::ZWorkspaceController() 
+ZWorkspaceController::ZWorkspaceController() : _modifierState(0)
 {
 }
 
@@ -28,6 +28,12 @@ bool
     _windowWidth = packet->initialCamera->getViewport()->getActualWidth();
 
     return true;
+}
+
+void
+    ZWorkspaceController::onModifierStateEvent(const unsigned int modifierState)
+{
+    _modifierState = modifierState;
 }
 
 /**
@@ -52,6 +58,7 @@ bool
 {
     if(id == OIS::MB_Left)
     {
+        /*
         if(_workspace->getToolsetController()->isCursorMode())
         {
             //Get voxel position.
@@ -69,6 +76,7 @@ bool
             _workspace->getToolsetController()->onCursorPosition3d(position);
             _workspace->getCinematicController()->onDisableOneFrame();
         }
+        */
     }
     return true;
 }
@@ -89,7 +97,22 @@ bool
         Ogre::Vector3 position;
         Ogre::Real searchDistance = 64.0f;
         rayTo  = cam->getCameraToViewportRay(x, y);
-        _workspace->getWorldController()->getCursor3dPosition(rayTo, position, searchDistance);
+        
+        //Shift modifies cursor to be constraint to a plane.
+        if(_modifierState & OIS::Keyboard::Shift)
+        {
+            Ogre::Plane constraintPlane;
+            bool hit = _workspace->getToolsetController()->getConstraintPlane(rayTo, constraintPlane);
+            if(hit)
+                _workspace->getWorldController()->getCursor3dPosition(rayTo, position, constraintPlane);
+            else
+                _workspace->getWorldController()->getCursor3dPosition(rayTo, position, searchDistance);
+        }
+        else
+        {
+            _workspace->getWorldController()->getCursor3dPosition(rayTo, position, searchDistance);
+        }
+        
         _workspace->getToolsetController()->onCursorPosition3d(position);
         _workspace->getCinematicController()->onDisableOneFrame();
     }
@@ -105,5 +128,9 @@ bool
 bool
     ZWorkspaceController::onKeyUp(const OIS::KeyEvent &evt)
 {
+    if(evt.key == OIS::KC_S)
+        _workspace->getToolsetController()->setToolType(Toolset::ToolsetController::SELECT);
+    if(evt.key == OIS::KC_C)
+        _workspace->getToolsetController()->setToolType(Toolset::ToolsetController::CURSOR);
     return true;
 }

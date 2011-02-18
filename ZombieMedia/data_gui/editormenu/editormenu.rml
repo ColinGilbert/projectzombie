@@ -32,11 +32,11 @@
 	<tab>Tools</tab>
 	<panel id="toolset_panel">
 	  <div class="split_left" style="overflow:scroll; margin-bottom:10px;">
-	  <form id="toolsetform">
-	    <select id="tool_select_id" name="Tool Select" onchange="ToolsetViewController" action="cameraSelect">
-	    </select>
-	  </form>
-	      <button type="button" id="create_id" onclick="ToolsetViewController" action="createShape">Create Shape</button><br />
+	    <form id="toolsetform">
+	      <select id="tool_select_id" name="Tool Select" onchange="ToolsetViewController" action="cameraSelect">
+	      </select>
+	    </form>
+	    <button type="button" id="create_id" onclick="ToolsetViewController" action="createShape">Create Shape</button><br />
 	  </div>
 	  <div class="split_right">
 	    <div class="panel_left">
@@ -45,7 +45,10 @@
 		<col fields="name" width="35%">Tool Name</col>
 		<col fields="pos" width="60%">Position</col>
 	      </datagrid>
-	    </div>
+	      <form id="materialsetform">
+		<input type="text" id="material_select_id" onchange="ToolsetViewController" >MaterialID</input>
+	      </form>
+	    </div>	    
 	    <!-- We will injection a template here from c++ that is the properities page.-->
 	    <div class="panel_right" id="panel_right">
  	    </div>

@@ -106,6 +106,14 @@ namespace ZGame
             virtual int
                 GetNumRows(const Rocket::Core::String& table);
 
+            /**
+            * This method will get a constraint plane based on the current cursor and anchor position.
+            **/
+            bool
+                getConstraintPlane(const Ogre::Ray &ray, Ogre::Plane &plane);
+            void
+                onMaterialChange(size_t matId);
+
         private:
 
            
@@ -129,7 +137,8 @@ namespace ZGame
                 _informListeners(unsigned int event);
             void
                 _computeSelectAABB(Ogre::AxisAlignedBox &aabb, const Ogre::Vector3 &cursor,
-                const Ogre::Vector3 &anchor);
+                const Ogre::Vector3 &anchor, unsigned int &whichCorner);
+            size_t _materialId;
            
         };
 

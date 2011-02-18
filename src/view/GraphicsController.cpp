@@ -133,11 +133,11 @@ bool
     _initSkyX();
     _initSSAO();
     //_initHDR(packet->renderWindow, packet->initialCamera);
-    
+
     _ssaoInstance->setEnabled(true);
     //_hdrCompositor->Enable(true);
     _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
-    
+
     _scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
     return true;
 }
@@ -166,15 +166,15 @@ void
     _skyX->getGPUManager()->addGroundPass(
         static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
         getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
-   
+
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
     SkyXOptions.EastPosition = Ogre::Vector2(1, 0);
     _skyX->getAtmosphereManager()->setOptions(SkyXOptions);
     _skyX->setLightingMode(SkyX::SkyX::LM_LDR);
-    
 
-   
+
+
 
 }
 
@@ -270,6 +270,12 @@ void
 bool
     GraphicsController::onKeyUp(const OIS::KeyEvent &evt)
 {
+    return true;
+}
+
+bool
+    GraphicsController::onKeyDown(const OIS::KeyEvent &evt)
+{
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
 
@@ -291,7 +297,7 @@ bool
 
         _bloomInstance->setEnabled(!_bloomInstance->getEnabled());
         break;
-        
+
     case OIS::KC_L:
         _skyX->setLightingMode(SkyX::SkyX::LM_HDR);
         break;
@@ -308,33 +314,33 @@ bool
     case OIS::KC_EQUALS:
         _skyX->setTimeMultiplier(0.1f);
         break;
-        
-        case OIS::KC_1:
+
+    case OIS::KC_1:
         _skyX->setTimeMultiplier(1.0f);
         break;
 
-        case OIS::KC_2:
+    case OIS::KC_2:
         _skyX->setTimeMultiplier(0.1f);
         break;
-        
-        case OIS::KC_3:
+
+    case OIS::KC_3:
         SkyXOptions.Exposure += 0.16 * 0.5f;
         break;
-        case OIS::KC_4:
+    case OIS::KC_4:
         SkyXOptions.Exposure -= 0.16 * 0.5f;
         break;
-        case OIS::KC_5:
+    case OIS::KC_5:
         SkyXOptions.InnerRadius += 0.16 * 0.25f;
         break;
-        case OIS::KC_6:
+    case OIS::KC_6:
         SkyXOptions.InnerRadius -= 0.16 * 0.25f;
         break;
-        case OIS::KC_7:
+    case OIS::KC_7:
         SkyXOptions.OuterRadius += 0.16 * 0.25f;
         break;
-        case OIS::KC_8:
+    case OIS::KC_8:
         SkyXOptions.OuterRadius -= 0.16 * 0.25f;
-        
+
     case OIS::KC_9:
         SkyXOptions.SunIntensity += 10;
         break;
@@ -343,22 +349,17 @@ bool
         break;
     case OIS::KC_Y:
 
-         SkyXOptions.HeightPosition += 0.16 * 0.05f;
-         break;
+        SkyXOptions.HeightPosition += 0.16 * 0.05f;
+        break;
     case OIS::KC_U:
 
-		SkyXOptions.HeightPosition -= 0.16*0.05f;
+        SkyXOptions.HeightPosition -= 0.16*0.05f;
         break;
     default:
         break;
     }
     _skyX->getAtmosphereManager()->setOptions(SkyXOptions);
-    return true;
-}
 
-bool
-    GraphicsController::onKeyDown(const OIS::KeyEvent &evt)
-{
     return true;
 }
 
@@ -420,7 +421,7 @@ bool
 
 
     //
-    
+
     Ogre::MaterialPtr matPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"));
     Ogre::Pass* pass = matPtr->getTechnique(0)->getPass(0);
     size_t idx = 0;

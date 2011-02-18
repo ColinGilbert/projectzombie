@@ -49,6 +49,19 @@ void
         //String actionStr = GuiUtils::GetActionString(el); //No need to get action string actually.
         _toolCtrl->onCreate();
     }
+    else if(el->GetId() == "material_select_id")
+    {
+        Rocket::Controls::ElementFormControlInput* textInput =
+            static_cast<Rocket::Controls::ElementFormControlInput*>(el);
+
+         if(textInput)
+         {
+             size_t matId;
+             Rocket::Core::TypeConverter<Rocket::Core::String, size_t>::Convert(textInput->GetValue(), matId);
+
+             _toolCtrl->onMaterialChange(matId);
+         }
+    }
     else
     {
         //Get action string.
@@ -134,6 +147,7 @@ void
     _viewPanel = panel;
     _toolInfoView.setTempalteCloner(getTemplateCloner());
 
+    //Setup tool select drop down.
     _toolSelect = static_cast<Rocket::Controls::ElementFormControlSelect*>(panel->GetElementById(_TOOL_SELECT_ID));
     if(!select)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for tool select control", "ToolsetView::updatePanel");
@@ -145,12 +159,15 @@ void
         Rocket::Core::TypeConverter<unsigned int, Rocket::Core::String>::Convert(static_cast<unsigned int>(iter->second), idStr);
         _toolSelect->Add(iter->first.c_str(), idStr); //WTF, it should be a Rocket::String here and not Ogre::String.
     }
-}
+   
 
+}
+/**
+* \note Please refactor this method into it's own class. There can only be one formatter per class.
+**/
 void
     ToolsetView::ToolsetIdFormatter::FormatData(Rocket::Core::String& formatted_data, const Rocket::Core::StringList& raw_data)
 {
-    std::cout << "raw data size: " << raw_data.size() << std::endl;
     const Rocket::Core::String _ctrlStr("ToolsetViewController");
     //format id
     formatted_data.Append("<div onclick=\"");

@@ -44,7 +44,7 @@ _volSideLenInPages(volSideLenInPages), _volSizeInBlocks(volSideLenInPages*WORLD_
     _FORCE_SYNC(FORCE_SYNC), _totalVolInKB(0.0), _totalNumOfChunks(0), _avgLoadTime(0.0),
     _avgCompression(0.0), _avgGenerationTime(0.0), _avgExtractionTime(0.0), _avgViewTime(0.0),
     _totalVolInKBDeallocated(0.0),
-    SHARED_BLOCK_SIZE(32), UNCOMPRESSED_CACHE_SIZE(1)
+    SHARED_BLOCK_SIZE(8), UNCOMPRESSED_CACHE_SIZE(1)
 {
     World::PerlinNoiseMapGen::initGradientPoints();
 }
@@ -824,6 +824,14 @@ void
 }
 
 void
+    VolumeMap::toVoxelCoords(Ogre::Vector3 &position)
+{
+    position.x = Ogre::Math::Floor(position.x + 0.5f); //Need to write a function for this
+    position.y = Ogre::Math::Floor(position.y + 0.5f);
+    position.z = Ogre::Math::Floor(position.z + 0.5f);
+}
+
+void
     VolumeMap::getBlockCenterWithRay(Ogre::Ray &rayTo, Ogre::Real searchDistance, Ogre::Vector3& blockCenter)
 {
     if(_phyMgr->getCollisionPoint(blockCenter, rayTo, searchDistance))
@@ -834,9 +842,7 @@ void
     {
         blockCenter = rayTo.getPoint(searchDistance);
         //But also hash this center into block unots;
-        blockCenter.x = Ogre::Math::Floor(blockCenter.x + 0.5f); //Need to write a function for this
-        blockCenter.y = Ogre::Math::Floor(blockCenter.y + 0.5f);
-        blockCenter.z = Ogre::Math::Floor(blockCenter.z + 0.5f);
+        toVoxelCoords(blockCenter);
     }
 }
 

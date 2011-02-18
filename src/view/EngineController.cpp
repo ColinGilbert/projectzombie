@@ -408,6 +408,7 @@ bool
     try
     {
         _inController->run();
+        _keyPump->updateModifierStateObs(_inController->getModifierState());
         _lfcPump->updateOnUpdateObs(evt);
         //updateStats();
     }
@@ -896,7 +897,7 @@ void
             LifeCycle::bindAndRegisterLifeCycleObserver<Gui::GuiController>(lfcReg, lfcObs, *_guiCtrl, LifeCycle::LFC_ON_UPDATE | LifeCycle::LFC_ON_DESTROY |
                 LifeCycle::LFC_ON_RENDER_QUEUE_START | LifeCycle::LFC_ON_RENDER_QUEUE_END);
 
-            EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl);
+            EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_guiCtrl, ZGame::ORDER_FIRST);
             _guiCtrl->setMousePump(_mousePump.get());
 
             gameState.onGuiConfiguration(_guiCtrl.get());
@@ -1013,6 +1014,10 @@ void
                     LifeCycle::LFC_ON_INIT | LifeCycle::LFC_ON_DESTROY);
                 EVENT::bindAndRegisterKeyObserver(keyReg, keyObs, *_workspaceCtrl);
                 EVENT::bindAndRegisterMouseObserver(mouseReg, mouseObs, *_workspaceCtrl, ORDER_FIRST);
+                //Add the modifier state observer
+                EVENT::ZModifierStateEvt modStateObs;
+                modStateObs.bind(_workspaceCtrl.get(), &ZWorkspaceController::onModifierStateEvent);
+                _keyPump->addModifierStateObserver(modStateObs);
 
             }
         }catch(Ogre::Exception e)

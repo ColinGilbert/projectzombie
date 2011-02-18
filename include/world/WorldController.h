@@ -52,10 +52,13 @@ namespace ZGame
             void removeBlock(Ogre::Real cursorX, Ogre::Real cursorY);
             void getCursor3dPosition(Ogre::Ray rayTo, Ogre::Vector3& position,
                 Ogre::Real searchDistance);
+            void
+                getCursor3dPosition(Ogre::Ray rayTo, Ogre::Vector3& position,
+                const Ogre::Plane &constraintPlane);
 
             /** \brief This method will be called with a selection region specified by the extents.**/
             void
-                onSelectionRegion(const Ogre::AxisAlignedBox &selectBox);
+                onSelectionRegion(const Ogre::AxisAlignedBox &selectBox, size_t materialId);
 
             void
                 setWorldConfiguration(std::auto_ptr<WorldConfig> worldConfig);

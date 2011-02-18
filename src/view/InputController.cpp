@@ -215,3 +215,18 @@ bool InputController::mouseReleased(const OIS::MouseEvent &e,OIS::MouseButtonID 
     }
     return true;
 }
+
+unsigned int
+    InputController::getModifierState()
+{
+    using namespace OIS;
+    _modifierState = 0;
+    if(_keyb->isModifierDown(Keyboard::Alt))
+        _modifierState |= static_cast<unsigned int>(Keyboard::Alt);
+    if(_keyb->isModifierDown(Keyboard::Ctrl))
+        _modifierState |= static_cast<unsigned int>(Keyboard::Ctrl);
+    if(_keyb->isModifierDown(Keyboard::Shift))
+        _modifierState |= static_cast<unsigned int>(Keyboard::Shift);
+    
+    return _modifierState;
+}

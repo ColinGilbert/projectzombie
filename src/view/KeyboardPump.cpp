@@ -27,6 +27,13 @@ void KeyboardPump::addKeyboardObserver(const ZGame::EVENT::KeyboardEvtObserver &
     _onKeyUpObs.push_back(obs.kue);
 }
 
+void
+    KeyboardPump::addModifierStateObserver(const ZGame::EVENT::ZModifierStateEvt &obs)
+{
+    if(obs)
+        _onModifierStateObs.push_back(obs);
+}
+
 void KeyboardPump::updateKeyDownObs(const OIS::KeyEvent &evt)
  {
    for(KeyDownObsItr it=_onKeyDownObs.begin();it!=_onKeyDownObs.end();++it)
@@ -45,9 +52,18 @@ void KeyboardPump::updateKeyDownObs(const OIS::KeyEvent &evt)
     }
 }
 
+void
+    KeyboardPump::updateModifierStateObs(const unsigned int modifierState)
+{
+    for(auto iter = _onModifierStateObs.begin(); iter != _onModifierStateObs.end(); ++iter)
+    {
+        (*iter)(modifierState);
+    }
+}
 void KeyboardPump::removeAllObs()
 {
   _onKeyUpObs.clear();
   _onKeyDownObs.clear();
+  _onModifierStateObs.clear();
 }
 

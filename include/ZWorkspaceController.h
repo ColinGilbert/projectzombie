@@ -40,8 +40,6 @@ namespace ZGame
             onInit(ZInitPacket *packet);
         bool
             onDestroy(){return true;}
-
-
         bool 
             onMouseUp(const OIS::MouseEvent &evt, const OIS::MouseButtonID id);
         bool
@@ -52,10 +50,18 @@ namespace ZGame
             onKeyDown(const OIS::KeyEvent &evt);
         bool 
             onKeyUp(const OIS::KeyEvent &evt);
+
+        void
+            onModifierStateEvent(const unsigned int modifierState);
+
+
     private:
         ZWorkspace* _workspace;
         /* TEMP VARIABLES. The way we are doing input out is not FINISHED*/
         Ogre::Real _windowHeight;
         Ogre::Real _windowWidth;
+
+        unsigned int _modifierState;
+
     };
 }

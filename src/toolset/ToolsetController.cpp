@@ -9,7 +9,7 @@ using namespace ZGame::Toolset;
 
 ToolsetController::ToolsetController(std::auto_ptr<ToolsetManager> toolMgr)
     : _toolMgr(toolMgr), Rocket::Controls::DataSource("tool_source"), _curToolsetMode(MOVECURSOR),
-    _cubeSelectXForm(new CubeToolXForm())
+    _cubeSelectXForm(new CubeToolXForm()), _materialId(1)
 {
     _toolsDesc.push_back(std::make_pair("SELECT_TOOL", SELECT));
     _toolsDesc.push_back(std::make_pair("CURSOR_TOOL", CURSOR)); 
@@ -172,22 +172,91 @@ void
 
         //output AABB of yellow cursor which is the selection
         Ogre::AxisAlignedBox selectAABB;
-
-        selectAABB = select->getNode()->_getWorldAABB();
-
-        _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition());
+        unsigned int whichCorner; //kind of redundant
+        
+        _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition(),
+            whichCorner);
 
         cout << "computed Select AABB: " << selectAABB << endl;
         cout << "min AABB: " << selectAABB.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM) << endl;
-        worldCtrl->onSelectionRegion(selectAABB);
+        worldCtrl->onSelectionRegion(selectAABB, _materialId);
 
     }
 }
 
 void
-    ToolsetController::_computeSelectAABB(Ogre::AxisAlignedBox &aabb, const Ogre::Vector3 &cursor, 
-    const Ogre::Vector3 &anchor)
+    ToolsetController::onMaterialChange(size_t matId)
 {
+    _materialId = matId;
+}
+
+bool
+    ToolsetController::getConstraintPlane(const Ogre::Ray &ray, Ogre::Plane &plane)
+{
+    using namespace Ogre;
+    Ogre::AxisAlignedBox selectAABB;
+    unsigned int whichCorner = 0;
+    ToolInfo* cursor = _toolMgr->getTool(_cursorId);
+    ToolInfo* anchor = _toolMgr->getTool(_cursorBlueId);
+ 
+    _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition(),
+        whichCorner);
+
+    /*
+    *This perhaps is a dumb method. All we're doing, we're determine which plane to constraint to based on view direction of ray.
+    */
+
+    Ogre::Vector3 normalZ = Ogre::Vector3::UNIT_Z;
+    Ogre::Vector3 normalX = Ogre::Vector3::UNIT_X;
+    
+    Ogre::Plane zPlane(normalZ, cursor->getNode()->getPosition());
+    Ogre::Plane xPlane(normalX, cursor->getNode()->getPosition());
+
+
+    //project view vector into z,x plane.
+    Ogre::Vector3 view = ray.getDirection();
+    view.y = 0.0f;
+    std::cout << "View vector: " << view << std::endl;
+    std::cout << "View distance: " << view.squaredLength() << std::endl;
+    if(view.squaredLength() <= 0.001f)
+        return false;
+    
+    if(view.z < 0.0f)
+        view *= -1.0f;
+    Ogre::Radian rad = Ogre::Math::ATan2(view.x, view.z);
+    Ogre::Radian pifourth(Ogre::Math::PI / 4.0f);
+    if(rad >= -Ogre::Radian(pifourth) && rad <= Ogre::Radian(pifourth))
+    {
+        plane = zPlane;
+    }
+    else
+        plane = xPlane;
+
+    return true;
+    //planeNormal = (selectAABB.getCorner(AxisAlignedBox::NEAR_RIGHT_TOP) - selectAABB.getCorner(AxisAlignedBox::FAR_RIGHT_TOP)).
+      //          normalisedCopy();
+    //plane.redefine(planeNormal, cursor->getNode()->getPosition());
+    /*
+    switch(whichCorner)
+    {
+        case AxisAlignedBox::NEAR_RIGHT_TOP:
+        case AxisAlignedBox::NEAR_LEFT_TOP:    
+            
+            break;
+        case AxisAlignedBox::FAR_LEFT_TOP:
+        case AxisAlignedBox::FAR_RIGHT_TOP:
+            plane.redefine(planeNormal, cursor->getNode()->getPosition());
+            break;
+        default:
+            break;
+    }*/
+}
+
+void
+    ToolsetController::_computeSelectAABB(Ogre::AxisAlignedBox &aabb, const Ogre::Vector3 &cursor, 
+    const Ogre::Vector3 &anchor, unsigned int &whichCorner)
+{
+    using namespace Ogre;
     //We are going to assume everything is in CUBE units. By extent we mean the min / max of the AABB, in world
     //coordinates.
     //Depending on quadrant move the extents.
@@ -201,6 +270,7 @@ void
             leftExtent.y = cursor.y;
             rightExtent.y = anchor.y;
         }
+        whichCorner = AxisAlignedBox::NEAR_RIGHT_TOP;
     }
     //Quad. II
     else if(cursor.x < anchor.x && cursor.z <= anchor.z)
@@ -212,6 +282,7 @@ void
         {
             rightExtent.y = anchor.y;
         }
+        whichCorner = AxisAlignedBox::NEAR_LEFT_TOP;
     }
     //Quad. III
     else if(cursor.x < anchor.x && cursor.z > anchor.z)
@@ -222,6 +293,7 @@ void
             leftExtent.y = anchor.y;
             rightExtent.y = cursor.y;
         }
+        whichCorner = AxisAlignedBox::FAR_LEFT_TOP;
     }
     //Quad. IV
     else if(cursor.x >= anchor.x && cursor.z > anchor.z)
@@ -233,6 +305,7 @@ void
             leftExtent.y = cursor.y;
             rightExtent.y = anchor.y;
         }
+        whichCorner = AxisAlignedBox::FAR_RIGHT_TOP;
     }
     aabb.setExtents(leftExtent, rightExtent);
 }

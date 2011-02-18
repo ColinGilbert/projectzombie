@@ -205,7 +205,7 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
             hVals[z][x].value = oceanFloor + (height - 8.0) * (val + 1.0) / 2.0;
         }
     }
-#if 0 
+#if 1 
     //Process the border first. This reduced the chance of leaked memory due to threaded processing of shared borders. 
     //I'm too lazy right now to implement a completely thread safe way using Atomic variables from TBB.
     //process lower border
@@ -268,8 +268,8 @@ inline void PerlinNoiseMapGen::generate(PVolume* data, PolyVox::Region region,
         {
             for(int16_t x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX(); x++)
             {
-                size_t regionZ = z - region.getLowerCorner().getZ();
-                size_t regionX = x - region.getLowerCorner().getX();
+                size_t regionZ = z - region.getLowerCorner().getZ() + 1;
+                size_t regionX = x - region.getLowerCorner().getX() + 1;
                 size_t val = (size_t)(hVals[regionZ][regionX].value);
                 _processVoxel(x, y, z, val, hVals[regionZ][regionX].uValue, halfHeight);
             }
