@@ -28,13 +28,19 @@ THE SOFTWARE.
 #include "gui/GuiPrerequisite.h"
 
 #include "gui/ScreenXForm.h"
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+#include <X11/Xlib.h>
+#endif
+
+
 namespace ZGame
 {
     namespace Gui
     {
         class Screens;
         class DebugScreen;
-
+	
 
         class GuiController : Rocket::Core::EventListenerInstancer, public Rocket::Core::EventListener
         {
@@ -165,6 +171,12 @@ namespace ZGame
             ZGame::MousePump* _mousePump;
             const OIS::MouseEvent* _curEvent;
             OIS::MouseButtonID _curMouseBid;
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+	    
+	    Display* _display;
+#endif
+
         };
     }
 }

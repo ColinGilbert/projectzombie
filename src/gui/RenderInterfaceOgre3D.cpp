@@ -233,22 +233,21 @@ bool RenderInterfaceOgre3D::LoadTexture(Rocket::Core::TextureHandle& texture_han
 // Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
 bool RenderInterfaceOgre3D::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
 {
-	static int texture_id = 1;
+  static int texture_id = 1;
+  Ogre::DataStreamPtr data_stream(new Ogre::MemoryDataStream((void*) source, source_dimensions.x * source_dimensions.y * sizeof(unsigned int)));
+    Ogre::TexturePtr ogre_texture = Ogre::TextureManager::getSingleton().loadRawData(Rocket::Core::String(16, "%d", texture_id++).CString(),
+										     "Rocket",
+										     data_stream,
+										     source_dimensions.x,
+										     source_dimensions.y,
+										     Ogre::PF_A8B8G8R8,
+										     Ogre::TEX_TYPE_2D,
+										     0);
+  if (ogre_texture.isNull())
+    return false;
 
-	Ogre::TexturePtr ogre_texture = Ogre::TextureManager::getSingleton().loadRawData(Rocket::Core::String(16, "%d", texture_id++).CString(),
-																					 "Rocket",
-																					 Ogre::DataStreamPtr(new Ogre::MemoryDataStream((void*) source, source_dimensions.x * source_dimensions.y * sizeof(unsigned int))),
-																					 source_dimensions.x,
-																					 source_dimensions.y,
-																					 Ogre::PF_A8B8G8R8,
-																					 Ogre::TEX_TYPE_2D,
-																					 0);
-
-	if (ogre_texture.isNull())
-		return false;
-
-	texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(new RocketOgre3DTexture(ogre_texture));
-	return true;
+  texture_handle = reinterpret_cast<Rocket::Core::TextureHandle>(new RocketOgre3DTexture(ogre_texture));
+  return true;
 }
 
 // Called by Rocket when a loaded texture is no longer required.

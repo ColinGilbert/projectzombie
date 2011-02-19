@@ -26,7 +26,7 @@ THE SOFTWARE.
 #include "gui/GuiController.h"
 #include "EngineController.h"
 #include "gui/DocumentManager.h"
-#include <ElementStyle.h>
+
 using namespace ZGame::Gui;
 
 Screens::Screens(GuiController* guiCtrl, const Rocket::Core::String &name) : _guiCtrl(guiCtrl), _name(name),

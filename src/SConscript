@@ -11,11 +11,21 @@ files.append(File(Glob('net/*.cpp')))
 #disable opensteer. We're not using it. And it doesn't compile on Linux g++ 4.4
 #files.append(File(Glob('opensteer/*.cpp')))
 files.append(File(Glob('utilities/*.cpp')))
-files.append(File(Glob('view/*.cpp')))
+
+#print Glob('view/[!]*.cpp', strings=True)
+
+files.append(File(Glob('view/[!PingPong|!WhiteNoiseView|!GPU]*.cpp')))
+files.append(File(Glob('view/ogreconsole.cpp'))) #HACK. I can't get exclusion to work.
+files.append(File(Glob('view/Workspace.cpp')))
+files.append(File(Glob('view/GraphicsController.cpp')))
 files.append(File(Glob('ZCL/*.cpp')))
 files.append(File(Glob('world/*.cpp')))
 files.append(File(Glob('graphics/*.cpp')))
-#files.append(File(Glob('ogre/*.cpp')))
+files.append(File(Glob('geometry/*.cpp')))
+files.append(File(Glob('gui/*.cpp')))
+files.append(File(Glob('toolset/*.cpp')))
+
+
 Import('env')
 
 

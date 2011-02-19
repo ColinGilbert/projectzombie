@@ -208,7 +208,7 @@ OgreBulletDynamics::RigidBody*
     using namespace OgreBulletDynamics;
     using namespace OgreBulletCollisions;
 
-    assert(_manual && "Trying to let Physics Manager create a object from a null manual object.");
+    assert(manual && "Trying to let Physics Manager create a object from a null manual object.");
     //if(!currentBody)
     //{
     if(manual->getNumSections() == 0)

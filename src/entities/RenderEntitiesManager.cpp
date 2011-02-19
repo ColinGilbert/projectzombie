@@ -1,6 +1,6 @@
 #include <iostream>
 
-//#define VTFINST
+#define VTFINST
 //#define CROWD 1
 using std::cout;
 using std::endl;
@@ -131,12 +131,12 @@ bool
 
     _instancesRoot = _scnMgr->getRootSceneNode()->createChildSceneNode("RDR_ENTITIES_ROOT");
 
-    cout << "IM_USE16BIT: " << IM_USEALL << endl;
-    cout << "IM_USEVTFBESTFIT" << IM_VTFBESTFIT << endl;
+    //cout << "IM_USE16BIT: " << Ogre::IM_USEALL << endl;
+    //cout << "IM_USEVTFBESTFIT" << Ogre::IM_VTFBESTFIT << endl;
 
     if(_instMgr == 0)
         _instMgr = _scnMgr->createInstanceManager("MyInstanceMgr", "robot.mesh", ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
-        Ogre::InstanceManager::TextureVTF, numOfEnts, Ogre::IM_USEALL);
+        Ogre::InstanceManager::TextureVTF, numOfEnts);
 
     //size_t recommendedBatchSize = _instMgr->getMaxOrBestNumInstancesPerBatch("BlueVTF", 300, IM_VTFBESTFIT);
     cout << "------------------------RECOMMENDED SIZE---------------------------" << endl;

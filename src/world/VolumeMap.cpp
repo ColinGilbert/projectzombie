@@ -233,7 +233,7 @@ void
 {
 
     assert(_volSizeInBlocks >= WORLD_BLOCK_WIDTH && "Invalid num of pages.");
-    assert((_volSizeInBlocks % WORLD_BLOCK_WDITH == 0) && "numOfPages per axis MUST be a multiple of WORLD_BLOCK_SIZE");
+    assert((_volSizeInBlocks % WORLD_BLOCK_WIDTH == 0) && "numOfPages per axis MUST be a multiple of WORLD_BLOCK_SIZE");
     size_t powerOfTwoSize = WORLD_BLOCK_WIDTH; //It should be no less than this.
     while(_volSizeInBlocks != powerOfTwoSize && _volSizeInBlocks % powerOfTwoSize != _volSizeInBlocks)
     {

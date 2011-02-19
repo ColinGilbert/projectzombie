@@ -11,8 +11,8 @@
 * \file This file defines interface for a Volume Map generator which is based on lib noise.
 *
 */
-#include <noise.h>
-#include <noiseutils.h>
+#include <Noise.h>
+#include <NoiseUtils.h>
 #include "ZPrerequisites.h"
 #include "world/MapGenerator.h"
 #include "world/WorldDefs.h"

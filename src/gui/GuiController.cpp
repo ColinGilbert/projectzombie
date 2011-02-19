@@ -16,6 +16,10 @@ using namespace ZGame::Gui;
 GuiController::GuiController() : _data_path(""), FONT_PATH(""), _vp(0), _gui2d(0),
     ogre_system(0), ogre_renderer(0), _debugScreen(0), _isFirstScreenAdded(false),
     _transitionLock(false), _eventListenerRegistered(false)
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+			       ,_display(0)
+#endif
+
 {
     _fontStrVec.push_back("font/Delicious-Roman.otf");
     _fontStrVec.push_back("font/Delicious-Bold.otf");
@@ -288,6 +292,11 @@ bool
     debug << "in GuiController onInit\n";
 
     mKeyboard = initPacket->keyboard;
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+    initPacket->renderWindow->getCustomAttribute("DISPLAY",
+						 _display);
+
+#endif
 
     try
     {
@@ -751,7 +760,7 @@ int
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 
     XKeyboardState keyboard_state;
-    XGetKeyboardControl(DISPLAY!, &keyboard_state);
+    XGetKeyboardControl(_display, &keyboard_state);
 
     if (keyboard_state.led_mask & (1 << 0))
         modifier_state |= Rocket::Core::Input::KM_CAPSLOCK;

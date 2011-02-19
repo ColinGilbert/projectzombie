@@ -9,7 +9,7 @@
 #define ZOMBIEDEFS_H_
 
 //#define OIS_DYNAMIC_LIB
-#include <OIS\OIS.h>
+#include "ZPrerequisites.h"
 #include "fastdelegate/FastDelegate.h"
 
 namespace ZGame

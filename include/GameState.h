@@ -56,11 +56,11 @@ namespace ZGame
         GameState(); //protected constructor
 
         virtual void
-            GameState::regLfcObsForInjection(LifeCycleRegister &lfcReg);
+            regLfcObsForInjection(LifeCycleRegister &lfcReg);
         virtual void
-            GameState::regKeyObsForInjection(KeyEventRegister &keyReg);
+            regKeyObsForInjection(KeyEventRegister &keyReg);
         virtual void
-            GameState::regMouseObsForInjection(MouseEventRegister &mouseReg);
+            regMouseObsForInjection(MouseEventRegister &mouseReg);
 
     protected:
     private:

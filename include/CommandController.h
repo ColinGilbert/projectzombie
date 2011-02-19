@@ -45,12 +45,11 @@ THE SOFTWARE.
 #include "Controller.h"
 #include "CommandDelegates.h"
 
+
 namespace ZGame
-{
-   
-    
-    class OgreConsole; 
-    
+{ 
+  class OgreConsole;
+
     namespace COMMAND
     {       
         class CommandList;
@@ -59,8 +58,8 @@ namespace ZGame
     }
 
     using COMMAND::CommandList;
-
-    class OgreConsole;
+    
+    
     using COMMAND::COMMAND_KEY;
     using fastdelegate::DelegateMemento;
     using ZGame::COMMAND::Command;

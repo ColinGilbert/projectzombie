@@ -98,9 +98,7 @@ void
     default:
         break;
     }
-    std::for_each(_listenerMap.begin(), _listenerMap.end(), [this](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
-        iter.second->onChange(this);
-    });
+    _informListeners(ONCHANGE_EVENT);
 }
 
 bool
@@ -111,12 +109,22 @@ bool
 void
     ToolsetController::_informListeners(unsigned int event)
 {
+  for(auto iter = _listenerMap.begin(); iter != _listenerMap.end(); ++iter)
+    {
+      if(event & ToolsetController::ONCHANGE_EVENT)
+            iter->second->onChange(this);
+        if(event & ToolsetController::ONCURSOR3DPOSITION_EVENT)
+            iter->second->onSetCursor3dPosition(this);
+    }
+  /* //Let's not use lambda. On one of my boxes g++4.4 is the default. I don't feel like going through the trouble of recompile this project's depdencies using
+     //gcc 4.5
     std::for_each(_listenerMap.begin(), _listenerMap.end(), [this, event](std::pair<ToolsetControllerListener*, ToolsetControllerListener*> iter) {
         if(event & ToolsetController::ONCHANGE_EVENT)
             iter.second->onChange(this);
         if(event & ToolsetController::ONCURSOR3DPOSITION_EVENT)
             iter.second->onSetCursor3dPosition(this);
     });
+  */
 }
 
 bool
