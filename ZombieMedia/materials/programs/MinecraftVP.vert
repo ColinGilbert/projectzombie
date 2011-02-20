@@ -9,8 +9,6 @@ uniform mat4 worldViewProjMatrix;
 attribute vec4 vertex;
 attribute vec4 uv0;
 
-
-varying vec4 position;
 varying vec4 worldPos;
 varying vec4 textureAtlasOffset;
 const float ATLAS_WIDTH = 4096.0;
@@ -19,10 +17,8 @@ const float eOffset = TEX_WIDTH / ATLAS_WIDTH;
 
 void main(void)
 {
-  position = worldViewProjMatrix * vertex;
-  worldPos = abs(position + vec4(0.5f, 0.5f, 0.5f, 0.5f));
-
-  gl_Position = position;
+  gl_Position = worldViewProjMatrix * vertex;
+  worldPos = abs(vertex + vec4(0.5f, 0.5f, 0.5f, 0.5f));
 
   float idx = uv0.x * 256.0 - 1;
   float blocky = floor(idx / 16.0);

@@ -122,7 +122,7 @@ bool
     fadeColour *= 0.0001f;
     _scnMgr->setFog(Ogre::FOG_NONE);
     //_initBackgroundHdr();
-    //_vp->setBackgroundColour(fadeColour);
+    _vp->setBackgroundColour(fadeColour);
 
     this->_parseHDRConfig();
 
@@ -161,9 +161,9 @@ void
 {
     _skyX.reset(new SkyX::SkyX(_scnMgr, _vp->getCamera()));
     _skyX->create();
-    //_skyX->getGPUManager()->addGroundPass(
-      //  static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-        //getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
+    _skyX->getGPUManager()->addGroundPass(
+        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
+        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
 
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
@@ -385,23 +385,11 @@ bool
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
 
     Real turbulence = 3.5;
-
-#if 0
-    //_SHC_R[0] = 1.0f; _SHC_G[0] = 1.0f; _SHC_G[
-
-    /*
-    for(size_t i = 0; i < NUM_OF_BANDS * 4; i++)
-    {
-    _SHC_R[i] = 1.0f;
-    _SHC_G[i] = 0.0f;
-    _SHC_B[i] = 0.0f;
-    }*/
-#endif
     
     if(xyz.y >= 0.0f)
     {
-        CalculatePreethamSH(theta.valueRadians(),phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 1.0f);
-        CalculateSunSH(theta.valueRadians(), phi.valueRadians(), turbulence, NUM_OF_BANDS, _SHC_R, _SHC_G, _SHC_B, 1.0);
+        CalculatePreethamSH(theta.valueRadians(),phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 0.000035f);
+        CalculateSunSH(theta.valueRadians(), phi.valueRadians(), turbulence, NUM_OF_BANDS, _SHC_R, _SHC_G, _SHC_B, 0.000035f);
     }
     Ogre::MaterialPtr matPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"));
     Ogre::Pass* pass = matPtr->getTechnique(0)->getPass(0);

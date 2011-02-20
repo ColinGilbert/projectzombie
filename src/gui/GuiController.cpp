@@ -432,7 +432,7 @@ bool
     {
         _gui2d->Update();
         ConfigureRenderSystem();
-        _gui2d->Render();
+        //_gui2d->Render();
     }
     return true;
 }

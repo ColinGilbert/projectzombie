@@ -18,9 +18,7 @@ uniform float SHC_B_8; uniform float SHC_B_9; uniform float SHC_B_10; uniform fl
 uniform float SHC_B_13; uniform float SHC_B_14; uniform float SHC_B_15; uniform float SHC_B_16; uniform float SHC_B_17;
 
 uniform float uLightY;
-uniform float texOffet;
 
-varying vec4 position;
 varying vec4 worldPos;
 varying vec4 textureAtlasOffset;
 
@@ -65,8 +63,8 @@ void main()
  vec3 normal = cross(dFdy(worldPos.xyz), dFdx(worldPos.xyz));
  normal = normalize(normal);
 
- vec3 n = vec3(-normal.z, -normal.x, normal.y);
-
+ vec3 n = vec3(normal.z, normal.x, -normal.y);
+ //vec3 n = normal;
  vec4 diffuseColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
   diffuseColor.xyz =  C1 * L22 * (n.x * n.x - n.y * n.y) +
@@ -92,7 +90,7 @@ void main()
     d8 * L44 * (n.x*n.y*(n.x*n.x-n.y*n.y));
 #endif
 
-  diffuseColor *= 0.000035f;
+  //diffuseColor *= 0.000035f;
   
   vec2 uv0 = vec2(1.0, 1.0);
   if(normal.x > 0.5)
@@ -136,6 +134,5 @@ void main()
   nightMulti = 1.0;
   if(uLightY < 0.0)
     nightMulti = mix(0.05, 0.1, -uLightY);
-  
   gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
 }

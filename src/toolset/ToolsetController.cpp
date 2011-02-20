@@ -202,14 +202,9 @@ bool
     ToolsetController::getConstraintPlane(const Ogre::Ray &ray, Ogre::Plane &plane)
 {
     using namespace Ogre;
-    Ogre::AxisAlignedBox selectAABB;
-    unsigned int whichCorner = 0;
     ToolInfo* cursor = _toolMgr->getTool(_cursorId);
     ToolInfo* anchor = _toolMgr->getTool(_cursorBlueId);
  
-    _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition(),
-        whichCorner);
-
     /*
     *This perhaps is a dumb method. All we're doing, we're determine which plane to constraint to based on view direction of ray.
     */
@@ -224,8 +219,6 @@ bool
     //project view vector into z,x plane.
     Ogre::Vector3 view = ray.getDirection();
     view.y = 0.0f;
-    std::cout << "View vector: " << view << std::endl;
-    std::cout << "View distance: " << view.squaredLength() << std::endl;
     if(view.squaredLength() <= 0.001f)
         return false;
     
@@ -241,23 +234,6 @@ bool
         plane = xPlane;
 
     return true;
-    //planeNormal = (selectAABB.getCorner(AxisAlignedBox::NEAR_RIGHT_TOP) - selectAABB.getCorner(AxisAlignedBox::FAR_RIGHT_TOP)).
-      //          normalisedCopy();
-    //plane.redefine(planeNormal, cursor->getNode()->getPosition());
-    /*
-    switch(whichCorner)
-    {
-        case AxisAlignedBox::NEAR_RIGHT_TOP:
-        case AxisAlignedBox::NEAR_LEFT_TOP:    
-            
-            break;
-        case AxisAlignedBox::FAR_LEFT_TOP:
-        case AxisAlignedBox::FAR_RIGHT_TOP:
-            plane.redefine(planeNormal, cursor->getNode()->getPosition());
-            break;
-        default:
-            break;
-    }*/
 }
 
 void

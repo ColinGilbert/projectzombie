@@ -134,7 +134,7 @@ float4 main_fp(
     d8 * L44 * (n.x*n.y*(n.x*n.x-n.y*n.y));
 #endif
 
-  diffuseColor *= 0.000035;
+  //diffuseColor *= 0.000035;
 
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)

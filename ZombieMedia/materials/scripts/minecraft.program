@@ -88,16 +88,16 @@ fragment_program MinecraftGeom_glsl_ps glsl
 	}
 }
 
-vertex_program MinecraftGeom_vs
+vertex_program MinecraftGeom_vs unified
 {
-	delegate MinecraftGeom_glsl_vs;
-	delegate MinecraftGeom_hlsl_vs;
+	delegate MinecraftGeom_glsl_vs
+	delegate MinecraftGeom_hlsl_vs
 }
 
-fragment_program MinecraftGeom_ps
+fragment_program MinecraftGeom_ps unified
 {
-	delegate MinecraftGeom_hlsl_ps;
-	delegate MinecraftGeom_glsl_ps;
+	delegate MinecraftGeom_hlsl_ps
+	delegate MinecraftGeom_glsl_ps
 }
 
 
@@ -161,13 +161,13 @@ fragment_program PRJZ/HDRBackground_glsl_ps glsl
 	}
 }
 
-vertex_program PRJZ/HDRBackground_vs
+vertex_program PRJZ/HDRBackground_vs unified
 {
 	delegate PRJZ/HDRBackground_hlsl_vs
 	delegate PRJZ/HDRBackground_glsl_vs
 }
 
-fragment_program PRJZ/HDRBackground_ps
+fragment_program PRJZ/HDRBackground_ps unified
 {
 	delegate PRJZ/HDRBackground_hlsl_ps
 	delegate PRJZ/HDRBackground_glsl_ps
