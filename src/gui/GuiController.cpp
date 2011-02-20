@@ -294,7 +294,11 @@ bool
     mKeyboard = initPacket->keyboard;
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
     initPacket->renderWindow->getCustomAttribute("DISPLAY",
-						 _display);
+						 &_display);
+    if(!_display)
+      OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,
+		  "Cannot find custom attribute DISPLAY",
+		  "GuiController::onInit");
 
 #endif
 

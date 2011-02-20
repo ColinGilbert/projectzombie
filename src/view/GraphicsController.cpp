@@ -121,7 +121,7 @@ bool
     Ogre::ColourValue fadeColour(0.109f, 0.417f, 0.625f);
     fadeColour *= 0.0001f;
     _scnMgr->setFog(Ogre::FOG_NONE);
-    _initBackgroundHdr();
+    //_initBackgroundHdr();
     //_vp->setBackgroundColour(fadeColour);
 
     this->_parseHDRConfig();

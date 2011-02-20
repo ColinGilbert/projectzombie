@@ -1,12 +1,24 @@
 """
 This is the SConscript file which will build the files in the sub dir.
 """
+
+def excludeFiles(files, exclude):
+    retF = []
+    for f in files:
+        notExcluded = True
+        for ex in exclude:
+            if f == ex:
+                notExcluded = False
+        if notExcluded:
+            retF.append(f)
+    return retF
+
+
 #Get the files for projectz lib
 files = []
 #manually build the files. I now we can automate this. but that invovles more coding than I care for right now.
 files.append(File(Glob('command/*.cpp')))
 files.append(File(Glob('entities/*.cpp')))
-files.append(File(Glob('model/*.cpp')))
 files.append(File(Glob('net/*.cpp')))
 #disable opensteer. We're not using it. And it doesn't compile on Linux g++ 4.4
 #files.append(File(Glob('opensteer/*.cpp')))
@@ -14,10 +26,32 @@ files.append(File(Glob('utilities/*.cpp')))
 
 #print Glob('view/[!]*.cpp', strings=True)
 
-files.append(File(Glob('view/[!PingPong|!WhiteNoiseView|!GPU]*.cpp')))
-files.append(File(Glob('view/ogreconsole.cpp'))) #HACK. I can't get exclusion to work.
-files.append(File(Glob('view/Workspace.cpp')))
-files.append(File(Glob('view/GraphicsController.cpp')))
+exclusionList = ["model/GPUEntities.cpp",
+                 "model/Imposter.cpp",
+                 "model/GPUEntsGenProps.cpp",
+                 "view/GPUEntsMeshBuilder.cpp",
+                 "view/GPUEntsGen.cpp",
+                 "view/GPUEntsView.cpp",
+                 "view/GPUEntsControl.cpp",
+                 "view/ImposterGen.cpp",
+                 "view/ImposterView.cpp",
+                 "view/PingPongShaders.cpp",
+                 "view/WhiteNoiseView.cpp"
+]
+
+sourceFiles = Glob("view/*.cpp", strings=True)
+sourceFiles = excludeFiles(sourceFiles, exclusionList)
+files.append(File(sourceFiles))
+
+sourceFiles = Glob('model/*.cpp', strings=True)
+sourceFiles = excludeFiles(sourceFiles, exclusionList)
+files.append(File(sourceFiles))
+
+
+#files.append(File(Glob('view/[!PingPong|!WhiteNoiseView|!GPU]*.cpp')))
+#files.append(File(Glob('view/ogreconsole.cpp'))) #HACK. I can't get exclusion to work.
+#files.append(File(Glob('view/Workspace.cpp')))
+#files.append(File(Glob('view/GraphicsController.cpp')))
 files.append(File(Glob('ZCL/*.cpp')))
 files.append(File(Glob('world/*.cpp')))
 files.append(File(Glob('graphics/*.cpp')))

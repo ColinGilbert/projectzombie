@@ -41,7 +41,7 @@ bool InputController::onInit(Ogre::RenderWindow* window)
     }
 #elif defined OIS_LINUX_PLATFORM
     {
-        paramList.insert(std::make_pair(std::string("x11_mouse_grab"),std::string("true") ));
+        paramList.insert(std::make_pair(std::string("x11_mouse_grab"),std::string("false") ));
         window->getCustomAttribute("WINDOW",&winHnd);
     }
 #endif
