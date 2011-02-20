@@ -7,12 +7,7 @@ struct VS_OUT
 {
   float4 pos : POSITION;
   float4 worldPos : TEXCOORD2;
-  float3 diffuseUV : TEXCOORD0;
   float4 textureAtlasOffset : TEXCOORD1;
-  //float2 fogExponent : TEXCOORD3;
-  //float4 lightSpacePos0 : TEXCOORD2;
-  //float4 lightSpacePos1 : TEXCOORD3;
-  //float4 lightSpacePos2 : TEXCOORD4;
 };
 
 void caster_vs(
@@ -39,27 +34,12 @@ void caster_ps(
 
 #define ATLAS_WIDTH 4096.0
 #define TEX_WIDTH 256.0
-#define BlockOffset TEX_WIDTH / ATLAS_WIDTH
 #define eOffset TEX_WIDTH / ATLAS_WIDTH
 
 VS_OUT main_vp(
 	       float4 pos : POSITION,
-	       //float3 tangent : TANGENT0,
-	       //float3 normal1 : NORMAL,
 	       float4 uv1 : TEXCOORD0,
-	       //float4 uv0 : TEXCOORD1,
-	       uniform float4x4 worldViewProj,
-	       uniform float4x4 worldView,
-	       uniform float4x4 worldMat,
-	       uniform float3 sundir
-	       //uniform float4 lightPosition,
-	       //uniform float3 lightDiffuse,
-	       //    uniform float4 depthRange0,
-	       //uniform float4 depthRange1,
-	       //uniform float4 depthRange2,
-	       //uniform float4x4 texWorldViewProjMatrix0,
-	       //uniform float4x4 texWorldViewProjMatrix1,
-	       //uniform float4x4 texWorldViewProjMatrix2
+	       uniform float4x4 worldViewProj
 	       )
 {
 
@@ -67,7 +47,6 @@ VS_OUT main_vp(
   outp.pos = mul(worldViewProj, pos);
 
   outp.worldPos = abs(pos + float4(0.5f, 0.5f, 0.5f, 0.5f));//mul(worldMat, pos);
-  outp.diffuseUV = float3(0.0f, 0.0f, 0.0f);
   outp.textureAtlasOffset = float4(0.0f, 0.0f, 0.0f, 0.0f);
  
   float idx = uv1.x * 256.0 -1;
@@ -88,8 +67,7 @@ float4 main_fp(
 	       uniform float SHC_G_0,uniform float SHC_G_1,uniform float SHC_G_2,uniform float SHC_G_3,uniform float SHC_G_4,uniform float SHC_G_5,uniform float SHC_G_6,uniform float SHC_G_7,uniform float SHC_G_8, uniform float SHC_G_9, uniform float SHC_G_10, uniform float SHC_G_11, uniform float SHC_G_12, uniform float SHC_G_13, uniform float SHC_G_14, uniform float SHC_G_15, uniform float SHC_G_16, uniform float SHC_G_17,
 	       uniform float SHC_B_0,uniform float SHC_B_1,uniform float SHC_B_2,uniform float SHC_B_3,uniform float SHC_B_4,uniform float SHC_B_5,uniform float SHC_B_6,uniform float SHC_B_7,uniform float SHC_B_8, uniform float SHC_B_9, uniform float SHC_B_10, uniform float SHC_B_11, uniform float SHC_B_12, uniform float SHC_B_13, uniform float SHC_B_14, uniform float SHC_B_15, uniform float SHC_B_16, uniform float SHC_B_17,
 	       //#endif
-	       uniform float uLightY,
-	       uniform float texOffset
+	       uniform float uLightY
 	       ) : COLOR
 {
 

@@ -28,24 +28,9 @@ vertex_program MinecraftVP_cg hlsl
 	//profiles vs_3_0 
 	entry_point main_vp
 	target vs_3_0
-	//compile_arguments -NUM_OF_COEFF=3 -ATLAS_WIDTH=4096.0 -TEX_WIDTH=256.0
 	default_params
 	{
 		param_named_auto worldViewProj	worldviewproj_matrix
-		//param_named_auto worldView  worldview_matrix
-		param_named_auto worldMat world_matrix
-		//param_named_auto lightPosition	light_position_object_space 0
-		param_named_auto eyePos	camera_position_object_space
-		//param_name int NUM_OF_COEF 3
-		//param_name float ATLAS_WIDTH 2048.0
-		//param_name float TEX_WIDTH 256.0
-		
-		//param_named_auto texWorldViewProjMatrix0	texture_worldviewproj_matrix 0
-		//param_named_auto texWorldViewProjMatrix1	texture_worldviewproj_matrix 1
-		//param_named_auto texWorldViewProjMatrix2	texture_worldviewproj_matrix 2
-		//param_named_auto depthRange0			shadow_scene_depth_range 0  
-		//param_named_auto depthRange1			shadow_scene_depth_range 1
-		//param_named_auto depthRange2			shadow_scene_depth_range 2
 	}
 }
 fragment_program MinecraftFP_cg hlsl
@@ -56,19 +41,10 @@ fragment_program MinecraftFP_cg hlsl
 	target ps_3_0
 	default_params
 	{
-		param_named texOffset float 0.0
-
-		//param_named_auto lightDiffuse	derived_light_diffuse_colour 0
-		//param_named_auto lightSpecular	derived_light_specular_colour 0
-		//param_named_auto ambient	derived_ambient_light_colour
-		//param_named_auto inverseShadowmapSize0	inverse_texture_size 0
-		//param_named_auto inverseShadowmapSize1	inverse_texture_size 1
-		//param_named_auto inverseShadowmapSize2	inverse_texture_size 2
-		//param_named pssmSplitPoints MANUAL
 	}
 
 }
-vertex_program MinecraftGeom_vs hlsl
+vertex_program MinecraftGeom_hlsl_vs hlsl
 {
 	source Minecraft.cg
 	//profiles vs_3_0
@@ -81,7 +57,7 @@ vertex_program MinecraftGeom_vs hlsl
 	}
 }
 
-fragment_program MinecraftGeom_ps hlsl
+fragment_program MinecraftGeom_hlsl_ps hlsl
 {
 	source Minecraft.cg
 	//profiles ps_3_0
@@ -91,6 +67,37 @@ fragment_program MinecraftGeom_ps hlsl
 	{
 		param_named_auto far far_clip_distance
 	}
+}
+
+vertex_program MinecraftGeom_glsl_vs glsl
+{
+	source MinecraftGeom.vert
+	default_params
+	{
+		param_named_auto wvpMat worldviewproj_matrix
+		param_named_auto wvMat worldview_matrix
+	}
+}
+
+fragment_program MinecraftGeom_glsl_ps glsl
+{
+	source MinecraftGeom.frag
+	default_params
+	{
+		param_named_auto far far_clip_distance
+	}
+}
+
+vertex_program MinecraftGeom_vs
+{
+	delegate MinecraftGeom_glsl_vs;
+	delegate MinecraftGeom_hlsl_vs;
+}
+
+fragment_program MinecraftGeom_ps
+{
+	delegate MinecraftGeom_hlsl_ps;
+	delegate MinecraftGeom_glsl_ps;
 }
 
 
@@ -103,16 +110,6 @@ vertex_program MinecraftVP_glsl glsl
 	default_params
 	{
 		param_named_auto	worldViewProjMatrix	worldviewproj_matrix
-		param_named_auto lightPosition				light_position_object_space 0
-		param_named_auto eyePosition				camera_position_object_space
-		param_named_auto texWorldViewProjMatrix0	texture_worldviewproj_matrix 0
-		param_named_auto texWorldViewProjMatrix1	texture_worldviewproj_matrix 1
-		param_named_auto texWorldViewProjMatrix2	texture_worldviewproj_matrix 2
-		//param_named_auto depthRange0				shadow_scene_depth_range 0
-		//param_named_auto	LightPosition	light_position int 0
-		param_named_auto depthRange0				shadow_scene_depth_range 0
-		param_named_auto depthRange1				shadow_scene_depth_range 1
-		param_named_auto depthRange2				shadow_scene_depth_range 2
 	}
 }
 
@@ -122,16 +119,10 @@ fragment_program MinecraftFP_glsl glsl
 	source MinecraftFP.frag
 	default_params
 	{
-		param_named_auto lightDiffuse		derived_light_diffuse_colour 0
-		param_named_auto lightSpecular		derived_light_specular_colour 0
-		param_named_auto ambient			derived_ambient_light_colour 
-		param_named_auto invShadowMapSize0	inverse_texture_size 0
-		param_named_auto invShadowMapSize1	inverse_texture_size 1
-		param_named_auto invShadowMapSize2	inverse_texture_size 2
 	}
 }
 
-vertex_program PRJZ/HDRBackground_vs hlsl
+vertex_program PRJZ/HDRBackground_hlsl_vs hlsl
 {
 	source HDRBackground.cg
 	target vs_3_0 
@@ -139,13 +130,11 @@ vertex_program PRJZ/HDRBackground_vs hlsl
 	default_params
 	{
 		param_named_auto	vprjMat viewproj_matrix	
-		param_named_auto	prjMat  project_matrix
-
 	}
 }
 
 
-fragment_program PRJZ/HDRBackground_ps hlsl
+fragment_program PRJZ/HDRBackground_hlsl_ps hlsl
 {
 	source HDRBackground.cg
 	target ps_3_0 
@@ -153,4 +142,33 @@ fragment_program PRJZ/HDRBackground_ps hlsl
 	default_params
 	{
 	}
+}
+
+vertex_program PRJZ/HDRBackground_glsl_vs glsl
+{
+	source HDRBackground.vert
+	default_params
+	{
+		param_named_auto	viewProjectionMatrix viewproj_matrix
+	}
+}
+
+fragment_program PRJZ/HDRBackground_glsl_ps glsl
+{
+	source HDRBackground.frag
+	default_params
+	{
+	}
+}
+
+vertex_program PRJZ/HDRBackground_vs
+{
+	delegate PRJZ/HDRBackground_hlsl_vs
+	delegate PRJZ/HDRBackground_glsl_vs
+}
+
+fragment_program PRJZ/HDRBackground_ps
+{
+	delegate PRJZ/HDRBackground_hlsl_ps
+	delegate PRJZ/HDRBackground_glsl_ps
 }

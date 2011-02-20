@@ -136,7 +136,7 @@ namespace ZGame
                 VolumePage(size_t pageSize, size_t pageHeight,
                     size_t sharedBlockSize = 32, 
                     size_t uncompressedCacheSize = 4) :
-                  data(pageSize, pageHeight, pageSize, 32)
+                  data(pageSize, pageHeight, pageSize, sharedBlockSize)
                   {
                       data.setBorderValue(PolyVox::Material8(0));
                   }

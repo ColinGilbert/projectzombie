@@ -53,13 +53,13 @@ material PRJZ/PSSM/shadow_caster
 vertex_program PRJZ/PSSM/shadow_reciever_vs unified
 {
 	delegate MinecraftVP_cg
-	//delegate MinecraftVP_glsl
+	delegate MinecraftVP_glsl
 }
 
 fragment_program PRJZ/PSSM/shadow_reciever_ps unified
 {
 	delegate MinecraftFP_cg
-	//delegate MinecraftFP_glsl
+	delegate MinecraftFP_glsl
 }
 
 
@@ -156,24 +156,24 @@ material PRJZ/Minecraft
 	// this is the technique for the scheme "geom" that the SSAO
     // compositor uses to render the geometry map
 	
-	technique geom
-	{
-	   scheme geom
+	//technique geom
+	//{
+	  // scheme geom
 	    
-	    pass
-	    {
-		depth_write on
+	    //pass
+	    //{
+		//depth_write on
 	    	
 
-	        vertex_program_ref MinecraftGeom_vs
-	        {
-	        }
+	        //vertex_program_ref MinecraftGeom_vs
+	        //{
+	        //}
 
-	        fragment_program_ref MinecraftGeom_ps
-	        {
-	        }
-	    }
-	}		
+	        //fragment_program_ref MinecraftGeom_ps
+	        //{
+	        //}
+	    //}
+	//}		
 }
 
 material testatlas

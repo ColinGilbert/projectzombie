@@ -372,8 +372,6 @@ bool
         BuildKeyMaps();
 
 
-
-
     }catch(Ogre::Exception e)
     {
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, Ogre::String("Failed to initialize Gui system. ").append(e.getDescription()),

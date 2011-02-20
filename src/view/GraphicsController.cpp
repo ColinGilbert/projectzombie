@@ -127,15 +127,13 @@ bool
     this->_parseHDRConfig();
 
 
-    _ogreHdr = CompositorManager::getSingleton().addCompositor(_vp, "HDR", 0);
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(_vp, "HDR", true);
+    //_ogreHdr = CompositorManager::getSingleton().addCompositor(_vp, "HDR", 0);
+    //Ogre::CompositorManager::getSingleton().setCompositorEnabled(_vp, "HDR", true);
 
     _initSkyX();
     _initSSAO();
     //_initHDR(packet->renderWindow, packet->initialCamera);
 
-    _ssaoInstance->setEnabled(true);
-    //_hdrCompositor->Enable(true);
     _bloomInstance = CompositorManager::getSingleton().addCompositor(_vp, "Bloom");
 
     _scnMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
@@ -163,9 +161,9 @@ void
 {
     _skyX.reset(new SkyX::SkyX(_scnMgr, _vp->getCamera()));
     _skyX->create();
-    _skyX->getGPUManager()->addGroundPass(
-        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
+    //_skyX->getGPUManager()->addGroundPass(
+      //  static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
+        //getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
 
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();
@@ -293,6 +291,7 @@ bool
         //_hdrCompositor->Enable(!_hdrCompositor->IsEnabled());
         _ogreHdr->setEnabled(!_ogreHdr->getEnabled());
         break;
+
     case OIS::KC_N:
 
         _bloomInstance->setEnabled(!_bloomInstance->getEnabled());
@@ -374,7 +373,7 @@ bool
     GraphicsController::onUpdate(const Ogre::FrameEvent &evt)
 {
     using namespace Ogre;
-
+    
     //Update HDR
     //_hdrCompositor->SetFrameTime(evt.timeSinceLastFrame);
 
@@ -386,6 +385,7 @@ bool
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
 
     Real turbulence = 3.5;
+
 #if 0
     //_SHC_R[0] = 1.0f; _SHC_G[0] = 1.0f; _SHC_G[
 
@@ -397,31 +397,12 @@ bool
     _SHC_B[i] = 0.0f;
     }*/
 #endif
-
+    
     if(xyz.y >= 0.0f)
     {
         CalculatePreethamSH(theta.valueRadians(),phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 1.0f);
         CalculateSunSH(theta.valueRadians(), phi.valueRadians(), turbulence, NUM_OF_BANDS, _SHC_R, _SHC_G, _SHC_B, 1.0);
     }
-    //_SHC_R[0] = 500.0f;
-    //_SHC_G[0] = 500.0f;
-    //_SHC_B[0] = 500.0f;
-    /*
-    else
-    {
-    theta = Radian(Math::PI - theta.valueRadians());
-    phi = Radian(Math::PI * 2.0f - theta.valueRadians());
-    CalculatePreethamSH(theta.valueRadians(), phi.valueRadians(),turbulence, NUM_OF_BANDS, true, _SHC_R, _SHC_G, _SHC_B, 0.0001f);
-    CalculateSunSH(theta.valueRadians(), phi.valueRadians(), turbulence, NUM_OF_BANDS, _SHC_R, _SHC_G, _SHC_B, 0.0001f);
-    }*/
-
-
-    //theta = Math::ACos(xyz.y).valueRadians();
-    //phi = Math::ATan2(xyz.x, xyz.z).valueRadians();
-
-
-    //
-
     Ogre::MaterialPtr matPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"));
     Ogre::Pass* pass = matPtr->getTechnique(0)->getPass(0);
     size_t idx = 0;
@@ -446,28 +427,13 @@ bool
         pass->getFragmentProgramParameters()->setNamedConstant(nameb,_SHC_B[i]);
         idx++;
     }
+
     //sun direction for light
     //light
-    //static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"))->getTechnique(0)->getPass(0)->
+    
     pass->getFragmentProgramParameters()->setNamedConstant("uLightY", -_skyX->getAtmosphereManager()->getSunDirection().y);
     //pass->getFragmentProgramParameters()->setNamedConstant("uLightY", xyz.y);
-
     _skyX->update(evt.timeSinceLastFrame);
-#if 0
-    if(_timeCount > 1.0f || _timeCount == 0.0f)
-    {
-        for(size_t i = 0; i < NUM_OF_BANDS * NUM_OF_BANDS; i++)
-        {
-            cout << "R,G,B: " << _SHC_R[i] << ", " << _SHC_G[i] << ", " << _SHC_B[i] << endl;
-        }
-
-        cout << "theta, phi: " << theta.valueDegrees() << ", " << phi.valueDegrees() << endl;
-        cout << "sun direction: " << xyz << endl;
-        if(_timeCount > 0.0f)
-            _timeCount = 0.0f;
-    }
-    _timeCount += evt.timeSinceLastFrame;
-#endif
     return true;
 }
 
