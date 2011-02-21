@@ -60,10 +60,10 @@ void main()
  vec3 L43 = vec3(SHC_R_16, SHC_G_16, SHC_B_16);
  vec3 L44 = vec3(SHC_R_17, SHC_G_17, SHC_B_17);
 
- vec3 normal = cross(dFdy(worldPos.xyz), dFdx(worldPos.xyz));
+ vec3 normal = cross(dFdx(worldPos.xyz), dFdy(worldPos.xyz));
  normal = normalize(normal);
 
- vec3 n = vec3(normal.z, normal.x, -normal.y);
+ vec3 n = vec3(-normal.z, -normal.x, normal.y);
  //vec3 n = normal;
  vec4 diffuseColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -95,44 +95,46 @@ void main()
   vec2 uv0 = vec2(1.0, 1.0);
   if(normal.x > 0.5)
     {
-      uv0 = fract(vec2(-worldPos.z, -worldPos.y));
+      uv0 = fract(vec2(-worldPos.z, worldPos.y));
     }
   
   if(normal.x < -0.5)
     {
-      uv0 = fract(vec2(-worldPos.z, worldPos.y));
+      uv0 = fract(vec2(worldPos.z, worldPos.y));
       }
   //top
   
   if(normal.y > 0.5)
     {
-      uv0 = fract(worldPos.xz);
+      uv0 = fract(vec2(worldPos.x, -worldPos.z));
     }
   
   //bottom
   if(normal.y < -0.5)
     {
-      uv0 = fract(vec2(-worldPos.x, worldPos.z));
+      uv0 = fract(vec2(worldPos.x, worldPos.z));
     }
   
   if(normal.z > 0.5)
     {
-      uv0 = fract(vec2(worldPos.x, -worldPos.y));
+      uv0 = fract(vec2(worldPos.x, worldPos.y));
       //uv0 = float2(worldPos.x, -worldPos.y);
     }
   if(normal.z < -0.5)
     {
-      uv0 = fract(vec2(-worldPos.x,-worldPos.y));
+      uv0 = fract(vec2(-worldPos.x,worldPos.y));
     }
   vec4 texAtlasOffset = textureAtlasOffset;
-
+  texAtlasOffset = vec4(0.0, 0.0, 0.0, 0.0);
   texAtlasOffset += vec4(uv0 * 0.5f, 0.0, 0.0) * eOffset;
-  vec4 texDiffuse = texture(diffuseMap, texAtlasOffset.xy);
-  
+  //vec4 texDiffuse = texture(diffuseMap, texAtlasOffset.xy);
+  vec4 texDiffuse = texture2D(diffuseMap, uv0.xy);
   float nightMulti;
 
   nightMulti = 1.0;
-  if(uLightY < 0.0)
-    nightMulti = mix(0.05, 0.1, -uLightY);
-  gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  //if(uLightY < 0.0)
+  //nightMulti = mix(0.05, 0.1, -uLightY);
+  //gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz, 1.0);
+  //gl_FragColor = vec4(, 0.0, 1.0);
 }

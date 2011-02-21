@@ -161,9 +161,9 @@ void
 {
     _skyX.reset(new SkyX::SkyX(_scnMgr, _vp->getCamera()));
     _skyX->create();
-    _skyX->getGPUManager()->addGroundPass(
-        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
-        getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
+    //_skyX->getGPUManager()->addGroundPass(
+      //  static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().
+        //getByName("PRJZ/Minecraft"))->getTechnique(0)->createPass(), 128, Ogre::SBT_TRANSPARENT_COLOUR);
 
     //Upadte SkyX
     SkyX::AtmosphereManager::Options SkyXOptions = _skyX->getAtmosphereManager()->getOptions();

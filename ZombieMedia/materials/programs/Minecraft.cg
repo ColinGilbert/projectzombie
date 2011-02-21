@@ -171,7 +171,7 @@ float4 main_fp(
  
   In.textureAtlasOffset += float4(uv0 * 0.5, 0.0, 0.0) * eOffset; /// 2.0);
   float4 texDiffuse = tex2D(diffuseMap, In.textureAtlasOffset.xy);
-  
+  texDiffuse = tex2D(diffuseMap, uv0);
   float nightMulti;
 
   nightMulti = 1.0;

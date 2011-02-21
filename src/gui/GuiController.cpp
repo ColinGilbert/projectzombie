@@ -432,7 +432,7 @@ bool
     {
         _gui2d->Update();
         ConfigureRenderSystem();
-        //_gui2d->Render();
+        _gui2d->Render();
     }
     return true;
 }
@@ -468,6 +468,9 @@ void
     // Unbind any vertex or fragment programs bound previously by the application.
     render_system->unbindGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM);
     render_system->unbindGpuProgram(Ogre::GPT_VERTEX_PROGRAM);
+
+    //addenum
+    render_system->_setPolygonMode(Ogre::PM_SOLID);
 
     // Set texture settings to clamp along both axes.
     Ogre::TextureUnitState::UVWAddressingMode addressing_mode;

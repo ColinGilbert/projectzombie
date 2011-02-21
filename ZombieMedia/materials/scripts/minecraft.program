@@ -119,6 +119,7 @@ fragment_program MinecraftFP_glsl glsl
 	source MinecraftFP.frag
 	default_params
 	{
+		param_named diffuseMap int 0
 	}
 }
 

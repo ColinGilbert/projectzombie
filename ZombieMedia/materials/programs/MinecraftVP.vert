@@ -18,10 +18,16 @@ const float eOffset = TEX_WIDTH / ATLAS_WIDTH;
 void main(void)
 {
   gl_Position = worldViewProjMatrix * vertex;
-  worldPos = abs(vertex + vec4(0.5f, 0.5f, 0.5f, 0.5f));
-
-  float idx = uv0.x * 256.0 - 1;
+  //worldPos is in local space of the cubes. Since Cube center starts at 
+  //0, thus we need to translate them left by 0.5 units (cube are length 1.0)
+  //so everything is positive.
+  worldPos = vertex + vec4(0.5f, 0.5f, 0.5f, 0.5f);
+  
+  float idx = uv0.x * 256.0 - 1.0;
+  idx = 240.0;
   float blocky = floor(idx / 16.0);
   float blockx = idx - blocky * 16.0;
+  blockx = 0;
+  blocky = 15;
   textureAtlasOffset = vec4(blockx + 0.25f, blocky + 0.25f, 0, 0) * eOffset; //translate to align center.
 }
