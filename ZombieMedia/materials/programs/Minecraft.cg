@@ -1,5 +1,3 @@
-#include "minecraft_shadows.cg"
-
 //#define BIAS 0
 #define SKY 1
 #define FULLBAND 1

@@ -1,66 +1,11 @@
-vertex_program PRJZ/PSSM/shadow_caster_vsGLSL glsl
-{
-	source CasterPSSMVert.glsl
-	
-	default_params
-	{
-		param_named_auto worldViewProjMatrix worldviewproj_matrix
-		param_named_auto depthRange scene_depth_range 0
-	}
-}
-
-fragment_program PRJZ/PSSM/shadow_caster_psGLSL glsl
-{
-	source CasterPSSMFrag.glsl
-	default_params
-	{
-	}
-}
-
-vertex_program PRJZ/PSSM/shadow_caster_vs unified
-{
-	delegate PRJZ/PSSM/shadow_caster_vs
-	//delegate PRJZ/PSSM/shadow_caster_vsGLSL
-}
-
-fragment_program PRJZ/PSSM/shadow_caster_ps unified
-{
-	delegate PRJZ/PSSM/shadow_caster_ps
-	//delegate PRJZ/PSSM/shadow_caster_psGLSL
-}
 
 
-
-
-material PRJZ/PSSM/shadow_caster
-{
-	technique
-	{
-		// all this will do is write depth and depth² to red and green
-		pass
-		{
-			vertex_program_ref PRJZ/PSSM/shadow_caster_vs
-			{
-			}
-
-			fragment_program_ref PRJZ/PSSM/shadow_caster_ps 
-			{
-			}
-		}
-	}	
-}
 
 material PRJZ/Minecraft
 {
 	technique Lighting
 	{
-		//shadow_caster_material PRJZ/PSSM/shadow_caster
-		//pass
-		//{
-			//diffuse vertexcolour
-			//lighting off
-			//alpha_rejection greater_equal 128
-		//}
+	
 		pass
 		{
 			//ambient 1 1 1 1

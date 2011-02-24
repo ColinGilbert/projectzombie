@@ -36,7 +36,7 @@
 #include "entities/ZEntityBuilder.h"
 #include "ZCL/ZCLController.h"
 #include "GraphicsController.h"
-#include "entities/EntitiesView.h"
+
 #include "ZWorkspace.h"
 #include "ZWorkspaceController.h"
 

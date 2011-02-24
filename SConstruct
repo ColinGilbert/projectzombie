@@ -48,7 +48,7 @@ env.Append( CPPPATH = Split(includes))
 env.Append( LIBPATH = Split(libpath))
 env.Append( LIBS = Split(libs))
 #env.Append( CPPFLAGS = ['-ggdb'])
-env.Append( CPPFLAGS = ['-O3','-std=c++0x','-enable-checking=none' ]) #build with optimization level 2 AND output debug info.
+env.Append( CPPFLAGS = ['-DNDEBUG','-O3','-std=c++0x','-enable-checking=none' ]) #build with optimization level 2 AND output debug info.
 #env.Append( CCFLAGS = [])
 print env['CXXCOM'] + "\n"
 print env['_CCCOMCOM'] + "\n"

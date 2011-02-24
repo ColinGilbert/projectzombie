@@ -1,61 +1,40 @@
-vertex_program PRJZ/PSSM/shadow_caster_vs cg
+vertex_program MinecraftVP_cg cg
 {
 	source Minecraft.cg
-	profiles vs_3_x arbvp1
-	entry_point caster_vs
-	default_params
-	{
-	param_named_auto wvpMat worldviewproj_matrix
-	
-	}
-}
-
-fragment_program PRJZ/PSSM/shadow_caster_ps cg
-{
-	source Minecraft.cg
-	profiles ps_3_x arbfp1
-	entry_point caster_ps
-	default_params
-	{
-	}
-}
-
-
-
-vertex_program MinecraftVP_cg hlsl
-{
-	source Minecraft.cg
-	//profiles vs_3_0 
+	profiles vs_3_0 vp_30 
 	entry_point main_vp
-	target vs_3_0
-	preprocessor_defines TEXTURE_ATLAS=1
-	
+	//target vs_3_0
+	//preprocessor_defines TEXTURE_ATLAS=1
+	compile_arguments -DTEXTURE_ATLAS=1
 	default_params
 	{
 		param_named_auto worldViewProj	worldviewproj_matrix
 	}
 }
 
-vertex_program MinecraftVPCharacter_cg hlsl
+vertex_program MinecraftVPCharacter_cg cg
 {
 	source Minecraft.cg
 	entry_point main_vp
-	target vs_3_0
-	preprocessor_defines TEXTURE_ATLAS=0
+	profiles vs_3_0 vp_30
+	//target vs_3_0
+	//preprocessor_defines TEXTURE_ATLAS=0
+	compile_arguments -DTEXTURE_ATLAS=0
 	default_params
 	{
 		param_named_auto worldViewProj worldviewproj_matrix
 	}
 }
 
-fragment_program MinecraftFP_cg hlsl
+fragment_program MinecraftFP_cg cg
 {
 	source Minecraft.cg
 	
 	entry_point main_fp
-	target ps_3_0
-	preprocessor_defines TEXTURE_ATLAS=1
-
+	target ps_3_0 fp_30
+	//target ps_3_0
+	//preprocessor_defines TEXTURE_ATLAS=1
+	compile_arguments -DTEXTURE_ATLAS=1
 	default_params
 	{
 	}
@@ -66,9 +45,10 @@ fragment_program MinecraftFPCharacter_cg hlsl
 {
 	source Minecraft.cg
 	entry_point main_fp
-	target ps_3_0
-	preprocessor_defines TEXTURE_ATLAS=0
-
+	profiles ps_3_0 fp_30
+	//target ps_3_0
+	//preprocessor_defines TEXTURE_ATLAS=0
+	compile_arguments -DTEXTURE_ATLAS=0
 	default_params
 	{
 	}
@@ -168,13 +148,13 @@ fragment_program MinecraftFP_glsl glsl
 vertex_program PRJZ/PSSM/shadow_reciever_vs unified
 {
 	delegate MinecraftVP_cg
-	delegate MinecraftVP_glsl
+	//delegate MinecraftVP_glsl
 }
 
 fragment_program PRJZ/PSSM/shadow_reciever_ps unified
 {
 	delegate MinecraftFP_cg
-	delegate MinecraftFP_glsl
+	//delegate MinecraftFP_glsl
 }
 vertex_program PRJZ/PSSM/shadow_recieverCharacter_vs unified
 {
