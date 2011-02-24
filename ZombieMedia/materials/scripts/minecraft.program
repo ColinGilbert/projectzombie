@@ -1,7 +1,7 @@
 vertex_program MinecraftVP_cg cg
 {
 	source Minecraft.cg
-	profiles vs_3_0 vp_30 
+	profiles vs_3_0 arbvp1
 	entry_point main_vp
 	//target vs_3_0
 	//preprocessor_defines TEXTURE_ATLAS=1
@@ -16,7 +16,7 @@ vertex_program MinecraftVPCharacter_cg cg
 {
 	source Minecraft.cg
 	entry_point main_vp
-	profiles vs_3_0 vp_30
+	profiles vs_3_0 arbvp1
 	//target vs_3_0
 	//preprocessor_defines TEXTURE_ATLAS=0
 	compile_arguments -DTEXTURE_ATLAS=0
@@ -31,7 +31,7 @@ fragment_program MinecraftFP_cg cg
 	source Minecraft.cg
 	
 	entry_point main_fp
-	target ps_3_0 fp_30
+	profiles ps_3_0 arbfp1
 	//target ps_3_0
 	//preprocessor_defines TEXTURE_ATLAS=1
 	compile_arguments -DTEXTURE_ATLAS=1
@@ -41,11 +41,11 @@ fragment_program MinecraftFP_cg cg
 
 }
 
-fragment_program MinecraftFPCharacter_cg hlsl
+fragment_program MinecraftFPCharacter_cg cg
 {
 	source Minecraft.cg
 	entry_point main_fp
-	profiles ps_3_0 fp_30
+	profiles ps_3_0 arbfp1
 	//target ps_3_0
 	//preprocessor_defines TEXTURE_ATLAS=0
 	compile_arguments -DTEXTURE_ATLAS=0
