@@ -22,48 +22,51 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
+
 #include "ZPrerequisites.h"
 
-#include "entities/EntitiesDefs.h"
-#include "delegates/EntityDelegates.h"
 
-using ZGame::Entities::ZENTITY_VEC;
 namespace ZGame
 {
-
     namespace Entities
     {
         /**
-        *This class is a Manager for managing render entities components. 
-        */
-        class RenderEntitiesManager
+        * This class is the controller for Components. Every instance of ZGame will have components.
+        *
+        **/
+        class ComponentController
         {
         public:
-            RenderEntitiesManager();
-            virtual 
-                ~RenderEntitiesManager();
-            RenderEntitiesManager * 
-                getManager()
-            {
-                return this;
-            }
+            ComponentController(std::auto_ptr<EntitiesManager> entsMgr, 
+                std::auto_ptr<RenderEntitiesManager> renderEntsMgr);
+            virtual
+                ~ComponentController();
+
             bool
-                onInit(ZInitPacket *packet);
-            void
-                resetRenderEntities();
-            RenderEntityComp*
-                createComponent(const ZEntityResource* res);
+                onInit(ZGame::ZInitPacket* packet);
+            bool
+                onDestroy();
+            bool
+                onUpdate(const Ogre::FrameEvent &evt);
+
+            Entities::EntitiesManager*
+                getEntitiesManager()
+            {
+                return _entsMgr.get();
+            }
+
+            Entities::RenderEntitiesManager*
+                getRenderEntitiesManager()
+            {
+                return _renderEntsMgr.get();
+            }
+
         protected:
-
         private:
-            void _removeChildObjects(Ogre::SceneNode* node);
-
-        private:
-            Ogre::SceneManager* _scnMgr;
-            Ogre::SceneNode* _instancesRoot;
-
-            typedef Ogre::vector<RenderEntityComp*>::type RdrEntsComps;
-            RdrEntsComps _renderComps;
+            /** This is the manager for the ZEntities component. Every Entity will have this component.**/
+            std::auto_ptr<EntitiesManager> _entsMgr;
+            /** This is the component manager for Render Entities. **/
+            std::auto_ptr<RenderEntitiesManager> _renderEntsMgr;
 
         };
     }

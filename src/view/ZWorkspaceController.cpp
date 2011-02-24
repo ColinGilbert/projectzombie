@@ -5,6 +5,7 @@
 #include "geometry/GeometryManager.h"
 #include "world/CinematicController.h"
 #include "world/CinematicManager.h"
+#include "world/GameController.h"
 #include "toolset/ToolsetController.h"
 using std::cout;
 using std::endl;
@@ -47,6 +48,10 @@ bool
         if(_workspace->getToolsetController()->isCursorMode())
         {
             _workspace->getToolsetController()->onSetCursor3dPosition(_workspace->getWorldController());
+
+            if(_workspace->getGameController()->requireWorkspace())
+                _workspace->getGameController()->onWorkspace(_workspace);
+
         }
     }
     return true;
@@ -58,25 +63,6 @@ bool
 {
     if(id == OIS::MB_Left)
     {
-        /*
-        if(_workspace->getToolsetController()->isCursorMode())
-        {
-            //Get voxel position.
-            //Just pass in the 3d position of where the user clicked. This is predefined to be a certain distance into the screen.
-            Ogre::Camera* cam = _workspace->getCinematicController()->getCinematicManager()->getRootCam();
-            Ogre::Real x, y;
-            x = evt.state.X.abs / _windowWidth;
-            y = evt.state.Y.abs / _windowHeight;
-
-            Ogre::Ray rayTo;
-            Ogre::Vector3 position;
-            Ogre::Real searchDistance = 64.0f;
-            rayTo  = cam->getCameraToViewportRay(x, y);
-            _workspace->getWorldController()->getCursor3dPosition(rayTo, position, searchDistance);
-            _workspace->getToolsetController()->onCursorPosition3d(position);
-            _workspace->getCinematicController()->onDisableOneFrame();
-        }
-        */
     }
     return true;
 }
@@ -122,6 +108,10 @@ bool
 bool
     ZWorkspaceController::onKeyDown(const OIS::KeyEvent &evt)
 {
+    if(_workspace->getToolsetController()->isCursorMode())
+    {
+         _workspace->getCinematicController()->onDisableOneFrame();
+    }
     return true;
 }
 
@@ -133,4 +123,10 @@ bool
     if(evt.key == OIS::KC_C)
         _workspace->getToolsetController()->setToolType(Toolset::ToolsetController::CURSOR);
     return true;
+}
+
+void
+    ZWorkspaceController::onEnterSelectionMode()
+{
+    _workspace->getToolsetController()->setToolsetMode(Toolset::ToolsetController::FILL);
 }

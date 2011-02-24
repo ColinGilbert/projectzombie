@@ -27,7 +27,6 @@ void
 {
     //Load this from a file.
     info.initalCameraPos = Ogre::Vector3(32.0f, 250.0f, 32.0f);
-    info.requireRenderEntitiesmanager = true;
     info.requireZCLController = true;
     info.requireWorldController = true;
     info.requireControlModule = true;

@@ -127,8 +127,8 @@ bool
     this->_parseHDRConfig();
 
 
-    //_ogreHdr = CompositorManager::getSingleton().addCompositor(_vp, "HDR", 0);
-    //Ogre::CompositorManager::getSingleton().setCompositorEnabled(_vp, "HDR", true);
+    _ogreHdr = CompositorManager::getSingleton().addCompositor(_vp, "HDR", 0);
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(_vp, "HDR", true);
 
     _initSkyX();
     _initSSAO();
@@ -384,6 +384,10 @@ bool
     Ogre::Radian theta = Math::ACos(xyz.y);
     Ogre::Radian phi = Math::ATan2(xyz.x, xyz.z);
 
+    Ogre::String shr("SHC_R_");
+    Ogre::String shg("SHC_G_");
+    Ogre::String shb("SHC_B_");
+
     Real turbulence = 3.5;
     
     if(xyz.y >= 0.0f)
@@ -393,26 +397,34 @@ bool
     }
     Ogre::MaterialPtr matPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/Minecraft"));
     Ogre::Pass* pass = matPtr->getTechnique(0)->getPass(0);
+    matPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("PRJZ/MinecraftCharacter"));
+    Ogre::Pass* passC = matPtr->getTechnique(0)->getPass(0);
     size_t idx = 0;
     for(size_t i=0; i < 9; ++i)
     {
-        String namer = "SHC_R_"+StringConverter::toString(idx);
-        String nameg = "SHC_G_"+StringConverter::toString(idx);
-        String nameb = "SHC_B_"+StringConverter::toString(idx);
+        String namer = shr+StringConverter::toString(idx);
+        String nameg = shg+StringConverter::toString(idx);
+        String nameb = shb+StringConverter::toString(idx);
         pass->getFragmentProgramParameters()->setNamedConstant(namer,_SHC_R[i]);
         pass->getFragmentProgramParameters()->setNamedConstant(nameg,_SHC_G[i]);
         pass->getFragmentProgramParameters()->setNamedConstant(nameb,_SHC_B[i]);
+        passC->getFragmentProgramParameters()->setNamedConstant(namer,_SHC_R[i]);
+        passC->getFragmentProgramParameters()->setNamedConstant(nameg,_SHC_G[i]);
+        passC->getFragmentProgramParameters()->setNamedConstant(nameb,_SHC_B[i]);
         idx++;
     }
     //Skip band 4th band (or 3rd degree).
     for(size_t i=16; i < 25; ++i)
     {
-        String namer = "SHC_R_"+StringConverter::toString(idx);
-        String nameg = "SHC_G_"+StringConverter::toString(idx);
-        String nameb = "SHC_B_"+StringConverter::toString(idx);
+        String namer = shr+StringConverter::toString(idx);
+        String nameg = shg+StringConverter::toString(idx);
+        String nameb = shb+StringConverter::toString(idx);
         pass->getFragmentProgramParameters()->setNamedConstant(namer,_SHC_R[i]);
         pass->getFragmentProgramParameters()->setNamedConstant(nameg,_SHC_G[i]);
         pass->getFragmentProgramParameters()->setNamedConstant(nameb,_SHC_B[i]);
+        passC->getFragmentProgramParameters()->setNamedConstant(namer,_SHC_R[i]);
+        passC->getFragmentProgramParameters()->setNamedConstant(nameg,_SHC_G[i]);
+        passC->getFragmentProgramParameters()->setNamedConstant(nameb,_SHC_B[i]);
         idx++;
     }
 
@@ -420,6 +432,7 @@ bool
     //light
     
     pass->getFragmentProgramParameters()->setNamedConstant("uLightY", -_skyX->getAtmosphereManager()->getSunDirection().y);
+    passC->getFragmentProgramParameters()->setNamedConstant("uLightY", -_skyX->getAtmosphereManager()->getSunDirection().y);
     //pass->getFragmentProgramParameters()->setNamedConstant("uLightY", xyz.y);
     _skyX->update(evt.timeSinceLastFrame);
     return true;

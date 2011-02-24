@@ -23,47 +23,41 @@ THE SOFTWARE.
 *email: llwijk@gmail.com
 **/
 #include "ZPrerequisites.h"
-
-#include "entities/EntitiesDefs.h"
-#include "delegates/EntityDelegates.h"
-
-using ZGame::Entities::ZENTITY_VEC;
 namespace ZGame
 {
-
-    namespace Entities
+    namespace World
     {
-        /**
-        *This class is a Manager for managing render entities components. 
-        */
-        class RenderEntitiesManager
+        class GameController
         {
         public:
-            RenderEntitiesManager();
-            virtual 
-                ~RenderEntitiesManager();
-            RenderEntitiesManager * 
-                getManager()
-            {
-                return this;
-            }
-            bool
-                onInit(ZInitPacket *packet);
+            GameController();
+            virtual ~GameController();
+
             void
-                resetRenderEntities();
-            RenderEntityComp*
-                createComponent(const ZEntityResource* res);
-        protected:
+                onBuildComponentEntity();
+
+            void
+                onBuildTriggers();
+
+            void
+                onBuildActionQueue();
+
+            bool
+                requireWorkspace()
+            {
+                return _requireWorkController;
+            }
+            void
+                onWorkspace(ZGame::ZWorkspace* workspace);
+            void
+                setWorkspaceController(ZGame::ZWorkspaceController* workspaceCtrl);
+          
 
         private:
-            void _removeChildObjects(Ogre::SceneNode* node);
 
-        private:
-            Ogre::SceneManager* _scnMgr;
-            Ogre::SceneNode* _instancesRoot;
-
-            typedef Ogre::vector<RenderEntityComp*>::type RdrEntsComps;
-            RdrEntsComps _renderComps;
+            bool _requireWorkController;
+            bool _deferredBuildComponent;
+            ZWorkspaceController* _workspaceCtrl;
 
         };
     }

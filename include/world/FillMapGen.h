@@ -42,6 +42,18 @@ namespace ZGame
             void
                 generate(PVolume* data, PolyVox::Region &region, uint8_t val);
         };
+
+        class FillMapPositionGen
+        {
+        public:
+            FillMapPositionGen(){}
+            ~FillMapPositionGen(){}
+
+            void
+                generate(PVolume* data, PolyVox::Region &region, std::vector<Ogre::Vector3>* positions,
+                const Ogre::Vector3 &worldOrigin);
+        };
+
     }
 }
 
@@ -62,3 +74,34 @@ inline void
         }
     }
 }
+
+void
+    FillMapPositionGen::generate(PVolume* data, PolyVox::Region &region, std::vector<Ogre::Vector3>* positions,
+    const Ogre::Vector3 &worldOrigin)
+{
+    for(uint16_t z = region.getLowerCorner().getZ(); z < region.getUpperCorner().getZ() + 1; ++z)
+    {
+        for(uint16_t x = region.getLowerCorner().getX(); x < region.getUpperCorner().getX() + 1; ++x)
+        {
+            bool found = false;
+            uint16_t minHeight;
+            //find the max Y per colum.
+            for(size_t y = region.getLowerCorner().getY(); y < region.getUpperCorner().getY() + 1; ++y)
+            {
+                PolyVox::Material8 mat = data->getVoxelAt(x, y, z);
+                if(mat.getDensity() == mat.getMinDensity())
+                {
+                    found = true;
+                    minHeight = y;
+                    break;
+                }
+            }
+            if(found)
+            {
+                Ogre::Vector3 pos(x, minHeight, z);
+                positions->push_back(worldOrigin + pos);
+            }
+        }
+    }
+}
+

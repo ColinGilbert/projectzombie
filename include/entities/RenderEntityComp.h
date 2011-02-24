@@ -22,49 +22,49 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
-#include "ZPrerequisites.h"
 
-#include "entities/EntitiesDefs.h"
+#include "ZPrerequisites.h"
+#include "entities/Component.h"
 #include "delegates/EntityDelegates.h"
 
-using ZGame::Entities::ZENTITY_VEC;
 namespace ZGame
 {
-
     namespace Entities
     {
         /**
-        *This class is a Manager for managing render entities components. 
-        */
-        class RenderEntitiesManager
+        * This class is a component which represents a Render entity. It is a rendering based component.
+        *
+        **/
+        class RenderEntityComp : public Component
         {
         public:
-            RenderEntitiesManager();
-            virtual 
-                ~RenderEntitiesManager();
-            RenderEntitiesManager * 
-                getManager()
-            {
-                return this;
-            }
+            RenderEntityComp(const ZEntityResource* res, Ogre::SceneManager* scnMgr, Ogre::SceneNode* root);
+            virtual ~RenderEntityComp();
+
+            virtual const fastdelegate::DelegateMemento
+                getInputDM(const Ogre::String &memName);
+
+            virtual void
+                addOutputDM(const Ogre::String &memName, const fastdelegate::DelegateMemento dm);
+
+            virtual void
+                deleteOutputDM(const Ogre::String &memName, const fastdelegate::DelegateMemento dm);
+
             bool
-                onInit(ZInitPacket *packet);
+                onRead(const Ogre::Vector3 &pos, const Ogre::Quaternion &orient);
+
             void
-                resetRenderEntities();
-            RenderEntityComp*
-                createComponent(const ZEntityResource* res);
-        protected:
+                removeAll(Ogre::SceneManager* scnMgr);
+
+            void
+                onEvent(unsigned int event);
+
 
         private:
-            void _removeChildObjects(Ogre::SceneNode* node);
+            Ogre::SceneNode* _node;
 
-        private:
-            Ogre::SceneManager* _scnMgr;
-            Ogre::SceneNode* _instancesRoot;
-
-            typedef Ogre::vector<RenderEntityComp*>::type RdrEntsComps;
-            RdrEntsComps _renderComps;
-
+            void
+                _create(const ZEntityResource *res, Ogre::SceneManager* scnMgr, Ogre::SceneNode* root);
         };
     }
 }

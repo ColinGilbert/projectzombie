@@ -493,12 +493,14 @@ void
     cout << "VolumMap::fillSelection" << endl;
     cout << "size: " << size << endl;
     cout << "leftCorner: " << leftCorner << endl;
-    _fillSelection(Ogre::Math::Abs(size.z), Ogre::Math::Abs(size.x), Ogre::Math::Abs(size.y), leftCorner, data);
+    FillRegionDelegate fd(this, &VolumeMap::_addFillRegionCommand);
+    Ogre::Any dataAny(data);
+    _fillSelection(Ogre::Math::Abs(size.z), Ogre::Math::Abs(size.x), Ogre::Math::Abs(size.y), leftCorner, fd, dataAny);
 }
 
-inline void
+void
     VolumeMap::_fillSelection(Ogre::Real totalZLenInVoxels, Ogre::Real totalXLenInVoxels, Ogre::Real totalYLenInVoxels,
-    const Ogre::Vector3 &leftCorner, uint8_t data)
+    const Ogre::Vector3 &leftCorner, FillRegionDelegate fillDel, Ogre::Any dataAny)
 {
     //Note: There is a more optimized method that gets rid of the if branching during ever loop iteration. We can do that in the future.
     //basically, snip off the ends and process the full "tiles" in between. THen process the snipped ends. 
@@ -507,6 +509,10 @@ inline void
     *length and subtracting this offset from the length until the length is gone. The offsets are tried to be filled by
     *BLOCK_WIDTH (the width of the chunk). So this means basically the ends are are the only regions not the size
     *of full region chunks. By the end of iterations all regions touched by the given lenghs have been visited. 
+    */
+    /*
+    * NOTE: This method should be reafactored
+    *
     */
     int curZ = static_cast<int>(leftCorner.z);
     do
@@ -534,14 +540,14 @@ inline void
                 regionEndX = curX + xOffset;
             }
 
+            fillDel(curX, static_cast<int>(leftCorner.y), curZ, regionEndX, static_cast<int>(leftCorner.y) + totalYLenInVoxels, regionEndZ, dataAny);
+
             //For now, Y is constant and is totalYLenInVoxels
-            _addFillRegionCommand(curX, static_cast<int>(leftCorner.y), curZ, regionEndX, 
-                static_cast<int>(leftCorner.y) + totalYLenInVoxels, regionEndZ, data);
+            //_addFillRegionCommand(curX, static_cast<int>(leftCorner.y), curZ, regionEndX, 
+              //  static_cast<int>(leftCorner.y) + totalYLenInVoxels, regionEndZ, data);
 
             tempXLen -= xOffset + 1;
             curX = regionEndX + 1;
-
-            
 
         }while(tempXLen > 0);
 
@@ -551,15 +557,15 @@ inline void
     }while(totalZLenInVoxels > 0);
 }
 
-inline void
+void
     VolumeMap::_addFillRegionCommand(int startX, int startY, int startZ, 
     int endX, int endY, int endZ, 
-    uint8_t data)
+    Ogre::Any anyData)
 {
     PageFillCmd cmd;
     cmd.regionStart = Ogre::Vector3(startX, startY, startZ);
     cmd.regionEnd = Ogre::Vector3(endX, endY, endZ);
-    cmd.data = data;
+    cmd.data = Ogre::any_cast<uint8_t>(anyData);
 
     _fillVolumeCmd.push_back(cmd);
 }
@@ -875,4 +881,43 @@ void
     else
     {
     }
+}
+
+void
+    VolumeMap::getHeightFieldPositions(const Ogre::AxisAlignedBox &box, std::vector<Ogre::Vector3> &positions)
+{
+    using Ogre::Vector3;
+    Vector3 size = box.getSize();
+    Vector3 leftCorner = box.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM);
+    FillRegionDelegate fd(this, &VolumeMap::_addFillRegionPositions);
+    Ogre::Any dataAny(&positions);
+    _fillSelection(Ogre::Math::Abs(size.z), Ogre::Math::Abs(size.x), Ogre::Math::Abs(size.y), leftCorner, fd, dataAny);
+}
+
+void
+    VolumeMap::_addFillRegionPositions(int startX, int startY, int startZ, int endX, int endY, int endZ, Ogre::Any data)
+{
+    std::vector<Ogre::Vector3>* vec = Ogre::any_cast<std::vector<Ogre::Vector3>* >(data);
+    cout << "_addFillRegionPositions: " << startX << " " << startY <<  " " << startZ << endl;
+
+    Ogre::Vector3 cubeCenter(startX, startY, startZ);
+    long pageX, pageZ, volX, volZ;
+    Ogre::PageID pageID, volID;
+    VolumePage* page = 0;
+    PageRegion* region = 0;
+    _getPage(cubeCenter, pageX, pageZ, pageID, volX, volZ, volID, &page, &region);
+    if(page && region)
+    {
+        //Now we want to define the region. The region we want to hit is regionStart, to regionEnd, but in local space of the Page.
+        Ogre::Vector2 volumeOrigin(volX, volZ);
+        Ogre::Vector2 cubeLocal = Ogre::Vector2(cubeCenter.x, cubeCenter.z);
+        Ogre::Vector2 regionStart = _transformToVolumeLocal(volumeOrigin, cubeLocal, _volSizeInBlocks);
+        cubeLocal = Ogre::Vector2(endX, endZ);
+        Ogre::Vector2 regionEnd = _transformToVolumeLocal(volumeOrigin, cubeLocal, _volSizeInBlocks);
+        PolyVox::Region pageRegion(PolyVox::Vector3DInt16(regionStart.x, cubeCenter.y, regionStart.y),
+            PolyVox::Vector3DInt16(regionEnd.x, endY, regionEnd.y));
+        World::FillMapPositionGen gen;
+        gen.generate(&page->data, pageRegion, vec, page->worldOrigin);
+    }
+
 }

@@ -22,49 +22,28 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
+
 #include "ZPrerequisites.h"
-
-#include "entities/EntitiesDefs.h"
-#include "delegates/EntityDelegates.h"
-
-using ZGame::Entities::ZENTITY_VEC;
+#include "fastdelegate/FastDelegate.h"
 namespace ZGame
 {
-
     namespace Entities
     {
-        /**
-        *This class is a Manager for managing render entities components. 
-        */
-        class RenderEntitiesManager
+        class Component
         {
         public:
-            RenderEntitiesManager();
-            virtual 
-                ~RenderEntitiesManager();
-            RenderEntitiesManager * 
-                getManager()
-            {
-                return this;
-            }
-            bool
-                onInit(ZInitPacket *packet);
-            void
-                resetRenderEntities();
-            RenderEntityComp*
-                createComponent(const ZEntityResource* res);
+            virtual ~Component(){}
+
+            virtual const fastdelegate::DelegateMemento
+                getInputDM(const Ogre::String &memName) = 0;
+            virtual void
+                addOutputDM(const Ogre::String &memName, const fastdelegate::DelegateMemento dm) = 0;
+            virtual void
+                deleteOutputDM(const Ogre::String &memName, const fastdelegate::DelegateMemento dm) = 0;
         protected:
-
+            Component(){}
         private:
-            void _removeChildObjects(Ogre::SceneNode* node);
-
-        private:
-            Ogre::SceneManager* _scnMgr;
-            Ogre::SceneNode* _instancesRoot;
-
-            typedef Ogre::vector<RenderEntityComp*>::type RdrEntsComps;
-            RdrEntsComps _renderComps;
-
         };
     }
 }
+

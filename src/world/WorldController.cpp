@@ -1,9 +1,3 @@
-#include <sstream>
-#include <iostream>
-
-
-
-using std::cout; using std::endl;
 
 #include "world/WorldController.h"
 #include "world/VolumeMap.h"
@@ -18,6 +12,8 @@ using namespace Ogre;
 #include "world/PhysicsManager.h"
 #include "world/WorldDefs.h"
 #include "world/WorldConfig.h"
+
+using std::cout; using std::endl;
 
 using namespace ZGame;
 using namespace ZGame::World;
@@ -199,4 +195,11 @@ void
 {
     //ask the volume map to handle this selection box. 
     _volumeMap->fillSelection(selectBox, materialId);
+}
+
+void
+    WorldController::getVolumeRegionPositionsHeightField(const Ogre::AxisAlignedBox &box,
+    std::vector<Ogre::Vector3> &positions)
+{
+    _volumeMap->getHeightFieldPositions(box, positions);
 }

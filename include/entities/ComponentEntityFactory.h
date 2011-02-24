@@ -22,49 +22,38 @@ THE SOFTWARE.
 *author: beyzend 
 *email: llwijk@gmail.com
 **/
+
 #include "ZPrerequisites.h"
 
-#include "entities/EntitiesDefs.h"
-#include "delegates/EntityDelegates.h"
-
-using ZGame::Entities::ZENTITY_VEC;
 namespace ZGame
 {
-
     namespace Entities
     {
         /**
-        *This class is a Manager for managing render entities components. 
-        */
-        class RenderEntitiesManager
+        * This is a factory class which will create different types of component-based entities given respective Component managers.
+        *Current, the depedencies between each component for a given component-based entity is made explicity in the creation methods.
+        *I know this may seem stupid, but it will work for now for prototyping. In the future, we can implmement methods that can 
+        *do this in a programable way. AND such that we can have new component types register themselves for creation.
+        *
+        **/
+        class ComponentEntityFactory
         {
         public:
-            RenderEntitiesManager();
+            ComponentEntityFactory();
             virtual 
-                ~RenderEntitiesManager();
-            RenderEntitiesManager * 
-                getManager()
-            {
-                return this;
-            }
-            bool
-                onInit(ZInitPacket *packet);
+                ~ComponentEntityFactory();
+
             void
-                resetRenderEntities();
-            RenderEntityComp*
-                createComponent(const ZEntityResource* res);
+                create(const Ogre::String& typeName, 
+                std::vector<Ogre::Any> &componentAnys, size_t numsToCreate);
+
         protected:
-
         private:
-            void _removeChildObjects(Ogre::SceneNode* node);
-
-        private:
-            Ogre::SceneManager* _scnMgr;
-            Ogre::SceneNode* _instancesRoot;
-
-            typedef Ogre::vector<RenderEntityComp*>::type RdrEntsComps;
-            RdrEntsComps _renderComps;
-
+            void
+                _createZEntities(std::vector<Ogre::Any> &componentAnys, size_t nums);
+            void
+                _makeConnections(Component* inComp, Component* outComp,
+                const Ogre::String& inPort, const Ogre::String& outPort);
         };
     }
 }

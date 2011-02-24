@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include "world/PerlinNoiseMapGen.h"
 #include "world/TestMapGenerator.h"
 #include "utilities/Timer.h"
+#include "fastdelegate/FastDelegate.h"
 /*
 * VolumeMap.h
 *
@@ -105,6 +106,10 @@ namespace ZGame
                 canHandleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
             void
                 handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
+
+            void
+                getHeightFieldPositions(const Ogre::AxisAlignedBox &box, 
+                std::vector<Ogre::Vector3> &positions);
 
             static const Ogre::uint16 WORKQUEUE_LOAD_REQUEST;
 
@@ -336,15 +341,25 @@ namespace ZGame
                 _processDirtyRegions();
             void
                 _executeFillCommand(const PageFillCmd& cmd);
+            
+            
+            typedef fastdelegate::FastDelegate<
+                void(int startX, int startY, int startZ, int endX, int endY, int endZ,
+                Ogre::Any data) > FillRegionDelegate;
+
             void
                 _fillSelection(Ogre::Real totalZLenInVoxels, Ogre::Real totalXLenInVoxels, 
                 Ogre::Real totalYLenInVoxels,
-                const Ogre::Vector3 &leftCorner, uint8_t data);
+                const Ogre::Vector3 &leftCorner, FillRegionDelegate fillDel,Ogre::Any dataAny);
+
+            void
+                _addFillRegionPositions(int startX, int startY, int startZ,
+                int endX, int endY, int endZ, Ogre::Any data);
 
             void
                 _addFillRegionCommand(int startX, int startY, int startZ, 
                 int endX, int endY, int endZ, 
-                uint8_t data);
+                Ogre::Any data);
 
             void
                 _cubeCoordsToPageXY(long &x, long &z, const Ogre::Vector3 &cubeCenter);

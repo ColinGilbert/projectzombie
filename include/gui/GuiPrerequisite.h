@@ -54,6 +54,7 @@ namespace ZGame
         class ToolsetView;
         class Screens;
         class HDRSettingsView;
+        class GameView;
         typedef std::pair<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentPair;
         typedef std::map<Rocket::Core::String, Rocket::Core::ElementDocument* > StrToDocumentMap;
         typedef Ogre::map<Rocket::Core::String, Screens* >::type SCREENS_MAP;

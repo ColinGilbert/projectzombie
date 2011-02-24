@@ -3,6 +3,7 @@
 using std::cout; using std::endl;
 #include "gui/CineView.h"
 #include "gui/ToolsetView.h"
+#include "gui/GameView.h"
 using namespace ZGame::Gui;
 
 EditorScreen::EditorScreen(GuiController* guiCtrl) : Screens(guiCtrl, "EditorScreen"),
@@ -29,6 +30,13 @@ void
 {
     _toolsetView = toolsetView;
     p_registerEventInstancer(_toolsetView.get());
+}
+
+void
+    EditorScreen::setGameView(std::auto_ptr<GameView> gameView)
+{
+    _gameView = gameView;
+    p_registerEventInstancer(_gameView.get());
 }
 
 void

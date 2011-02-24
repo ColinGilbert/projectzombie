@@ -83,20 +83,20 @@ namespace ZGame
     {
     public:
         GameStateBootstrapInfo() :
-            requireRenderEntitiesmanager(false),
                 requireZCLController(false),
                 requireWorldController(false),
                 requireControlModule(false),
                 requireWorkspace(false),
-                requireCharacterUtil(true)
+                requireCharacterUtil(true),
+                requireComponentController(true)
             {}
         Ogre::Vector3 initalCameraPos;
-        bool requireRenderEntitiesmanager;
         bool requireZCLController;
         bool requireWorldController;
         bool requireControlModule;
         bool requireWorkspace;
         bool requireCharacterUtil;
+        bool requireComponentController;
     };
    
 
@@ -153,10 +153,13 @@ namespace ZGame
     }
     namespace Entities
     {
+        class Component;
         class EntitiesManager;
         class RenderEntitiesManager;
-        class EntitiesView;
         struct ZEntityBuffers;
+        class ComponentController;
+        class ZEntityResource;
+        class RenderEntityComp;
     }
     namespace World
     {
@@ -176,6 +179,7 @@ namespace ZGame
         class CinematicManager;
         class Control;
         class PerspectiveControl;
+        class GameController;
     }
 
      namespace EVENT

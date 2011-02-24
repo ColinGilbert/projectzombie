@@ -32,8 +32,8 @@ namespace ZGame
     class ZWorkspace
     {
     public:
-        ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray,
-            ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl,
+        ZWorkspace(Ogre::SceneManager* scnMgr, Entities::ComponentController*, OgreBites::SdkTrayManager* sdkTray,
+            ZCL::ZCLController* zclCtrl, World::WorldController* worldCtrl, World::GameController* gameCtrl,
             World::CinematicController* cineCtrl, Geometry::GeometryManager* geoMgr, Toolset::ToolsetController* toolsetCtrl);
         virtual
             ~ZWorkspace();
@@ -57,16 +57,7 @@ namespace ZGame
             return _icons[index];
         }
 
-        Entities::EntitiesManager*
-            getEntitiesManager()
-        {
-            return _entMgr;
-        }
-        Entities::RenderEntitiesManager*
-            getRenderEntitiesManager()
-        {
-            return _rdrEntMgr;
-        }
+      
         OgreBites::SdkTrayManager*
             getSdkTrayManager()
         {
@@ -101,22 +92,35 @@ namespace ZGame
             return _toolsetCtrl;
         }
 
+        World::GameController*
+            getGameController()
+        {
+            return _gameCtrl;
+        }
+
+        Entities::ComponentController*
+            getComponentController()
+        {
+            return _componentCtrl;
+        }
+
     protected:
 
     private:
         static size_t _ID;
         Ogre::SceneManager* _scnMgr;
         Ogre::SceneNode* _workspaceRoot;
-        Entities::EntitiesManager* _entMgr;
-        Entities::RenderEntitiesManager* _rdrEntMgr;
         OgreBites::SdkTrayManager* _tray;
         std::vector<Ogre::SceneNode*> _icons;
         ZCL::ZCLController* _zclCtrl;
         World::WorldController* _worldCtrl;
         World::PhysicsManager* _phyMgr;
         World::CinematicController* _cineCtrl;
+        World::GameController* _gameCtrl;
         Geometry::GeometryManager* _geoMgr;
         Toolset::ToolsetController* _toolsetCtrl;
+        Entities::ComponentController* _componentCtrl;
+        
 
     private:
         void

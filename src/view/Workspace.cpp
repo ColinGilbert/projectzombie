@@ -13,19 +13,20 @@
 #include "world/CinematicController.h"
 #include "geometry/GeometryManager.h"
 #include "toolset/ToolsetController.h"
-
+#include "entities/ComponentController.h"
+#include "world/GameController.h"
 using namespace ZGame;
 using ZGame::ZWorkspace;
 
 size_t ZWorkspace::_ID = 0;
 
-ZWorkspace::ZWorkspace(Ogre::SceneManager* scnMgr, Entities::EntitiesManager* entMgr, Entities::RenderEntitiesManager* rdrEntMgr, OgreBites::SdkTrayManager* sdkTray, ZCL::ZCLController* zclCtrl,
-    World::WorldController* worldCtrl, World::CinematicController* cineCtrl, 
+ZWorkspace::ZWorkspace(Ogre::SceneManager* scnMgr, Entities::ComponentController* componentCtrl, OgreBites::SdkTrayManager* sdkTray, ZCL::ZCLController* zclCtrl,
+    World::WorldController* worldCtrl, World::GameController* gameCtrl, World::CinematicController* cineCtrl, 
     Geometry::GeometryManager* geoMgr, 
     Toolset::ToolsetController* toolsetCtrl) : _scnMgr(scnMgr),
-    _entMgr(entMgr), _rdrEntMgr(rdrEntMgr), _tray(sdkTray),
+    _componentCtrl(componentCtrl), _tray(sdkTray),
     _zclCtrl(zclCtrl), _worldCtrl(worldCtrl), _workspaceRoot(scnMgr->getRootSceneNode()->createChildSceneNode("WorkspaceNode")),
-    _cineCtrl(cineCtrl), _geoMgr(geoMgr), _toolsetCtrl(toolsetCtrl)
+    _cineCtrl(cineCtrl), _geoMgr(geoMgr), _toolsetCtrl(toolsetCtrl), _gameCtrl(gameCtrl)
 {
     _toolsetCtrl->addListener(_cineCtrl);
 }
@@ -56,8 +57,6 @@ ZWorkspace::_removeIcons()
 void
 ZWorkspace::resetAll()
 {
-  getEntitiesManager()->resetEntities();
-  getRenderEntitiesManager()->resetRenderEntities();
   //remove icons
   _removeIcons();
 }
@@ -84,14 +83,11 @@ ZWorkspace::createIcon()
 void
 ZWorkspace::buildGroups()
 {
-  _entMgr->buildGroups();
-  //_zclCtrl->prepare(_entMgr->getEntBuffers(), _worldCtrl->getWorldMap());
 }
 
 void
 ZWorkspace::updateGroupGoals()
 {
-  _entMgr->updateGoalsBuffer();
 }
 
 

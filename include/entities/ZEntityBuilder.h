@@ -1,29 +1,51 @@
-#ifndef ZENTITY_BUILDER_H
-#define ZENTITY_BUILDER_H
-/** \file This files defines the classes for a builder which will build ZEntities for the system.*/
+#pragma once
+/**
+Permission is hereby granted by Fdastero LLC, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-#include <memory>
-#include <Ogre.h>
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-#include "entities/EntitiesManager.h"
-#include "delegates/EntityDelegates.h"
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+**/
+/**
+*author: beyzend 
+*email: llwijk@gmail.com
+**/
+
+#include "ZPrerequisites.h"
 
 namespace ZGame
 {
     namespace Entities
     {
         class ZEntity;
-
+        /**
+        * This class is a builder to builder ZEntities. It will send out an CreateEntCmd command, which does
+        *the creation of components associated with a ZEntity type object.
+        *
+        **/
         class EntitiesBuilder
         {
         public:
             EntitiesBuilder(){}
             virtual ~EntitiesBuilder(){}
+
             /** \brief This method will build ZEntities through the Command and Control system.
             */
-            bool build(EntitiesManager* mgr);
-            /** \brief This method will un-build the ZEntity. */
-            bool unbuild(ZEntity* zEnt);
+            bool build(const std::vector<Ogre::Vector3> &positions, 
+                EntitiesManager* entMgr);
+         
         protected:
         private:
 
@@ -33,4 +55,4 @@ namespace ZGame
 }
 
 
-#endif
+

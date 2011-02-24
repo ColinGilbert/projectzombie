@@ -2,7 +2,7 @@
 #define _ZENTITY_RESOURCE_H
 
 #include <Ogre.h>
-#include "EntitiesDefs.h"
+#include "entities/EntitiesDefs.h"
 
 namespace ZGame
 {

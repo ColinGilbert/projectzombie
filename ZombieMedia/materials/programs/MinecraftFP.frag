@@ -125,16 +125,15 @@ void main()
       uv0 = fract(vec2(-worldPos.x,worldPos.y));
     }
   vec4 texAtlasOffset = textureAtlasOffset;
-  texAtlasOffset = vec4(0.0, 0.0, 0.0, 0.0);
   texAtlasOffset += vec4(uv0 * 0.5f, 0.0, 0.0) * eOffset;
-  //vec4 texDiffuse = texture(diffuseMap, texAtlasOffset.xy);
-  vec4 texDiffuse = texture2D(diffuseMap, uv0.xy);
+  vec4 texDiffuse = texture(diffuseMap, texAtlasOffset.xy);
+  
   float nightMulti;
 
   nightMulti = 1.0;
-  //if(uLightY < 0.0)
-  //nightMulti = mix(0.05, 0.1, -uLightY);
-  //gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
-  gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz, 1.0);
+  if(uLightY < 0.0)
+  nightMulti = mix(0.05, 0.1, -uLightY);
+  gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
+  //gl_FragColor = vec4(texDiffuse.xyz * diffuseColor.xyz, 1.0);
   //gl_FragColor = vec4(, 0.0, 1.0);
 }

@@ -71,6 +71,16 @@ namespace ZGame
             virtual void
                 viewportDestroyed(Ogre::Viewport* viewport){}
 
+            /**
+            *This method will add positions from the volume with respect to the given region
+            *as defined by the AxisAlignedBox. The positions are gathered in such a way it represents
+            *a 2D height field of said region. That is, it returns the positions with the highest Y value
+            *per 2D integer points in the Volume as defined by the box--a height map.
+            *
+            **/
+            void
+                getVolumeRegionPositionsHeightField(const Ogre::AxisAlignedBox &box,
+                std::vector<Ogre::Vector3> &positions);
 
 
         protected:

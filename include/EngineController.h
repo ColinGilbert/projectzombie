@@ -198,16 +198,15 @@ namespace ZGame
         std::auto_ptr<ControlModuleProto> _controlMod;
         std::auto_ptr<ZGame::World::WorldController> _worldController;
         std::auto_ptr<ZGame::Util::CharacterUtil> _charUtil;
-        std::auto_ptr<Entities::EntitiesManager> _entMgr;
-        std::auto_ptr<Entities::RenderEntitiesManager> _rdrEntMgr;
         std::auto_ptr<ZCL::ZCLController> _zclCtrl;
-        std::auto_ptr<Entities::EntitiesView> _entsView;
         std::auto_ptr<ZWorkspace> _workspace;
         std::auto_ptr<ZGame::ZWorkspaceController> _workspaceCtrl;
         std::auto_ptr<CommandController> _commandController;
         std::auto_ptr<World::CinematicController> _cineController;
         std::auto_ptr<Geometry::GeometryManager> _geometryManager;
         std::auto_ptr<Toolset::ToolsetController> _toolsetCtrl;
+        std::auto_ptr<Entities::ComponentController> _componentCtrl;
+        std::auto_ptr<World::GameController> _gameCtrl;
         bool _startEngine;
 
     };

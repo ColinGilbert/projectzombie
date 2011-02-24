@@ -1,4 +1,4 @@
-//this is the brick vertex program
+m//this is the brick vertex program
 uniform vec3 LightPosition;
 
 const float SpecularContribution = 0.5;

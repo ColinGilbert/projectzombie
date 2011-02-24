@@ -23,8 +23,8 @@ Rocket::Core::EventListener*
         return this;
     return 0;
 }
-
-static Ogre::Real texOffset = 0.0f;
+//WHAT THE FUCK IS THIS? WHERE DID THIS COME FROM?
+//static Ogre::Real texOffset = 0.0f;
 
 void
     ToolsetView::ProcessEvent(Rocket::Core::Event& event)
@@ -107,7 +107,6 @@ void
     if(!rightPanel)
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS, "Null pointer for right panel", "ToolsetView::_refreshRightPanel");
 
-    //Hack////
     if(toolId > -1)
     {
         if(rightPanel->GetNumChildren() > 0) //clean up the current elements that is in the panel because we're setting a new tool.
@@ -118,8 +117,7 @@ void
             el->RemoveReference();
         }
     }
-    //END HACK///Maybe this entire program is one big hack. 
-
+  
     _toolCtrl->refreshToolView(&_toolInfoView, toolId, rightPanel);
 
    

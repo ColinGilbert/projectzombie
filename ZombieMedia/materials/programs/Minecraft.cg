@@ -31,21 +31,25 @@ void caster_ps(
 }
 
 //#define NUM_OF_COEF 3
-
+//#if TEXTURE_ATLAS
 #define ATLAS_WIDTH 4096.0
 #define TEX_WIDTH 256.0
 #define eOffset TEX_WIDTH / ATLAS_WIDTH
+//#endif
 
 VS_OUT main_vp(
 	       float4 pos : POSITION,
 	       float4 uv1 : TEXCOORD0,
+#if !TEXTURE_ATLAS
+	       float3 normal : NORMAL,
+#endif
 	       uniform float4x4 worldViewProj
 	       )
 {
 
   VS_OUT outp;
   outp.pos = mul(worldViewProj, pos);
-
+#if TEXTURE_ATLAS
   outp.worldPos = abs(pos + float4(0.5f, 0.5f, 0.5f, 0.5f));//mul(worldMat, pos);
   outp.textureAtlasOffset = float4(0.0f, 0.0f, 0.0f, 0.0f);
  
@@ -55,7 +59,11 @@ VS_OUT main_vp(
   float blockx = (idx - blocky * 16.0);
  
   outp.textureAtlasOffset = float4(blockx + 0.25f, blocky + 0.25f, 0, 0) * eOffset ;
-  
+#else
+  outp.worldPos = float4(normal, 0.0);
+  outp.textureAtlasOffset = uv1;
+#endif
+
   return outp;
 }
 
@@ -102,12 +110,15 @@ float4 main_fp(
  const float3 L42 = float3(SHC_R_15, SHC_G_15, SHC_B_15);
  const float3 L43 = float3(SHC_R_16, SHC_G_16, SHC_B_16);
  const float3 L44 = float3(SHC_R_17, SHC_G_17, SHC_B_17);
- 
+
+#if TEXTURE_ATLAS 
+
  float3 normal = cross(ddy(In.worldPos.xyz),ddx(In.worldPos.xyz));
  normal = normalize(normal);
- 
-
-  float3 n = float3(-normal.z, -normal.x, normal.y);
+#else
+ float3 normal = In.worldPos.xyz;
+#endif
+ float3 n = float3(-normal.z, -normal.x, normal.y);
 
   float4 diffuseColor = float4(1.0, 1.0, 1.0, 1.0);
 
@@ -135,7 +146,7 @@ float4 main_fp(
 #endif
 
   //diffuseColor *= 0.000035;
-
+#if TEXTURE_ATLAS
   float2 uv0 = float2(1.0, 1.0);
   if(normal.x > 0.5)
     {
@@ -170,8 +181,9 @@ float4 main_fp(
     }
  
   In.textureAtlasOffset += float4(uv0 * 0.5, 0.0, 0.0) * eOffset; /// 2.0);
+
+#endif
   float4 texDiffuse = tex2D(diffuseMap, In.textureAtlasOffset.xy);
-  texDiffuse = tex2D(diffuseMap, uv0);
   float nightMulti;
 
   nightMulti = 1.0;
@@ -179,7 +191,7 @@ float4 main_fp(
     nightMulti = lerp(0.05, 0.1, -uLightY);
   
   float4 vColor = float4(texDiffuse.xyz * diffuseColor.xyz * nightMulti,texDiffuse.w);
-  //float4 vColor = float4(1.0, 1.0, 1.0, diffuseColor.w * nightMulti);
+  //float4 vColor = float4(diffuseColor.xyz * nightMulti, 1.0);
   return vColor;
 }
 
@@ -190,7 +202,9 @@ void geom_vs(
 	     uniform float4x4 wvpMat, uniform float4x4 wvMat)
 {
   cp = mul(wvpMat, p);
+
   vp = mul(wvMat, p);
+
 }
 
 struct geomOut
@@ -199,14 +213,16 @@ struct geomOut
 };
 
 geomOut geom_ps(
-		in float4 vp : TEXCOORD0, in float4 worldPos : TEXCOORD1, uniform float far
+		in float4 vp : TEXCOORD0, uniform float far
 	       )
 {
   geomOut OUT;
   float coeff = 0.25;
+
   float3 normal = cross(ddy(vp.xyz), ddx(vp.xyz));
   normal = normalize(normal);
   OUT.c = float4(length(vp.xyz) * coeff / far, normal);
+
   return OUT;
 }
 

@@ -49,6 +49,8 @@ void
     case SCALE:
         setToolType(CURSOR);
         break;
+    case FILL:
+        setToolType(CURSOR);
     default:
         break;//do nothing
     }
@@ -137,7 +139,7 @@ bool
         NotifyRowChange("tools", _cursorId, 1);
         return true;
     }
-    else if(_curToolType == CURSOR && _curToolsetMode == SCALE)
+    else if(_curToolType == CURSOR && (_curToolsetMode == SCALE || _curToolsetMode == FILL))
     {
         //In this mode, we want to do scale operation with the cursor. Since we are in SELECT mode,
         //the anchor will be _cursorBlueId's tool. This mean we are scaling the blue cursor in SELECT mode. 
@@ -168,28 +170,30 @@ void
             _toolMgr->getTool(_cursorId)->getNode()->getPosition());
         _informListeners(ONCHANGE_EVENT | ONCURSOR3DPOSITION_EVENT);
     }
-    else if(_curToolType == CURSOR && _curToolsetMode == SCALE)
+    else if(_curToolType == CURSOR && (_curToolsetMode == SCALE || _curToolsetMode == FILL)) //what is order prcedence for or?
     {
-        //stop scale mode.
-        setToolsetMode(MOVECURSOR);
-        setToolType(SELECT);
         //compute AABB from anchor (blue cusor) and cursor. 
         ToolInfo* cursor = _toolMgr->getTool(_cursorId);
         ToolInfo* anchor = _toolMgr->getTool(_cursorBlueId);
         ToolInfo* select = _toolMgr->getTool(_cursorYellowId);
 
         //output AABB of yellow cursor which is the selection
-        Ogre::AxisAlignedBox selectAABB;
+        
         unsigned int whichCorner; //kind of redundant
         
-        _computeSelectAABB(selectAABB, cursor->getNode()->getPosition(), anchor->getNode()->getPosition(),
+        _computeSelectAABB(_currentSelectBox, cursor->getNode()->getPosition(), anchor->getNode()->getPosition(),
             whichCorner);
 
-        cout << "computed Select AABB: " << selectAABB << endl;
-        cout << "min AABB: " << selectAABB.getCorner(Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM) << endl;
-        worldCtrl->onSelectionRegion(selectAABB, _materialId);
+        cout << "computed Select AABB: " << _currentSelectBox << endl;
+        if(_curToolsetMode == SCALE)
+            worldCtrl->onSelectionRegion(_currentSelectBox, _materialId);
 
+        //stop scale mode.
+        setToolsetMode(MOVECURSOR);
+        setToolType(SELECT);
+        
     }
+  
 }
 
 void

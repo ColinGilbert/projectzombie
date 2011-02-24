@@ -50,6 +50,8 @@ namespace ZGame
                 setCineView(std::auto_ptr<Gui::CineView> cineView);
             void
                 setToolsetView(std::auto_ptr<Gui::ToolsetView> toolsetView);
+            void
+                setGameView(std::auto_ptr<Gui::GameView> gameView);
         protected:
         private:
 
@@ -77,6 +79,7 @@ namespace ZGame
 
             std::auto_ptr<Gui::CineView> _cineView;
             std::auto_ptr<Gui::ToolsetView> _toolsetView;
+            std::auto_ptr<Gui::GameView> _gameView;
 
             TemplateCloner _templateCloner;
 

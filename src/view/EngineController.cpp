@@ -50,6 +50,11 @@
 #include "toolset/ToolsetController.h"
 #include "toolset/ToolsetManager.h"
 
+#include "entities/ComponentController.h"
+#include "entities/EntitiesManager.h"
+#include "entities/RenderEntitiesManager.h"
+
+#include "world/GameController.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 static const Ogre::String PlatformPath("configs_windows/");
@@ -929,16 +934,20 @@ void
 
         try
         {
-            if(info.requireRenderEntitiesmanager)
+            if(info.requireComponentController)
             {
-                _rdrEntMgr.reset(new Entities::RenderEntitiesManager());
+                std::auto_ptr<Entities::EntitiesManager> entsMgr(new Entities::EntitiesManager());
+                std::auto_ptr<Entities::RenderEntitiesManager> renderEntsMgr(new Entities::RenderEntitiesManager());
+
+                _componentCtrl.reset(new Entities::ComponentController(entsMgr, renderEntsMgr));
+
                 //render entities
-                LifeCycle::bindAndRegisterLifeCycleObserver<Entities::RenderEntitiesManager>(lfcReg,
-                    lfcObs, *_rdrEntMgr, LifeCycle::LFC_ON_INIT);
+                LifeCycle::bindAndRegisterLifeCycleObserver<Entities::ComponentController>(lfcReg,
+                    lfcObs, *_componentCtrl);
             }
         }catch(Ogre::Exception e)
         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in RenderEntitiesManager", "");
+            OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription() + " in ComponentController", "");
         }
 
 
@@ -1001,13 +1010,16 @@ void
                 std::auto_ptr<Toolset::ToolsetManager> toolMgr(new Toolset::ToolsetManager(_geometryManager.get()));
                 _toolsetCtrl.reset(new Toolset::ToolsetController(toolMgr));
                 LifeCycle::bindAndRegisterLifeCycleObserver(lfcReg, lfcObs, *_toolsetCtrl, LifeCycle::LFC_ON_INIT);
+
+                _gameCtrl.reset(new World::GameController());
                 
-                _workspace.reset(new ZWorkspace(_scnMgr, _entMgr.get(), _rdrEntMgr.get(), 0, _zclCtrl.get(), _worldController.get(),
+                _workspace.reset(new ZWorkspace(_scnMgr, _componentCtrl.get(), 0, _zclCtrl.get(), 
+                        _worldController.get(), _gameCtrl.get(),
                     _cineController.get(), _geometryManager.get(), 
                     _toolsetCtrl.get()));
                 _workspaceCtrl.reset(new ZGame::ZWorkspaceController);
                 _workspaceCtrl->setZWorkspace(_workspace.get());
-                
+                _gameCtrl->setWorkspaceController(_workspaceCtrl.get()); //Hack. Too much depdencies. We need real event class.
                 
                 //Workspace controller
                 LifeCycle::bindAndRegisterLifeCycleObserver<ZGame::ZWorkspaceController>(lfcReg, lfcObs, *_workspaceCtrl,
@@ -1048,7 +1060,7 @@ void
     EngineController::_removeSubSystemsOnUnloadState()
 {
     _gfxCtrl.reset(0);
-    _rdrEntMgr.reset(0);
+    _componentCtrl.reset(0);
     _zclCtrl.reset(0);
     _worldController.reset(0);
     _controlMod.reset(0);

@@ -36,9 +36,6 @@ namespace ZGame
         class GuiView
         {
         public:
-
-
-
             virtual VIEW_KEY
                 getKey() = 0;
             virtual Rocket::Core::Element*

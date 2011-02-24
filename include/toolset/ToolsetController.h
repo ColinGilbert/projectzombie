@@ -44,10 +44,10 @@ namespace ZGame
             {
                 SELECT=0,CURSOR, CUBE
             };
-            
+            //Note: Need to update the names for these modes.
             enum ToolsetMode
             {
-                MOVECURSOR=0,TRANSLATE,SCALE,ROTATE
+                MOVECURSOR=0,TRANSLATE,SCALE,ROTATE,FILL
             };
 
             typedef Ogre::vector<std::pair<Ogre::String, ToolType> >::type ToolDesc;
@@ -114,6 +114,12 @@ namespace ZGame
             void
                 onMaterialChange(size_t matId);
 
+            Ogre::AxisAlignedBox
+                getSelectionBox()
+            {
+                return _currentSelectBox;
+            }
+
         private:
 
            
@@ -131,6 +137,7 @@ namespace ZGame
             Gui::TemplateCloner* _templateCloner;
             ToolsetMode _curToolsetMode;
             ToolXForm* _cubeSelectXForm;
+            Ogre::AxisAlignedBox _currentSelectBox;
             void
                 _switchTool(ToolType type);
             void

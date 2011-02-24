@@ -23,6 +23,7 @@
 #include "gui/ToolsetView.h"
 #include "ZWorkspaceController.h"
 #include "ZWorkspace.h"
+#include "gui/GameView.h"
 
 namespace ZGame
 {
@@ -88,9 +89,11 @@ bool
     //we will have a more generalized way of adding views to screens.
     std::auto_ptr<Gui::CineView> cineView(new Gui::CineView(initPacket->workspaceCtrl->getZWorkspace()->getCinematicController()));
     std::auto_ptr<Gui::ToolsetView> toolsetView(new Gui::ToolsetView(initPacket->workspaceCtrl->getZWorkspace()->getToolsetController()));
+    std::auto_ptr<Gui::GameView> gameView(new Gui::GameView(initPacket->workspaceCtrl->getZWorkspace()->getGameController()));
     _editorScreen = static_cast<Gui::EditorScreen*>(initPacket->guiCtrl->getScreen("EditorScreen"));
     _editorScreen->setCineView(cineView);
     _editorScreen->setToolsetView(toolsetView);
+    _editorScreen->setGameView(gameView);
     _editorScreen->onLoad();
     _editorScreen->show();
     return true;

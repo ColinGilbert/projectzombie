@@ -50,22 +50,9 @@ material PRJZ/PSSM/shadow_caster
 	}	
 }
 
-vertex_program PRJZ/PSSM/shadow_reciever_vs unified
-{
-	delegate MinecraftVP_cg
-	delegate MinecraftVP_glsl
-}
-
-fragment_program PRJZ/PSSM/shadow_reciever_ps unified
-{
-	delegate MinecraftFP_cg
-	delegate MinecraftFP_glsl
-}
-
-
 material PRJZ/Minecraft
 {
-	technique
+	technique Lighting
 	{
 		//shadow_caster_material PRJZ/PSSM/shadow_caster
 		//pass
@@ -95,16 +82,16 @@ material PRJZ/Minecraft
 			fragment_program_ref PRJZ/PSSM/shadow_reciever_ps
 			{
 				//param_named	terrainTexture	int 0
-				param_named diffuseMap int 0
+				//param_named diffuseMap int 0
 				//param_named shadowMap0 int 1
 				//param_named shadowMap1 int 2
 				//param_named shadowMap2 int 3
 				
 			}
 
-			texture_unit 
-			//diffuseMap
+			texture_unit diffuseMap
 			{
+				texture_alias diffuseMap
 				//filtering trilinear
 				tex_address_mode wrap
 				//filtering none
@@ -126,53 +113,52 @@ material PRJZ/Minecraft
 				//texture minecraft_terrain_bb_paint.png
 				//texture minecraft_terrain_128_one.png
 			}
-			//texture_unit shadow0
-			//{
-				//content_type shadow
-				//tex_address_mode border
-				//tex_border_colour 1 1 1 1
-				
-			//}
-			//texture_unit shadow1
-			//{
-				//content_type shadow
-				//tex_address_mode border
-				//tex_border_colour 1 1 1 1
-				
-			//}
-			//texture_unit shadow2
-			//{
-				//content_type shadow
-				//tex_address_mode border
-				//tex_border_colour 1 1 1 1
-				
-			//}
-			
+		
 		} 
 	}
 
 	// this is the technique for the scheme "geom" that the SSAO
     // compositor uses to render the geometry map
 	
-	//technique geom
-	//{
-	  // scheme geom
+	technique geom
+	{
+	  scheme geom
 	    
-	    //pass
-	    //{
+	    pass
+	    {
 		//depth_write on
 	    	
 
-	      //  vertex_program_ref MinecraftGeom_vs
-	        //{
-	        //}
+	        vertex_program_ref MinecraftGeom_vs
+	        {
+	        }
 
-	        //fragment_program_ref MinecraftGeom_ps
-	        //{
-	        //}
-	    //}
-	//}		
+	        fragment_program_ref MinecraftGeom_ps
+	        {
+	        }
+	    }
+	}		
 }
+
+material PRJZ/MinecraftCharacter : PRJZ/Minecraft
+{
+	set_texture_alias diffuseMap nskingr.jpg 
+	technique Lighting
+	{
+		pass
+		{
+			vertex_program_ref PRJZ/PSSM/shadow_recieverCharacter_vs
+			{
+			}
+			fragment_program_ref PRJZ/PSSM/shadow_recieverCharacter_ps
+			{
+			}
+		}
+	}
+}
+
+
+
 
 material testatlas
 {

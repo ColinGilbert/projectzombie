@@ -28,28 +28,59 @@ vertex_program MinecraftVP_cg hlsl
 	//profiles vs_3_0 
 	entry_point main_vp
 	target vs_3_0
+	preprocessor_defines TEXTURE_ATLAS=1
+	
 	default_params
 	{
 		param_named_auto worldViewProj	worldviewproj_matrix
 	}
 }
+
+vertex_program MinecraftVPCharacter_cg hlsl
+{
+	source Minecraft.cg
+	entry_point main_vp
+	target vs_3_0
+	preprocessor_defines TEXTURE_ATLAS=0
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
 fragment_program MinecraftFP_cg hlsl
 {
 	source Minecraft.cg
 	
 	entry_point main_fp
 	target ps_3_0
+	preprocessor_defines TEXTURE_ATLAS=1
+
 	default_params
 	{
 	}
 
 }
+
+fragment_program MinecraftFPCharacter_cg hlsl
+{
+	source Minecraft.cg
+	entry_point main_fp
+	target ps_3_0
+	preprocessor_defines TEXTURE_ATLAS=0
+
+	default_params
+	{
+	}
+}
+
 vertex_program MinecraftGeom_hlsl_vs hlsl
 {
 	source Minecraft.cg
 	//profiles vs_3_0
 	entry_point geom_vs
 	target vs_3_0
+	
 	default_params
 	{
 		param_named_auto wvpMat worldviewproj_matrix
@@ -62,12 +93,13 @@ fragment_program MinecraftGeom_hlsl_ps hlsl
 	source Minecraft.cg
 	//profiles ps_3_0
 	entry_point geom_ps
-	target ps_3_0
+	target ps_3_0	
 	default_params
 	{
 		param_named_auto far far_clip_distance
 	}
 }
+
 
 vertex_program MinecraftGeom_glsl_vs glsl
 {
@@ -94,10 +126,20 @@ vertex_program MinecraftGeom_vs unified
 	delegate MinecraftGeom_hlsl_vs
 }
 
+vertex_program MinecraftGeomCharacter_vs unified
+{
+	delegate MinecraftGeomCharacter_glsl_vs
+}
+
 fragment_program MinecraftGeom_ps unified
 {
 	delegate MinecraftGeom_hlsl_ps
 	delegate MinecraftGeom_glsl_ps
+}
+
+fragment_program MinecraftGeomCharacter_ps unified
+{
+	delegate MinecraftGeomCharacter_hlsl_ps
 }
 
 
@@ -121,6 +163,27 @@ fragment_program MinecraftFP_glsl glsl
 	{
 		param_named diffuseMap int 0
 	}
+}
+
+vertex_program PRJZ/PSSM/shadow_reciever_vs unified
+{
+	delegate MinecraftVP_cg
+	delegate MinecraftVP_glsl
+}
+
+fragment_program PRJZ/PSSM/shadow_reciever_ps unified
+{
+	delegate MinecraftFP_cg
+	delegate MinecraftFP_glsl
+}
+vertex_program PRJZ/PSSM/shadow_recieverCharacter_vs unified
+{
+	delegate MinecraftVPCharacter_cg
+}
+
+fragment_program PRJZ/PSSM/shadow_recieverCharacter_ps unified
+{
+	delegate MinecraftFPCharacter_cg
 }
 
 vertex_program PRJZ/HDRBackground_hlsl_vs hlsl

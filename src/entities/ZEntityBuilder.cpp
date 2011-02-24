@@ -1,96 +1,36 @@
-#include <iostream>
-using std::cout;
-using std::endl;
-#include <boost/random.hpp>
-#include <Ogre.h>
 #include "entities/ZEntityBuilder.h"
-#include "CommandController.h"
-#include "command/CommandList.h"
-#include "command/CreateEntCmd.h"
 #include "entities/ZEntity.h"
 #include "delegates/EntityDelegates.h"
-#include "GPUEntsDistributor.h"
-#include "world/WorldScale.h"
-
+#include "entities/EntitiesManager.h"
 using namespace ZGame::Entities;
 
-extern ZGame::World::WorldScale WSCALE;
-
-
 /**
-*This method will build specified number of entities. The user has the option to specify whether to use the command and control system to generate a system
-*wide command which correspond to the operation of building entities (e.g. generate RenderEntities.)
-*
-*
-*
-*/
+* This method will build entities. There should be a poll of entities of the entity in question. If the requested build amount overflows more than N entities in a pool,
+*then expect wrap around behavior. However, if N is greater than the total pool size, then expect undefine behavior.
+**/
 bool 
-EntitiesBuilder::build(EntitiesManager* entMgr)
+    EntitiesBuilder::build(const std::vector<Ogre::Vector3> &positions, 
+    EntitiesManager* entMgr)
 {
     using namespace Ogre;
-    using ZGame::COMMAND::CreateEntCmd;
-    using ZGame::Entities::ZENTITY_VEC;
-    using ZGame::GPUEntsDistributor;
-    int numOfEnts = entMgr->getNumOfEntities();
+    
+    
+    if(!entMgr)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "NULL pointer for Entities Components Manager."
+        "EntitiesBuilder::build", "Line: 23");
 
-
-    //Loop through each entities and randomly assign coords.
-    ZENTITY_VEC const* ents = entMgr->getEntities();
-    ZENTITY_VEC::const_iterator iter;
-    std::vector<Entities::EntitiesGroup*> groups = entMgr->getGroups();
-
-    Vector3 min = Vector3(0.0f, 0.0f, 0.0f);
-    Vector3 max = Vector3(500.0f*WSCALE.unitsPerMeter, 0.0f, 25.0f*WSCALE.unitsPerMeter);
-    boost::minstd_rand rng;
-
-    //Generate distrubtion on a unit circle.
-    boost::uniform_on_sphere<> unitSDist(2.0);
-    boost::variate_generator<boost::minstd_rand, boost::uniform_on_sphere<> > randOnCircle(rng, unitSDist);
-    int grpIdx = 0;
-    int endIdx = groups[grpIdx]->numOfEnts;
-    Vector3 center = groups[grpIdx]->center;
-    Real radius = groups[grpIdx]->radius*WSCALE.unitsPerMeter;
-    //boost::uniform_real<> radiusDist(1.0f*WSCALE.unitsPerMeter, radius);
-    //boost::variate_generator<boost::minstd_rand, boost::uniform_real<> > randRadius;
-
-    //GPUEntsDistributor<boost::minstd_rand, boost::uniform_int<> > dist(rng, xDist, zDist);
-    Vector3 pos(Ogre::Vector3::ZERO); 
-    Quaternion orient;
-    Vector3 offset(Ogre::Vector3::ZERO);
-    cout << "Creating " << numOfEnts << " number of entities." << endl;
-
-    for(int i=0; i<numOfEnts; ++i)
+    int poolNum = positions.size();
+    ZENTITY_VEC::iterator begin; 
+    ZENTITY_VEC::iterator end;
+    entMgr->getFromPool(begin, end, poolNum);
+    size_t i = 0;
+    for(auto iter = begin; iter != end; ++iter)
     {
-        if(i == endIdx)
-          {
-            grpIdx++;
-            endIdx = endIdx + groups[grpIdx]->numOfEnts;
-            center = groups[grpIdx]->center;
-            radius = groups[grpIdx]->radius*WSCALE.unitsPerMeter;
-          }
-        const std::vector<double> vecOnSphere = randOnCircle();
-        offset.x = vecOnSphere[0] * radius;
-        offset.z = vecOnSphere[1] * radius; //scale by radius
-        ZEntity* ent = entMgr->createZEntity();
-        //cout << "builder center: " << center << endl;
-        //cout << "builder offset: " << offset << endl;
-        pos = center + offset;
-        //cout << "builder pos: " << pos << endl;
-        ent->onRead(pos, orient, center);
+        Ogre::Quaternion quat;
+        (*iter)->onEvent(ONBUILD);
+        (*iter)->onRead(positions[i++] - Ogre::Vector3(0.0f, 0.5f, 0.0f), quat);
     }
-    
-    CreateEntCmd createCmd;
-    cout << "Calling executeCmd: " << endl;
-    CommandController::getSingleton().executeCmd(createCmd);
-    return true;
-}
 
-bool
-EntitiesBuilder::unbuild(ZEntity* zEnt)
-{
-    
-    assert(zEnt != 0 && "ZEntity is null!");
-    cout << "In PlayerENtity::onDestroyClient()" << endl;
-    COMMAND::StringCommand nodeRemove(CommandList::NODEREMOVE);
+    Ogre::LogManager::getSingleton().getLog("App.log")->logMessage("Building ZEntities");
     return true;
 }

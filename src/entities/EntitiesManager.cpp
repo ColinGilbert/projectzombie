@@ -20,12 +20,11 @@ using namespace Ogre;
 
 using namespace ZGame::Entities;
 
-int EntitiesManager::_KEY = 0;
+unsigned int EntitiesManager::_KEY = 0;
 
 extern ZGame::World::WorldScale WSCALE;
 
-EntitiesManager::EntitiesManager() : _numOfEnts(0), _numOfGroups(0), _numPerGroup(InstancedRdrEntitiesBuilder::MAX_PER_BATCH),
-    _increaseByMultiplier(2)
+EntitiesManager::EntitiesManager() : _numOfEnts(0)
 {
   using COMMAND::CreateEntCmd;
   GetEntitiesManager dlg;
@@ -39,18 +38,7 @@ EntitiesManager::EntitiesManager() : _numOfEnts(0), _numOfGroups(0), _numPerGrou
 
 EntitiesManager::~EntitiesManager()
 {
-    cout << "In EntitiesManager destructor." << endl;
-  clearZEntities(); //just to be safe.
-  cout << "ZEntities cleared." << endl;
-  _ents.clear();
-  cout << "Ents cleared." << endl;
-  
-}
-
-void
-EntitiesManager::clearBuffers()
-{
-  _ents.clear();
+  clearZEntities(); //just to be safe. 
 }
 
 void
@@ -61,127 +49,26 @@ EntitiesManager::clearZEntities()
     {
       delete (*it);
     }
-
   _zEntsVec.clear();
 }
 
-
-
 void
-EntitiesManager::updateDensityBuffer()
+    EntitiesManager::setCursor(ZENTITY_VEC::const_iterator cursor)
 {
-  Vector3 pos;
-  size_t numOfEnts = _ents.numOfEnts;
-  size_t vecDim = _ents.COMPONENT_DIM;
-  size_t idx;
-  memset(_ents.density, 0, sizeof(Real)*513*513*vecDim);
-  for(size_t i = 0; i < numOfEnts; ++i)
-    {
-      //hash value.
-      pos.x = _ents.worldPos[i*vecDim];
-      pos.z = _ents.worldPos[i*vecDim+2];
-      idx = (size_t)(pos.z / WSCALE.unitsPerMeter) * 513 + (size_t)(pos.x / WSCALE.unitsPerMeter);
-      _ents.density[idx * vecDim] = 20.0f;
-    }
+    _cursor = cursor;
 }
 
-void
-EntitiesManager::updateGoalsBuffer()
+ZENTITY_VEC::const_iterator
+    EntitiesManager::getCursor()
 {
-  size_t idx = 0;
-  size_t numOfEnts = _ents.numOfEnts;
-  size_t vecDim = _ents.COMPONENT_DIM;
-  size_t grpIdx = 0;
-  size_t endIdx = _groups[grpIdx]->numOfEnts;
-  Vector3 goal = _groups[grpIdx]->center;
-
-  for(size_t i = 0; i < numOfEnts; ++i)
-    {
-      if(i == endIdx)
-        {
-          grpIdx++;
-          endIdx = endIdx + _groups[grpIdx]->numOfEnts;
-          goal = _groups[grpIdx]->center;
-        }
-      _ents.goals[idx] = goal.x;
-      _ents.goals[idx + 1] = goal.y;
-      _ents.goals[idx + 2] = goal.z;
-      //leave w alone. We are storing random number seed there. This is all temporary, will be refactor later so it is not so convoluted.
-      idx += vecDim;
-    }
+    return _cursor;
 }
 
-/**
- *This method will convert the zEntities in this manager into ZEntitiBuffers form.
- *
- **/
-void
-EntitiesManager::zEntitiesToBuffer()
+ZENTITY_VEC::const_iterator
+    EntitiesManager::getEndCursor()
 {
-  size_t vecDim = 4;
-  //Allocate the buffers for N number of elements.
-  _ents.numOfEnts = _zEntsVec.size();
-  if(_ents.numOfEnts < 1)
-    return;
-  _ents.COMPONENT_DIM = vecDim;
-  cout << "Allocating buffer for ZEntities to Buffer conversion." << endl;
-  _ents.worldPos = new Real[_ents.numOfEnts * vecDim]; //4D vector per entity.
-  _ents.worldOrient = new Real[_ents.numOfEnts * vecDim]; //4D quaternion per entity.
-  _ents.velocity = new Real[_ents.numOfEnts * vecDim]; //4D vector of velocity per entity.
-  _ents.goals = new Real[_ents.numOfEnts * vecDim];
-  _ents.storeone = new Real[_ents.numOfEnts * vecDim];
-  _ents.mode = new uchar[_ents.numOfEnts]; //byte mod variable per entity.
-  size_t dSize = 513*513*vecDim;
-  _ents.density = new Real[dSize];
-
-  memset(_ents.density, 0, sizeof(Real)*513*513*vecDim);
-  //std::fill(_ents.density, _ents.density + 512*512*vecDim, 0.0f);
-  cout << "done memsetting density" << endl;
-
-
-  //Iterate through ZEntities and copy the data over for reach ZEntity
-  size_t entIdx = 0;
-  Vector3 initVel(0.0f, 0.0f, 0.0f); //initial velocity is zero.
-  //size_t grpIdx = 0;
-  //size_t endGrpIdx = _groups[grpIdx].numOfEnts;
-  for (ZENT_ITER it = _zEntsVec.begin(); it != _zEntsVec.end(); ++it)
-    {
-      const Vector3 &pos = (*it)->getPosition();
-      const Quaternion& orient = (*it)->getOrientation();
-      const Vector3& goal = (*it)->getGoal();
-      //const Ogre::Real base = -1.0f - _ents.numOfEnts;
-
-      //We use the entity velocity buffer's last element for storing thrust.
-      initVel.x = Ogre::Math::RangeRandom(200.0f, 350.0f);
-      _ents.worldPos[entIdx * vecDim] = pos.x;
-      _ents.worldPos[entIdx * vecDim + 1] = pos.y;
-      _ents.worldPos[entIdx * vecDim + 2] = pos.z;
-      _ents.worldPos[entIdx * vecDim + 3] = 1.0f;
-      _ents.worldOrient[entIdx * vecDim] = orient.w;
-      _ents.worldOrient[entIdx * vecDim + 1] = orient.x;
-      _ents.worldOrient[entIdx * vecDim + 2] = orient.y;
-      _ents.worldOrient[entIdx * vecDim + 3] = orient.z;
-      _ents.velocity[entIdx * vecDim] = 0.0f;
-      _ents.velocity[entIdx * vecDim + 1] = 0.0f;
-      _ents.velocity[entIdx * vecDim + 2] = 0.0f;
-      _ents.velocity[entIdx * vecDim + 3] = initVel.x;
-      _ents.mode[entIdx] = (uchar) (1);
-      _ents.goals[entIdx * vecDim] = goal.x;
-      _ents.goals[entIdx * vecDim + 1] = goal.y;
-      _ents.goals[entIdx * vecDim + 2] = goal.z;
-      _ents.goals[entIdx * vecDim + 3] = Ogre::Math::RangeRandom(0.0f, 2147483647.0f ); //generate a random seed.
-      _ents.storeone[entIdx * vecDim] = Ogre::Math::RangeRandom(5.0f, 15.0f);
-      //Hash density values.
-      size_t idx = (size_t)(pos.z / WSCALE.unitsPerMeter) * 513 + (size_t)(pos.x / WSCALE.unitsPerMeter);
-      _ents.density[idx * vecDim] = 1.0f; //We assume individual addtion of density is 1.0. This is clearly a hack!!!
-      entIdx++;
-    }
-  cout << "Done buffer conversion." << endl;
-
+    return _zEntsVec.cend();
 }
-
-
-
 
 
 /**
@@ -213,30 +100,34 @@ EntitiesManager::_getNewKey(ZENT_KEY &key)
   key = oss.str();
 }
 
-EntitiesGroup*
-EntitiesManager::createGroup()
-{
-  int id = _groups.size();
-  EntitiesGroup* grp = new EntitiesGroup(id, 80);
-  _groups.push_back(grp);
-  return grp;
-}
-
 void
-EntitiesManager::resetEntities()
+    EntitiesManager::getFromPool(ZENTITY_VEC::iterator &begin, ZENTITY_VEC::iterator &end,
+    size_t numFromPool)
 {
-  this->clearBuffers();
-  this->clearZEntities();
-  _numOfEnts = 0;
-}
-
-void
-EntitiesManager::buildGroups()
-{
-  _numOfEnts = _getNumOfEntities();
-  using Entities::EntitiesBuilder;
-  EntitiesBuilder builder;
-  builder.build(this);
-  Ogre::LogManager::getSingleton().logMessage(Ogre::LML_TRIVIAL,
-      "ZEntityBuilder::build finished.");
+    //Is numFromPool greater than total size?
+    if(numFromPool > _zEntsVec.size())
+    {
+        //Just return;
+        begin = _zEntsVec.end();
+        end = _zEntsVec.end();
+        //OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Trying to get number of entities N from a entities pool size that is less than N",
+          //  "EntitiesManager::getFromPool");
+        return;
+    }
+    //Just hack this for now.
+    int newPoolSize = _poolSize - numFromPool;
+    if(newPoolSize < 0)
+    {
+        //reset the damn thing.
+        numFromPool = _poolSize;
+        end = _zEntsVec.begin() + _poolSize;
+        begin = end - numFromPool;
+        _poolSize = _zEntsVec.size();
+    }
+    else
+    {
+        end = _zEntsVec.begin() + _poolSize;
+        begin = end - numFromPool;
+        _poolSize = newPoolSize;
+    }
 }
