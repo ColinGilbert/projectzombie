@@ -73,6 +73,11 @@ namespace ZGame
             lfcObs.onDestroy.clear();
             lfcObs.onInit.clear();
             lfcObs.onUpdate.clear();
+            lfcObs.onLoad.clear();
+            lfcObs.onFrameStarted.clear();
+            lfcObs.onFrameEnded.clear();
+            lfcObs.onRenderQueueEnd.clear();
+            lfcObs.onRenderQueueStart.clear();
         }
 
         HAS_MEM_FUNC(onInit, has_on_init);
